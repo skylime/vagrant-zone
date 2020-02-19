@@ -24,7 +24,7 @@ module VagrantPlugins
 					# should be used
 					if image[-4, 4] == '.zss'
 						if File.exist?(curdir + '/' + image)
-							FileUtils.mv(curdir + '/' + image, datadir.to_s + '/' + image)
+							FileUtils.cp(curdir + '/' + image, datadir.to_s + '/' + image)
 						elsif not File.exist?(datadir.to_s + '/' + image)
 							raise Vagrant::Errors::BoxNotFound
 						end

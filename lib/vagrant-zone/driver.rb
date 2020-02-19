@@ -13,12 +13,23 @@ module VagrantPlugins
 				@logger = Log4r::Logger.new("vagrant_zone::driver")
 				@machine = machine
 				@executor = Executor::Exec.new
+
+				if Process.uid == 0
+					@pfexec = ''
+				else
+					sudo = system('sudo -v')
+					if sudo
+						@pfexec = 'sudo'
+					else
+						@pfexec = 'pfexec'
+					end
+				end
 			end
 
 			def state(machine)
 				uuid = machine.id
 				name = machine.name
-				vm_state = execute(false, "zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
+				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 				if vm_state == 'running'
 					:running
 				elsif vm_state == 'configured'
@@ -36,7 +47,7 @@ module VagrantPlugins
 
 			def get_ip_address(machine)
 				name = @machine.name
-				ip   = execute(false, "zonecfg -z #{name} info net | sed -n 's|property: (name=ips,value=\"\\(.*\\)/.*\")|\\1|p'")
+				ip   = execute(false, "#{@pfexec} zonecfg -z #{name} info net | sed -n 's|allowed-address: \\(.*\\)/.*|\\1|p'")
 				return nil if ip.length == 0
 				return ip.gsub /\t/, ''
 			end
@@ -58,9 +69,8 @@ module VagrantPlugins
 					add net
 						set physical=lx0
 						set global-nic=auto
-						add property (name=gateway,value="192.168.0.1")
-						add property (name=ips,value="192.168.122.23/24")
-						add property (name=primary,value="true")
+						set allowed-address=192.168.122.23/24
+						set defrouter=192.168.122.1
 					end
 					add attr
 						set name=kernel-version
@@ -73,7 +83,7 @@ module VagrantPlugins
 				File.open('zone_config', 'w') do |f|
 					f.puts data
 				end
-				execute(false, "cat zone_config | zonecfg -z #{machine.name}")
+				execute(false, "cat zone_config | #{@pfexec} zonecfg -z #{machine.name}")
 			end
 		end
 	end
