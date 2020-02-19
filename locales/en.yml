@@ -1,5 +1,10 @@
 en:
   vagrant_zone:
+    states:
+      not_created: |-
+        Your instance of this box haven't been created.
+      is_running: |-
+        Your instance has already be booted.
     errors:
       execute_error: |-
-        Failed when execute commands
+        Failed when execute commands.

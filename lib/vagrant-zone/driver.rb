@@ -52,10 +52,14 @@ module VagrantPlugins
 				return ip.gsub /\t/, ''
 			end
 
-			def zoneadm(machine, ui)
+			def install(machine, ui)
 				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
 				name = @machine.name
 				execute(false, "zoneadm -z #{name} install -s #{box}")
+			end
+
+			def boot(machine, ui)
+				name = @machine.name
 				execute(false, "zoneadm -z #{name} boot")
 			end
 
@@ -110,6 +114,10 @@ module VagrantPlugins
 				return false
 			end
 
+			def halt(machine, ui)
+				name = @machine.name
+				execute(false, "zoneadm -z #{name} halt")
+			end
 		end
 	end
 end
