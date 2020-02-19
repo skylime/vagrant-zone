@@ -18,7 +18,8 @@ module VagrantPlugins
 						if !env[:result]
 							b2.use Import
 							b2.use Create
-							b2.use Provision
+							b2.use Setup
+							#b2.use Provision
 						else
 							env[:halt_on_error] = true
 							b2.use action_start
@@ -42,6 +43,7 @@ module VagrantPlugins
 			action_root = Pathname.new(File.expand_path('../action', __FILE__))
 			autoload :Import, action_root.join('import')
 			autoload :Create, action_root.join('create')
+			autoload :Setup, action_root.join('setup')
 			autoload :IsCreated, action_root.join('is_created')
 		end
 	end

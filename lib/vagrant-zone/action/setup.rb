@@ -5,7 +5,7 @@ require "digest/md5"
 module VagrantPlugins
 	module ProviderZone
 		module Action
-			class Create
+			class Setup
 				def initialize(app, env)
 					@logger = Log4r::Logger.new("vagrant_zone::action::import")
 					@app = app
@@ -15,9 +15,6 @@ module VagrantPlugins
 					@machine = env[:machine]
 					@driver  = @machine.provider.driver
 
-					@machine.id = SecureRandom.uuid
-					@driver.zonecfg(@machine, env[:ui])
-					@driver.zoneadm(@machine, env[:ui])
 					@driver.setup(@machine, env[:ui])
 					@app.call(env)
 				end

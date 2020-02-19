@@ -1,3 +1,5 @@
 en:
   vagrant_zone:
-    
+    errors:
+      execute_error: |-
+        Failed when execute commands

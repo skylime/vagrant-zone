@@ -23,6 +23,12 @@ module VagrantPlugins
 				Provider
 			end
 
+			# This initializes the internationalization strings.
+			def self.setup_i18n
+				I18n.load_path << File.expand_path('locales/en.yml', ProviderZone.source_root)
+				I18n.reload!
+			end
+
 			# This sets up our log level to be whatever VAGRANT_LOG is.
 			def self.setup_logging
 				require 'log4r'
@@ -56,6 +62,7 @@ module VagrantPlugins
 			# with logging configured as this prevents inheritance of the log level
 			# from the parent logger.
 			setup_logging
+			setup_i18n
 		end
 	end
 end
