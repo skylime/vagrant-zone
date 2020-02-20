@@ -55,12 +55,26 @@ module VagrantPlugins
 			def install(machine, ui)
 				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
 				name = @machine.name
-				execute(false, "zoneadm -z #{name} install -s #{box}")
+				execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
 			end
 
 			def boot(machine, ui)
 				name = @machine.name
-				execute(false, "zoneadm -z #{name} boot")
+				execute(false, "#{@pfexec} zoneadm -z #{name} boot")
+			end
+
+			def create_vnic(machine, ui)
+				machine = @machine
+				machine.config.vm.networks.each do |_type, opts|
+					if _type.to_s == "public_network"
+						link = opts[:bridge]
+						mac  = 'auto'
+						if !opts[:mac].nil?
+							mac  = opts[:mac]
+						end
+						execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{machine.name}0")
+					end
+				end
 			end
 
 			def zonecfg(machine, ui)
@@ -71,7 +85,7 @@ module VagrantPlugins
 					set brand=#{config.brand}
 					set autoboot=false
 					add net
-						set physical=lx0
+						set physical=#{machine.name}0
 						set global-nic=auto
 						set allowed-address=192.168.122.23/24
 						set defrouter=192.168.122.1
@@ -80,6 +94,11 @@ module VagrantPlugins
 						set name=kernel-version
 						set type=string
 						set value=#{config.kernel}
+					end
+					add capped-memory
+						set physical=#{config.memory}
+						set swap=#{config.memory}
+						set locked=#{config.memory}
 					end
 					set max-lwps=2000
 					exit

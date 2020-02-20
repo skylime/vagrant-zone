@@ -20,6 +20,7 @@ module VagrantPlugins
 						if !env[:result]
 							b2.use Import
 							b2.use Create
+							b2.use Network
 							b2.use Start
 							b2.use Setup
 							#b2.use Provision
@@ -85,6 +86,7 @@ module VagrantPlugins
 			action_root = Pathname.new(File.expand_path('../action', __FILE__))
 			autoload :Import, action_root.join('import')
 			autoload :Create, action_root.join('create')
+			autoload :Network, action_root.join('network')
 			autoload :Setup, action_root.join('setup')
 			autoload :Start, action_root.join('start')
 			autoload :IsCreated, action_root.join('is_created')
