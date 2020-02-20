@@ -3,6 +3,7 @@ require "fileutils"
 require "digest/md5"
 require "io/console"
 require "ruby_expect"
+require 'netaddr'
 
 module VagrantPlugins
 	module ProviderZone
@@ -64,7 +65,6 @@ module VagrantPlugins
 			end
 
 			def create_vnic(machine, ui)
-				machine = @machine
 				machine.config.vm.networks.each do |_type, opts|
 					if _type.to_s == "public_network"
 						link = opts[:bridge]
@@ -79,6 +79,16 @@ module VagrantPlugins
 
 			def zonecfg(machine, ui)
 				config = machine.provider_config
+				machine.config.vm.networks.each do |_type, opts|
+					if _type.to_s == "public_network"
+						@ip        = opts[:ip].to_s
+						@network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
+						@defrouter = opts[:gateway]
+					end
+				end
+
+				allowed_address = @ip + @network.netmask.to_s
+
 				data = %{
 					create
 					set zonepath=#{config.zonepath}
@@ -87,8 +97,8 @@ module VagrantPlugins
 					add net
 						set physical=#{machine.name}0
 						set global-nic=auto
-						set allowed-address=192.168.122.23/24
-						set defrouter=192.168.122.1
+						set allowed-address=#{allowed_address}
+						set defrouter=#{@defrouter.to_s}
 					end
 					add attr
 						set name=kernel-version
