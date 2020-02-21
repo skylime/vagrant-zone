@@ -48,7 +48,7 @@ module VagrantPlugins
 
 			def get_ip_address(machine)
 				name = @machine.name
-				ip   = execute(false, "#{@pfexec} zonecfg -z #{name} info net | sed -n 's|allowed-address: \\(.*\\)/.*|\\1|p'")
+				ip   = execute(false, "#{@pfexec} zonecfg -z #{name} info net | sed -n 's|property: (name=ips,value=\"\\(.*\\)/.*\")|\\1|p'")
 				return nil if ip.length == 0
 				return ip.gsub /\t/, ''
 			end
@@ -97,8 +97,9 @@ module VagrantPlugins
 					add net
 						set physical=#{machine.name}0
 						set global-nic=auto
-						set allowed-address=#{allowed_address}
-						set defrouter=#{@defrouter.to_s}
+						add property (name=gateway,value="#{@defrouter.to_s}")
+						add property (name=ips,value="#{allowed_address}")
+						add property (name=primary,value="true")
 					end
 					add attr
 						set name=kernel-version
