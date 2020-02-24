@@ -8,3 +8,5 @@ en:
     errors:
       execute_error: |-
         Failed when execute commands.
+      timeout_error: |-
+        Timeout exceeded.

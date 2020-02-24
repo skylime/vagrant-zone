@@ -15,7 +15,7 @@ module VagrantPlugins
 						re = env[:result]
 						m = env[:machine].state.id
 
-						@logger.info("abc result: #{env[:result]}")
+						@logger.warn("abc result: #{env[:result]}")
 
 						if !env[:result]
 							b2.use Import
@@ -23,7 +23,8 @@ module VagrantPlugins
 							b2.use Network
 							b2.use Start
 							b2.use Setup
-							#b2.use Provision
+							b2.use WaitTillUp
+							b2.use Provision
 						else
 							env[:halt_on_error] = true
 							b2.use action_start
@@ -93,6 +94,17 @@ module VagrantPlugins
 				end
 			end
 
+			# This action is called when `vagrant provision` is called.
+			def self.action_provision
+				Vagrant::Action::Builder.new.tap do |b|
+					b.use Call, IsCreated do |env, b2|
+						b2.use Call, IsState, :running do |env, b3|
+							b3.use Provision
+						end
+					end
+				end
+			end
+
 			action_root = Pathname.new(File.expand_path('../action', __FILE__))
 			autoload :Import, action_root.join('import')
 			autoload :Create, action_root.join('create')
@@ -103,6 +115,7 @@ module VagrantPlugins
 			autoload :NotCreated, action_root.join('not_created')
 			autoload :Halt, action_root.join('halt')
 			autoload :Destroy, action_root.join('destroy')
+			autoload :WaitTillUp, action_root.join('wait_till_up')
 		end
 	end
 end

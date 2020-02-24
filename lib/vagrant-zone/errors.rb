@@ -18,6 +18,10 @@ module VagrantPlugins
 			class ExecuteError < VagrantZoneError
 				error_key(:execute_error)
 			end
+
+			class TimeoutError < VagrantZoneError
+				error_key(:timeout_error)
+			end
 		end
 	end
 end
