@@ -83,6 +83,16 @@ module VagrantPlugins
 				end
 			end
 
+			# This is the action that is primarily responsible for completely
+			# freeing the resources of the underlying virtual machine.
+			def self.action_destroy
+				Vagrant::Action::Builder.new.tap do |b|
+					b.use Call, IsCreated do |env, b2|
+						b2.use Destroy
+					end
+				end
+			end
+
 			action_root = Pathname.new(File.expand_path('../action', __FILE__))
 			autoload :Import, action_root.join('import')
 			autoload :Create, action_root.join('create')
@@ -92,6 +102,7 @@ module VagrantPlugins
 			autoload :IsCreated, action_root.join('is_created')
 			autoload :NotCreated, action_root.join('not_created')
 			autoload :Halt, action_root.join('halt')
+			autoload :Destroy, action_root.join('destroy')
 		end
 	end
 end

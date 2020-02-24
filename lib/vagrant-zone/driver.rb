@@ -146,7 +146,16 @@ module VagrantPlugins
 
 			def halt(machine, ui)
 				name = @machine.name
-				execute(false, "zoneadm -z #{name} halt")
+				execute(false, "#{@pfexec} zoneadm -z #{name} halt")
+			end
+
+			def destroy(machine, id)
+				name = @machine.name
+				execute(false, "#{@pfexec} zoneadm -z #{name} halt")
+				execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
+				execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
+				execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
+
 			end
 		end
 	end
