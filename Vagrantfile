@@ -7,6 +7,11 @@ Vagrant.configure("2") do |config|
     debian.vm.provision "shell",
       inline: "id > /home/vagrant/id"
 
+    debian.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "playbook.yml"
+      ansible.install  = true
+    end
+
     debian.vm.provider :zone do |vm|
       vm.brand      = 'lx'
       vm.kernel     = '4.10'

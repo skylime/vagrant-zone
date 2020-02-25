@@ -87,7 +87,8 @@ module VagrantPlugins
 					end
 				end
 
-				allowed_address = @ip + @network.netmask.to_s
+				allowed_address  = @ip + @network.netmask.to_s
+				lofs_current_dir = Dir.pwd
 
 				data = %{
 					create
@@ -110,6 +111,11 @@ module VagrantPlugins
 						set physical=#{config.memory}
 						set swap=#{config.memory}
 						set locked=#{config.memory}
+					end
+					add fs
+						set dir=/vagrant
+						set special=#{lofs_current_dir}
+						set type=lofs
 					end
 					set max-lwps=2000
 					exit

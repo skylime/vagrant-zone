@@ -23,6 +23,9 @@ module VagrantPlugins
 							b2.use Network
 							b2.use Start
 							b2.use Setup
+							#b2.use PrepareNFSValidIds
+							#b2.use SyncedFolderCleanup
+							#b2.use SyncedFolders
 							b2.use WaitTillUp
 							b2.use Provision
 						else
@@ -131,6 +134,7 @@ module VagrantPlugins
 			autoload :Halt, action_root.join('halt')
 			autoload :Destroy, action_root.join('destroy')
 			autoload :WaitTillUp, action_root.join('wait_till_up')
+			autoload :PrepareNFSValidIds, action_root.join('prepare_nfs_valid_ids.rb')
 		end
 	end
 end
