@@ -105,6 +105,21 @@ module VagrantPlugins
 				end
 			end
 
+			# This is the action implements the reload command
+			# It uses the halt and start actions
+			def self.action_reload
+				Vagrant::Action::Builder.new.tap do |b|
+					b.use Call, IsCreated do |env, b2|
+						unless env[:result]
+							b2.use NotCreated
+							next
+						end
+						b2.use action_halt
+						b2.use action_start
+					end
+				end
+			end
+
 			action_root = Pathname.new(File.expand_path('../action', __FILE__))
 			autoload :Import, action_root.join('import')
 			autoload :Create, action_root.join('create')
