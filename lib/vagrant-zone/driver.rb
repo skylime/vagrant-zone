@@ -127,6 +127,7 @@ module VagrantPlugins
 			end
 
 			def setup(machine, ui)
+				zlogin(machine, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
 				return if user_exists?(machine)
 				zlogin(machine, "useradd -m -s /bin/bash -U vagrant")
 				zlogin(machine, %('echo "vagrant ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers.d/vagrant'))
