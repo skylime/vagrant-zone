@@ -6,6 +6,7 @@ module VagrantPlugins
 			class Import
 				def initialize(app, env)
 					@logger = Log4r::Logger.new("vagrant_zone::action::import")
+					@joyent_images_url = 'https://images.joyent.com/images/'
 					@app = app
 				end
 
@@ -31,7 +32,8 @@ module VagrantPlugins
 					## If image looks like an UUID, download the ZFS snapshot from
 					## Joyent images server
 					elsif validate_uuid_format(image)
-						raise Vagrant::Errors::BoxNotFound
+						raise Vagrant::Errors::BoxNotFound if not check(image)
+						download(image, datadir.to_s + '/' + image)
 					## If it's a regular name (everything else), try to find it
 					## on Vagrant Cloud
 					else
@@ -49,6 +51,14 @@ module VagrantPlugins
 					@app.call(env)
 				end
 				
+				def check(uuid)
+					`curl --output /dev/null --silent -r 0-0 --fail #{@joyent_images_url}/#{uuid}`
+					return $?.success?
+				end
+				def download(uuid, dest)
+					`curl --output #{dest} --silent #{@joyent_images_url}/#{uuid}/file`
+					return $?.success?
+				end
 			end
 		end
 	end
