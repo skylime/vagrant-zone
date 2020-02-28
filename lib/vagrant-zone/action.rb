@@ -87,6 +87,14 @@ module VagrantPlugins
 				end
 			end
 
+			# This action is called when you try to package an existing virtual
+			# machine to an box image.
+			def self.action_package
+				Vagrant::Action::Builder.new.tap do |b|
+					b.use Package
+				end
+			end
+
 			# This is the action that is primarily responsible for completely
 			# freeing the resources of the underlying virtual machine.
 			def self.action_destroy
@@ -135,6 +143,7 @@ module VagrantPlugins
 			autoload :Destroy, action_root.join('destroy')
 			autoload :WaitTillUp, action_root.join('wait_till_up')
 			autoload :PrepareNFSValidIds, action_root.join('prepare_nfs_valid_ids.rb')
+			autoload :Package, action_root.join('package.rb')
 		end
 	end
 end
