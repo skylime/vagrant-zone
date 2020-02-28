@@ -55,7 +55,7 @@ module VagrantPlugins
 					assemble_box(boxname, extra)
 
 					FileUtils.mv(tmp_dir + '/' + boxname, '../' + boxname)
-					#FileUtils.rm_rf(tmp_dir)
+					FileUtils.rm_rf(tmp_dir)
 
 					env[:ui].info('Box created')
 					env[:ui].info('You can now add the box:')
