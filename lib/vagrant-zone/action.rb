@@ -15,8 +15,6 @@ module VagrantPlugins
 						re = env[:result]
 						m = env[:machine].state.id
 
-						@logger.warn("abc result: #{env[:result]}")
-
 						if !env[:result]
 							b2.use Import
 							b2.use Create

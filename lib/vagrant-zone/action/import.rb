@@ -35,7 +35,16 @@ module VagrantPlugins
 					## If it's a regular name (everything else), try to find it
 					## on Vagrant Cloud
 					else
-						raise Vagrant::Errors::BoxNotFound
+						# Support zss format only for now
+						box_format = env[:machine].box.metadata['format']
+						if box_format.nil?
+							raise Errors::NoBoxFormatSet
+						elsif box_format != 'zss'
+							raise Errors::WrongBoxFormatSet
+						end
+
+						box_image_file = env[:machine].box.directory.join('box.zss').to_s
+						FileUtils.cp(env[:machine].box.directory.join('box.zss').to_s, datadir.to_s + '/' + image)
 					end
 					@app.call(env)
 				end

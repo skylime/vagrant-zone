@@ -89,9 +89,9 @@ module VagrantPlugins
 					<<-EOF
 					Vagrant.configure("2") do |config|
 						config.vm.provider :zone do |zone|
-							zone.brand = #{brand}
-							zone.kernel = #{kernel}
-							zone.zonepath = #{zonepath}
+							zone.brand = "#{brand}"
+							zone.kernel = "#{kernel}"
+							zone.zonepath = "#{zonepath}"
 						end
 					end
 					user_vagrantfile = File.expand_path('../_include/Vagrantfile', __FILE__)
