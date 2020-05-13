@@ -15,6 +15,7 @@ module VagrantPlugins
 					@machine = env[:machine]
 					@driver  = @machine.provider.driver
 
+					@driver.delete_dataset(@machine, env[:ui])
 					@driver.destroy(@machine, env[:ui])
 					@app.call(env)
 				end

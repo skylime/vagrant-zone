@@ -4,6 +4,7 @@ require "digest/md5"
 require "io/console"
 require "ruby_expect"
 require 'netaddr'
+require "vagrant/util/numeric"
 
 module VagrantPlugins
 	module ProviderZone
@@ -54,9 +55,16 @@ module VagrantPlugins
 			end
 
 			def install(machine, ui)
+                                config = machine.provider_config
 				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
 				name = @machine.name
-				execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
+
+				if config.brand == 'lx'
+					execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
+				end
+				if config.brand == 'bhyve'
+					execute(false, "#{@pfexec} zoneadm -z #{name} install")
+				end
 			end
 
 			def boot(machine, ui)
@@ -77,6 +85,27 @@ module VagrantPlugins
 				end
 			end
 
+			def create_dataset(machine, ui)
+				config  = machine.provider_config
+				dataset = config.zonepath.delete_prefix("/").to_s + "/data"
+				execute(false, "#{@pfexec} zfs create -o zoned=on -p #{dataset}")
+
+#				machine.config.vm.disks.each do |_type, opts|
+#					if _type.to_s = "disk"
+#						name = opts[:name] if !opts[:name].nil?
+#						size = Vagrant::Util::Numeric.string_to_bytes(opts[:size].to_s) if !opts[:size].nil?
+#						quota = "-o quota=" + size.to_s if size
+#
+#						execute(false, "#{@pfexec} zfs create #{quota} #{dataset}/#{name}")
+#					end
+#				end
+			end
+
+			def delete_dataset(machine, ui)
+				config = machine.provider_config
+				execute(false, "#{@pfexec} zfs destroy #{config.zonepath.delete_prefix("/")}/data")
+			end
+
 			def zonecfg(machine, ui)
 				config = machine.provider_config
 				machine.config.vm.networks.each do |_type, opts|
@@ -90,6 +119,34 @@ module VagrantPlugins
 				allowed_address  = @ip + @network.netmask.to_s
 				lofs_current_dir = Dir.pwd
 
+				attr = ''
+				if config.brand == 'lx'
+					attr = %{
+						add attr
+							set name=kernel-version
+							set type=string
+							set value=#{config.kernel}
+						end
+					}
+				end
+				if config.brand == 'bhyve'
+					attr = %{
+						add device
+							set match=/dev/zvol/rdsk#{config.zonepath}
+						end
+						add attr
+							set name=bootrom
+							set type=string
+							set value=BHYVE_RELEASE
+						end
+						add attr
+							set name=bootdisk
+							set type=string
+							set value=#{config.zonepath}
+						end
+					}
+				end
+
 				data = %{
 					create
 					set zonepath=#{config.zonepath}
@@ -102,20 +159,19 @@ module VagrantPlugins
 						add property (name=ips,value="#{allowed_address}")
 						add property (name=primary,value="true")
 					end
-					add attr
-						set name=kernel-version
-						set type=string
-						set value=#{config.kernel}
-					end
 					add capped-memory
 						set physical=#{config.memory}
 						set swap=#{config.memory}
 						set locked=#{config.memory}
 					end
+					#{attr}
 					add fs
 						set dir=/vagrant
 						set special=#{lofs_current_dir}
 						set type=lofs
+					end
+					add dataset
+						set name=#{config.zonepath.delete_prefix("/")}/data
 					end
 					set max-lwps=2000
 					exit

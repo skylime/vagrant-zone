@@ -22,8 +22,8 @@ module VagrantPlugins
 							b2.use Start
 							b2.use Setup
 							#b2.use PrepareNFSValidIds
-							#b2.use SyncedFolderCleanup
-							#b2.use SyncedFolders
+							b2.use SyncedFolderCleanup
+							b2.use SyncedFolders
 							b2.use WaitTillUp
 							b2.use Provision
 						else
