@@ -176,7 +176,7 @@ module VagrantPlugins
 							set type="string"
 							set value="on,wait"
 						end
-						add attr:
+						add attr
 							set name=console
 							set type=string
 							set value=socket,/tmp/vm.console
