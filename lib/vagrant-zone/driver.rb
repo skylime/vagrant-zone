@@ -145,7 +145,7 @@ module VagrantPlugins
 							set locked=#{config.memory}
 					        end
 						add dataset
-							set name=#{config.zonepath.delete_prefix("/")}/data
+							set name=#{config.zonepath.delete_prefix("/")}/boot
 						end
 						set max-lwps=2000
 					}
