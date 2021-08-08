@@ -253,7 +253,7 @@ module VagrantPlugins
 				name = @machine.name
 				
 				vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{name}0 | awk '{ print $1 }' ")
-				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name}")
+				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
 				if vm_configured == name
 					vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 					if vm_state == 'incomplete' || vm_state == 'configured' 
