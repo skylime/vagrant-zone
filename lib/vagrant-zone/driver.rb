@@ -252,7 +252,8 @@ module VagrantPlugins
 
 			def destroy(machine, id)
 				name = @machine.name
-				if state(name) == 'incomplete'
+				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
+				if vm_state == 'incomplete'
 					execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
 					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
 					execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
