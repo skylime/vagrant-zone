@@ -111,7 +111,7 @@ module VagrantPlugins
 
 			def delete_dataset(machine, ui)
 				config = machine.provider_config
-				#execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
+				execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
 			end
 
 			def zonecfg(machine, ui)
