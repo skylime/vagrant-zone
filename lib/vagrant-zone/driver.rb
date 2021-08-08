@@ -108,19 +108,18 @@ module VagrantPlugins
 
 			def zonecfg(machine, ui)
 				config = machine.provider_config
-				machine.config.vm.networks.each do |_type, opts|
-					if _type.to_s == "public_network"
-						@ip        = opts[:ip].to_s
-						@network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
-						@defrouter = opts[:gateway]
-					end
-				end
-
-				allowed_address  = @ip + @network.netmask.to_s
 				lofs_current_dir = Dir.pwd
 
 				attr = ''
 				if config.brand == 'lx'
+					machine.config.vm.networks.each do |_type, opts|
+						if _type.to_s == "public_network"
+							@ip        = opts[:ip].to_s
+							@network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
+							@defrouter = opts[:gateway]
+						end
+					end
+					allowed_address  = @ip + @network.netmask.to_s
 					attr = %{
 						add attr
 							set name=kernel-version
