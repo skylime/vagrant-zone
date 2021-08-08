@@ -9,7 +9,7 @@ module VagrantPlugins
 		class Plugin < Vagrant.plugin('2')
 			name "zone"
 			description <<-DESC
-			This plugin allows vagrant to manage lx-branded zones or native zones on
+			This plugin allows vagrant to manage bhyve, lx-branded zones or native zones on
 			OmniOSce or any other illumos based distribution
 			DESC
 
