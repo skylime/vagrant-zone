@@ -38,6 +38,8 @@ module VagrantPlugins
 					:preparing
 				elsif vm_state == 'installed'
 					:stopped
+				elsif vm_state == 'incomplete'
+					:incomplete
 				else
 					:not_created
 				end
@@ -250,11 +252,16 @@ module VagrantPlugins
 
 			def destroy(machine, id)
 				name = @machine.name
-				execute(false, "#{@pfexec} zoneadm -z #{name} halt")
-				execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
-				execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
-				execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
-
+				if vm_state == 'incomplete'
+					execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
+					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
+					execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
+				else
+					execute(false, "#{@pfexec} zoneadm -z #{name} halt")
+					execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
+					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
+					execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
+				end
 			end
 		end
 	end
