@@ -92,8 +92,7 @@ module VagrantPlugins
 					execute(false, "#{@pfexec} zfs create -o zoned=on -p #{dataset}")
 				end
 				if config.brand == 'bhyve'
-					zonepathsize = config.zonepathsize
-					execute(false, "#{@pfexec} zfs create -V #{zonepathsize} #{dataset}")
+					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
 				end
 #				machine.config.vm.disks.each do |_type, opts|
 #					if _type.to_s = "disk"
