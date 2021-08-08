@@ -8,6 +8,7 @@ module VagrantPlugins
 			attr_accessor :kernel
 			attr_accessor :zonepath
 			attr_accessor :zonepathsize
+			attr_accessor :cpus
 			attr_accessor :memory
 
 			def initialize
@@ -18,6 +19,7 @@ module VagrantPlugins
 				@zonepath = UNSET_VALUE
 				@zonepathsize = UNSET_VALUE
 				@memory   = UNSET_VALUE
+				@cpus   = UNSET_VALUE
 			end
 		end
 	end
