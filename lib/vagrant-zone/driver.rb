@@ -88,11 +88,12 @@ module VagrantPlugins
 			def create_dataset(machine, ui)
 				config  = machine.provider_config				
 				dataset = config.zonepath.delete_prefix("/").to_s + "/boot"
+				datasetroot = config.zonepath.delete_prefix("/").to_s
 				if config.brand == 'lx'					
 					execute(false, "#{@pfexec} zfs create -o zoned=on -p #{dataset}")
 				end
 				if config.brand == 'bhyve'
-					execute(false, "#{@pfexec} zfs create #{config.zonepath.delete_prefix("/")}")
+					execute(false, "#{@pfexec} zfs create #{datasetroot}")
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
 				end
 #				machine.config.vm.disks.each do |_type, opts|
