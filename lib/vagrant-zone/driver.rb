@@ -190,7 +190,7 @@ module VagrantPlugins
 						add attr
 							set name="vcpus"
 							set type="string"
-							set value=#{config.cpus.to_s}
+							set value=#{config.cpus}
 						end
 						add attr
 							set name="ram"
