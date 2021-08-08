@@ -53,3 +53,21 @@ Vagrant.configure("2") do |config|
     end
   end
 end
+
+
+
+Vagrant.configure("2") do |config|
+   config.vm.define :ubuntu do |ubuntu|
+     ubuntu.vm.box = 'ubuntu.zss'
+
+     ubuntu.vm.network "public_network",
+       ip: "192.168.122.30", bridge: "e1000g0", auto_config: false,
+           :netmask => "255.255.255.0", gateway: "192.168.122.1"
+
+     ubuntu.vm.provider :zone do |vm|
+       vm.brand      = 'bhyve'
+       vm.zonepath   = '/rpool/freebsd'
+       vm.memory     = '512M'
+     end
+   end
+end
