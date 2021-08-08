@@ -201,7 +201,7 @@ module VagrantPlugins
 
 				data = %{
 					create
-					set zonepath=#{config.zonepath}
+					set zonepath=#{config.zonepath}/path
 					set brand=#{config.brand}
 					set autoboot=true
 					#{attr}
