@@ -182,6 +182,11 @@ module VagrantPlugins
 							set value=socket,/tmp/vm.console
 						end
 						add attr
+							set name=console
+							set type=string
+							set value=socket,/tmp/vm.console
+						end
+						add attr
 							set name="acpi"
 							set type="string"
 							set value="off"
