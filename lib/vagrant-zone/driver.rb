@@ -252,15 +252,28 @@ module VagrantPlugins
 			def destroy(machine, id)
 				name = @machine.name
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
-				if vm_state == 'incomplete' || vm_state == 'configured'
-					execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
-					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
-					execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
+				vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{name}0 | awk '{ print $1 }' ")
+				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name}")
+				if vm_configured == name
+					if vm_state == 'incomplete' || vm_state == 'configured' 
+						execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
+						execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
+						if vnic_configured == "#{name}0"
+							execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
+						end
+					else
+						execute(false, "#{@pfexec} zoneadm -z #{name} halt")
+						execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
+						execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
+						if vnic_configured == "#{name}0"
+							execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
+						end
+					end
 				else
-					execute(false, "#{@pfexec} zoneadm -z #{name} halt")
-					execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
 					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
-					execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
+					if vnic_configured == "#{name}0"
+							execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
+					end
 				end
 			end
 		end
