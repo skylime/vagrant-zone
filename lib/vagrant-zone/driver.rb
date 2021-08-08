@@ -155,7 +155,7 @@ module VagrantPlugins
 					attr = %{
 						set ip-type=exclusive
 						add device
-							set match=/dev/zvol/rdsk#{config.zonepath}
+							set match=/dev/zvol/rdsk#{config.zonepath}/boot
 						end
 						add attr
 							set name=bootrom
@@ -168,12 +168,17 @@ module VagrantPlugins
 						add attr
 							set name=bootdisk
 							set type=string
-							set value=#{config.zonepath}
+							set value=#{config.zonepath}/boot
 						end
 						add attr
 							set name="vnc"
 							set type="string"
 							set value="on,wait"
+						end
+						add attr:
+							set name=console
+							set type=string
+							set value=socket,/tmp/vm.console
 						end
 						add attr
 							set name="acpi"
@@ -183,7 +188,7 @@ module VagrantPlugins
 						add attr
 							set name="vcpus"
 							set type="string"
-							set value=#{config.cpus}
+							set value=#{config.cpus.to_s}
 						end
 						add attr
 							set name="ram"
