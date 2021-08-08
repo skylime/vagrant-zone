@@ -127,22 +127,62 @@ module VagrantPlugins
 							set type=string
 							set value=#{config.kernel}
 						end
+						add net
+							set physical=#{machine.name}0
+							set global-nic=auto
+							add property (name=gateway,value="#{@defrouter.to_s}")
+							add property (name=ips,value="#{allowed_address}")
+							add property (name=primary,value="true")
+					        end
+						add capped-memory
+							set physical=#{config.memory}
+							set swap=#{config.memory}
+							set locked=#{config.memory}
+					        end
+						add dataset
+							set name=#{config.zonepath.delete_prefix("/")}/data
+						end
+						set max-lwps=2000
 					}
 				end
 				if config.brand == 'bhyve'
 					attr = %{
+						set ip-type=exclusive
 						add device
 							set match=/dev/zvol/rdsk#{config.zonepath}
 						end
 						add attr
 							set name=bootrom
 							set type=string
-							set value=BHYVE_RELEASE
+							set value=BHYVE_RELEASE_CSM
+						end
+						add net
+							set physical=#{machine.name}0
 						end
 						add attr
 							set name=bootdisk
 							set type=string
 							set value=#{config.zonepath}
+						end
+						add attr
+							set name="vnc"
+							set type="string"
+							set value="on,wait"
+						end
+						add attr
+							set name="acpi"
+							set type="string"
+							set value="off"
+						end
+						add attr
+							set name="vcpus"
+							set type="string"
+							set value=#{config.cpus}
+						end
+						add attr
+							set name="ram"
+							set type="string"
+							set value=#{config.memory}
 						end
 					}
 				end
@@ -151,29 +191,13 @@ module VagrantPlugins
 					create
 					set zonepath=#{config.zonepath}
 					set brand=#{config.brand}
-					set autoboot=false
-					add net
-						set physical=#{machine.name}0
-						set global-nic=auto
-						add property (name=gateway,value="#{@defrouter.to_s}")
-						add property (name=ips,value="#{allowed_address}")
-						add property (name=primary,value="true")
-					end
-					add capped-memory
-						set physical=#{config.memory}
-						set swap=#{config.memory}
-						set locked=#{config.memory}
-					end
+					set autoboot=true
 					#{attr}
 					add fs
 						set dir=/vagrant
 						set special=#{lofs_current_dir}
 						set type=lofs
 					end
-					add dataset
-						set name=#{config.zonepath.delete_prefix("/")}/data
-					end
-					set max-lwps=2000
 					exit
 				}
 				File.open('zone_config', 'w') do |f|
