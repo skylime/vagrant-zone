@@ -264,6 +264,12 @@ module VagrantPlugins
 						if vnic_configured == "#{name}0"
 							execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
 						end
+					elsif vm_state == "installed"
+						execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
+						execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
+						if vnic_configured == "#{name}0"
+							execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
+						end
 					end
 				else
 					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
