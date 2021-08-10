@@ -111,17 +111,7 @@ module VagrantPlugins
 
 			def delete_dataset(machine, ui)
 				config = machine.provider_config
-
-				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
-				if vm_state == "running"
-					execute(false, "#{@pfexec} zoneadm -z #{name} halt")
-					execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
-					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
-					if vnic_configured == "#{name}0"
-						execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
-					end
-					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
-				end
+				execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
 			end
 
 			def zonecfg(machine, ui)
@@ -256,7 +246,14 @@ module VagrantPlugins
 
 			def halt(machine, ui)
 				name = @machine.name
-				execute(false, "#{@pfexec} zoneadm -z #{name} halt")
+				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
+				if vm_configured == name
+					if vm_state == "running"
+						execute(false, "#{@pfexec} zoneadm -z #{name} halt")
+					#else
+					#	 insert Error code that VM is alrady halted
+					end
+				end
 			end
 
 			def destroy(machine, id)
@@ -266,14 +263,7 @@ module VagrantPlugins
 				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
 				if vm_configured == name
 					vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
-					if vm_state == "running"
-						execute(false, "#{@pfexec} zoneadm -z #{name} halt")
-						execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
-						execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
-						if vnic_configured == "#{name}0"
-							execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
-						end
-					elsif vm_state == 'incomplete' || vm_state == 'configured' 
+					if vm_state == 'incomplete' || vm_state == 'configured' 
 						execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
 						execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
 						if vnic_configured == "#{name}0"
