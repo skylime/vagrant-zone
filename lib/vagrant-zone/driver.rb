@@ -247,6 +247,7 @@ module VagrantPlugins
 			def halt(machine, ui)
 				name = @machine.name
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
+				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
 				if vm_configured == name
 					if vm_state == "running"
 						execute(false, "#{@pfexec} zoneadm -z #{name} halt")
