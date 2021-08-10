@@ -169,7 +169,7 @@ module VagrantPlugins
 						add attr
 							set name=bootdisk
 							set type=string
-							set value=#{config.zonepath}/boot
+							set value=#{config.zonepath.delete_prefix("/")}/boot
 						end
 						add attr
 							set name="vnc"
