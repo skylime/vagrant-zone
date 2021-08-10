@@ -120,6 +120,7 @@ module VagrantPlugins
 					if vnic_configured == "#{name}0"
 						execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
 					end
+				end
 			end
 
 			def zonecfg(machine, ui)
