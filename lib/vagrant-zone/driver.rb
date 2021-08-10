@@ -219,15 +219,18 @@ module VagrantPlugins
 			end
 
 			def setup(machine, ui)
+				config = machine.provider_config
+				vagrant_user = config.vagrant_user
+				vagrant_user_key = config.vagrant_user_key
 				zlogin(machine, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
 				if not user_exists?(machine)
-					zlogin(machine, "useradd -m -s /bin/bash -U vagrant")
+					zlogin(machine, "useradd -m -s /bin/bash -U #{vagrant_user}")
 				end
-				zlogin(machine, %('echo "vagrant ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/vagrant'))
-				zlogin(machine, "mkdir -p /home/vagrant/.ssh")
-				zlogin(machine, %('echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key" > /home/vagrant/.ssh/authorized_keys'))
-				zlogin(machine, "chown -R vagrant:vagrant /home/vagrant/.ssh")
-				zlogin(machine, "chmod 600 /home/vagrant/.ssh/authorized_keys")
+				zlogin(machine, %('echo "#{vagrant_user} ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/#{vagrant_user}'))
+				zlogin(machine, "mkdir -p /home/#{vagrant_user}/.ssh")
+				zlogin(machine, %('echo #{vagrant_user_key} > /home/#{vagrant_user}/.ssh/authorized_keys'))
+				zlogin(machine, "chown -R #{vagrant_user}:#{vagrant_user} /home/#{vagrant_user}/.ssh")
+				zlogin(machine, "chmod 600 /home/#{vagrant_user}/.ssh/authorized_keys")
 			end
 
 			def zlogin(machine, cmd)
@@ -235,8 +238,10 @@ module VagrantPlugins
 				execute(false, "#{@pfexec} zlogin #{name} #{cmd}")
 			end
 
-			def user_exists?(machine, user = 'vagrant')
+			def user_exists?(machine)
 				name = @machine.name
+				config = machine.provider_config
+				user = config.vagrant_user
 				ret  = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
 				if ret == 0
 					return true
@@ -248,13 +253,9 @@ module VagrantPlugins
 				name = @machine.name
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
-				#if vm_configured == name
 					if vm_state == "running"
 						execute(false, "#{@pfexec} zoneadm -z #{name} halt")
-					#else
-					#	 insert Error code that VM is alrady halted
 					end
-				#end
 			end
 
 			def destroy(machine, id)
