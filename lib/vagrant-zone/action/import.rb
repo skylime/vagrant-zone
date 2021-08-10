@@ -38,12 +38,12 @@ module VagrantPlugins
 					## on Vagrant Cloud
 					else
 						# Support zss format only for now
-						box_format = env[:machine].box.metadata['format']
-						if box_format.nil?
-							raise Errors::NoBoxFormatSet
-						elsif box_format != 'zss'
-							raise Errors::WrongBoxFormatSet
-						end
+						#box_format = env[:machine].box.metadata['format']
+						#if box_format.nil?
+						#	raise Errors::NoBoxFormatSet
+						#elsif box_format != 'zss'
+						#	raise Errors::WrongBoxFormatSet
+						#end
 
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
 						FileUtils.cp(env[:machine].box.directory.join('box.zss').to_s, datadir.to_s + '/' + image)
