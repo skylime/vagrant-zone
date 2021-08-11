@@ -250,10 +250,11 @@ module VagrantPlugins
 				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
 				        		       	p responses[-1]
 								if responses[-1].to_s.match(/:~# \r\r\n/)
-									
 									break
 								elsif responses[-1].to_s.match(/login: /)
 									puts 	"Could not login as Root"
+									zlogin_write.printf("\r")
+									zlogin_write.printf("\r")
 									zlogin_write.printf("\r")
 								end
 							
