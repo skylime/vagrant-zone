@@ -248,7 +248,7 @@ module VagrantPlugins
 						zlogin(machine, 'sed -i "$ a \        - #{ip}\/24" /etc/netplan/00-installer-config.yaml')
 						zlogin(machine, 'sed -i "$ a \      gateway4: #{defrouter}" /etc/netplan/00-installer-config.yaml')
 						zlogin(machine, 'sed -i "$ a \  version: 2" /etc/netplan/00-installer-config.yaml')
-						zlogin(machine, 'netplan apply")
+						zlogin(machine, 'netplan apply')
 						puts "Applying The Network Configuration"
 					end
 				end
