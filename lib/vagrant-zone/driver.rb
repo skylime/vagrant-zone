@@ -245,6 +245,8 @@ module VagrantPlugins
 				                puts responses[-1]
 				                if responses[-1].include? "Output: 0\r\n"
 				                        break
+				                if responses[-1].include? "Output: 127\r\n"
+				                        raise "Could not access zlogin console for #{name}"
 				        end
 				end
 			end
