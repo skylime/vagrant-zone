@@ -259,6 +259,7 @@ module VagrantPlugins
 						end
 
 					end
+					Process.wait(pid)
 				end
 			end	
 				
