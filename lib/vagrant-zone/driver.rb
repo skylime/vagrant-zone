@@ -223,6 +223,7 @@ module VagrantPlugins
 				vagrant_user_key = config.vagrant_user_key
 				
 				zlogin(machine, %( echo "nameserver 1.1.1.1" \>\> \/etc\/resolv.conf))
+				puts "Testing Output"
 				if not user_exists?(machine)
 					zlogin(machine, "useradd -m -s \/bin\/bash -U #{vagrant_user}")
 				end
@@ -231,9 +232,28 @@ module VagrantPlugins
 				zlogin(machine, "chmod 600 \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
 			end
 			
-			def waitforboot(machine, cmd)
-				
-			end	
+			#def waitforboot(machine, cmd)
+			#	## Check every X seconds if Console is ready
+			#	name = @machine.name
+			#	config = machine.provider_config
+			#	setup_wait = config.setup_wait
+			#	responses = []
+			#	sleep setup_wait
+			#	PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
+			#	        zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Output: $?\"\n") }
+			#	        loop do
+			#	                zlogin_read.expect(/\r\n/) { |line|  responses.push line}
+			#	                puts responses[-1]
+			#	                if responses[-1].include? "Output: 0\r\n"
+			#	                        break
+			#			elsif responses[-1].include? "Output: 127\r\n"
+			#	                        raise "Command Failed #{name}"
+			#			elsif responses[-1].nil?
+			#	                        break
+			#			end
+			#	        end
+			#	end
+			#end	
 				
 			def zlogin(machine, cmd)
 				name = @machine.name
