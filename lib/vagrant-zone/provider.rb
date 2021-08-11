@@ -35,7 +35,7 @@ module VagrantPlugins
 				# let Vagrant core deal with it like docker provider does
 				return nil if state.id != :running
 				ip = driver.get_ip_address(@machine)
-				user = driver.user_exists(@machine)
+				user = driver.user(@machine)
 				userkey = driver.userprivatekeypath(@machine)
 				return nil if !ip
 				ssh_info = {
