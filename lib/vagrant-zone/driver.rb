@@ -263,7 +263,7 @@ module VagrantPlugins
 						Timeout.timeout(30) do
 							loop do
 				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
-				        		       	p responses[-1]
+				        		       	puts responses[-1]
 								if responses[-1].to_s.match(/:~#/)
 									break
 								elsif responses[-1].to_s.match(/login: /)
@@ -286,7 +286,7 @@ module VagrantPlugins
 					Timeout.timeout(30) do
 						loop do
 							zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-							p responses[-1]
+							puts responses[-1]
 							if responses[-1].to_s.match(/Error Code: 0/)
 						        	break
 							elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
