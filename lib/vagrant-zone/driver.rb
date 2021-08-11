@@ -223,7 +223,6 @@ module VagrantPlugins
 				vagrant_user_key = config.vagrant_user_key
 				#waitforboot(machine)
 				setup_wait = config.setup_wait
-				sleep setup_wait
 				zlogin(machine, "echo 'nameserver 1.1.1.1' | tee  /etc/resolv.conf")
 				puts "Testing if previous command completed"
 				zlogin(machine, "echo 'nameserver 1.0.0.1' | tee -a /etc/resolv.conf")
@@ -265,7 +264,7 @@ module VagrantPlugins
 					zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Output: $?\"\n") }
 					loop do
 						zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-						puts responses[-1]
+						p responses[-1]
 						if responses[-1].include? "Output: 0\r\n"
 					        	break
 						elsif responses[-1].include? "Output: 127\r\n"
