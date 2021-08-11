@@ -249,7 +249,6 @@ module VagrantPlugins
 							loop do
 				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
 				        		       	p responses[-1]
-								
 								if responses[-1].to_s.match(/:~#/)
 									break
 								elsif responses[-1].to_s.match(/login: /)
@@ -273,7 +272,7 @@ module VagrantPlugins
 						loop do
 							zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 							p responses[-1]
-							if responses[-1].to_s.match(/Error Code: 0\r\n/)
+							if responses[-1].to_s.match(/Error Code: 0/)
 						        	break
 							elsif responses[-1].to_s.match(/Output: /)
 						        	raise "Command: #{cmd} Failed with: responses[-1]"
@@ -281,8 +280,8 @@ module VagrantPlugins
 						                break
 							end
 						end
-					raise "Command Timed out #{cmd}"
 					end
+					Process.kill("HUP",pid)
 				end
 			end
 
