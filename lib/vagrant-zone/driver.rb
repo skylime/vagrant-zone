@@ -268,14 +268,14 @@ module VagrantPlugins
 				config = machine.provider_config
 				responses = []
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-					zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Output: $?\"\n") }
+					zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Error Code: $?\"\n") }
 					Timeout.timeout(30) do
 						loop do
 							zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 							p responses[-1]
-							if responses[-1].include? "Output: 0\r\n"
+							if responses[-1].to_s.match(/Error Code: 0\r\n/)
 						        	break
-							elsif responses[-1] =~ /Output: /
+							elsif responses[-1].to_s.match(/Output: /)
 						        	raise "Command: #{cmd} Failed with: responses[-1]"
 							elsif responses[-1].nil?
 						                break
