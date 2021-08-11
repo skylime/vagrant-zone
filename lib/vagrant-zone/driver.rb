@@ -223,7 +223,7 @@ module VagrantPlugins
 				vagrant_user_key = config.vagrant_user_key
 				#waitforboot(machine)
 				setup_wait = config.setup_wait
-				zlogin(machine, "echo 'hostname")
+				zlogin(machine, "hostname")
 				
 				puts "Testing if previous command completed"
 
