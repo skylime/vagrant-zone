@@ -245,9 +245,11 @@ module VagrantPlugins
 					
 					loop do
 				                zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-				                puts responses[-1]
+				                p responses[-1]
 						if responses[-1].nil?
 				                        break
+						elsif responses[-1].include?("~# ")
+							break
 						end
 				        end
 				end
