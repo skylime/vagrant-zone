@@ -260,7 +260,6 @@ module VagrantPlugins
 						end
 
 					end
-				Process.kill(pid)
 				end
 			end	
 				
