@@ -263,6 +263,7 @@ module VagrantPlugins
 				        loop do
 				                zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 				                puts responses[-1]
+						
 				                if responses[-1].include? "Output: 0\r\n"
 				                        break
 						elsif responses[-1].include? "Output: 127\r\n"
@@ -271,6 +272,7 @@ module VagrantPlugins
 				                        break
 						end
 				        end
+					Process.wait(pid)
 				end
 			end
 
