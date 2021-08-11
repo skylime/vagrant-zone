@@ -222,7 +222,7 @@ module VagrantPlugins
 				vagrant_user = config.vagrant_user
 				vagrant_user_key = config.vagrant_user_key
 				
-				zlogin(machine, %( echo "nameserver 1.1.1.1" \>\> \/etc\/resolv.conf))
+				zlogin(machine, %( echo \"nameserver 1.1.1.1\" \>\> \/etc\/resolv.conf))
 				puts "Testing Output"
 				if not user_exists?(machine)
 					zlogin(machine, "useradd -m -s \/bin\/bash -U #{vagrant_user}")
