@@ -257,7 +257,7 @@ module VagrantPlugins
 							if responses[-1] =~ / login: /
 								raise "Could not access zlogin console for root"
 							end
-						raise "Command Timed out #{cmd}"
+						raise "Machine Note Booted"
 						end
 				        end
 				end
