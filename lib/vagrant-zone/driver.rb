@@ -249,18 +249,14 @@ module VagrantPlugins
 							loop do
 				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
 				        		       	p responses[-1]
-								if responses[-1].to_s.match(/:~# \r\r\n/)
+								
+								if responses[-1].to_s.match(/:~#/)
 									break
 								elsif responses[-1].to_s.match(/login: /)
-									puts 	"Could not login as Root"
-									zlogin_write.printf("\r")
-									zlogin_write.printf("\r")
-									zlogin_write.printf("\r")
+									puts 	"Could not login as Root, Check if Root Autologin Works"
 								end
-							
+								zlogin_write.printf("\r")
 							end
-							
-
 							break
 						end
 
