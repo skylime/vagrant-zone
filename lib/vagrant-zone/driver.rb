@@ -258,10 +258,10 @@ module VagrantPlugins
 				name = @machine.name
 				config = machine.provider_config
 				responses = []
-				begin
- 					Timeout.timeout(20) do
-						PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-				        		zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Output: $?\"\n") }
+				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
+					begin
+						Timeout.timeout(20) do
+					       		zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Output: $?\"\n") }
 				        		loop do
 				                		zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 				                		puts responses[-1]
@@ -276,8 +276,8 @@ module VagrantPlugins
 						end			
 					rescue Timeout::Error
   						puts 'process not finished in time, killing it'
-  						Process.kill('TERM', pid)
-					end
+  						Process.kill(pid)
+					end					
 				end
 			end
 
