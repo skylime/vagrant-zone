@@ -261,8 +261,9 @@ module VagrantPlugins
 							if responses[-1].include?(" login: ")
 								raise "Could not access zlogin console for root v2"
 							end
-							elsif responses[-3] =~ / login: /
-								raise "Could not access zlogin console for root"							
+							if responses[-3] =~ / login: /
+								raise "Could not access zlogin console for root"
+							end
 						end
 				        end
 				end
