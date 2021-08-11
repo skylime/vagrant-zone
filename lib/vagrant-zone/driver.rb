@@ -7,6 +7,7 @@ require 'netaddr'
 require "vagrant/util/numeric"
 require 'pty'
 require 'expect'
+require "vagrant"
 
 module VagrantPlugins
 	module ProviderZone
@@ -243,6 +244,8 @@ module VagrantPlugins
 				                puts responses[-1]
 				                if responses[-1].include? "Output: 0\r\n"
 				                        break
+						else
+							raise Vagrant::Errors::ZoneInaccessible
 				                end
 				        end
 				end
