@@ -223,7 +223,7 @@ module VagrantPlugins
 				vagrant_user_key = config.vagrant_user_key
 				#waitforboot(machine)
 				setup_wait = config.setup_wait
-				wait setup_wait
+				sleep setup_wait
 				zlogin(machine, "hostname")
 				
 				puts "Testing if previous command completed"
@@ -257,7 +257,6 @@ module VagrantPlugins
 			def zlogin(machine, cmd)
 				name = @machine.name
 				config = machine.provider_config
-				setup_wait = config.setup_wait
 				responses = []
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 				        zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Output: $?\"\n") }
