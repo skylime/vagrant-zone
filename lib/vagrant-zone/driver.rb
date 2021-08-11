@@ -249,6 +249,7 @@ module VagrantPlugins
 						if responses[-1] =~ /Last login:/
 							sleep 2
 							zlogin_write.printf("\r\n")
+							break
 						elsif responses[-1] =~ /last login:/
 							zlogin_write.printf("\r\n")
 							raise "Could not access zlogin console for #{name}"
