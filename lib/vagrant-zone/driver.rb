@@ -239,13 +239,14 @@ module VagrantPlugins
 				sleep setup_wait
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 				        zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} && echo \"Output: $?\"\n") }
+					 zlogin_write.printf("#{cmd} && echo \"Output: $?\"\n")
 				        loop do
 				                zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 				                puts responses[-1]
 				                if responses[-1].include? "Output: 0\r\n"
 				                        break
 						else
-							raise Vagrant::Errors::ZoneInaccessible
+							raise "Could not access the Bhyve zlogin console"
 				                end
 				        end
 				end
