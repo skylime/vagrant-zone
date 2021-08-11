@@ -246,7 +246,7 @@ module VagrantPlugins
 					sleep 5
 					Timeout.timeout(30) do
 						loop do
-				        	       	zlogin_read.expect(/\r\n/) { |line|  responses.push line}
+				        	       	zlogin_read.expect(/\n/) { |line|  responses.push line}
 				        	       	p responses[-1]
 							if responses[-1] =~ /:~# /
 								break
