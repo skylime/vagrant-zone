@@ -233,7 +233,7 @@ module VagrantPlugins
 				zlogin(machine, "echo #{vagrant_user_key} > \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
 				zlogin(machine, "chown -R #{vagrant_user}:#{vagrant_user} \/home\/#{vagrant_user}\/.ssh")
 				zlogin(machine, "chmod 600 \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
-				zlogin(machine, "APT=$(ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }') &&  sed -i 's/enp0s3:/$APT:/g' /etc/netplan/00-installer-config.yaml ")
+				zlogin(machine, "APT=$(ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }') &&  sed -i \"s/enp0s3:/$APT:/g\" /etc/netplan/00-installer-config.yaml ")
 				zlogin(machine, "netplan apply")
 				zlogin(machine, "sleep 5")
 				zlogin(machine, "ping 1.1.1.1")
