@@ -317,10 +317,8 @@ module VagrantPlugins
 				config = machine.provider_config
 				user = config.vagrant_user
 				ret  = zlogin(machine, "id -u #{user}")
-				if ret == 0
-					return user
+				return user
 				end
-				return "vagrant"
 			end
 			
 			def userkey(machine)
