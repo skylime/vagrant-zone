@@ -276,7 +276,6 @@ module VagrantPlugins
 							raise "Could not access zlogin console for  V2 #{name}"
 						end
 					end
-				Process.wait(pid)
 				end
 			end
 
