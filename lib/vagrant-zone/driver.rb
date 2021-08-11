@@ -62,6 +62,7 @@ module VagrantPlugins
 						defrouter = opts[:gateway]
 						return nil if ip.length == 0
 						return ip.gsub /\t/, ''
+					end
 			end
 
 			def install(machine, ui)
