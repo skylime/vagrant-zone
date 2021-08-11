@@ -54,10 +54,14 @@ module VagrantPlugins
 			end
 
 			def get_ip_address(machine)
-				name = @machine.name
-				ip   = execute(false, "#{@pfexec} zonecfg -z #{name} info net | sed -n 's|property: (name=ips,value=\"\\(.*\\)/.*\")|\\1|p'")
-				return nil if ip.length == 0
-				return ip.gsub /\t/, ''
+				dhcpenabled = machine.config.vm.dhcp
+				machine.config.vm.networks.each do |_type, opts|
+					if _type.to_s == "public_network"
+						ip        = opts[:ip].to_s
+						network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
+						defrouter = opts[:gateway]
+						return nil if ip.length == 0
+						return ip.gsub /\t/, ''
 			end
 
 			def install(machine, ui)
