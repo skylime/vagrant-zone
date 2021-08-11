@@ -266,7 +266,7 @@ module VagrantPlugins
 				        end
 				end
 				rescue Timeout::Error => e
-					p e, msg
+					p "Command Timed out"
 					return -2
 			end	
 				
