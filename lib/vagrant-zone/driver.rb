@@ -255,13 +255,12 @@ module VagrantPlugins
 								elsif responses[-1].to_s.match(/login: /)
 									puts 	"Could not login as Root, Check if Root Autologin Works"
 								end
-								zlogin_write.printf("\r")
 							end
 							break
 						end
 
 					end
-				Process.wait(pid)
+				Process.kill(pid)
 				end
 			end	
 				
