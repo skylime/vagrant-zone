@@ -265,8 +265,6 @@ module VagrantPlugins
 						end
 
 					end
-				Process.wait(pid)
-				Process.kill(pid)
 				end
 			end	
 				
