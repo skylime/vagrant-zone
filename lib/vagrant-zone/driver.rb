@@ -246,8 +246,9 @@ module VagrantPlugins
 					loop do
 				                zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 				                p responses[-1]
-						if responses[-1] =~ /last login:/
+						if responses[-1] =~ /Last login:/
 							sleep 2
+							zlogin_write.printf("\r\n")
 						elsif responses[-1] =~ /last login:/
 							zlogin_write.printf("\r\n")
 							raise "Could not access zlogin console for #{name}"
