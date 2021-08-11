@@ -316,11 +316,18 @@ module VagrantPlugins
 				name = @machine.name
 				config = machine.provider_config
 				user = config.vagrant_user
-				ret  = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
+				ret  = zlogin(machine, "id -u #{user}")
 				if ret == 0
-					return true
+					return user
 				end
-				return false
+				return "vagrant"
+			end
+			
+			def user_key(machine)
+				name = @machine.name
+				config = machine.provider_config
+				userkey = config.vagrant_user_key
+				return userkey
 			end
 
 			def halt(machine, ui)
