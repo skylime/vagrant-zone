@@ -319,10 +319,10 @@ module VagrantPlugins
 				return user
 			end
 			
-			def userkey(machine)
+			def userprivatekeypath(machine)
 				name = @machine.name
 				config = machine.provider_config
-				userkey = config.vagrant_user_key
+				userkey = config.vagrant_user_private_key_path
 				return userkey
 			end
 
