@@ -61,7 +61,7 @@ module VagrantPlugins
 			end
 
 			def install(machine, ui)
-                                config = machine.provider_config
+				config = machine.provider_config
 				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
 				name = @machine.name
 
@@ -102,15 +102,15 @@ module VagrantPlugins
 					execute(false, "#{@pfexec} zfs create #{datasetroot}")
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
 				end
-#				machine.config.vm.disks.each do |_type, opts|
-#					if _type.to_s = "disk"
-#						name = opts[:name] if !opts[:name].nil?
-#						size = Vagrant::Util::Numeric.string_to_bytes(opts[:size].to_s) if !opts[:size].nil?
-#						quota = "-o quota=" + size.to_s if size
-#
-#						execute(false, "#{@pfexec} zfs create #{quota} #{dataset}/#{name}")
-#					end
-#				end
+				#				machine.config.vm.disks.each do |_type, opts|
+				#					if _type.to_s = "disk"
+				#						name = opts[:name] if !opts[:name].nil?
+				#						size = Vagrant::Util::Numeric.string_to_bytes(opts[:size].to_s) if !opts[:size].nil?
+				#						quota = "-o quota=" + size.to_s if size
+				#
+				#						execute(false, "#{@pfexec} zfs create #{quota} #{dataset}/#{name}")
+				#					end
+				#				end
 			end
 
 			def delete_dataset(machine, ui)
@@ -225,15 +225,13 @@ module VagrantPlugins
 				zlogin(machine, "echo 'nameserver 1.1.1.1' | tee  /etc/resolv.conf")
 				puts "Testing if previous command completed"
 				zlogin(machine, "echo 'nameserver 1.0.0.1' | tee -a /etc/resolv.conf")
-				
-				puts "Testing if previous command completed V2"
+								puts "Testing if previous command completed V2"
 
 				#zlogin(machine, "echo #{vagrant_user_key} > \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
 				zlogin(machine, "chown -R #{vagrant_user}:#{vagrant_user} \/home\/#{vagrant_user}\/.ssh")
 				zlogin(machine, "chmod 600 \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
 			end
-			
-			def waitforboot(machine)
+						def waitforboot(machine)
 				## Check every X seconds if Console is ready
 				name = @machine.name
 				config = machine.provider_config
@@ -241,45 +239,44 @@ module VagrantPlugins
 				responses = []
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 					zlogin_write.printf("\r\n")
-				        zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("\r\n") }
-					
-					loop do
-				                zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-				                p responses[-1]
+					zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("\r\n") }
+										loop do
+						zlogin_read.expect(/\r\n/) { |line|  responses.push line}
+						p responses[-1]
 						if responses[-1] =~ /Last login:/
 							sleep 2
 							zlogin_write.printf("\r\n")
 						elsif responses[-1] =~ / login:/
 							zlogin_write.printf("\r\n")
 							raise "Could not access zlogin console for #{name}"
-						else
-							sleep 30
-							break
 						end
-				        end
+
+					end
 				end
+			rescue Timeout::Error => e
+				p e, msg
+				return -2
 			end	
-				
-			def zlogin(machine, cmd)
+						def zlogin(machine, cmd)
 				name = @machine.name
 				config = machine.provider_config
 				responses = []
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 					zlogin_write.printf("\r\n")
 					zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Output: $?\"\n") }
-					loop do
-						zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-						p responses[-1]
-						if responses[-1].include? "Output: 0\r\n"
-					        	break
-						elsif responses[-1].include? "Output: 127\r\n"
-					        	raise "Could not access zlogin console for #{name}"
-						elsif responses[-1].nil?
-					                break
-						else
-							raise "Command Timed out #{cmd}"
-							break
+					timeout(30) do
+						loop do
+							zlogin_read.expect(/\r\n/) { |line|  responses.push line}
+							p responses[-1]
+							if responses[-1].include? "Output: 0\r\n"
+								break
+							elsif responses[-1].include? "Output: 127\r\n"
+								raise "Could not access zlogin console for #{name}"
+							elsif responses[-1].nil?
+								break
+							end
 						end
+						raise "Command Timed out #{cmd}"
 					end
 				end
 			end
@@ -299,15 +296,14 @@ module VagrantPlugins
 				name = @machine.name
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
-					if vm_state == "running"
-						execute(false, "#{@pfexec} zoneadm -z #{name} halt")
-					end
+				if vm_state == "running"
+					execute(false, "#{@pfexec} zoneadm -z #{name} halt")
+				end
 			end
 
 			def destroy(machine, id)
 				name = @machine.name
-				
-				vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{name}0 | awk '{ print $1 }' ")
+								vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{name}0 | awk '{ print $1 }' ")
 				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
 				if vm_configured == name
 					vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
@@ -327,7 +323,7 @@ module VagrantPlugins
 				else
 					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
 					if vnic_configured == "#{name}0"
-							execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
+						execute(false, "#{@pfexec} dladm delete-vnic #{name}0")
 					end
 				end
 			end
