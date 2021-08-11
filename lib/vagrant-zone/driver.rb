@@ -252,18 +252,15 @@ module VagrantPlugins
 							if responses[-1] =~ /Last login:/
 								sleep 5
 							elsif responses[-1] =~ /:~#/
-								zlogin_write.printf("\r\n")
 								break
 							end
 							if responses[-1] =~ / login: /
 								raise "Could not access zlogin console for root"
 							end
+						raise "Command Timed out #{cmd}"
 						end
 				        end
 				end
-				rescue Timeout::Error => e
-					p "Command Timed out"
-					return -2
 			end	
 				
 			def zlogin(machine, cmd)
@@ -273,7 +270,7 @@ module VagrantPlugins
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 					zlogin_write.printf("\r\n")
 					zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Output: $?\"\n") }
-					timeout(30) do
+					Timeout.timeout(30) do
 						loop do
 							zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 							p responses[-1]
