@@ -232,7 +232,20 @@ module VagrantPlugins
 
 			def zlogin(machine, cmd)
 				name = @machine.name
-				execute(false, "#{@pfexec} zlogin #{name} #{cmd}")
+				config = machine.provider_config
+				setup_wait = config.setup_wait
+				responses = []
+				sleep setup_wait
+				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
+				        zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} && echo \"Output: $?\"\n") }
+				        loop do
+				                zlogin_read.expect(/\r\n/) { |line|  responses.push line}
+				                puts responses[-1]
+				                if responses[-1].include? "Output: 0\r\n"
+				                        break
+				                end
+				        end
+				end
 			end
 
 			def user_exists?(machine)
