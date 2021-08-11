@@ -246,7 +246,7 @@ module VagrantPlugins
 				        if zlogin_read.expect(/Last login: /)
 						sleep 10
 						Process.wait(pid)
-						end
+						
 					end
 				end
 			end	
