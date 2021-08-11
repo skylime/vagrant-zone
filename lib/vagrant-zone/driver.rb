@@ -252,13 +252,7 @@ module VagrantPlugins
 									break
 								end
 				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
-								if responses[-1].
 				        		       	p responses[-1]
-								
-						#		if responses[-1] =~ /:~# /
-						#			break
-						#			try = 5
-						#		end
 							end
 						puts "Machine not Booted"
 						end
