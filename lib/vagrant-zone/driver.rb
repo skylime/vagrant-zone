@@ -253,11 +253,12 @@ module VagrantPlugins
 									break
 								elsif responses[-1].to_s.match(/login: /)
 									puts 	"Could not login as Root"
-									break
+									zlogin_write.printf("\r")
 								end
 							end
 						end
 					end
+					
 				end
 			end	
 				
