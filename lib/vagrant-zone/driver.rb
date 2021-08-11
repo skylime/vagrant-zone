@@ -250,8 +250,8 @@ module VagrantPlugins
 								if responses[-1].include? "login: "
 									puts 	"Could not login as Root"
 									zlogin_write.printf("\r\n")	
-									zlogin_read.expect(/\n/) { |msg|  subresponses.push msg}
-									p subresponses
+									#zlogin_read.expect(/\n/) { |msg|  subresponses.push msg}
+									#p subresponses
 								elsif responses[-1].include? ":~# "
 									break
 								end
