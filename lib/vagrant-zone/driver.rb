@@ -249,13 +249,14 @@ module VagrantPlugins
 							loop do
 				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
 				        		       	p responses[-1]
-								if responses[-1].to_s.match(/login: /)
+								if responses[-1].to_s.match(/:~# /)
 									zlogin_write.printf("/r/n")
 									zlogin_read.expect(/\n/) { |msg|  subresponses.push msg}
-									p subresponses
-									#raise 	"Could not login as Root"
-								#elsif zlogin_read.expect(/:~# /)
-								#	break
+									if subresponses[-1].to_s.match(/:~# /)
+										break
+									else
+										raise 	"Could not login as Root"
+									end
 								end
 							end
 						puts "Machine not Booted"
