@@ -249,7 +249,7 @@ module VagrantPlugins
 							loop do
 				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
 				        		       	p responses[-1]
-								if responses[-1].to_s.match(/:~# /)
+								if responses[-1].to_s.match(/:~# \r\r\n/)
 									
 									break
 								elsif responses[-1].to_s.match(/login: /)
