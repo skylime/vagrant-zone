@@ -274,7 +274,7 @@ module VagrantPlugins
 							p responses[-1]
 							if responses[-1].to_s.match(/Error Code: 0/)
 						        	break
-							elsif responses[-1].to_s.match(/Output: /)
+							elsif responses[-1].to_s.match(/Error Code: /)
 						        	raise "Command: #{cmd} Failed with: responses[-1]"
 							elsif responses[-1].nil?
 						                break
