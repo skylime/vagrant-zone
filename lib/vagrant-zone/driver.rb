@@ -221,7 +221,9 @@ module VagrantPlugins
 				config = machine.provider_config
 				vagrant_user = config.vagrant_user
 				vagrant_user_key = config.vagrant_user_key
+				puts "Waiting for the Machine to boot"
 				waitforboot(machine)
+				puts "Machine Booted, Running Setup"
 				zlogin(machine, "echo 'nameserver 1.1.1.1' | tee  /etc/resolv.conf")
 				puts "Testing if previous command completed"
 				zlogin(machine, "echo 'nameserver 1.0.0.1' | tee -a /etc/resolv.conf")
