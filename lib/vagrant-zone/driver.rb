@@ -242,22 +242,23 @@ module VagrantPlugins
 				setup_wait = config.setup_wait
 				responses = []
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-				        zlogin_read.expect(/Last login: /)
-					sleep 5
-					Timeout.timeout(30) do
-						loop do
-				        	       	zlogin_read.expect(/\n/) { |line|  responses.push line}
-				        	       	p responses[-1]
-					#		if responses[-1] =~ /:~# /
-					#			break
-					#			try = 5
-					#		end
+				        if zlogin_read.expect(/Last login: /)
+						sleep 5
+						Timeout.timeout(30) do
+							loop do
+				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
+				        		       	p responses[-1]
+						#		if responses[-1] =~ /:~# /
+						#			break
+						#			try = 5
+						#		end
+							end
+						puts "Machine not Booted"
 						end
-					puts "Machine not Booted"
 					end
-					if zlogin_read.expect(/ login: /)
-						raise "Could not login as Root"
-					end
+					#if zlogin_read.expect(/ login: /)
+					#	raise "Could not login as Root"
+					#end
 				end
 			end	
 				
