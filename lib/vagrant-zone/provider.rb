@@ -43,7 +43,7 @@ module VagrantPlugins
 					port: 22,
 					username: "#{user}",
 					#private_key_path: "#{userkey}",
-					password: "vagrant"
+					password: "PromVagrant21@!"
 				}
 			end
 
