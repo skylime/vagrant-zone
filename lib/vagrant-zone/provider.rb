@@ -30,14 +30,19 @@ module VagrantPlugins
 			#			    private_key_path: "/path/to/my/key"
 			#			   }
 			def ssh_info
+				
 				# We just return nil if were not able to identify the VM's IP and
 				# let Vagrant core deal with it like docker provider does
 				return nil if state.id != :running
 				ip = driver.get_ip_address(@machine)
+				user = driver.user_exists(@machine)
+				userkey = driver.userkey(@machine)
 				return nil if !ip
 				ssh_info = {
 					host: ip,
 					port: 22,
+					username: "#{user}",
+					private_key_path: "#{userkey}"
 				}
 			end
 
