@@ -254,11 +254,15 @@ module VagrantPlugins
 							elsif responses[-1] =~ /:~#/
 								zlogin_write.printf("\r\n")
 								break
-							elsif responses[-1] =~ / login: /
-								raise "Could not access zlogin console for root"
-							elsif responses[-1].include?(" login: ")
+							end
+							if responses[-1] =~ / login: /
 								raise "Could not access zlogin console for root"
 							end
+							if responses[-1].include?(" login: ")
+								raise "Could not access zlogin console for root v2"
+							end
+							elsif responses[-3] =~ / login: /
+								raise "Could not access zlogin console for root"							
 						end
 				        end
 				end
