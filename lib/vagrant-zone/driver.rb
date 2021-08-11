@@ -234,9 +234,19 @@ module VagrantPlugins
 				zlogin(machine, "chown -R #{vagrant_user}:#{vagrant_user} \/home\/#{vagrant_user}\/.ssh")
 				zlogin(machine, "chmod 600 \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
 				zlogin(machine, "APT=$(ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }') &&  sed -i \"s/enp0s3:/$APT:/g\" /etc/netplan/00-installer-config.yaml ")
+
+				
+				
+				machine.config.vm.networks.each do |_type, opts|
+					if _type.to_s == "public_network"
+						@ip        = opts[:ip].to_s
+						@network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
+						@defrouter = opts[:gateway]
+						end
+					end
+				
+				zlogin(machine, "sed -i \"s/dhcp4: yes/dhcp4: no\n      addresses:\n      - #{ip}\/24\n      gateway4: #{defrouter}/g\" /etc/netplan/00-installer-config.yaml ")
 				zlogin(machine, "netplan apply")
-				zlogin(machine, "sleep 5")
-				zlogin(machine, "ping 1.1.1.1")
 				puts "Applying The Network Configuration"
 				
 				
