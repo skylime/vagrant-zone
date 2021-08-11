@@ -250,7 +250,7 @@ module VagrantPlugins
 				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
 				        		       	p responses[-1]
 								if responses[-1].to_s.match(/:~# /)
-									zlogin_write.printf("/r/n")
+									zlogin_write.printf("\r\n")
 									zlogin_read.expect(/\n/) { |msg|  subresponses.push msg}
 									if subresponses[-1].to_s.match(/:~# /)
 										break
