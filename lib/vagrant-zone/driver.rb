@@ -259,7 +259,7 @@ module VagrantPlugins
 						end
 
 					end
-					Process.wait(pid)
+					Process.kill("HUP",pid)
 				end
 			end	
 				
