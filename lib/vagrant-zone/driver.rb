@@ -246,7 +246,7 @@ module VagrantPlugins
 				        zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("\r\n") }
 					
 					loop do
-						timeout(30) do
+						Timeout.timeout(30) do
 				                	zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 				                	p responses[-1]
 							if responses[-1] =~ /Last login:/
