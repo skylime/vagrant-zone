@@ -183,11 +183,6 @@ module VagrantPlugins
 							set value=#{config.zonepath.delete_prefix("/")}/boot
 						end
 						add attr
-							set name="vnc"
-							set type="string"
-							set value="on,wait"
-						end
-						add attr
 							set name="acpi"
 							set type="string"
 							set value="off"
