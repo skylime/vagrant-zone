@@ -246,8 +246,15 @@ module VagrantPlugins
 						sleep 5
 						Timeout.timeout(30) do
 							loop do
+								if zlogin_read.expect(/login: /)
+									raise 	"Could not login as Root"
+								elsif zlogin_read.expect(/:~# /)
+									break
+								end
 				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
+								if responses[-1].
 				        		       	p responses[-1]
+								
 						#		if responses[-1] =~ /:~# /
 						#			break
 						#			try = 5
