@@ -224,9 +224,11 @@ module VagrantPlugins
 				#waitforboot(machine)
 				setup_wait = config.setup_wait
 				sleep setup_wait
-				zlogin(machine, "hostname")
-				
+				zlogin(machine, "echo 'nameserver 1.1.1.1' | tee  /etc/resolv.conf")
 				puts "Testing if previous command completed"
+				zlogin(machine, "echo 'nameserver 1.0.0.1' | tee -a /etc/resolv.conf")
+				
+				puts "Testing if previous command completed V2"
 
 				#zlogin(machine, "echo #{vagrant_user_key} > \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
 				zlogin(machine, "chown -R #{vagrant_user}:#{vagrant_user} \/home\/#{vagrant_user}\/.ssh")
