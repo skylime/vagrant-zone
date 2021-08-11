@@ -226,8 +226,6 @@ module VagrantPlugins
 				if not user_exists?(machine)
 					zlogin(machine, "useradd -m -s \/bin\/bash -U #{vagrant_user}")
 				end
-				zlogin(machine, %(echo "#{vagrant_user} ALL=(ALL:ALL) NOPASSWD:ALL" \> \/etc\/sudoers.d\/#{vagrant_user}))
-				zlogin(machine, "mkdir -p \/home\/#{vagrant_user}\/.ssh")
 				zlogin(machine, %('echo #{vagrant_user_key} > \/home\/#{vagrant_user}\/.ssh\/authorized_keys'))
 				zlogin(machine, "chown -R #{vagrant_user}:#{vagrant_user} \/home\/#{vagrant_user}\/.ssh")
 				zlogin(machine, "chmod 600 \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
@@ -245,7 +243,6 @@ module VagrantPlugins
 				sleep setup_wait
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 				        zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Output: $?\"\n") }
-					zlogin_write.printf("echo \"\"\n") 
 				        loop do
 				                zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 				                puts responses[-1]
