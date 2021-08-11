@@ -276,8 +276,9 @@ module VagrantPlugins
 					        	raise "Could not access zlogin console for #{name}"
 						elsif responses[-1].nil?
 					                break
-						elsif responses[-1].include?("Last login")
-							raise "Could not access zlogin console for  V2 #{name}"
+						else
+							raise "Command Timed out #{cmd}"
+							break
 						end
 					end
 				end
