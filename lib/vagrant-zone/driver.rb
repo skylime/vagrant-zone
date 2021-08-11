@@ -251,7 +251,7 @@ module VagrantPlugins
 				        		       	p responses[-1]
 								
 								if responses[-1].to_s.match(/:~#/)
-									break
+									return
 								elsif responses[-1].to_s.match(/login: /)
 									puts 	"Could not login as Root, Check if Root Autologin Works"
 								end
