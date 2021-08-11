@@ -221,8 +221,8 @@ module VagrantPlugins
 				config = machine.provider_config
 				vagrant_user = config.vagrant_user
 				vagrant_user_key = config.vagrant_user_key
-				
-				zlogin(machine, %( echo \"nameserver 1.1.1.1\" \>\> \/etc\/resolv.conf))
+				#waitforboot(machine)
+				zlogin(machine, %("echo \'nameserver 1.1.1.1\' \>\> \/etc\/resolv.conf"))
 				puts "Testing Output"
 				if not user_exists?(machine)
 					zlogin(machine, "useradd -m -s \/bin\/bash -U #{vagrant_user}")
@@ -240,7 +240,7 @@ module VagrantPlugins
 			#	responses = []
 			#	sleep setup_wait
 			#	PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-			#	        zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Output: $?\"\n") }
+			#	        zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("echo \"Output: $?\"\n") }
 			#	        loop do
 			#	                zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 			#	                puts responses[-1]
