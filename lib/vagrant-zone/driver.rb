@@ -5,6 +5,8 @@ require "io/console"
 require "ruby_expect"
 require 'netaddr'
 require "vagrant/util/numeric"
+require 'pty'
+require 'expect'
 
 module VagrantPlugins
 	module ProviderZone
