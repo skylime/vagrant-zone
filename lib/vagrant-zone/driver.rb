@@ -243,15 +243,16 @@ module VagrantPlugins
 				responses = []
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 				        if zlogin_read.expect(/Last login: /)
-						sleep 5
 						Timeout.timeout(30) do
 							loop do
 				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
 				        		       	p responses[-1]
-								if responses[-1].match(/login: /)
+								if responses[-1].include? "login: "
 									puts 	"Could not login as Root"
 									zlogin_write.printf("\r\n")	
-								elsif responses[-1].match(/:~# /)
+									zlogin_read.expect(/\n/) { |line|  subresponses.push line}
+									p subresponses
+								elsif responses[-1].include? ":~# "
 									break
 								end
 
