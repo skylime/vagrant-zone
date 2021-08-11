@@ -222,12 +222,10 @@ module VagrantPlugins
 				vagrant_user = config.vagrant_user
 				vagrant_user_key = config.vagrant_user_key
 				#waitforboot(machine)
-				zlogin(machine, %("echo \'nameserver 1.1.1.1\' \>\> \/etc\/resolv.conf"))
+				zlogin(machine, "echo \'nameserver 1.1.1.1\' \>\> \/etc\/resolv.conf")
 				puts "Testing Output"
-				if not user_exists?(machine)
-					zlogin(machine, "useradd -m -s \/bin\/bash -U #{vagrant_user}")
-				end
-				zlogin(machine, %( echo #{vagrant_user_key} > \/home\/#{vagrant_user}\/.ssh\/authorized_keys ))
+
+				zlogin(machine, "echo #{vagrant_user_key} > \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
 				zlogin(machine, "chown -R #{vagrant_user}:#{vagrant_user} \/home\/#{vagrant_user}\/.ssh")
 				zlogin(machine, "chmod 600 \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
 			end
