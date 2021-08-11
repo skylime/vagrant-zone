@@ -54,7 +54,8 @@ module VagrantPlugins
 			end
 
 			def get_ip_address(machine)
-				dhcpenabled = machine.config.vm.dhcp
+				config = machine.provider_config
+				dhcpenabled = config.dhcp
 				machine.config.vm.networks.each do |_type, opts|
 					if _type.to_s == "public_network"
 						ip        = opts[:ip].to_s
