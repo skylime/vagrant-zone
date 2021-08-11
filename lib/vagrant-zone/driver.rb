@@ -250,6 +250,8 @@ module VagrantPlugins
 				                        break
 						elsif responses[-1].include? "Output: 127\r\n"
 				                        raise "Could not access zlogin console for #{name}"
+						elsif responses[-1].nil?
+				                        break
 						end
 				        end
 				end
