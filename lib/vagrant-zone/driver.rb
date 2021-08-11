@@ -323,7 +323,7 @@ module VagrantPlugins
 				return "vagrant"
 			end
 			
-			def user_key(machine)
+			def userkey(machine)
 				name = @machine.name
 				config = machine.provider_config
 				userkey = config.vagrant_user_key
