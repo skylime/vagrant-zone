@@ -230,7 +230,7 @@ module VagrantPlugins
 				zlogin(machine, "chmod 600 \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
 			end
 			
-			def waitforboot(machine, cmd)
+			def waitforboot(machine)
 				## Check every X seconds if Console is ready
 				name = @machine.name
 				config = machine.provider_config
