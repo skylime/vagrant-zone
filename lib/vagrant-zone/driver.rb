@@ -237,11 +237,13 @@ module VagrantPlugins
 				
 				puts "Testing if previous command completed V2"
 
-				zlogin(machine, "echo #{vagrant_user_key} > \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
-				zlogin(machine, "chown -R #{vagrant_user}:#{vagrant_user} \/home\/#{vagrant_user}\/.ssh")
-				zlogin(machine, "chmod 600 \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
-				zlogin(machine, "APT=$(ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }') &&  sed -i \"s/enp0s3:/$APT:/g\" /etc/netplan/00-installer-config.yaml ")
-
+				insert_key = machine.config.ssh.insert_key
+				if insert_key
+					zlogin(machine, "echo #{vagrant_user_key} > \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
+					zlogin(machine, "chown -R #{vagrant_user}:#{vagrant_user} \/home\/#{vagrant_user}\/.ssh")
+					zlogin(machine, "chmod 600 \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
+					zlogin(machine, "APT=$(ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }') &&  sed -i \"s/enp0s3:/$APT:/g\" /etc/netplan/00-installer-config.yaml ")
+				end
 				
 				
 				machine.config.vm.networks.each do |_type, opts|
