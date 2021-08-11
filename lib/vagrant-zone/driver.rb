@@ -244,7 +244,12 @@ module VagrantPlugins
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 					zlogin_write.printf("\r\n")
 				        zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("\r\n") }
-					
+					tries =5
+					try = 0
+					while try < tries
+						p try
+						try += 1
+					end
 					loop do
 						Timeout.timeout(30) do
 				                	zlogin_read.expect(/\r\n/) { |line|  responses.push line}
