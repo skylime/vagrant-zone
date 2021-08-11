@@ -251,11 +251,6 @@ module VagrantPlugins
 				                	p responses[-1]
 							if responses[-1] =~ /Last login:/
 								sleep 5
-								zlogin_write.printf("\r\n")
-								zlogin_write.printf("\r\n")
-								zlogin_write.printf("\r\n")
-								zlogin_write.printf("\r\n")
-								zlogin_write.printf("\r\n")
 							elsif responses[-1] =~ /:~#/
 								zlogin_write.printf("\r\n")
 								break
