@@ -242,7 +242,7 @@ module VagrantPlugins
 						ip        = opts[:ip].to_s
 						network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
 						defrouter = opts[:gateway]
-						zlogin(machine, "sed -i '/dhcp4: yes/dhcp4: no/' /etc/netplan/00-installer-config.yaml")
+						zlogin(machine, "sed -i 's/dhcp4: yes/dhcp4: no/g' /etc/netplan/00-installer-config.yaml")
 						zlogin(machine, "sed -i '$ d' /etc/netplan/00-installer-config.yaml")
 						zlogin(machine, 'sed -i "$ a \      addresses:" /etc/netplan/00-installer-config.yaml')
 						zlogin(machine, 'sed -i "$ a \        - #{ip}\/24" /etc/netplan/00-installer-config.yaml')
