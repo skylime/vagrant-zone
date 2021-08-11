@@ -241,6 +241,7 @@ module VagrantPlugins
 				config = machine.provider_config
 				setup_wait = config.setup_wait
 				responses = []
+				subresponses = []
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 				        if zlogin_read.expect(/Last login: /)
 						sleep 5
