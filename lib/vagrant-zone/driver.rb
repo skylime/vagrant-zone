@@ -272,7 +272,8 @@ module VagrantPlugins
 						elsif responses[-1].nil?
 					                break
 						end
-					end					
+					end
+				Process.wait(pid)
 				end
 			end
 
