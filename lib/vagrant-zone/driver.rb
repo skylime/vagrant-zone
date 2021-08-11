@@ -260,12 +260,13 @@ module VagrantPlugins
 							
 							end
 							
-							Process.wait(pid)
-							Process.kill(pid)
+
 							break
 						end
+
 					end
-					
+				Process.wait(pid)
+				Process.kill(pid)
 				end
 			end	
 				
