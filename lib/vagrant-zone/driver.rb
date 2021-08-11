@@ -63,6 +63,7 @@ module VagrantPlugins
 						return nil if ip.length == 0
 						return ip.gsub /\t/, ''
 					end
+				end
 			end
 
 			def install(machine, ui)
