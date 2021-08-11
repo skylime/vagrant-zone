@@ -36,13 +36,14 @@ module VagrantPlugins
 				return nil if state.id != :running
 				ip = driver.get_ip_address(@machine)
 				user = driver.user(@machine)
-				userkey = driver.userprivatekeypath(@machine)
+				userkey = driver.userprivatekeypath(@machine).to_s
 				return nil if !ip
 				ssh_info = {
 					host: ip,
 					port: 22,
 					username: "#{user}",
-					private_key_path: "#{userkey}"
+					private_key_path: "#{userkey}",
+					password: "vagrant"
 				}
 			end
 
