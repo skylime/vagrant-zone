@@ -232,26 +232,26 @@ module VagrantPlugins
 				#zlogin(machine, "chmod 600 \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
 			end
 			
-			def waitforboot(machine)
-				## Check every X seconds if Console is ready
-				name = @machine.name
-				config = machine.provider_config
-				setup_wait = config.setup_wait
-				responses = []
-				sleep setup_wait
-				time = gets.to_i
-				Thread.new do
-				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-				        zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("exit\n") }
-				        loop do
-				                zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-				                puts responses[-1]
-						if responses[-1].nil?
-				                        break
-						end
-				        end
-				end
-			end	
+			#def waitforboot(machine)
+			#	## Check every X seconds if Console is ready
+			#	name = @machine.name
+			#	config = machine.provider_config
+			#	setup_wait = config.setup_wait
+			#	responses = []
+			#	sleep setup_wait
+			#	time = gets.to_i
+			#	Thread.new do
+			#	PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
+			#	        zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("exit\n") }
+			#	        loop do
+			#	                zlogin_read.expect(/\r\n/) { |line|  responses.push line}
+			#	                puts responses[-1]
+			#			if responses[-1].nil?
+			#	                        break
+			#			end
+			#	        end
+			#	end
+			#end	
 				
 			def zlogin(machine, cmd)
 				name = @machine.name
