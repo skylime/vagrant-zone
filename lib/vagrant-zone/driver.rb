@@ -233,6 +233,11 @@ module VagrantPlugins
 				zlogin(machine, "echo #{vagrant_user_key} > \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
 				zlogin(machine, "chown -R #{vagrant_user}:#{vagrant_user} \/home\/#{vagrant_user}\/.ssh")
 				zlogin(machine, "chmod 600 \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
+				file = zlogin(machine, "apt = ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }' ; ")
+				puts file
+				puts "Applying The Network Configuration"
+				
+				
 			end
 			
 			def waitforboot(machine)
