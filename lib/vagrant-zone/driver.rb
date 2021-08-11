@@ -261,6 +261,7 @@ module VagrantPlugins
 				config = machine.provider_config
 				responses = []
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
+					zlogin_write.printf("\r\n")
 					zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Output: $?\"\n") }
 					loop do
 						zlogin_read.expect(/\r\n/) { |line|  responses.push line}
