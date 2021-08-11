@@ -249,7 +249,7 @@ module VagrantPlugins
 				                zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 				                p responses[-1]
 						if responses[-1] =~ /Last login:/
-							sleep 2
+							sleep 5
 							zlogin_write.printf("\r\n")
 							zlogin_write.printf("\r\n")
 							zlogin_write.printf("\r\n")
