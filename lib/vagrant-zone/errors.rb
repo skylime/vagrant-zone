@@ -22,6 +22,10 @@ module VagrantPlugins
 			class TimeoutError < VagrantZoneError
 				error_key(:timeout_error)
 			end
+			
+			class ZoneInaccessible < VagrantZoneError
+				error_key(:zone_inaccessible)
+			end
 		end
 	end
 end
