@@ -249,22 +249,25 @@ module VagrantPlugins
 					while try < tries
 						p try
 						try += 1
-					end
-					loop do
-						Timeout.timeout(30) do
+					
+					Timeout.timeout(30) do
+						loop do
+						
 				                	zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 				                	p responses[-1]
 							if responses[-1] =~ /Last login:/
 								sleep 5
 							elsif responses[-1] =~ /:~#/
 								break
+								try = 5
 							end
 							if responses[-1] =~ / login: /
 								raise "Could not access zlogin console for root"
 							end
-						raise "Machine Note Booted"
 						end
+						raise "Machine Note Booted"
 				        end
+					end
 				end
 			end	
 				
