@@ -15,6 +15,7 @@ module VagrantPlugins
 					@machine = env[:machine]
 					@driver  = @machine.provider.driver
 					sleep 2
+					@driver.check_bhyve_support
 					@driver.setup(@machine, env[:ui])
 					@app.call(env)
 				end
