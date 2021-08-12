@@ -15,6 +15,10 @@ module VagrantPlugins
 				error_key(:missing_compatability_check_tool)
 			end
 			
+			class MissingBhyve < VagrantZoneError
+				error_key(:missing_bhyve)
+			end
+			
 			class HasNoRootPrivilege < VagrantZoneError
 				error_key(:has_no_root_privilege)
 			end
