@@ -102,6 +102,38 @@ module VagrantPlugins
 							execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{machine.name}0")
 						end
 					end
+					elsif _type.to_s == "private_network"
+						link = opts[:bridge]
+						mac  = 'auto'
+						vlan = 1
+						if !opts[:mac].nil?
+							mac  = opts[:mac]
+						end
+						if !opts[:vlan].nil?
+							vlan =  opts[:vlan]
+							execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{machine.name}0")
+						else
+							
+							execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{machine.name}0")
+						end
+					end
+					elsif _type.to_s == "ha_network"
+						link = opts[:bridge]
+						mac  = 'auto'
+						vlan = 1
+						if !opts[:mac].nil?
+							mac  = opts[:mac]
+						end
+						if !opts[:vlan].nil?
+							vlan =  opts[:vlan]
+							execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{machine.name}0")
+						else
+							
+							execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{machine.name}0")
+						end
+					end
+				
+					
 				end
 			end
 
