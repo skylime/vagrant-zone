@@ -262,11 +262,8 @@ module VagrantPlugins
 				waitforboot(machine)
 				puts "Machine Booted, Running Setup"
 				zlogin(machine, "echo 'nameserver 1.1.1.1' | tee  /etc/resolv.conf")
-				puts "Testing if previous command completed"
 				zlogin(machine, "echo 'nameserver 1.0.0.1' | tee -a /etc/resolv.conf")
-				
-				puts "Testing if previous command completed V2"
-
+			
 				insert_key = machine.config.ssh.insert_key
 				if insert_key
 					zlogin(machine, "echo #{vagrant_user_key} > \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
@@ -295,7 +292,6 @@ module VagrantPlugins
 			end
 			
 			def waitforboot(machine)
-				## Check every X seconds if Console is ready
 				name = @machine.name
 				config = machine.provider_config
 				setup_wait = config.setup_wait
@@ -307,7 +303,6 @@ module VagrantPlugins
 						Timeout.timeout(30) do
 							loop do
 				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
-				        		       	puts responses[-1]
 								if responses[-1].to_s.match(/:~#/)
 									break
 								elsif responses[-1].to_s.match(/login: /)
@@ -330,7 +325,6 @@ module VagrantPlugins
 					Timeout.timeout(30) do
 						loop do
 							zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-							puts responses[-1]
 							if responses[-1].to_s.match(/Error Code: 0/)
 						        	break
 							elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
