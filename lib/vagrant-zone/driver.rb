@@ -322,7 +322,7 @@ module VagrantPlugins
 			def userprivatekeypath(machine)
 				name = @machine.name
 				config = machine.provider_config
-				userkey = config.vagrant_user_private_key_path
+				userkey = config.vagrant_user_private_key_path.to_s
 				return userkey
 			end
 
