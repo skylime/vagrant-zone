@@ -255,24 +255,33 @@ module VagrantPlugins
 			end
 
 			def check_bhyve_support
-				
-				## Check for  bhhwcompat
-				result = execute(true, "#{@pfexec} test bhhwcompat")
-				if result == 0
-					execute(true, "#{@pfexec} curl -o /usr/sbin/bhhwcompat https://downloads.omnios.org/misc/bhyve/bhhwcompat && #{@pfexec} chmod +x /usr/sbin/bhhwcompat")
-				result = execute(true, "#{@pfexec} test bhhwcompat")
-				raise Errors::MissingCompatCheckTool if result == 0
-				
-				# Check whether OmniOS version is lower than r30
-				result = execute(true, "#{@pfexec} cat /etc/release | head -n 1 | awk '{ print $3 }' | cut -c 2- ")
-				if result < 1510380
-					raise Errors::SystemVersionIsTooLow if result == 0
-				end
-			
+				config = machine.provider_config
+				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
+				name = @machine.name
 
-				# Check Bhyve compatability
-				result = execute(false, "#{@pfexec} bhhwcompat -s")
-				raise Errors::MissingIommu if result.length == 0 
+				if config.brand == 'lx'
+					execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
+				end
+				if config.brand == 'bhyve'			
+					## Check for  bhhwcompat
+					result = execute(true, "#{@pfexec} test bhhwcompat")
+					if result == 0
+						execute(true, "#{@pfexec} curl -o /usr/sbin/bhhwcompat https://downloads.omnios.org/misc/bhyve/bhhwcompat && #{@pfexec} chmod +x /usr/sbin/bhhwcompat")
+					end
+					result = execute(true, "#{@pfexec} test bhhwcompat")
+					raise Errors::MissingCompatCheckTool if result == 0
+					
+					# Check whether OmniOS version is lower than r30
+					result = execute(true, "#{@pfexec} cat /etc/release | head -n 1 | awk '{ print $3 }' | cut -c 2- ")
+					if result < 1510380
+						raise Errors::SystemVersionIsTooLow if result == 0
+					end
+				
+	
+					# Check Bhyve compatability
+					result = execute(false, "#{@pfexec} bhhwcompat -s")
+					raise Errors::MissingBhyve if result.length == 0 
+				end
      			end
 			
 			def setup(machine, ui)
