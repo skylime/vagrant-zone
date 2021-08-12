@@ -90,10 +90,17 @@ module VagrantPlugins
 					if _type.to_s == "public_network"
 						link = opts[:bridge]
 						mac  = 'auto'
+						vlan = 1
 						if !opts[:mac].nil?
 							mac  = opts[:mac]
 						end
-						execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{machine.name}0")
+						if !opts[:vlan].nil?
+							vlan =  opts[:vlan]
+							execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{machine.name}0")
+						else
+							
+							execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{machine.name}0")
+						end
 					end
 				end
 			end
@@ -108,16 +115,12 @@ module VagrantPlugins
 				if config.brand == 'bhyve'
 					execute(false, "#{@pfexec} zfs create #{datasetroot}")
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
+				elsif config.disk1
+					disk1path = config.disk1.delete_prefix("/").to_s
+					disk1size = config.disk1_size.to_s
+					execute(false, "#{@pfexec} zfs create -V #{disk1size} #{disk1path}")
 				end
-#				machine.config.vm.disks.each do |_type, opts|
-#					if _type.to_s = "disk"
-#						name = opts[:name] if !opts[:name].nil?
-#						size = Vagrant::Util::Numeric.string_to_bytes(opts[:size].to_s) if !opts[:size].nil?
-#						quota = "-o quota=" + size.to_s if size
-#
-#						execute(false, "#{@pfexec} zfs create #{quota} #{dataset}/#{name}")
-#					end
-#				end
+
 			end
 
 			def delete_dataset(machine, ui)
