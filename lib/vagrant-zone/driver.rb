@@ -254,7 +254,7 @@ module VagrantPlugins
 				execute(false, "cat zone_config | #{@pfexec} zonecfg -z #{machine.name}")
 			end
 
-			def check_bhyve_support
+			def check_bhyve_support(machine, ui)
 				config = machine.provider_config
 				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
 				name = @machine.name
