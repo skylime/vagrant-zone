@@ -10,3 +10,7 @@ en:
         Failed when execute commands.
       timeout_error: |-
         Timeout exceeded.
+      system_version_too_low: |-
+        Please update to OmniOS r38 or higher
+      missing_compatability_check_tool: |-    
+        Please install the Bhyve Compatability Tool from: https://omnios.org/info/bhyve
