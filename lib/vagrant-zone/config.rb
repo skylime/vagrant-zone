@@ -8,6 +8,8 @@ module VagrantPlugins
 			attr_accessor :kernel
 			attr_accessor :zonepath
 			attr_accessor :zonepathsize
+			attr_accessor :disk1path
+			attr_accessor :disk1size
 			attr_accessor :cpus
 			attr_accessor :memory
 			attr_accessor :vagrant_user
@@ -23,6 +25,8 @@ module VagrantPlugins
 				@kernel   = UNSET_VALUE
 				@zonepath = UNSET_VALUE
 				@zonepathsize = UNSET_VALUE
+				@disk1pathsize = UNSET_VALUE
+				@disk1size = UNSET_VALUE
 				@memory   = UNSET_VALUE
 				@cpus   = UNSET_VALUE
 				@dhcp   = false
