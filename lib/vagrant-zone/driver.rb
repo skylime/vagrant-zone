@@ -265,7 +265,7 @@ module VagrantPlugins
 				if config.brand == 'bhyve'			
 					## Check for  bhhwcompat
 					result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
-					if result == 0
+					if result == 1
 						execute(true, "#{@pfexec} curl -o /usr/sbin/bhhwcompat https://downloads.omnios.org/misc/bhyve/bhhwcompat && #{@pfexec} chmod +x /usr/sbin/bhhwcompat")
 						result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
 						raise Errors::MissingCompatCheckTool if result == 0
