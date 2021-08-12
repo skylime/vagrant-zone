@@ -258,6 +258,9 @@ module VagrantPlugins
 				
 				## Check for  bhhwcompat
 				result = execute(true, "#{@pfexec} test bhhwcompat")
+				if result == 0
+					execute(true, "#{@pfexec} curl -o /usr/sbin/bhhwcompat https://downloads.omnios.org/misc/bhyve/bhhwcompat && #{@pfexec} chmod +x /usr/sbin/bhhwcompat")
+				result = execute(true, "#{@pfexec} test bhhwcompat")
 				raise Errors::MissingCompatCheckTool if result == 0
 				
 				# Check whether OmniOS version is lower than r30
