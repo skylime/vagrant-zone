@@ -254,6 +254,24 @@ module VagrantPlugins
 				execute(false, "cat zone_config | #{@pfexec} zonecfg -z #{machine.name}")
 			end
 
+			def check_bhyve_support
+				
+				## Check for  bhhwcompat
+				result = execute(true, "#{@pfexec} test bhhwcompat")
+				raise Errors::MissingCompatCheckTool if result == 0
+				
+				# Check whether OmniOS version is lower than r30
+				result = execute(true, "#{@pfexec} cat /etc/release | head -n 1 | awk '{ print $3 }' | cut -c 2- ")
+				if result < 1510380
+					raise Errors::SystemVersionIsTooLow if result == 0
+				end
+			
+
+				# Check Bhyve compatability
+				result = execute(false, "#{@pfexec} bhhwcompat -s")
+				raise Errors::MissingIommu if result.length == 0 
+     			end
+			
 			def setup(machine, ui)
 				config = machine.provider_config
 				vagrant_user = config.vagrant_user
