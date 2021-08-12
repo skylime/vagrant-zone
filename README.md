@@ -106,7 +106,6 @@ machine and box, you can:
   error to inform you when there is not rsync find in PATH
 * Run `vagrant plugin install vagrant-sshfs` to enable vagrant-sshfs
 
-
 ## Installation
 
 Now this gem has NOT YET been published on [rubygems.org](https://rubygems.org/gems/vagrant-zone). You can install it through `vagrant plugin install vagrant-zone`
@@ -129,7 +128,7 @@ This project is licensed under the AGPL v3 License - see the [LICENSE](LICENSE) 
 ## Contributing Sources
 * [vagrant-bhyve](https://github.com/jesa7955/vagrant-bhyve) - A Vagrant plugin for FreeBSD to spin up Bhyve Guests.
 * [vagrant-zone](https://github.com/skylime/vagrant-zone) - A Vagrant plugin to spin up LXZones.
-* 
+
 
 ## Contributing
 
