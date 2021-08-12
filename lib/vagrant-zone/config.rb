@@ -11,7 +11,6 @@ module VagrantPlugins
 			attr_accessor :disk1path
 			attr_accessor :disk1size
 			attr_accessor :cpus
-			attr_accessor :vlan
 			attr_accessor :memory
 			attr_accessor :vagrant_user
 			attr_accessor :vagrant_user_key
@@ -30,7 +29,6 @@ module VagrantPlugins
 				@disk1size = UNSET_VALUE
 				@memory   = UNSET_VALUE
 				@cpus   = UNSET_VALUE
-				@vlan   = UNSET_VALUE
 				@dhcp   = false
 				@setup_wait  = 120
 				@vagrant_user   = 'vagrant'
