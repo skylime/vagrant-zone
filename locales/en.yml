@@ -14,3 +14,5 @@ en:
         Please update to OmniOS r38 or higher
       missing_compatability_check_tool: |-    
         Please install the Bhyve Compatability Tool from: https://omnios.org/info/bhyve
+      missing_bhyve: |-    
+        Your system Appears to be Missing Bhyve
