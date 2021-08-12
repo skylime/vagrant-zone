@@ -1,3 +1,4 @@
+# coding: utf-8
 require File.expand_path('../lib/vagrant-zone/version', __FILE__)
 
 Gem::Specification.new do |spec|
