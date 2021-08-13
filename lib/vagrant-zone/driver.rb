@@ -8,7 +8,7 @@ require "vagrant/util/numeric"
 require 'pty'
 require 'expect'
 require "vagrant"
-require 'vagrant-zone/util/timer'
+require 'vagrant-zones/util/timer'
 
 module VagrantPlugins
 	module ProviderZone
