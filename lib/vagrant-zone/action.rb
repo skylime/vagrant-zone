@@ -6,7 +6,7 @@ module VagrantPlugins
 		module Action
 			# Include the built-in modules so we can use them as top-level things.
 			include Vagrant::Action::Builtin
-			@logger = Log4r::Logger.new('vagrant_zone::action')
+			@logger = Log4r::Logger.new('vagrant_zones::action')
 
 			# This action is called to bring the box up from nothing.
 			def self.action_up
@@ -39,7 +39,7 @@ module VagrantPlugins
 				Vagrant::Action::Builder.new.tap do |b|
 					b.use Call, IsState, :running do |env, b1|
 						if env[:result]
-							b1.use Message, I18n.t('vagrant_zone.states.is_running')
+							b1.use Message, I18n.t('vagrant_zones.states.is_running')
 							next
 						end
 						b1.use Call, IsState, :uncleaned do |env1, b2|
