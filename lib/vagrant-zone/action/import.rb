@@ -5,7 +5,7 @@ module VagrantPlugins
 		module Action
 			class Import
 				def initialize(app, env)
-					@logger = Log4r::Logger.new("vagrant_zone::action::import")
+					@logger = Log4r::Logger.new("vagrant_zones::action::import")
 					@joyent_images_url = 'https://images.joyent.com/images/'
 					@app = app
 				end
