@@ -4,7 +4,7 @@ module VagrantPlugins
 	module ProviderZone
 		module Errors
 			class VagrantZoneError < Vagrant::Errors::VagrantError
-				error_namespace('vagrant_zone.errors')
+				error_namespace('vagrant_zones.errors')
 			end
 
 			class SystemVersionIsTooLow < VagrantZoneError
