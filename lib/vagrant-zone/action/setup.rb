@@ -7,7 +7,7 @@ module VagrantPlugins
 		module Action
 			class Setup
 				def initialize(app, env)
-					@logger = Log4r::Logger.new("vagrant_zone::action::import")
+					@logger = Log4r::Logger.new("vagrant_zones::action::import")
 					@app = app
 				end
 
