@@ -5,7 +5,7 @@ module VagrantPlugins
 		module Action
 			class Package
 				def initialize(app, env)
-					@logger = Log4r::Logger.new("vagrant_zone::action::import")
+					@logger = Log4r::Logger.new("vagrant_zones::action::import")
 					@app = app
 					env['package.output'] ||= 'package.box'
 				end
