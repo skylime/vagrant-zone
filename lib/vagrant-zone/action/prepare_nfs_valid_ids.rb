@@ -8,7 +8,7 @@ module VagrantPlugins
 			class PrepareNFSValidIds
 
 				def initialize(app, env)
-					@logger = Log4r::Logger.new("vagrant_zone::action::prepare_nfs_valid_ids")
+					@logger = Log4r::Logger.new("vagrant_zones::action::prepare_nfs_valid_ids")
 					@app = app
 				end
 
