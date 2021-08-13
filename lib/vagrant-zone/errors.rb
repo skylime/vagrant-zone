@@ -3,31 +3,31 @@ require "vagrant"
 module VagrantPlugins
 	module ProviderZone
 		module Errors
-			class VagrantZoneError < Vagrant::Errors::VagrantError
+			class VagrantZonesError < Vagrant::Errors::VagrantError
 				error_namespace('vagrant_zones.errors')
 			end
 
-			class SystemVersionIsTooLow < VagrantZoneError
+			class SystemVersionIsTooLow < VagrantZonesError
 				error_key(:system_version_too_low)
 			end
 
-			class MissingCompatCheckTool < VagrantZoneError
+			class MissingCompatCheckTool < VagrantZonesError
 				error_key(:missing_compatability_check_tool)
 			end
 			
-			class MissingBhyve < VagrantZoneError
+			class MissingBhyve < VagrantZonesError
 				error_key(:missing_bhyve)
 			end
 			
-			class HasNoRootPrivilege < VagrantZoneError
+			class HasNoRootPrivilege < VagrantZonesError
 				error_key(:has_no_root_privilege)
 			end
 
-			class ExecuteError < VagrantZoneError
+			class ExecuteError < VagrantZonesError
 				error_key(:execute_error)
 			end
 
-			class TimeoutError < VagrantZoneError
+			class TimeoutError < VagrantZonesError
 				error_key(:timeout_error)
 			end
 		
