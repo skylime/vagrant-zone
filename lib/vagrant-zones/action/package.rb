@@ -15,6 +15,7 @@ module VagrantPlugins
 				def call(env)
 					@machine = env[:machine]
 					@driver  = @machine.provider.driver
+					config  = machine.provider_config
 
 					boxname = env['package.output']
 					raise "#{boxname}: Already exists" if File.exist?(boxname)
@@ -65,7 +66,7 @@ module VagrantPlugins
 				end
 
 				def snapshot_create(zonepath)
-					puts zonepath
+					
 					`pfexec zfs snapshot -r #{zonepath}/boot@vagrant_boxing`
 				end
 				def snapshot_delete(zonepath)
@@ -83,8 +84,7 @@ module VagrantPlugins
 					{
 						"provider": "zone",
 						"format": "zss",
-						"brand": "#{brand}",
-						"kernel": "#{kernel}"
+						"brand": "#{brand}"
 					}
 					EOF
 				end
