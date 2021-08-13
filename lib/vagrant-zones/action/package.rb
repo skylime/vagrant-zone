@@ -15,7 +15,8 @@ module VagrantPlugins
 				def call(env)
 					@machine = env[:machine]
 					@driver  = @machine.provider.driver
-					config  = machine.provider_config
+					
+					config  = @machine.provider_config
 
 					boxname = env['package.output']
 					raise "#{boxname}: Already exists" if File.exist?(boxname)
@@ -24,7 +25,7 @@ module VagrantPlugins
 					tmp_img = tmp_dir + '/box.zss'
 					Dir.mkdir(tmp_dir) unless File.exists?(tmp_dir)
 
-					zonepath = @machine.provider_config.zonepath.sub!(/^\//, '')
+					zonepath = config.zonepath.delete_prefix("/").to_s
 					brand  = @machine.provider_config.brand
 					kernel = @machine.provider_config.kernel
 
