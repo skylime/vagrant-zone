@@ -37,14 +37,15 @@ module VagrantPlugins
 					## If it's a regular name (everything else), try to find it
 					## on Vagrant Cloud
 					else
-						# Support zss format only for now
-						#box_format = env[:machine].box.metadata['format']
-						#if box_format.nil?
-						#	raise Errors::NoBoxFormatSet
-						#elsif box_format != 'zss'
-						#	raise Errors::WrongBoxFormatSet
-						#end
-
+						# Support zss format only for now, use other images and convert later
+						box_format = env[:machine].box.metadata['format']
+						if box_format.nil?
+							raise Errors::NoBoxFormatSet
+						elsif box_format != 'zss'
+							## Code to try to convert existing box
+							raise Errors::WrongBoxFormatSet
+						
+						end
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
 						FileUtils.cp(env[:machine].box.directory.join('box.zss').to_s, datadir.to_s + '/' + image)
 					end
