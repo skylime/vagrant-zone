@@ -1,4 +1,4 @@
-# vagrant-zone
+# vagrant-zones
 Vagrant Plugin which can be used to managed Bhyve, LX and native zones on illumos (OmniOSce)
 
 - [Status](#status)
@@ -54,7 +54,7 @@ Collecting status of boxes from [Atlas](https://atlas.hashicorp.com/boxes/search
 
 ### Setup environment
 
-    $ git clone https://github.com/Makr91/vagrant-zone.git
+    $ git clone https://github.com/Makr91/vagrant-zones.git
     $ cd vagrant-bhyve
     $ bundle install --path vendor/bundle --binstubs
 
@@ -76,23 +76,23 @@ end
 
 then execute this command to start the box with bhyve
 
-    $ /path/to/vagrant-zone/bin/vagrant up --provider=zone
+    $ /path/to/vagrant-zones/bin/vagrant up --provider=zone
 
 ### SSH into the box
 
 After the box is booted(uped), you can ssh into by executing this command. 
 
-    $ /path/to/vagrant-zone/bin/vagrant ssh
+    $ /path/to/vagrant-zones/bin/vagrant ssh
 
 ### Shutdown the box and cleanup
 
 This command will shutdown the booted VM and clean up environment
 
-    $ /path/to/vagrant-zone/bin/vagrant halt
+    $ /path/to/vagrant-zones/bin/vagrant halt
 
 ### Destroy the box
 
-    $ /path/to/vagrant-zone/vagrant destroy
+    $ /path/to/vagrant-zones/vagrant destroy
 
 ## Known Issues
 
@@ -108,12 +108,12 @@ machine and box, you can:
 
 ## Installation
 
-Now this gem has NOT YET been published on [rubygems.org](https://rubygems.org/gems/vagrant-zone). You can install it through `vagrant plugin install vagrant-zone`
+Now this gem has NOT YET been published on [rubygems.org](https://rubygems.org/gems/vagrant-zones). You can install it through `vagrant plugin install vagrant-zones`
 to install it in a normal Vagrant environment
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/Makr91/vagrant-zone.
+Bug reports and pull requests are welcome on GitHub at https://github.com/Makr91/vagrant-zones.
 
 
 ## License
