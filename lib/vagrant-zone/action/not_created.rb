@@ -9,7 +9,7 @@ module VagrantPlugins
 				end
 
 				def call(env)
-					env[:ui].info(I18n.t('vagrant_zone.states.not_created'))
+					env[:ui].info(I18n.t('vagrant_zones.states.not_created'))
 					@app.call(env)
 				end
 			end
