@@ -1,5 +1,5 @@
 require "log4r"
-require 'vagrant-zone/util/timer'
+require 'vagrant-zones/util/timer'
 require 'vagrant/util/retryable'
 
 module VagrantPlugins
@@ -9,7 +9,7 @@ module VagrantPlugins
 				include Vagrant::Util::Retryable
 
 				def initialize(app, env)
-					@logger = Log4r::Logger.new("vagrant_zone::action::import")
+					@logger = Log4r::Logger.new("vagrant_zones::action::import")
 					@app = app
 				end
 
