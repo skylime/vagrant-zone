@@ -1,5 +1,5 @@
 en:
-  vagrant_zone:
+  vagrant_zones:
     states:
       not_created: |-
         Your instance of this box haven't been created.
