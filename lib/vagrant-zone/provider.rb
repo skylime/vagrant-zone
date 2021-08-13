@@ -3,7 +3,7 @@ require "log4r"
 
 module VagrantPlugins
 	module ProviderZone
-		autoload :Driver, 'vagrant-zone/driver'
+		autoload :Driver, 'vagrant-zones/driver'
 
 		class Provider < Vagrant.plugin('2', :provider)
 			def initialize(machine)
