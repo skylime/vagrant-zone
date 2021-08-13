@@ -277,7 +277,7 @@ module VagrantPlugins
 					result = execute(true, "$VER=$(cat /etc/release | head -n 1 | awk '{ print $3 }' | cut -c 2- ); test $VER -ge 1510380")
 					puts result
 					raise Errors::SystemVersionIsTooLow if result == 0
-					end
+					
 				
 	
 					# Check Bhyve compatability
