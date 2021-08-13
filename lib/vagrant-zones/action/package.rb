@@ -65,13 +65,13 @@ module VagrantPlugins
 				end
 
 				def snapshot_create(zonepath)
-					`pfexec zfs snapshot -r #{zonepath}@vagrant_boxing`
+					`pfexec zfs snapshot -r #{zonepath}/boot@vagrant_boxing`
 				end
 				def snapshot_delete(zonepath)
-					`pfexec zfs destroy #{zonepath}@vagrant_boxing`
+					`pfexec zfs destroy #{zonepath}/boot@vagrant_boxing`
 				end
 				def snapshot_send(zonepath, destination)
-					`pfexec zfs send #{zonepath}@vagrant_boxing > #{destination}`
+					`pfexec zfs send #{zonepath}/boot@vagrant_boxing > #{destination}`
 				end
 
 				def metadata_content(brand, kernel)
