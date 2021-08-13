@@ -2,3 +2,10 @@
 vendor
 bin
 *.lock
+id_rsa
+zone_config
+_tmp_package
+package.box
+Vagrantfile
+exec
+.vagrant
