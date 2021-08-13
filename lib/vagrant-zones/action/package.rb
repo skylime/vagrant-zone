@@ -95,7 +95,6 @@ module VagrantPlugins
 					Vagrant.configure("2") do |config|
 						config.vm.provider :zone do |zone|
 							zone.brand = "#{brand}"
-							zone.kernel = "#{kernel}"
 							zone.zonepath = "#{zonepath}"
 						end
 					end
