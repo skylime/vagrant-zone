@@ -8,7 +8,7 @@ module VagrantPlugins
 			class IsCreated
 				def initialize(app, _env)
 					@app = app
-					@logger = Log4r::Logger.new('vagrant_zone::action')
+					@logger = Log4r::Logger.new('vagrant_zones::action')
 				end
 
 				def call(env)
