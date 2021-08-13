@@ -1,15 +1,15 @@
 # coding: utf-8
-require File.expand_path('../lib/vagrant-zone/version', __FILE__)
+require File.expand_path('../lib/vagrant-zones/version', __FILE__)
 
 Gem::Specification.new do |spec|
-  spec.name          = "vagrant-zone"
+  spec.name          = "vagrant-zones"
   spec.version       = VagrantPlugins::ProviderZone::VERSION
   spec.authors       = ["Thomas Merkel", "Mark Gilbert"]
   spec.email         = ["thomas.merkel@skylime.net", "mark.gilbert@prominic.net"]
 
   spec.summary       = %q{Vagrant provider plugin to support zones}
   spec.description   = spec.summary
-  spec.homepage      = "https://github.com/makr91/vagrant-zone"
+  spec.homepage      = "https://github.com/makr91/vagrant-zones"
   spec.license       = "AGPLv3"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
