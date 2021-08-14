@@ -101,12 +101,16 @@ module VagrantPlugins
 			def vnic(machine, ui, state)
 				config = machine.provider_config
 				machine.config.vm.networks.each do |_type, opts|
-					index = 1
-					nic_number = index
 					if _type.to_s == "public_network"
-						link = opts[:bridge]
-						mac  = 'auto'
-						vlan = 1
+						link 		= opts[:bridge]
+						nic_number	= opts[:nic_number].to_s
+						ip        	= opts[:ip].to_s
+						if ip.length == 0
+							ip = nil
+						else
+							ip = ip.gsub /\t/, ''
+						mac  		= 'auto'
+						vlan 		= 1
 						if !opts[:mac].nil?
 							mac  = opts[:mac]
 						end
