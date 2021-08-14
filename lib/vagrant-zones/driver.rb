@@ -13,12 +13,7 @@ require 'vagrant-zones/util/timer'
 module VagrantPlugins
 	module ProviderZone
 		
-		## Convert Subnet Mask into CIDR Notation
-		IPAddr.class_eval
-		  def to_cidr
-		    "/" + self.to_i.to_s(2).count("1")
-		  end
-		end
+
 		
 		class Driver
 			attr_accessor :executor
@@ -58,6 +53,25 @@ module VagrantPlugins
 
 			def execute(*cmd, **opts, &block)
 				@executor.execute(*cmd, **opts, &block)
+			end
+
+			def get_ip_address(machine)
+				config = machine.provider_config
+				dhcpenabled = config.dhcp
+				if dhcpenabled
+					raise "==> #{machine.name} ==> DHCP is not yet Configured for use"
+				else
+					machine.config.vm.networks.each_with_index do |_type, opts, index|
+						index + 1
+						if _type.to_s == "public_network"
+							ip        = opts[:ip].to_s
+							network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
+							defrouter = opts[:gateway]
+							return nil if ip.length == 0
+							return ip.gsub /\t/, ''
+						end
+					end
+				end
 			end
 
 
