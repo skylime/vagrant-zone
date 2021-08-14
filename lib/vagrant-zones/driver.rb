@@ -318,7 +318,7 @@ module VagrantPlugins
 						
 						## Create new netplan config
 						zlogin(machine, "touch /etc/netplan/00-installer-config.yaml")
-						zlogin(machine, 'sed -i "$ a network:" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'echo "network:" > /etc/netplan/00-installer-config.yaml')
 						zlogin(machine, 'sed -i "$ a \  ethernets:" /etc/netplan/00-installer-config.yaml')
 						zlogin(machine, 'APT=$(ifconfig -s -a | grep -v lo | tail -1 | awk \'{ print $1 }\') &&  sed -i "$ a \  $APT:" /etc/netplan/00-installer-config.yaml')
 						zlogin(machine, 'sed -i "$ a \      dhcp-identifier: mac" /etc/netplan/00-installer-config.yaml')
