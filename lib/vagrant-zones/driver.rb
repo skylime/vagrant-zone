@@ -598,20 +598,20 @@ module VagrantPlugins
 				puts "==> #{name}: Halting Zone"
 				
 				## Check if it has a presence in zoneadm and if no presence in zoneadm destroy zonecfg
-				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
+				vm_configured = execute(true, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
 				if vm_configured != name
 					puts "==> #{name}: Removing zonecfg configuration"
-					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
+					execute(true, "#{@pfexec} zonecfg -z #{name} delete -F")
 				end
 				
 				## Check state in zoneadm
-				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
+				vm_state = execute(true, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 				
 				## If state is seen, uninstall from zoneadm and destroy from zonecfg
 				if vm_state == 'incomplete' || vm_state == 'configured' || vm_state ==  "installed"
 					puts "==> #{name}: Uninstalling Zone and Removing zonecfg configuration"
-					execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
-					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
+					execute(true, "#{@pfexec} zoneadm -z #{name} uninstall -F")
+					execute(true, "#{@pfexec} zonecfg -z #{name} delete -F")
 				end
 
 				### Nic Configurations
