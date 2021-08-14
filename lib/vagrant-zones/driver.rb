@@ -291,18 +291,18 @@ set brand=#{config.brand}
 set autoboot=#{config.autoboot}
 set ip-type=exclusive
 add attr
-	set name="acpi"
-	set type="string"
-	set value="#{config.acpi}"
+	set name=acpi
+	set type=string
+	set value=#{config.acpi}
 end
 add attr
-	set name="vcpus"
-	set type="string"
+	set name=vcpus
+	set type=string
 	set value=#{config.cpus}
 end
 add attr
-	set name="ram"
-	set type="string"
+	set name=ram
+	set type=string
 	set value=#{config.memory}
 end
 add attr
@@ -339,7 +339,6 @@ add attr
 	set value=#{config.os_type}
 end
 					}
-
 				end
 				data = %{
 #{attr}
