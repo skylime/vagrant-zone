@@ -596,7 +596,6 @@ module VagrantPlugins
 				
 				## Ensure machine is halted
 				puts "==> #{name}: Halting Zone"
-				execute(false, "#{@pfexec} zoneadm -z #{name} halt")
 				
 				## Check if it has a presence in zoneadm and if no presence in zoneadm destroy zonecfg
 				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
