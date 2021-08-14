@@ -16,6 +16,7 @@ module VagrantPlugins
 			attr_accessor :vagrant_user_key
 			attr_accessor :vagrant_user_private_key_path
 			attr_accessor :setup_wait
+			attr_accessor :clean_shutdown_time
 			attr_accessor :dhcp
 			attr_accessor :vagrant_user_pass
 			attr_accessor :firmware
@@ -38,6 +39,7 @@ module VagrantPlugins
 				@firmware  			= 'compatability'
 				@dhcp   			= false
 				@setup_wait  			= 30
+				@clean_shutdown_time  		= 300
 				@vmtype   			= 'production'
 				@parition_id   			= '0000'
 				@vagrant_user   		= 'vagrant'
