@@ -64,7 +64,7 @@ module VagrantPlugins
 				config = machine.provider_config
 				dhcpenabled = config.dhcp
 				if dhcpenabled
-					raise "==> #{machine.} ==> DHCP is not yet Configured for use"
+					raise "==> #{machine.name} ==> DHCP is not yet Configured for use"
 				else
 					machine.config.vm.networks.each_with_index do |_type, opts, index|
 						index + 1
