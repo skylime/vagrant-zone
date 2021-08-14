@@ -362,66 +362,32 @@ module VagrantPlugins
 				end
      			end
 			
-			def setup(machine, ui)
-				config = machine.provider_config
-				name = machine.name
-				insert_key = machine.config.ssh.insert_key
-				
-				puts "==> #{name}: Waiting for the Machine to boot..."
-				waitforboot(machine)
-				
-				## Check if already setup and skip the following
-				
-				if insert_key
-					zlogin(machine, "echo #{vagrant_user_key} > \/home\/#{config.vagrant_user}\/.ssh\/authorized_keys")
-					zlogin(machine, "chown -R #{config.vagrant_user}:#{config.vagrant_user} \/home\/#{config.vagrant_user}\/.ssh")
-					zlogin(machine, "chmod 600 \/home\/#{config.vagrant_user}\/.ssh\/authorized_keys")
-				end
-				
-				machine.config.vm.networks.each_with_index do |_type, opts, index|
-					index + 1
-					if _type.to_s == "public_network"
-						ip        	= opts[:ip].to_s
-						netmask 	= IPAddr.new(opts[:netmask]).to_cidr
-						defrouter 	= opts[:gateway]
-						if !opts[:nameserver1].nil?
-							nameserver1  = opts[:nameserver1].to_s
-						else
-							nameserver1  = "1.1.1.1"
-						end
-						if !opts[:nameserver2].nil?
-							nameserver2  = opts[:nameserver2].to_s
-						else
-							nameserver2  = "1.0.0.1"
-						end
-						## Remove old installer netplan config
-						zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
-						
-						## Create new netplan config
-						zlogin(machine, "touch /etc/netplan/00-installer-config.yaml")
-						zlogin(machine, 'echo "network:" > /etc/netplan/00-installer-config.yaml')
-						zlogin(machine, 'sed -i "$ a \  version: 2" /etc/netplan/00-installer-config.yaml')
-						zlogin(machine, 'sed -i "$ a \  ethernets:" /etc/netplan/00-installer-config.yaml')
-						zlogin(machine, 'APT=$(ifconfig -s -a | grep -v lo | tail -1 | awk \'{ print $1 }\') &&  sed -i "$ a \    $APT:" /etc/netplan/00-installer-config.yaml')
-						zlogin(machine, 'sed -i "$ a \      dhcp-identifier: mac" /etc/netplan/00-installer-config.yaml')
-						zlogin(machine, 'sed -i "$ a \      dhcp4: no" /etc/netplan/00-installer-config.yaml')
-						zlogin(machine, 'sed -i "$ a \      dhcp6: no" /etc/netplan/00-installer-config.yaml')
-						zlogin(machine, 'sed -i "$ a \      nameservers:" /etc/netplan/00-installer-config.yaml')
-						zlogin(machine, "sed -i '$ a \\        addresses: [#{nameserver1} , #{nameserver2}]' /etc/netplan/00-installer-config.yaml")
-						zlogin(machine, "sed -i '$ a \\      addresses: [#{ip}\/#{netmask}]' /etc/netplan/00-installer-config.yaml")
-						zlogin(machine, "sed -i '$ a \\      gateway4: #{defrouter}' /etc/netplan/00-installer-config.yaml")
-						
-						
-						## Apply the Configuration
-						puts "==> #{name}: Applying the network configuration"
-						zlogin(machine, 'netplan apply')
-						
-					end
-				end
-				
-			end
-			
 
+			
+			def waitforboot(machine)
+				name = @machine.name
+				config = machine.provider_config
+				responses = []
+				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
+				        if zlogin_read.expect(/Last login: /)
+						puts "==> #{name}: Machine Booted, Running Setup"
+						sleep 5
+						Timeout.timeout(config.setup_wait) do
+							loop do
+				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
+								if responses[-1].to_s.match(/:~#/)
+									break
+								elsif responses[-1].to_s.match(/login: /)
+									## Code to try to login with username and password
+									puts "==> #{name}: Could not login as Root, Check if Root Autologin Works"
+								end
+							end
+						end
+
+					end
+					Process.kill("HUP",pid)
+				end
+			end	
 				
 			def zlogin(machine, cmd)
 				name = @machine.name
