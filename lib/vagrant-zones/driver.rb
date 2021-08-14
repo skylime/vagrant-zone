@@ -67,7 +67,7 @@ module VagrantPlugins
 					raise "==> #{machine.name} ==> DHCP is not yet Configured for use"
 				else
 					machine.config.vm.networks.each do |_type, opts|
-						index + 1
+						index = 1
 						if _type.to_s == "public_network"
 							ip        = opts[:ip].to_s
 							defrouter = opts[:gateway]
@@ -108,8 +108,8 @@ module VagrantPlugins
 			## Create Network Interfaces
 			def vnic(machine, ui, state)
 				config = machine.provider_config
-				machine.config.vm.networks.each_with_index do |_type, opts, index|
-					index + 1
+				machine.config.vm.networks.each do |_type, opts|
+					index = 1
 					nic_number = index
 					if _type.to_s == "public_network"
 						link = opts[:bridge]
@@ -195,8 +195,8 @@ module VagrantPlugins
 				config.shared_dir = Dir.pwd
 				attr = ''
 				if config.brand == 'lx'
-					machine.config.vm.networks.each_with_index do |_type, opts, index|
-						index + 1
+					machine.config.vm.networks.each do |_type, opts|
+						index = 1
 						if _type.to_s == "public_network"
 							@ip        = opts[:ip].to_s
 							@network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
@@ -379,8 +379,8 @@ module VagrantPlugins
 					zlogin(machine, "chmod 600 \/home\/#{config.vagrant_user}\/.ssh\/authorized_keys")
 				end
 				
-				machine.config.vm.networks.each_with_index do |_type, opts, index|
-					index + 1
+				machine.config.vm.networks.each do |_type, opts|
+					index = 1
 					if _type.to_s == "public_network"
 						ip        	= opts[:ip].to_s
 						netmask 	= opts[:netmask].to_cidr
