@@ -177,7 +177,7 @@ end							}
 							zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
 							responses=[]
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf('ifconfig -s -a | grep -v lo | tail -1 | awk \'{ print $1 }\'') }
+								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf('ifconfig -s -a | grep -v lo | tail -1 | awk \'{ print $1 }\'\r\n') }
 								Timeout.timeout(30) do
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
