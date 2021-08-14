@@ -37,21 +37,17 @@ module VagrantPlugins
 				uuid = machine.id
 				name = machine.name
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
+				puts "==> #{name}: Machine state is: #{vm_state}"
 				if vm_state == 'running'
 					:running
-					puts "==> #{name}: Machine state is: #{vm_state}"
 				elsif vm_state == 'configured'
 					:preparing
-					puts "==> #{name}: Machine state is: #{vm_state}"
 				elsif vm_state == 'installed'
 					:stopped
-					puts "==> #{name}: Machine state is: #{vm_state}"
 				elsif vm_state == 'incomplete'
 					:incomplete
-					puts "==> #{name}: Machine state is: #{vm_state}"
 				else
 					:not_created
-					puts "==> #{name}: Machine state is: #{vm_state}"
 				end
 				
 			end
