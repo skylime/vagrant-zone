@@ -88,7 +88,7 @@ module VagrantPlugins
 			
 			def get_ip_address(machine)
 				config = machine.provider_config
-				if dhcpenabled
+				if config.dhcpenabled
 					raise "==> #{machine.name} ==> DHCP is not yet Configured for use"
 				else
 					machine.config.vm.networks.each do |_type, opts|
