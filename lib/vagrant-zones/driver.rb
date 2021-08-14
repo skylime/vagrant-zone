@@ -622,7 +622,7 @@ end
 
 				### Nic Configurations
 				state = "delete"
-				vnic(@machine, env[:ui], state)
+				vnic(@machine, id, state)
 				
 				### Check State of additional Disks
 				#disks_configured = execute(false, "#{@pfexec}  zfs list ")
