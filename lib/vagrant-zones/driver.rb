@@ -34,6 +34,13 @@ module VagrantPlugins
 				end
 			end
 
+					## Convert Subnet Mask into CIDR Notation
+			IPAddr.class_eval
+			  def to_cidr
+			    "/" + self.to_i.to_s(2).count("1")
+			  end
+			end
+			
 			def state(machine)
 				uuid = machine.id
 				name = machine.name
