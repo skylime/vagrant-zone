@@ -169,12 +169,12 @@ module VagrantPlugins
 							end
 						elsif state == "config"
 							nic_attr = %{
-								add net
-									set physical=vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id}
-								end
+add net
+	set physical=vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id}
+end
 							}
 							additional_nics_data = %{
-								#{nic_attr}
+#{nic_attr}
 							}
 							File.open('zone_config', 'a') do |f|
 								f.puts additional_nics_data
