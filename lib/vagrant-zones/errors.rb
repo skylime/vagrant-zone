@@ -30,6 +30,10 @@ module VagrantPlugins
 			class TimeoutError < VagrantZonesError
 				error_key(:timeout_error)
 			end
+			
+			class VirtualBoxRunningConflictDetected < VagrantZonesError
+				error_key(:virtual_box_running_conflict_detected)
+			end
 		
 		end
 	end
