@@ -29,6 +29,7 @@ module VagrantPlugins
 			attr_accessor :acpi
 			attr_accessor :os_type
 			attr_accessor :vnc
+			attr_accessor :console
 			attr_accessor :hostbridge
 			
 			
@@ -46,7 +47,8 @@ module VagrantPlugins
 				@shared_dir			= Dir.pwd
 				@os_type			= 'generic'
 				@shared_disk_enabled		= true
-				@vnc				= true
+				@vnc				= false
+				@console			= false
 				@memory   			= '4G'
 				@diskif   			= 'virtio-blk'
 				@netif   			= 'virtio-net-viona'
