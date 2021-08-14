@@ -22,7 +22,7 @@ module VagrantPlugins
 			attr_accessor :clean_shutdown_time
 			attr_accessor :dhcp
 			attr_accessor :vagrant_user_pass
-			attr_accessor :firmware
+			attr_accessor :firmware_type
 			attr_accessor :vm_type
 			attr_accessor :partition_id
 			attr_accessor :shared_disk_enabled
@@ -59,7 +59,7 @@ module VagrantPlugins
 				@cpus   			= 2
 				@hostbridge   			= 'i440fx'
 				@acpi 				= 'on'
-				@firmware  			= "compatability"
+				@firmware_type 			= "compatability"
 				@dhcp   			= false
 				@setup_wait  			= 30
 				@clean_shutdown_time  		= 300
@@ -74,7 +74,7 @@ module VagrantPlugins
 				@vagrant_user_key  		= 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key'
 
 				
-				case @firmware
+				case @firmware_type
 				when /compatability/
 				  @firmware  = "BHYVE_RELEASE_CSM"
 				when /UEFI/
