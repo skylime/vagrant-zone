@@ -181,7 +181,11 @@ end							}
 								Timeout.timeout(30) do
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-										if responses[-1].to_s.match(/enp\d\w\d/)
+										puts ""
+										puts ""
+										puts responses[-1]
+										puts ""
+										if responses[-1].to_s =~ /enp\d\w\d/
 											vmnic = responses[-1].to_s
 											puts ""
 											puts ""
