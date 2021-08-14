@@ -88,7 +88,6 @@ module VagrantPlugins
 			
 			def get_ip_address(machine)
 				config = machine.provider_config
-				dhcpenabled = config.dhcp
 				if dhcpenabled
 					raise "==> #{machine.name} ==> DHCP is not yet Configured for use"
 				else
@@ -109,6 +108,7 @@ module VagrantPlugins
 			## Create Network Interfaces
 			def vnic(machine, ui, state)
 				config = machine.provider_config
+				dhcpenabled = config.dhcp
 				name = @machine.name
 				machine.config.vm.networks.each do |_type, opts|
 					if _type.to_s == "public_network"
@@ -154,7 +154,7 @@ module VagrantPlugins
 						else
 						  nic_type = "e"
 						end
-						vnic_name = "vnic#{nic_type}#{config.vm_type}-#{config.partition_id}-#{nic_number}"
+						vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
 						if state == "create"
 							if !opts[:vlan].nil?
 								vlan =  opts[:vlan]
@@ -199,6 +199,15 @@ end							}
 							## Apply the Configuration
 							puts "==> #{name}: Applying the network configuration"
 							zlogin(machine, 'netplan apply')
+						elsif state == "get_ip"
+							if dhcpenabled
+								raise "==> #{machine.name} ==> DHCP is not yet Configured for use"
+							else
+								if opts[:managed]
+									return nil if ip.length == 0
+									return ip.gsub /\t/, ''
+								end
+							end
 						end
 					end
 				end
@@ -395,7 +404,7 @@ end					}
 
 				
 				## Additional Disk Configurations
-				if config.diskpath1 != "none"
+				if config.diskpath1 != 'none'
 					additional_disk_attr = %{add device
 	set match=/dev/zvol/rdsk#{config.zonepath}/disk1
 end
