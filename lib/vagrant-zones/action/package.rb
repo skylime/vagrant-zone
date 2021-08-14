@@ -35,7 +35,7 @@ module VagrantPlugins
 					puts ""
 					puts ""
 					puts ""
-					puts "zonepath"
+					puts zonepath
 					
 					
 					puts ""
