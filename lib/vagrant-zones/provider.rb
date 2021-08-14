@@ -39,21 +39,13 @@ module VagrantPlugins
 				userkey = driver.userprivatekeypath(@machine).to_s
 				vagrantuserpass = driver.vagrantuserpass(@machine).to_s
 				return nil if !ip
-				if userkey 
-					ssh_info = {
-						host: ip,
-						port: 22,
-						username: "#{user}",
-						private_key_path: "#{userkey}"
-					}
-				elsif vagrantuserpass 
-					ssh_info = {
-						host: ip,
-						port: 22,
-						username: "#{user}",
-						password: "#{vagrantuserpass}"
-					}
-				end
+				ssh_info = {
+					host: ip,
+					port: 22,
+					username: "#{user}",
+					password: "#{userkey}",
+					password: "#{vagrantuserpass}"
+				}
 					
 			end
 
