@@ -21,26 +21,26 @@ Vagrant Plugin which can be used to managed Bhyve, LX and native zones on illumo
 | Function                  | Status
 | :----------               | :-----
 | Box format                | Defined
-| Check bhyve support       | Work in Progress
-| Cloning	                  | Work in Progress
+| Check bhyve support       | Working
+| Packaging                 | Working
 | Network                   | Working
-| SSH/SSH run               | Working -- Key Based Only use the Key provided in the Template that you use
-| Graceful shutdown         | Working
+| SSH/SSH run               | Working -- Key Based Only 
+| Graceful shutdown         | Work in Progress
 | ACPI shutdown             | Working
 | Destroying                | Working
-| Provision                 | Work in Progress
+| Provision                 | Working -- Key Based Only
 | Booting (UEFI	and BIOS )  | Working
 | Port forwarding           | Work in Progress
-| Suspend                   | Not supported by bhyve yet
-| Resume                    | Not supported by bhyve yet
+| Suspend                   | Not supported by bhyve
+| Resume                    | Not supported by bhyve
 
 ### Boxes
 
-Collecting status of boxes from [Atlas](https://atlas.hashicorp.com/boxes/search) other than those provided by [FreeBSD](https://atlas.hashicorp.com/freebsd)
+Collecting status of boxes from [Atlas](https://app.vagrantup.com/)
 
 | Function										| Status
 | :---------------------------------------------------------------------------------	| :------
-| [Makr44/ubuntu2104-desktop](https://app.vagrantup.com/Makr44/boxes/ubuntu2104-desktop)			| Working with work
+| [Makr44/ubuntu2104-desktop](https://app.vagrantup.com/Makr44/boxes/ubuntu2104-desktop)			| Working 
 
 
 ## Test
@@ -91,9 +91,9 @@ Vagrant.configure("2") do |config|
 end
 ```
 
-then execute this command to start the box with bhyve
+then execute this command to start the box with bhyve ( '--provider=zone' may be neccessary if not defined in Vagrantfile) 
 
-    $ /path/to/vagrant-zones/bin/vagrant up --provider=zone
+    $ /path/to/vagrant-zones/bin/vagrant up 
 
 ### SSH into the box
 
@@ -155,7 +155,7 @@ Please read [CONTRIBUTING.md](https://www.prominic.net) for details on our code 
 * **Thomas Merkel** - *Initial work* - [Skylime](https://github.com/skylime)
 * **Mark Gilbert** - *Takeover* - [Makr91](https://github.com/Makr91)
 
-See also the list of [contributors](https://github.com/Makr91/Vagrant-Guacamole-CentOS-8.1/graphs/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/Makr91/vagrant-zones/graphs/contributors) who participated in this project.
 
 ## Acknowledgments
 
