@@ -485,28 +485,39 @@ module VagrantPlugins
 				vagrantuserpass = config.vagrant_user_pass.to_s
 				return vagrantuserpass
 			end
-			
-			def halt(machine, ui)
-				name = @machine.name
-				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
-				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
-				if vm_state == "running"
-					begin
-					 status = Timeout::timeout(config.clean_shutdown_time) {
-						execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
-					 }
-					rescue Timeout::Error
-  						puts "==> #{name}: VM failed to Shutdown in alloted time #{config.clean_shutdown_time}"
-						begin halt_status = Timeout::timeout(60) {
-							execute(false, "#{@pfexec} zoneadm -z #{name} halt")
-						}
-						rescue Timeout::Error
-							raise "==> #{name}: VM failed to halt in alloted time 60 after waiting to shutdown for #{config.clean_shutdown_time}"
-						end
-					end
-				end
-			end
 
+			
+			def destroy(machine, id)
+				name = @machine.name
+				
+				## Ensure machine is halted
+				execute(false, "#{@pfexec} zoneadm -z #{name} halt")
+				
+				## Check if it has a presence in zoneadm and if no presence in zoneadm destroy zonecfg
+				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
+				if vm_configured != name
+					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
+				end
+				
+				## Check state in zoneadm
+				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
+				
+				## If state is seen, uninstall from zoneadm and destroy from zonecfg
+				if vm_state == 'incomplete' || vm_state == 'configured' || vm_state ==  "installed"
+					execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
+					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
+				end
+
+				### Nic Configurations
+				state = "delete"
+				@driver.vnic(@machine, env[:ui], state)
+				
+				
+				### Check State of additional Disks
+				#disks_configured = execute(false, "#{@pfexec}  zfs list ")
+
+				
+			end
 			
 		end
 	end
