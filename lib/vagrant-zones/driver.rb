@@ -390,7 +390,7 @@ module VagrantPlugins
 					index = 1
 					if _type.to_s == "public_network"
 						ip        	= opts[:ip].to_s
-						netmask 	= IPAddr.new(opts[:netmask].to_s).cidr_mask
+						netmask 	= Driver::IPAddr.new(opts[:netmask].to_s).cidr_mask
 						defrouter 	= opts[:gateway]
 						if !opts[:nameserver1].nil?
 							nameserver1  = opts[:nameserver1].to_s
