@@ -388,10 +388,10 @@ module VagrantPlugins
 				end
 
 				
-				## Passthrough PCI Devices
-				if config.ppt
-					puts config.ppt
-				end
+				### Passthrough PCI Devices
+				#if config.ppt
+				#	puts config.ppt
+				#end
 				
 				## Additional Disk Configurations
 				additional_disk_attr = %{
