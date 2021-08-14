@@ -172,8 +172,7 @@ module VagrantPlugins
 							nic_attr = %{
 add net
 	set physical=#{vnic_name}
-end
-							}
+end							}
 							File.open('zone_config', 'a') do |f|
 								f.puts nic_attr
 							end
@@ -335,8 +334,7 @@ add attr
 	set name=type
 	set type=string
 	set value=#{config.os_type}
-end
-					}
+end					}
 				end
 				File.open('zone_config', 'w') do |f|
 					f.puts attr
@@ -349,8 +347,7 @@ add fs
 	set dir=/vagrant
 	set special=#{config.shared_dir}
 	set type=lofs
-end
-					}				
+end					}				
 					File.open('zone_config', 'a') do |f|
 						f.puts shared_disk_attr
 					end
@@ -371,13 +368,20 @@ add fs
     set type=lofs
     add options ro
     add options nodevices
-end
-					}
+end					}
 					File.open('zone_config', 'a') do |f|
 						f.puts cdrom_attr
 					end
 				end
-
+				
+				if config.cdrom_path.nil?
+					puts	"it is NIL!"
+					puts	"it is NIL!"
+					puts	"it is NIL!"
+					puts	"it is NIL!"
+					puts	"it is NIL!"
+					puts	"it is NIL!"	
+				end
 				
 				### Passthrough PCI Devices
 				#if if !config.ppt_devices.nil?
