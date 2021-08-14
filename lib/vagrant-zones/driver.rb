@@ -504,7 +504,6 @@ module VagrantPlugins
 							raise "==> #{name}: VM failed to halt in alloted time 60 after waiting to shutdown for #{config.clean_shutdown_time}"
 						end
 					end
-					
 				end
 			end
 
@@ -537,7 +536,7 @@ module VagrantPlugins
 				### Check State of additional Disks
 				#disks_configured = execute(false, "#{@pfexec}  zfs list ")
 
-				end
+				
 			end
 		end
 	end
