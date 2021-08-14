@@ -277,7 +277,14 @@ module VagrantPlugins
 					
 					# Check whether OmniOS version is lower than r30
 					result = execute(true, "$VER=$(cat /etc/release | head -n 1 | cut -d' ' -f5 |  cut -c 2-); test $VER -ge 1510380")
+					puts ""
 					puts result
+					puts ""
+					puts ""
+					puts ""
+					puts ""
+					puts ""
+					puts ""
 					raise Errors::SystemVersionIsTooLow if result == 0
 					
 				
@@ -290,19 +297,17 @@ module VagrantPlugins
 			
 			def setup(machine, ui)
 				config = machine.provider_config
-				vagrant_user = config.vagrant_user
-				vagrant_user_key = config.vagrant_user_key
-				puts "Waiting for the Machine to boot"
-				waitforboot(machine)
-				puts "Machine Booted, Running Setup"
-				zlogin(machine, "echo 'nameserver 1.1.1.1' | tee  /etc/resolv.conf")
-				zlogin(machine, "echo 'nameserver 1.0.0.1' | tee -a /etc/resolv.conf")
-			
+				name = machine.name
 				insert_key = machine.config.ssh.insert_key
+				
+				puts "==> #{name}: Waiting for the Machine to boot..."
+				waitforboot(machine)
+
+				
 				if insert_key
-					zlogin(machine, "echo #{vagrant_user_key} > \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
-					zlogin(machine, "chown -R #{vagrant_user}:#{vagrant_user} \/home\/#{vagrant_user}\/.ssh")
-					zlogin(machine, "chmod 600 \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
+					zlogin(machine, "echo #{vagrant_user_key} > \/home\/#{config.vagrant_user}\/.ssh\/authorized_keys")
+					zlogin(machine, "chown -R #{config.vagrant_user}:#{config.vagrant_user} \/home\/#{config.vagrant_user}\/.ssh")
+					zlogin(machine, "chmod 600 \/home\/#{config.vagrant_user}\/.ssh\/authorized_keys")
 				end
 				
 				
@@ -331,8 +336,11 @@ module VagrantPlugins
 						zlogin(machine, "sed -i '$ a \\        - #{ip}\/24' /etc/netplan/00-installer-config.yaml")
 						zlogin(machine, "sed -i '$ a \\      gateway4: #{defrouter}' /etc/netplan/00-installer-config.yaml")
 						zlogin(machine, 'sed -i "$ a \  version: 2" /etc/netplan/00-installer-config.yaml')
+						
+						## Apply the Configuration
+						puts "==> #{name}: Applying the network configuration"
 						zlogin(machine, 'netplan apply')
-						puts "Applying The Network Configuration"
+						
 					end
 				end
 				
@@ -346,14 +354,15 @@ module VagrantPlugins
 				subresponses = []
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 				        if zlogin_read.expect(/Last login: /)
-						sleep 10
-						Timeout.timeout(30) do
+						puts "==> #{name}: Machine Booted, Running Setup"
+						sleep 5
+						Timeout.timeout(setup_wait) do
 							loop do
 				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
 								if responses[-1].to_s.match(/:~#/)
 									break
 								elsif responses[-1].to_s.match(/login: /)
-									puts 	"Could not login as Root, Check if Root Autologin Works"
+									puts "==> #{name}: Could not login as Root, Check if Root Autologin Works"
 								end
 							end
 						end
