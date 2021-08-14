@@ -58,7 +58,23 @@ Collecting status of boxes from [Atlas](https://atlas.hashicorp.com/boxes/search
     $ cd vagrant-bhyve
     $ bundle install --path vendor/bundle --binstubs
 
-### Create a box
+## OmniOS Packages
+
+  * ooce/library/libarchive
+  * system/bhyve
+  * system/bhyve/firmware
+  * ooce/application/vagrant
+  * ruby-26
+
+### Create a box from an existing box
+
+For LX Zones you can use a Joyent UUID, for Bhyve Zones, you can use a ZSS file or a image from the Vagrant Cloud with the Zone provider. There may be future work to convert existing images to a Zone provider type.
+
+Once you have setup your a box with an existing box, you can create a box from that with:
+
+```
+vagrant package --output test4.box
+```
 
 ### Convert a box
 
