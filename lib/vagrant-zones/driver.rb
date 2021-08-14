@@ -186,8 +186,8 @@ end							}
 											puts ""
 											puts ""
 											puts ""
-											puts "vmnic"
-											puts ""
+											puts vmnic
+											puts vmnic.to_s
 											puts ""
 											puts ""
 											puts ""
