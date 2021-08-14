@@ -524,7 +524,19 @@ module VagrantPlugins
 				userkey = config.vagrant_user_private_key_path.to_s
 				return userkey
 			end
+			
+			def sshport(machine)
+				config = machine.provider_config
+				accessport = config.sshport.to_s
+				return accessport
+			end
 
+			def rdpport(machine)
+				config = machine.provider_config
+				accessport = config.rdpport.to_s
+				return accessport
+			end
+			
 			def vagrantuserpass(machine)
 				config = machine.provider_config
 				vagrantuserpass = config.vagrant_user_pass.to_s
