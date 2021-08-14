@@ -341,7 +341,7 @@ end					}
 				end
 				
 				## Shared Disk Configurations
-				if shared_disk_enabled
+				if config.shared_disk_enabled
 					shared_disk_attr = %{
 add fs
 	set dir=/vagrant
