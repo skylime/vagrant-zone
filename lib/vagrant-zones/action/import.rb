@@ -47,6 +47,9 @@ module VagrantPlugins
 						
 						end
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
+						puts box_image_file
+						puts env[:machine].box.directory.join('box.zss').to_s
+						puts datadir.to_s
 						FileUtils.cp(env[:machine].box.directory.join('box.zss').to_s, datadir.to_s + '/' + image)
 					end
 					@app.call(env)
