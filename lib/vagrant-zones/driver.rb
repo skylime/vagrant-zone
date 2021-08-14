@@ -32,8 +32,8 @@ module VagrantPlugins
 			end
 
 			## Convert Subnet Mask into CIDR Notation
-			def to_cidr
-				"/" + self.to_i.to_s(2).count("1")
+			def to_cidr(dotted_mask)
+			  NetAddr::CIDR.create('0.0.0.0/'+dotted_mask).netmask
 			end
 			
 			def state(machine)
@@ -328,6 +328,12 @@ module VagrantPlugins
 				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
 				name = @machine.name
 
+				## Detect if Virtualbox is Running
+				## Kernel, KVM, and Bhyve cannot run conncurently with Virtualbox:
+				### https://forums.virtualbox.org/viewtopic.php?f=11&t=64652
+				result = execute(true, "#{@pfexec} VBoxManage list runningvms  ; echo $?")
+				raise Errors::VirtualBoxRunningConflictDetected if result == 0
+				
 				if config.brand == 'lx'
 					return
 				end
@@ -343,14 +349,13 @@ module VagrantPlugins
 					# Check whether OmniOS version is lower than r30
 					result = execute(true, "/usr/bin/bash -c \"RELEASE=1510380;VER=$(cat /etc/release | head -n 1 | cut -d' ' -f5 |  cut -c 2-); if (($VER -gt $RELEASE)); then exit 0; else exit 1; fi\"")
 					puts ""
-					puts result
-					puts ""
-					puts ""
-					puts ""
-					puts ""
-					puts ""
-					puts ""
-					raise Errors::SystemVersionIsTooLow if result == 0
+					
+					cutoff_release = "1510380"
+					cutoff_release = cutoff_release[0..-2].to_i 
+					release = File.open('/etc/release', &:readline)
+					release = release.scan(/\w+/).values_at( -1)
+					release = release[0][1..-2].to_i 
+					raise Errors::SystemVersionIsTooLow if release  >= cutoff_release
 	
 					# Check Bhyve compatability
 					result = execute(false, "#{@pfexec} bhhwcompat -s")
@@ -378,7 +383,7 @@ module VagrantPlugins
 					index = 1
 					if _type.to_s == "public_network"
 						ip        	= opts[:ip].to_s
-						netmask 	= opts[:netmask].to_cidr
+						netmask 	= to_cidr(opts[:netmask])
 						defrouter 	= opts[:gateway]
 						if !opts[:nameserver1].nil?
 							nameserver1  = opts[:nameserver1].to_s
