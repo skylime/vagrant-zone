@@ -54,24 +54,7 @@ module VagrantPlugins
 				@executor.execute(*cmd, **opts, &block)
 			end
 
-			def get_ip_address(machine)
-				config = machine.provider_config
-				dhcpenabled = config.dhcp
-				if dhcpenabled
-					raise "==> #{machine.name} ==> DHCP is not yet Configured for use"
-				else
-					machine.config.vm.networks.each do |_type, opts|
-						index = 1
-						if _type.to_s == "public_network"
-							ip        = opts[:ip].to_s
-							defrouter = opts[:gateway]
-							return nil if ip.length == 0
-							return ip.gsub /\t/, ''
-						end
 
-					end
-				end
-			end
 
 			def install(machine, ui)
                                 config = machine.provider_config
@@ -101,6 +84,27 @@ module VagrantPlugins
 				puts "==> #{name}: Starting the Bhyve Zone."
 				execute(false, "#{@pfexec} zoneadm -z #{name} boot")
 			end
+			
+			
+			def get_ip_address(machine)
+				config = machine.provider_config
+				dhcpenabled = config.dhcp
+				if dhcpenabled
+					raise "==> #{machine.name} ==> DHCP is not yet Configured for use"
+				else
+					machine.config.vm.networks.each do |_type, opts|
+						index = 1
+						if _type.to_s == "public_network"
+							ip        = opts[:ip].to_s
+							defrouter = opts[:gateway]
+							return nil if ip.length == 0
+							return ip.gsub /\t/, ''
+						end
+
+					end
+				end
+			end
+			
 			
 			## Create Network Interfaces
 			def vnic(machine, ui, state)
@@ -413,7 +417,7 @@ module VagrantPlugins
 				
 				## Nic Configurations
 				state = "config"
-				@driver.vnic(@machine, ui, state)
+				vnic(@machine, ui, state)
 
 				## Write out Config
 				exit = %{
@@ -616,7 +620,7 @@ module VagrantPlugins
 
 				### Nic Configurations
 				state = "delete"
-				@driver.vnic(@machine, env[:ui], state)
+				vnic(@machine, env[:ui], state)
 				
 				### Check State of additional Disks
 				#disks_configured = execute(false, "#{@pfexec}  zfs list ")
