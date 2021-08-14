@@ -548,7 +548,7 @@ module VagrantPlugins
 				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
 				if vm_state == "running"
 					begin
-					 status = Timeout::timeout(config.clean_shutdown_time.to_i) {
+						status = Timeout::timeout(config.clean_shutdown_time) {
 						execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
 					 }
 					rescue Timeout::Error
