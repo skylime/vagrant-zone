@@ -4,7 +4,7 @@ Vagrant Plugin which can be used to managed Bhyve, LX and native zones on illumo
 - [Status](#status)
   - [Functions](#functions)
   - [Boxes](#boxes)
-- [Test](#test)
+- [Development](#Development)
   - [Setup environment](#setup-environment)
   - [Create a box](#create-a-box)
   - [Add the box](#add-the-box)
@@ -50,7 +50,16 @@ Collecting status of boxes from [Vagrant Cloud](https://app.vagrantup.com/)
 | [Makr44/ubuntu2104-server](https://app.vagrantup.com/Makr44/boxes/ubuntu2104-server)		     | Ubuntu 20.04  	| Working 
 
 
-## Test
+## Development Installation Instructions
+
+### Setup OS for Development
+
+  * ooce/library/libarchive
+  * system/bhyve
+  * system/bhyve/firmware
+  * ooce/application/vagrant
+  * ruby-26
+  * ooce/system/mbuffer
 
 ### Setup vagrant development environment
 
@@ -59,20 +68,12 @@ Collecting status of boxes from [Vagrant Cloud](https://app.vagrantup.com/)
     $ bundle install
     $ bundle --binstubs exec
 
-### Setup environment
+### Setup vagrant-zones environment
 
     $ git clone https://github.com/Makr91/vagrant-zones.git
     $ cd vagrant-bhyve
     $ bundle install --path vendor/bundle --binstubs
 
-## OmniOS Packages
-
-  * ooce/library/libarchive
-  * system/bhyve
-  * system/bhyve/firmware
-  * ooce/application/vagrant
-  * ruby-26
-  * ooce/system/mbuffer
 
 ### Create a box from an existing box
 
@@ -120,9 +121,12 @@ This command will shutdown the booted VM and clean up environment
 
 ## Known Issues
 
-### Synced folder is not working correctlly
+| Box                                                             										         | OS             | Status
+| :---------------------------------------------------------------------------------	         |:------         | :------
+| `centos/7`                                                                                   | CentOS 7       | NFS Synced Folders Fail
 
-I met this issue when I try to use vagrant-bhyve to boot `centos/7` box.
+### NFS Synced Folders Fail
+
 Vagrant uses NFS as default synced folder type. When it fails on your
 machine and box, you can:
 * Add `config.vm.synced_folder ".", "/vagrant", type: "rsync"` to your
@@ -132,8 +136,22 @@ machine and box, you can:
 
 ## Installation
 
-Now this gem has been published on [rubygems.org](https://rubygems.org/gems/vagrant-zones). You can install it through `vagrant plugin install vagrant-zones`
-to install it in a normal Vagrant environment
+Now this gem has been published on [rubygems.org](https://rubygems.org/gems/vagrant-zones).
+
+### Setup OS Installation
+
+  * ooce/library/libarchive
+  * system/bhyve
+  * system/bhyve/firmware
+  * ooce/application/vagrant
+  * ruby-26
+  * ooce/system/mbuffer
+
+### Setup vagrant-zones
+
+ To install it in a standard vagrant environment:
+ 
+ `vagrant plugin install vagrant-zones`
 
 ## Contributing
 
