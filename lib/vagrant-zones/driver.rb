@@ -331,7 +331,7 @@ module VagrantPlugins
 				## Detect if Virtualbox is Running
 				## Kernel, KVM, and Bhyve cannot run conncurently with Virtualbox:
 				### https://forums.virtualbox.org/viewtopic.php?f=11&t=64652
-				result = execute(true, "#{@pfexec} VBoxManage list runningvms  ; echo $?")
+				result = execute(false, "#{@pfexec} VBoxManage list runningvms  ; echo $?")
 				raise Errors::VirtualBoxRunningConflictDetected if result == 0
 				
 				if config.brand == 'lx'
