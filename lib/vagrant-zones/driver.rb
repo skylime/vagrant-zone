@@ -188,146 +188,42 @@ module VagrantPlugins
 				execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
 			end
 
-			def zonecfg(machine, ui)
-				## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console
+
+
+			def check_zone_support(machine, ui)
 				config = machine.provider_config
-				config.shared_dir = Dir.pwd
-				attr = ''
+				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
+				name = @machine.name
+
 				if config.brand == 'lx'
-					machine.config.vm.networks.each_with_index do |_type, opts, index|
-						index + 1
-						if _type.to_s == "public_network"
-							@ip        = opts[:ip].to_s
-							@network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
-							@defrouter = opts[:gateway]
-						end
+					return
+				end
+				if config.brand == 'bhyve'			
+					## Check for  bhhwcompat
+					result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
+					if result == 1
+						execute(true, "#{@pfexec} curl -o /usr/sbin/bhhwcompat https://downloads.omnios.org/misc/bhyve/bhhwcompat && #{@pfexec} chmod +x /usr/sbin/bhhwcompat")
+						result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
+						raise Errors::MissingCompatCheckTool if result == 0
 					end
-					allowed_address  = @ip + @network.netmask.to_s
-					attr = %{
-						add attr
-							set name=kernel-version
-							set type=string
-							set value=#{config.kernel}
-						end
-						add net
-							set physical=#{machine.name}0
-							set global-nic=auto
-							add property (name=gateway,value="#{@defrouter.to_s}")
-							add property (name=ips,value="#{allowed_address}")
-							add property (name=primary,value="true")
-					        end
-						add capped-memory
-							set physical=#{config.memory}
-							set swap=#{config.memory}
-							set locked=#{config.memory}
-					        end
-						add dataset
-							set name=#{config.zonepath.delete_prefix("/")}/boot
-						end
-						set max-lwps=2000
-					}
+					
+					# Check whether OmniOS version is lower than r30
+					result = execute(true, "/usr/bin/bash -c \"RELEASE=1510380;VER=$(cat /etc/release | head -n 1 | cut -d' ' -f5 |  cut -c 2-); if (($VER -gt $RELEASE)); then exit 0; else exit 1; fi\"")
+					puts ""
+					puts result
+					puts ""
+					puts ""
+					puts ""
+					puts ""
+					puts ""
+					puts ""
+					raise Errors::SystemVersionIsTooLow if result == 0
+	
+					# Check Bhyve compatability
+					result = execute(false, "#{@pfexec} bhhwcompat -s")
+					raise Errors::MissingBhyve if result.length == 1 
 				end
-				if config.brand == 'bhyve'
-					## General Configuration
-					attr = %{
-						create
-						set zonepath=#{config.zonepath}/path
-						set brand=#{config.brand}
-						set autoboot=#{config.autoboot}
-						set ip-type=exclusive
-						add attr
-							set name="acpi"
-							set type="string"
-							set value="#{config.acpi}"
-						end
-						add attr
-							set name="vcpus"
-							set type="string"
-							set value=#{config.cpus}
-						end
-						add attr
-							set name="ram"
-							set type="string"
-							set value=#{config.memory}
-						end
-						add attr
-							set name=bootrom
-							set type=string
-							set value=#{config.firmware}
-						end
-						add device
-							set match=/dev/zvol/rdsk#{config.zonepath}/boot
-						end
-						add attr
-							set name=bootdisk
-							set type=string
-							set value=#{config.zonepath.delete_prefix("/")}/boot
-						end
-					}
-
-				end
-				data = %{
-					#{attr}
-				}
-				File.open('zone_config', 'w') do |f|
-					f.puts data
-				end
-				
-				## Shared Disk Configurations
-				if config.shared_disk_enabled
-					shared_disk_attr = %{
-						add fs
-							set dir=/vagrant
-							set special=#{lofs_current_dir}
-							set type=lofs
-						end
-					}
-					shared_disk_data = %{
-						#{shared_disk_attr}
-					}
-				
-					File.open('zone_config', 'a') do |f|
-						f.puts shared_disk_data
-					end
-				end
-				
-				
-				## Additional Disk Configurations
-				additional_disk_attr = %{
-					add device
-						set match=/dev/zvol/rdsk#{config.zonepath}/disk1
-					end
-					add attr
-						set name=disk
-						set type=string
-						set value=#{config.zonepath.delete_prefix("/")}/disk1
-					end
-				}
-				additional_disks_data = %{
-					#{additional_disk_attr}
-				}
-				File.open('zone_config', 'a') do |f|
-					f.puts additional_disks_data
-				end
-				
-				## Nic Configurations
-				state = "config"
-				@driver.vnic(@machine, env[:ui], state)
-
-
-				## Write out Config
-				exit = %{
-					exit
-				}
-				File.open('zone_config', 'a') do |f|
-					f.puts exit
-				end
-				
-				## Export config to zonecfg
-				execute(false, "cat zone_config | #{@pfexec} zonecfg -z #{machine.name}")
-			end
-
-
+     			end
 			
 			def setup(machine, ui)
 				config = machine.provider_config
