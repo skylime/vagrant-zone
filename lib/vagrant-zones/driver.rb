@@ -34,11 +34,9 @@ module VagrantPlugins
 				end
 			end
 
-					## Convert Subnet Mask into CIDR Notation
-			IPAddr.class_eval
-			  def to_cidr
-			    "/" + self.to_i.to_s(2).count("1")
-			  end
+			## Convert Subnet Mask into CIDR Notation
+			def to_cidr
+				"/" + self.to_i.to_s(2).count("1")
 			end
 			
 			def state(machine)
@@ -385,7 +383,7 @@ module VagrantPlugins
 					index + 1
 					if _type.to_s == "public_network"
 						ip        	= opts[:ip].to_s
-						netmask 	= IPAddr.new(opts[:netmask]).to_cidr
+						netmask 	= opts[:netmask].to_cidr
 						defrouter 	= opts[:gateway]
 						if !opts[:nameserver1].nil?
 							nameserver1  = opts[:nameserver1].to_s
