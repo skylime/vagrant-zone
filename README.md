@@ -124,7 +124,7 @@ machine and box, you can:
 
 ## Installation
 
-Now this gem has NOT YET been published on [rubygems.org](https://rubygems.org/gems/vagrant-zones). You can install it through `vagrant plugin install vagrant-zones`
+Now this gem has been published on [rubygems.org](https://rubygems.org/gems/vagrant-zones). You can install it through `vagrant plugin install vagrant-zones`
 to install it in a normal Vagrant environment
 
 ## Contributing
