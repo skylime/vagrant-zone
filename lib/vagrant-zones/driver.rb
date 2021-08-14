@@ -421,31 +421,29 @@ module VagrantPlugins
 				
 			end
 			
-			def waitforboot(machine)
+
+				
+			def zlogin(machine, cmd)
 				name = @machine.name
 				config = machine.provider_config
 				responses = []
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-				        if zlogin_read.expect(/Last login: /)
-						puts "==> #{name}: Machine Booted, Running Setup"
-						sleep 5
-						Timeout.timeout(config.setup_wait) do
-							loop do
-				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
-								if responses[-1].to_s.match(/:~#/)
-									break
-								elsif responses[-1].to_s.match(/login: /)
-									## Code to try to login with username and password
-									puts "==> #{name}: Could not login as Root, Check if Root Autologin Works"
-								end
+					zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Error Code: $?\"\n") }
+					Timeout.timeout(30) do
+						loop do
+							zlogin_read.expect(/\r\n/) { |line|  responses.push line}
+							if responses[-1].to_s.match(/Error Code: 0/)
+						        	break
+							elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+						        	raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
+							elsif responses[-1].nil?
+						                break
 							end
 						end
-
 					end
 					Process.kill("HUP",pid)
 				end
-			end	
-
+			end
 
 			def user(machine)
 				config = machine.provider_config
