@@ -183,6 +183,15 @@ end							}
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 										if responses[-1].to_s.match(/(\w*)\d/)
 											vmnic = responses[-1].to_s
+											puts ""
+											puts ""
+											puts ""
+											puts "vmnic"
+											puts ""
+											puts ""
+											puts ""
+											puts ""
+											puts ""
 									        	break
 										end
 									end
