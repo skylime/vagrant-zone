@@ -384,7 +384,7 @@ end					}
 				end
 				
 				### Passthrough PCI Devices
-				if config.ppt_devices == 'none'
+				#if config.ppt_devices == 'none'
 				#	puts config.ppt
 				#	puts config.config.ppt
 				#	ppt_attr = %{
