@@ -591,7 +591,7 @@ module VagrantPlugins
 				end
 			end
 			
-			def destroy(machine, id)
+			def destroy(machine, id, ui)
 				name = @machine.name
 				
 				## Ensure machine is halted
@@ -617,7 +617,7 @@ module VagrantPlugins
 
 				### Nic Configurations
 				state = "delete"
-				vnic(@machine, env[:ui], state)
+				@driver.vnic(@machine, env[:ui], state)
 				
 				### Check State of additional Disks
 				#disks_configured = execute(false, "#{@pfexec}  zfs list ")
