@@ -109,6 +109,7 @@ module VagrantPlugins
 							ip = nil
 						else
 							ip = ip.gsub /\t/, ''
+						end
 						mac  		= 'auto'
 						vlan 		= 1
 						if !opts[:mac].nil?
