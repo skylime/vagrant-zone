@@ -39,15 +39,21 @@ module VagrantPlugins
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 				if vm_state == 'running'
 					:running
+					puts "==> #{name}: Machine state is: #{vm_state}"
 				elsif vm_state == 'configured'
 					:preparing
+					puts "==> #{name}: Machine state is: #{vm_state}"
 				elsif vm_state == 'installed'
 					:stopped
+					puts "==> #{name}: Machine state is: #{vm_state}"
 				elsif vm_state == 'incomplete'
 					:incomplete
+					puts "==> #{name}: Machine state is: #{vm_state}"
 				else
 					:not_created
+					puts "==> #{name}: Machine state is: #{vm_state}"
 				end
+				
 			end
 
 			def execute(*cmd, **opts, &block)
@@ -81,25 +87,20 @@ module VagrantPlugins
 			## Boot the Machine
 			def boot(machine, ui)
 				name = @machine.name
-				puts "==> #{name}: Starting the Bhyve Zone."
+				config = machine.provider_config
+				puts "==> #{name}: Starting the #{config.brand} zone."
 				execute(false, "#{@pfexec} zoneadm -z #{name} boot")
 			end
 			
 			
 			def get_ip_address(machine)
 				config = machine.provider_config
-				if config.dhcp
-					raise "==> #{machine.name} ==> DHCP is not yet Configured for use"
-				else
-					machine.config.vm.networks.each do |_type, opts|
-						index = 1
-						if _type.to_s == "public_network"
-							ip        = opts[:ip].to_s
-							defrouter = opts[:gateway]
-							return nil if ip.length == 0
-							return ip.gsub /\t/, ''
-						end
-
+				machine.config.vm.networks.each do |_type, opts|
+					if _type.to_s == "public_network"
+						ip        = opts[:ip].to_s
+						defrouter = opts[:gateway]
+						return nil if ip.length == 0
+						return ip.gsub /\t/, ''
 					end
 				end
 			end
@@ -179,8 +180,19 @@ end							}
 							## Remove old installer netplan config
 							puts "==> #{name}: Removing stale netplan configurations."
 							zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
+							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
+								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }'") }
+								Timeout.timeout(30) do
+									loop do
+										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
+										vmnic = responses[-1].to_s
+										raise "vmnic not found" vmnic.length.nil?
+									        break
+									end
+								end
+								Process.kill("HUP",pid)
+							end
 							
-							vmnic = `ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }'`
 							if config.dhcp
 								puts "==> #{name}: Generate fresh netplan configurations."
 								netplan = %{network:
@@ -656,14 +668,17 @@ end
 				if vm_state == 'incomplete' || vm_state == 'configured' || vm_state ==  "installed"
 					puts "==> #{name}: Uninstalling Zone and Removing zonecfg configuration"
 					execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
+					puts "==> #{name}: Removing zonecfg configuration"
 					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
 				end
 
 				### Nic Configurations
+				puts "==> #{name}: Deleting Associated VNICs"
 				state = "delete"
 				vnic(@machine, id, state)
 				
 				### Check State of additional Disks
+				puts "==> #{name}: Deleting Associated Disks"
 				#disks_configured = execute(false, "#{@pfexec}  zfs list ")
 
 			end
