@@ -174,11 +174,8 @@ add net
 	set physical=#{vnic_name}
 end
 							}
-							additional_nics_data = %{
-#{nic_attr}
-							}
 							File.open('zone_config', 'a') do |f|
-								f.puts additional_nics_data
+								f.puts nic_attr
 							end
 						elsif state == "setup"
 							## Remove old installer netplan config
@@ -341,11 +338,8 @@ add attr
 end
 					}
 				end
-				data = %{
-#{attr}
-				}
 				File.open('zone_config', 'w') do |f|
-					f.puts data
+					f.puts attr
 				end
 				
 				## Shared Disk Configurations
@@ -356,13 +350,9 @@ add fs
 	set special=#{config.shared_dir}
 	set type=lofs
 end
-					}
-					shared_disk_data = %{
-#{shared_disk_attr}
-					}
-				
+					}				
 					File.open('zone_config', 'a') do |f|
-						f.puts shared_disk_data
+						f.puts shared_disk_attr
 					end
 				end
 				
@@ -383,12 +373,8 @@ add fs
     add options nodevices
 end
 					}
-					cdroms_data = %{
-#{cdrom_attr}
-					}
-				
 					File.open('zone_config', 'a') do |f|
-						f.puts cdroms_data
+						f.puts cdrom_attr
 					end
 				end
 
@@ -396,7 +382,26 @@ end
 				### Passthrough PCI Devices
 				#if if !config.ppt_devices.nil?
 				#	puts config.ppt
+				#	puts config.config.ppt
+				#	ppt_attr = %{
+#add device
+#  set match=/dev/ppt0
+#end
+#add attr
+#  set name=ppt0
+#  set type=string
+#  set value="slot0"
+#end
+				#	}
+				#	ppt_data_attr = %{
+#{ppt_data}
+				#	}
+				
+				#	File.open('zone_config', 'a') do |f|
+				#		f.puts ppt_data_attr
+				#	end
 				#end
+
 				
 				## Additional Disk Configurations
 				if !config.disk1path.nil?
@@ -410,13 +415,11 @@ add attr
 	set value=#{config.zonepath.delete_prefix("/")}/disk1
 end
 					}
-					additional_disks_data = %{
-#{additional_disk_attr}
-					}
 					File.open('zone_config', 'a') do |f|
-						f.puts additional_disks_data
+						f.puts additional_disk_attr
 					end
 				end
+				
 				## Nic Configurations
 				state = "config"
 				vnic(@machine, ui, state)
