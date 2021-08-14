@@ -154,23 +154,24 @@ module VagrantPlugins
 						else
 						  nic_type = "e"
 						end
+						vnic_name = "vnic#{nic_type}#{config.vm_type}-#{config.partition_id}-#{nic_number}"
 						if state == "create"
 							if !opts[:vlan].nil?
 								vlan =  opts[:vlan]
-								puts "==> #{name}: Creating VNIC: vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id} with VLAN: {vlan}."
-								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id}")
+								puts "==> #{name}: Creating VNIC: #{vnic_name} with VLAN: #{vlan}."
+								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
 							else
-								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id}")
+								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
 							end		
 						elsif state == "delete"
-							vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id} | awk '{ print $1 }' ")
-							if vnic_configured == "vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id}"
-								execute(false, "#{@pfexec} dladm delete-vnic vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id}")
+							vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
+							if vnic_configured == "#{vnic_name}"
+								execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
 							end
 						elsif state == "config"
 							nic_attr = %{
 add net
-	set physical=vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id}
+	set physical=#{vnic_name}
 end
 							}
 							additional_nics_data = %{
@@ -421,7 +422,7 @@ end
 
 				## Write out Config
 				exit = %{
-					exit
+exit
 				}
 				File.open('zone_config', 'a') do |f|
 					f.puts exit
