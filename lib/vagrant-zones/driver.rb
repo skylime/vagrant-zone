@@ -169,8 +169,7 @@ module VagrantPlugins
 								execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
 							end
 						elsif state == "config"
-							nic_attr = %{
-add net
+							nic_attr = %{add net
 	set physical=#{vnic_name}
 end							}
 							File.open('zone_config', 'a') do |f|
@@ -280,8 +279,7 @@ set max-lwps=2000
 				if config.brand == 'bhyve'
 					## General Configuration
 					puts "==> #{name}: Generating Configuration for bhyve Branded Zone"
-					attr = %{
-create
+					attr = %{create
 set zonepath=#{config.zonepath}/path
 set brand=#{config.brand}
 set autoboot=#{config.autoboot}
@@ -341,8 +339,7 @@ end					}
 				
 				## Shared Disk Configurations
 				if config.shared_disk_enabled
-					shared_disk_attr = %{
-add fs
+					shared_disk_attr = %{add fs
 	set dir=/vagrant
 	set special=#{config.shared_dir}
 	set type=lofs
@@ -353,10 +350,9 @@ end					}
 				end
 				
 				## CDROM Configurations
-				if config.cdrom_path == 'none'
+				if config.cdrom_path != 'none'
 					puts config.cdrom_path
-					cdrom_attr = %{
-add attr
+					cdrom_attr = %{add attr
     set name=cdrom
     set type=string
     set value=#{config.cdrom_path}
@@ -372,15 +368,7 @@ end					}
 						f.puts cdrom_attr
 					end
 				end
-				
-				if config.cdrom_path == 'none'
-					puts	"it is NIL!"
-					puts	"it is NIL!"
-					puts	"it is NIL!"
-					puts	"it is NIL!"
-					puts	"it is NIL!"
-					puts	"it is NIL!"	
-				end
+
 				
 				### Passthrough PCI Devices
 				#if config.ppt_devices == 'none'
@@ -407,9 +395,8 @@ end					}
 
 				
 				## Additional Disk Configurations
-				if config.diskpath1 == 'none'
-					additional_disk_attr = %{
-add device
+				if config.diskpath1 != "none"
+					additional_disk_attr = %{add device
 	set match=/dev/zvol/rdsk#{config.zonepath}/disk1
 end
 add attr
