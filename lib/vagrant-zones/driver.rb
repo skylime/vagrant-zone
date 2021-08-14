@@ -79,32 +79,67 @@ module VagrantPlugins
 				end
 			end
 
-			def install(machine, ui)
-                                config = machine.provider_config
-				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
-				name = @machine.name
 
-				if config.brand == 'lx'
-					execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
-				end
-				if config.brand == 'bhyve'
-					execute(false, "#{@pfexec} zoneadm -z #{name} install")
-				end
-				if config.brand == 'kvm'
-					execute(false, "#{@pfexec} zoneadm -z #{name} install")
-				end
-				if config.brand == 'illumos'
-					execute(false, "#{@pfexec} zoneadm -z #{name} install")
+			
+			## Create Network Interfaces
+			def vnic(machine, ui, state)
+				config = machine.provider_config
+				machine.config.vm.networks.each_with_index do |_type, opts, index|
+					index + 1
+					nic_number = index
+					if _type.to_s == "public_network"
+						link = opts[:bridge]
+						mac  = 'auto'
+						vlan = 1
+						if !opts[:mac].nil?
+							mac  = opts[:mac]
+						end
+						if !opts[:type].nil?
+							nictype  = opts[:nictype]
+						end
+
+						case nictype
+						when /external/
+						  nic_type = "e"
+						when /internal/
+						  nic_type = "i"
+						when /carp/
+						  nic_type = "c"
+						when /management/
+						  nic_type = "m"
+						when /host/
+						  nic_type = "h"
+						else
+						  nic_type = "e"
+						end
+						if state == "create"
+							if !opts[:vlan].nil?
+								vlan =  opts[:vlan]
+								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id}")
+							else
+								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id}")
+							end		
+						elsif state == "delete"
+							vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id} | awk '{ print $1 }' ")
+							if vnic_configured == "vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id}"
+								execute(false, "#{@pfexec} dladm delete-vnic vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id}")
+							end
+						elsif state == "config"
+							nic_attr = %{
+								add net
+									set physical=vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id}
+								end
+							}
+							additional_nics_data = %{
+								#{nic_attr}
+							}
+							File.open('zone_config', 'a') do |f|
+								f.puts additional_nics_data
+							end
+						end
+					end
 				end
 			end
-			
-			## Boot the Machine
-			def boot(machine, ui)
-				name = @machine.name
-				execute(false, "#{@pfexec} zoneadm -z #{name} boot")
-			end
-			
-
 
 			def create_dataset(machine, ui)
 				config  = machine.provider_config				
