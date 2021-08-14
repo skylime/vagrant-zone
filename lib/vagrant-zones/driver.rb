@@ -13,9 +13,6 @@ require 'vagrant-zones/util/timer'
 
 module VagrantPlugins
 	module ProviderZone
-
-
-		
 		class Driver
 			attr_accessor :executor
 			def initialize(machine)
@@ -165,29 +162,27 @@ module VagrantPlugins
 								f.puts additional_nics_data
 							end
 						elsif state == "setup"
-
-								## Remove old installer netplan config
-								zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
-								
-								## Create new netplan config
-								zlogin(machine, "touch /etc/netplan/00-installer-config.yaml")
-								zlogin(machine, 'echo "network:" > /etc/netplan/00-installer-config.yaml')
-								zlogin(machine, 'sed -i "$ a \  version: 2" /etc/netplan/00-installer-config.yaml')
-								zlogin(machine, 'sed -i "$ a \  ethernets:" /etc/netplan/00-installer-config.yaml')
-								zlogin(machine, 'APT=$(ifconfig -s -a | grep -v lo | tail -1 | awk \'{ print $1 }\') &&  sed -i "$ a \    $APT:" /etc/netplan/00-installer-config.yaml')
-								zlogin(machine, 'sed -i "$ a \      dhcp-identifier: mac" /etc/netplan/00-installer-config.yaml')
-								zlogin(machine, 'sed -i "$ a \      dhcp4: no" /etc/netplan/00-installer-config.yaml')
-								zlogin(machine, 'sed -i "$ a \      dhcp6: no" /etc/netplan/00-installer-config.yaml')
-								zlogin(machine, 'sed -i "$ a \      nameservers:" /etc/netplan/00-installer-config.yaml')
-								zlogin(machine, "sed -i '$ a \\        addresses: [#{nameserver1} , #{nameserver2}]' /etc/netplan/00-installer-config.yaml")
-								zlogin(machine, "sed -i '$ a \\      addresses: [#{ip}\/#{netmask}]' /etc/netplan/00-installer-config.yaml")
-								zlogin(machine, "sed -i '$ a \\      gateway4: #{defrouter}' /etc/netplan/00-installer-config.yaml")
-								
-								
-								## Apply the Configuration
-								puts "==> #{name}: Applying the network configuration"
-								zlogin(machine, 'netplan apply')
-							end
+							## Remove old installer netplan config
+							zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
+							
+							## Create new netplan config
+							zlogin(machine, "touch /etc/netplan/00-installer-config.yaml")
+							zlogin(machine, 'echo "network:" > /etc/netplan/00-installer-config.yaml')
+							zlogin(machine, 'sed -i "$ a \  version: 2" /etc/netplan/00-installer-config.yaml')
+							zlogin(machine, 'sed -i "$ a \  ethernets:" /etc/netplan/00-installer-config.yaml')
+							zlogin(machine, 'APT=$(ifconfig -s -a | grep -v lo | tail -1 | awk \'{ print $1 }\') &&  sed -i "$ a \    $APT:" /etc/netplan/00-installer-config.yaml')
+							zlogin(machine, 'sed -i "$ a \      dhcp-identifier: mac" /etc/netplan/00-installer-config.yaml')
+							zlogin(machine, 'sed -i "$ a \      dhcp4: no" /etc/netplan/00-installer-config.yaml')
+							zlogin(machine, 'sed -i "$ a \      dhcp6: no" /etc/netplan/00-installer-config.yaml')
+							zlogin(machine, 'sed -i "$ a \      nameservers:" /etc/netplan/00-installer-config.yaml')
+							zlogin(machine, "sed -i '$ a \\        addresses: [#{nameserver1} , #{nameserver2}]' /etc/netplan/00-installer-config.yaml")
+							zlogin(machine, "sed -i '$ a \\      addresses: [#{ip}\/#{netmask}]' /etc/netplan/00-installer-config.yaml")
+							zlogin(machine, "sed -i '$ a \\      gateway4: #{defrouter}' /etc/netplan/00-installer-config.yaml")
+							
+							
+							## Apply the Configuration
+							puts "==> #{name}: Applying the network configuration"
+							zlogin(machine, 'netplan apply')
 						end
 					end
 				end
