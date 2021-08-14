@@ -37,9 +37,6 @@ module VagrantPlugins
 			attr_accessor :sshport
 			attr_accessor :rdpport
 
-			
-			
-			
 			def initialize
 
 				# pkgsrc, lx, bhyve, kvm, illumos
