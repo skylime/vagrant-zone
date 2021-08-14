@@ -140,6 +140,7 @@ module VagrantPlugins
 			def create_dataset(machine, ui)
 				config  = machine.provider_config				
 				dataset = config.zonepath.delete_prefix("/").to_s + "/boot"
+				datadir  = machine.data_dir
 				datasetroot = config.zonepath.delete_prefix("/").to_s
 				if config.brand == 'lx'					
 					execute(false, "#{@pfexec} zfs create -o zoned=on -p #{dataset}")
@@ -147,6 +148,7 @@ module VagrantPlugins
 				if config.brand == 'bhyve'
 					execute(false, "#{@pfexec} zfs create #{datasetroot}")
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
+					execute(false, "#{@pfexec} zfs recv -F #{dataset} < #{datadir.to_s}/box.zss'")
 				elsif config.disk1
 					disk1path = config.disk1.delete_prefix("/").to_s
 					disk1size = config.disk1_size.to_s
