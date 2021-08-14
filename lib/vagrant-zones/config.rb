@@ -8,6 +8,8 @@ module VagrantPlugins
 			attr_accessor :kernel
 			attr_accessor :zonepath
 			attr_accessor :zonepathsize
+			attr_accessor :diskif
+			attr_accessor :netif
 			attr_accessor :disk1path
 			attr_accessor :disk1size
 			attr_accessor :cpus
@@ -25,6 +27,9 @@ module VagrantPlugins
 			attr_accessor :shared_disk_enabled
 			attr_accessor :shared_dir
 			attr_accessor :acpi
+			attr_accessor :os_type
+			attr_accessor :vnc
+			attr_accessor :hostbridge
 			
 			
 			
@@ -39,10 +44,15 @@ module VagrantPlugins
 				@disk1pathsize 			= UNSET_VALUE
 				@disk1size 			= UNSET_VALUE
 				@shared_dir			= Dir.pwd
+				@os_type			= 'generic'
 				@shared_disk_enabled		= true
+				@vnc				= true
 				@memory   			= '4G'
+				@diskif   			= 'virtio-blk'
+				@netif   			= 'virtio-net-viona'
 				@cpus   			= 2
-				@acpi 				= 'off'
+				@hostbridge   			= 'i440fx'
+				@acpi 				= 'on'
 				@firmware  			= 'compatability'
 				@dhcp   			= false
 				@setup_wait  			= 30
