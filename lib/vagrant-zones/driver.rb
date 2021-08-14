@@ -87,8 +87,7 @@ module VagrantPlugins
 			## Boot the Machine
 			def boot(machine, ui)
 				name = @machine.name
-				config = machine.provider_config
-				puts "==> #{name}: Starting the #{config.brand} zone."
+				puts "==> #{name}: Starting the zone."
 				execute(false, "#{@pfexec} zoneadm -z #{name} boot")
 			end
 			
