@@ -548,16 +548,16 @@ module VagrantPlugins
 				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
 				if vm_state == "running"
 					begin
-					 status = Timeout::timeout(config.clean_shutdown_time.to_s) {
+					 status = Timeout::timeout(config.clean_shutdown_time.to_i) {
 						execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
 					 }
 					rescue Timeout::Error
-  						puts "==> #{name}: VM failed to Shutdown in alloted time #{config.clean_shutdown_time}"
+  						puts "==> #{name}: VM failed to Shutdown in alloted time #{config.clean_shutdown_time.to_i}"
 						begin halt_status = Timeout::timeout(60) {
 							execute(false, "#{@pfexec} zoneadm -z #{name} halt")
 						}
 						rescue Timeout::Error
-							raise "==> #{name}: VM failed to halt in alloted time 60 after waiting to shutdown for #{config.clean_shutdown_time}"
+							raise "==> #{name}: VM failed to halt in alloted time 60 after waiting to shutdown for #{config.clean_shutdown_time.to_i}"
 						end
 					end
 				end
