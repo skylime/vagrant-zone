@@ -186,7 +186,6 @@ end							}
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 										vmnic = responses[-1].to_s
-										raise "vmnic not found" vmnic.length.nil?
 									        break
 									end
 								end
