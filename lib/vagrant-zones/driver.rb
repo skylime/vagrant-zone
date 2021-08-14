@@ -404,7 +404,7 @@ end					}
 
 				
 				## Additional Disk Configurations
-				if config.diskpath1 != 'none'
+				if config.disk1path != 'none'
 					additional_disk_attr = %{add device
 	set match=/dev/zvol/rdsk#{config.zonepath}/disk1
 end
@@ -424,9 +424,7 @@ end
 				vnic(@machine, ui, state)
 
 				## Write out Config
-				exit = %{
-exit
-				}
+				exit = %{exit}
 				File.open('zone_config', 'a') do |f|
 					f.puts exit
 				end
