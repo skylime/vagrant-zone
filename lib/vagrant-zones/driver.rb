@@ -341,7 +341,7 @@ end					}
 				end
 				
 				## Shared Disk Configurations
-				if !config.shared_disk_enabled.nil?
+				if shared_disk_enabled
 					shared_disk_attr = %{
 add fs
 	set dir=/vagrant
@@ -354,7 +354,7 @@ end					}
 				end
 				
 				## CDROM Configurations
-				if !config.cdrom_path.nil?
+				if config.cdrom_path == 'none'
 					puts config.cdrom_path
 					cdrom_attr = %{
 add attr
@@ -374,7 +374,7 @@ end					}
 					end
 				end
 				
-				if config.cdrom_path.nil?
+				if config.cdrom_path == 'none'
 					puts	"it is NIL!"
 					puts	"it is NIL!"
 					puts	"it is NIL!"
@@ -384,7 +384,7 @@ end					}
 				end
 				
 				### Passthrough PCI Devices
-				#if if !config.ppt_devices.nil?
+				if config.ppt_devices == 'none'
 				#	puts config.ppt
 				#	puts config.config.ppt
 				#	ppt_attr = %{
@@ -408,7 +408,7 @@ end					}
 
 				
 				## Additional Disk Configurations
-				if !config.disk1path.nil?
+				if config.diskpath1 == 'none'
 					additional_disk_attr = %{
 add device
 	set match=/dev/zvol/rdsk#{config.zonepath}/disk1
