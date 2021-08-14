@@ -12,6 +12,20 @@ require 'vagrant-zones/util/timer'
 
 module VagrantPlugins
 	module ProviderZone
+
+		class IPAddr
+		  def cidr_mask
+		    case (@family)
+		    when Socket::AF_INET
+		      32 - Math.log2((1<<32) - @mask_addr).to_i
+		    when Socket::AF_INET6
+		      128 - Math.log2((1<<128) - @mask_addr).to_i
+		    else
+		      raise AddressFamilyError, "unsupported address family"
+		    end
+		  end
+		end
+		
 		class Driver
 			attr_accessor :executor
 			def initialize(machine)
@@ -31,11 +45,6 @@ module VagrantPlugins
 				end
 			end
 
-			## Convert Subnet Mask into CIDR Notation
-			def to_cidr(dotted_mask)
-			  NetAddr::CIDR.create('0.0.0.0/'+dotted_mask).netmask
-			end
-			
 			def state(machine)
 				uuid = machine.id
 				name = machine.name
@@ -380,7 +389,7 @@ module VagrantPlugins
 					index = 1
 					if _type.to_s == "public_network"
 						ip        	= opts[:ip].to_s
-						netmask 	= to_cidr(opts[:netmask])
+						netmask 	= IPAddr.new(opts[:netmask]).cidr_mask
 						defrouter 	= opts[:gateway]
 						if !opts[:nameserver1].nil?
 							nameserver1  = opts[:nameserver1].to_s
