@@ -89,6 +89,8 @@ vagrant package --output test4.box
 
 Thanks to [Steve Wills](https://github.com/swills)'s work, now you can convert a VirtualBox box to a bhyve one with [vagrant-mutate](https://github.com/sciurus/vagrant-mutate).
 
+The plan is to incorporate the above code to allow people to import existing virtualbox boxes from vagrant cloud (and local installations) and automatically convert them to bhyve.
+
 ### Run the box
 
 After a box is created, you should create another Vagrantfile.
@@ -124,6 +126,7 @@ This command will shutdown the booted VM and clean up environment
 | Box                                                             										         | OS             | Status
 | :---------------------------------------------------------------------------------	         |:------         | :------
 | `centos/7`                                                                                   | CentOS 7       | NFS Synced Folders Fail
+| All                                                                                          | All            | Cannot Detect OS Boot
 
 ### NFS Synced Folders Fail
 
@@ -133,6 +136,27 @@ machine and box, you can:
   Vagrantfile to ensure that rsync type is used. Vagrant core will raise an
   error to inform you when there is not rsync find in PATH
 * Run `vagrant plugin install vagrant-sshfs` to enable vagrant-sshfs
+
+### Cannot Detect OS Boot
+
+Currently this plugin uses Ruby to parse the output of they TTYS0 console output of the VM. It waits until it detects "Last Login:".
+
+This is expected to be adjusted once cloud-init properly works in a future release of bhyve.
+
+This is assuming that your VM is set to auto-login the root user, and enable the console output on TTYS0. On Ubuntu 20.04 this can be done by setting it as follows:
+
+1) Create a directory /etc/systemd/system/serial-getty@ttyS0.service.d
+2) Create a file /etc/systemd/system/serial-getty@ttyS0.service.d
+    a) add the following content:
+        ```
+        [Service]
+        ExecStart=
+        ExecStart=/sbin/agetty --autologin root -8 --keep-baud 115200,38400,9600 ttyS0 $TERM
+        ```
+3) In Grub add the following configuration:
+        ```
+        GRUB_CMDLINE_LINUX="console=ttyS0,115200n8 tsc=reliable earlyprintk"
+        ```
 
 ## Installation
 
