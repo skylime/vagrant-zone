@@ -379,7 +379,7 @@ module VagrantPlugins
 						end
 					}
 					cdroms_data = %{
-						#{cdrom_att}
+						#{cdrom_attr}
 					}
 				
 					File.open('zone_config', 'a') do |f|
