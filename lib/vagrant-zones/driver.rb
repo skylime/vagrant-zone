@@ -352,7 +352,7 @@ module VagrantPlugins
 					release = File.open('/etc/release', &:readline)
 					release = release.scan(/\w+/).values_at( -1)
 					release = release[0][1..-2].to_i 
-					raise Errors::SystemVersionIsTooLow if release  >= cutoff_release
+					raise Errors::SystemVersionIsTooLow if release  < cutoff_release
 	
 					# Check Bhyve compatability
 					result = execute(false, "#{@pfexec} bhhwcompat -s")
