@@ -180,28 +180,69 @@ end							}
 							puts "==> #{name}: Removing stale netplan configurations."
 							zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
 							
-							## Create new netplan config
-							puts "==> #{name}: Generate fresh netplan configurations."
-							zlogin(machine, "touch /etc/netplan/00-installer-config.yaml")
-							zlogin(machine, 'echo "network:" > /etc/netplan/00-installer-config.yaml')
-							zlogin(machine, 'sed -i "$ a \  version: 2" /etc/netplan/00-installer-config.yaml')
-							zlogin(machine, 'sed -i "$ a \  ethernets:" /etc/netplan/00-installer-config.yaml')
-							zlogin(machine, 'APT=$(ifconfig -s -a | grep -v lo | tail -1 | awk \'{ print $1 }\') &&  sed -i "$ a \    $APT:" /etc/netplan/00-installer-config.yaml')
-							zlogin(machine, 'sed -i "$ a \      dhcp-identifier: mac" /etc/netplan/00-installer-config.yaml')
-							zlogin(machine, 'sed -i "$ a \      dhcp4: no" /etc/netplan/00-installer-config.yaml')
-							zlogin(machine, 'sed -i "$ a \      dhcp6: no" /etc/netplan/00-installer-config.yaml')
-							zlogin(machine, 'sed -i "$ a \      nameservers:" /etc/netplan/00-installer-config.yaml')
-							zlogin(machine, "sed -i '$ a \\        addresses: [#{nameserver1} , #{nameserver2}]' /etc/netplan/00-installer-config.yaml")
-							zlogin(machine, "sed -i '$ a \\      addresses: [#{ip}\/#{netmask}]' /etc/netplan/00-installer-config.yaml")
-							zlogin(machine, "sed -i '$ a \\      gateway4: #{defrouter}' /etc/netplan/00-installer-config.yaml")
-							
+							vmnic = `ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }'`
+							if config.dhcp
+								puts "==> #{name}: Generate fresh netplan configurations."
+								netplan = %{network:
+  version: 2
+  ethernets:
+    #{vmnic}:
+      dhcp-identifier: mac
+      dhcp4: yes
+      dhcp6: yes
+      nameservers:
+        addresses: [#{nameserver1} , #{nameserver2}]
+	    							}
+								puts netplan
+								zlogin(machine, "touch /etc/netplan/#{vnic_name}.yaml")
+								zlogin(machine, "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml")
+								puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
+							else
+								## Create new netplan config
+								puts "==> #{name}: Generate fresh netplan configurations."
+								netplan = %{network:
+  version: 2
+  ethernets:
+    #{vmnic}:
+      dhcp-identifier: mac
+      dhcp4: no
+      dhcp6: no
+      addresses: [#{ip}/#{netmask}]
+      gateway4: #{defrouter}
+      nameservers:
+        addresses: [#{nameserver1} , #{nameserver2}]
+	    							}
+								puts netplan
+								zlogin(machine, "touch /etc/netplan/#{vnic_name}.yaml")
+								zlogin(machine, "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml")
+							end
 							
 							## Apply the Configuration
 							puts "==> #{name}: Applying the network configuration"
 							zlogin(machine, 'netplan apply')
+							
 						elsif state == "get_ip"
 							if config.dhcp
-								raise "==> #{machine.name} ==> DHCP is not yet Configured for use"
+								PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
+									zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("hostname -I") }
+									Timeout.timeout(30) do
+										loop do
+											zlogin_read.expect(/\r\n/) { |line|  responses.push line}
+											if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
+												ip = responses[-1].to_s
+												return nil if ip.length == 0
+												return ip.gsub /\t/, ''
+										        	break
+											elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+										        	raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
+											elsif responses[-1].nil?
+										                break
+											end
+										end
+									end
+									Process.kill("HUP",pid)
+								end
+								puts "==> #{machine.name} ==> DHCP is not yet Configured for use"
 							else
 								if opts[:managed]
 									return nil if ip.length == 0
@@ -447,7 +488,6 @@ end
 				raise Errors::VirtualBoxRunningConflictDetected if result == 0
 				
 				if config.brand == 'lx'
-					
 					puts "==> #{name}: No LX Zones Checked, We assume that you have all the Appropriate packages"
 					return
 				end
@@ -573,7 +613,6 @@ end
 				return vagrantuserpass
 			end
 
-			
 			def halt(machine, ui)
 				name = @machine.name
 				config = machine.provider_config
