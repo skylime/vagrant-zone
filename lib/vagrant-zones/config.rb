@@ -1,6 +1,5 @@
 require "vagrant"
 ## Do not Modify this File! Modify the Hosts.yml, Hosts.rb, or Vagrantfile!
-
 module VagrantPlugins
 	module ProviderZone
 		class Config < Vagrant.plugin('2', :config)
@@ -36,9 +35,7 @@ module VagrantPlugins
 			attr_accessor :hostbridge
 			attr_accessor :sshport
 			attr_accessor :rdpport
-
 			def initialize
-
 				# pkgsrc, lx, bhyve, kvm, illumos
 				@brand    			= 'bhyve'
 				@autoboot 			= true
@@ -74,33 +71,32 @@ module VagrantPlugins
 				@vagrant_user_private_key_path  =  UNSET_VALUE
 				@vagrant_user_key  		= 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key'
 
-				
 				case @firmware_type
-				when "compatability"  
-					@firmware 		= 'BHYVE_RELEASE_CSM'
+					when "compatability"  
+						@firmware 		= 'BHYVE_RELEASE_CSM'
 					when "UEFI"  
-					@firmware 		= 'BHYVE_RELEASE'
+						@firmware 		= 'BHYVE_RELEASE'
 					when "BIOS"  
-					@firmware 		= 'BHYVE_CSM'
+						@firmware 		= 'BHYVE_CSM'
 					when "UEFI_DEBUG"  
-					@firmware 		= 'BHYVE_DEBUG'
+						@firmware 		= 'BHYVE_DEBUG'
 					when "BIOS_DEBUG"  
-					@firmware 		= 'BHYVE_RELEASE_CSM' 
+						@firmware 		= 'BHYVE_RELEASE_CSM' 
 				else  
 					@firmware 		= "BHYVE_RELEASE_CSM"
 				end	
 				
 				case @vmtype
-				when 'template'
-					@vm_type 		= "1"
-				when 'development'
-					@vm_type 		= "2"
-				when 'production'
-					@vm_type 		= "3"
-				when 'firewall'
-					@vm_type 		= "4"
-				when 'other'
-					@vm_type 		= "5"
+					when 'template'
+						@vm_type 		= "1"
+					when 'development'
+						@vm_type 		= "2"
+					when 'production'
+						@vm_type 		= "3"
+					when 'firewall'
+						@vm_type 		= "4"
+					when 'other'
+						@vm_type 		= "5"
 				else
 					@vm_type 		= "3"
 				end
