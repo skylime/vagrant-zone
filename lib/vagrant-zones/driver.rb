@@ -100,6 +100,7 @@ module VagrantPlugins
 			## Create Network Interfaces
 			def vnic(machine, ui, state)
 				config = machine.provider_config
+				name = @machine.name
 				machine.config.vm.networks.each do |_type, opts|
 					if _type.to_s == "public_network"
 						link 		= opts[:bridge]
