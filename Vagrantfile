@@ -60,7 +60,7 @@ Vagrant.configure("2") do |config|
         config.vm.define :ubuntu2 do |settings|
                 settings.vm.box = 'Makr44/ubuntu2104-server'
 
-                settings.vm.network "public_network", ip: "192.168.2.238", bridge: "igb0", auto_config: false, :netmask => "255.255.255.0", gateway: "192.168.2.1", type: "external" # vlan: "11"
+                settings.vm.network "public_network", ip: "192.168.2.238", bridge: "igb0", auto_config: false, :netmask => "255.255.255.0", gateway: "192.168.2.1", type: "external", nic_number: "1" # vlan: "11"
                 # ubuntu.vm.network "public_network", ip: "192.168.2.239", bridge: "igb0", auto_config: false, :netmask => "255.255.255.0", gateway: "192.168.2.1", # vlan: "11"
                 # ubuntu.vm.network "public_network", ip: "192.168.2.239", bridge: "igb0", auto_config: false, :netmask => "255.255.255.0", gateway: "192.168.2.1", # vlan: "11"
 
