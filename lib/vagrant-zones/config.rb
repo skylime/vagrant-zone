@@ -22,6 +22,10 @@ module VagrantPlugins
 			attr_accessor :firmware
 			attr_accessor :vm_type
 			attr_accessor :partition_id
+			attr_accessor :shared_disk_enabled
+			attr_accessor :shared_dir
+			attr_accessor :acpi
+			
 			
 			
 			def initialize
@@ -34,8 +38,11 @@ module VagrantPlugins
 				@zonepathsize 			= UNSET_VALUE
 				@disk1pathsize 			= UNSET_VALUE
 				@disk1size 			= UNSET_VALUE
+				@shared_dir			= Dir.pwd
+				@shared_disk_enabled		= true
 				@memory   			= '4G'
 				@cpus   			= 2
+				@acpi 				= 'off'
 				@firmware  			= 'compatability'
 				@dhcp   			= false
 				@setup_wait  			= 30
