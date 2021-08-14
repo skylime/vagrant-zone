@@ -455,7 +455,7 @@ module VagrantPlugins
 				
 				### Nic Configurations
 				state = "setup"
-				vnic(@machine, env[:ui], state)
+				vnic(@machine, ui, state)
 				
 			end
 			
