@@ -24,6 +24,7 @@ module VagrantPlugins
 			attr_accessor :dhcp
 			attr_accessor :vagrant_user_pass
 			attr_accessor :firmware_type
+			attr_accessor :firmware
 			attr_accessor :vm_type
 			attr_accessor :partition_id
 			attr_accessor :shared_disk_enabled
