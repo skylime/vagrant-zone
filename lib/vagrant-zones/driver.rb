@@ -368,6 +368,7 @@ end
 				
 				## CDROM Configurations
 				if !config.cdrom_path.nil?
+					puts config.cdrom_path
 					cdrom_attr = %{
 add attr
     set name=cdrom
