@@ -45,7 +45,7 @@ module VagrantPlugins
 				@disk1pathsize 			= UNSET_VALUE
 				@cdrom_path			= "none"
 				@disk1path 			= "none"
-				@shared_dir			= Dir.pwd
+				@shared_dir			= UNSET_VALUE
 				@os_type			= 'generic'
 				@shared_disk_enabled		= true
 				@vnc				= false
