@@ -303,7 +303,6 @@ module VagrantPlugins
 					zlogin(machine, "echo #{vagrant_user_key} > \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
 					zlogin(machine, "chown -R #{vagrant_user}:#{vagrant_user} \/home\/#{vagrant_user}\/.ssh")
 					zlogin(machine, "chmod 600 \/home\/#{vagrant_user}\/.ssh\/authorized_keys")
-					zlogin(machine, "APT=$(ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }') &&  sed -i \"s/enp0s3:/$APT:/g\" /etc/netplan/00-installer-config.yaml ")
 				end
 				
 				
@@ -312,8 +311,22 @@ module VagrantPlugins
 						ip        = opts[:ip].to_s
 						network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
 						defrouter = opts[:gateway]
-						zlogin(machine, "sed -i 's/dhcp4: yes/dhcp4: no/g' /etc/netplan/00-installer-config.yaml")
-						zlogin(machine, "sed -i '$ d' /etc/netplan/00-installer-config.yaml")
+						
+						
+						## Remove old installer netplan config
+						zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
+						
+						## Create new netplan config
+						zlogin(machine, "touch /etc/netplan/00-installer-config.yaml")
+						zlogin(machine, 'sed -i "$ a network:" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'sed -i "$ a \  ethernets:" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'APT=$(ifconfig -s -a | grep -v lo | tail -1 | awk \'{ print $1 }\') &&  sed -i "$ a \  $APT:" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'sed -i "$ a \      dhcp-identifier: mac" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'sed -i "$ a \      dhcp4: no" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'sed -i "$ a \      nameservers:" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'sed -i "$ a \        addresses:" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'sed -i "$ a \        - 1.1.1.1" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'sed -i "$ a \        - 8.8.8.8" /etc/netplan/00-installer-config.yaml')
 						zlogin(machine, 'sed -i "$ a \      addresses:" /etc/netplan/00-installer-config.yaml')
 						zlogin(machine, "sed -i '$ a \\        - #{ip}\/24' /etc/netplan/00-installer-config.yaml")
 						zlogin(machine, "sed -i '$ a \\      gateway4: #{defrouter}' /etc/netplan/00-installer-config.yaml")
