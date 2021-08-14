@@ -49,7 +49,6 @@ module VagrantPlugins
 				else
 					:not_created
 				end
-				puts "==> #{name}: Machine state is: #{vm_state}"
 				
 			end
 
