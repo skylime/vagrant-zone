@@ -29,24 +29,11 @@ module VagrantPlugins
 					brand  = @machine.provider_config.brand
 					kernel = @machine.provider_config.kernel
 					
-					
-					puts ""
-					puts ""
-					puts ""
-					puts ""
-					puts ""
-					puts zonepath
-					
-					
-					puts ""
-					puts ""
-					puts ""
-					puts ""
-					puts ""
-					puts ""
-					
+					puts "==> #{name}: Creating a Snapshot of the box."
 					snapshot_create(zonepath)
+					puts "==> #{name}: Sending Snapshot to ZFS Send Sream image."
 					snapshot_send(zonepath, tmp_img)
+					puts "==> #{name}: Remove templated snapshot."
 					snapshot_delete(zonepath)
 
 					extra = ''
@@ -77,7 +64,7 @@ module VagrantPlugins
 
 					env[:ui].info('Box created')
 					env[:ui].info('You can now add the box:')
-					env[:ui].info("vagrant box add #{boxname} --name any_comfortable_name")
+					env[:ui].info("vagrant box add #{boxname} --name any_name_you_want")
 
 					@app.call(env)
 				end
@@ -87,7 +74,7 @@ module VagrantPlugins
 					puts "pfexec zfs snapshot -r #{zonepath}/boot@vagrant_boxing"
 				end
 				def snapshot_delete(zonepath)
-					`pfexec zfs destroy #{zonepath}/boot@vagrant_boxing`
+					`pfexec zfs destroy -r -F #{zonepath}/boot@vagrant_boxing`
 				end
 				def snapshot_send(zonepath, destination)
 					`pfexec zfs send #{zonepath}/boot@vagrant_boxing > #{destination}`
