@@ -43,7 +43,7 @@ module VagrantPlugins
 					host: ip,
 					port: 22,
 					username: "#{user}",
-					password: "#{userkey}",
+					private_key_path: "#{userkey}",
 					password: "#{vagrantuserpass}"
 				}
 					
