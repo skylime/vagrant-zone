@@ -14,8 +14,8 @@ module VagrantPlugins
 				def call(env)
 					@machine = env[:machine]
 					@driver  = @machine.provider.driver
-					create = "create"
-					@driver.vnic(@machine, env[:ui], create)
+					state = "create"
+					@driver.vnic(@machine, env[:ui], state)
 					@app.call(env)
 				end
 			end
