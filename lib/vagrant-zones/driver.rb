@@ -106,6 +106,7 @@ module VagrantPlugins
 						nic_number	= opts[:nic_number].to_s
 						netmask 	= IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count("1")
 						ip        	= opts[:ip].to_s
+						defrouter 	= opts[:gateway].to_s
 						if ip.length == 0
 							ip = nil
 						else
