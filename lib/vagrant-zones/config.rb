@@ -58,7 +58,7 @@ module VagrantPlugins
 				@cpus   			= 2
 				@hostbridge   			= 'i440fx'
 				@acpi 				= 'on'
-				@firmware  			= 'compatability'
+				@firmware  			= "compatability"
 				@dhcp   			= false
 				@setup_wait  			= 30
 				@clean_shutdown_time  		= 300
