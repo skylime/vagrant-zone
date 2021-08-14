@@ -60,26 +60,31 @@ module VagrantPlugins
 				@executor.execute(*cmd, **opts, &block)
 			end
 
-			def get_ip_address(machine)
-				config = machine.provider_config
-				dhcpenabled = config.dhcp
-				if dhcpenabled
-					raise "==> #{machine.name} ==> DHCP is not yet Configured for use"
-				else
-					machine.config.vm.networks.each_with_index do |_type, opts, index|
-						index + 1
-						if _type.to_s == "public_network"
-							ip        = opts[:ip].to_s
-							network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
-							defrouter = opts[:gateway]
-							return nil if ip.length == 0
-							return ip.gsub /\t/, ''
-						end
-					end
+
+			def install(machine, ui)
+                                config = machine.provider_config
+				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
+				name = @machine.name
+
+				if config.brand == 'lx'
+					execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
+				end
+				if config.brand == 'bhyve'
+					execute(false, "#{@pfexec} zoneadm -z #{name} install")
+				end
+				if config.brand == 'kvm'
+					execute(false, "#{@pfexec} zoneadm -z #{name} install")
+				end
+				if config.brand == 'illumos'
+					execute(false, "#{@pfexec} zoneadm -z #{name} install")
 				end
 			end
-
-
+			
+			## Boot the Machine
+			def boot(machine, ui)
+				name = @machine.name
+				execute(false, "#{@pfexec} zoneadm -z #{name} boot")
+			end
 			
 			## Create Network Interfaces
 			def vnic(machine, ui, state)
