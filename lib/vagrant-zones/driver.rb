@@ -349,7 +349,7 @@ end
 				end
 				
 				## Shared Disk Configurations
-				if config.shared_disk_enabled
+				if !config.shared_disk_enabled.nil?
 					shared_disk_attr = %{
 add fs
 	set dir=/vagrant
@@ -367,7 +367,7 @@ end
 				end
 				
 				## CDROM Configurations
-				if config.cdrom_path
+				if !config.cdrom_path.nil?
 					cdrom_attr = %{
 add attr
     set name=cdrom
@@ -393,12 +393,13 @@ end
 
 				
 				### Passthrough PCI Devices
-				#if config.ppt
+				#if if !config.ppt_devices.nil?
 				#	puts config.ppt
 				#end
 				
 				## Additional Disk Configurations
-				additional_disk_attr = %{
+				if !config.disk1path.nil?
+					additional_disk_attr = %{
 add device
 	set match=/dev/zvol/rdsk#{config.zonepath}/disk1
 end
@@ -407,14 +408,14 @@ add attr
 	set type=string
 	set value=#{config.zonepath.delete_prefix("/")}/disk1
 end
-				}
-				additional_disks_data = %{
+					}
+					additional_disks_data = %{
 #{additional_disk_attr}
-				}
-				File.open('zone_config', 'a') do |f|
-					f.puts additional_disks_data
+					}
+					File.open('zone_config', 'a') do |f|
+						f.puts additional_disks_data
+					end
 				end
-				
 				## Nic Configurations
 				state = "config"
 				vnic(@machine, ui, state)
