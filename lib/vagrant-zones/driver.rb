@@ -507,37 +507,7 @@ module VagrantPlugins
 				end
 			end
 
-			def destroy(machine, id)
-				name = @machine.name
-				
-				## Ensure machine is halted
-				execute(false, "#{@pfexec} zoneadm -z #{name} halt")
-				
-				## Check if it has a presence in zoneadm and if no presence in zoneadm destroy zonecfg
-				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
-				if vm_configured != name
-					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
-				end
-				
-				## Check state in zoneadm
-				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
-				
-				## If state is seen, uninstall from zoneadm and destroy from zonecfg
-				if vm_state == 'incomplete' || vm_state == 'configured' || vm_state ==  "installed"
-					execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
-					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
-				end
-
-				### Nic Configurations
-				state = "delete"
-				@driver.vnic(@machine, env[:ui], state)
-				
-				
-				### Check State of additional Disks
-				#disks_configured = execute(false, "#{@pfexec}  zfs list ")
-
-				
-			end
+			
 		end
 	end
 end
