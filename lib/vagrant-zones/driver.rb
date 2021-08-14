@@ -66,15 +66,15 @@ module VagrantPlugins
 				if dhcpenabled
 					raise "==> #{machine.name} ==> DHCP is not yet Configured for use"
 				else
-					machine.config.vm.networks.each_with_index do |_type, opts, index|
+					machine.config.vm.networks.each do |_type, opts|
 						index + 1
 						if _type.to_s == "public_network"
 							ip        = opts[:ip].to_s
-							network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
 							defrouter = opts[:gateway]
 							return nil if ip.length == 0
 							return ip.gsub /\t/, ''
 						end
+
 					end
 				end
 			end
