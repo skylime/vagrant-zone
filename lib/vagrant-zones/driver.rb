@@ -181,8 +181,10 @@ end							}
 								Timeout.timeout(30) do
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-										vmnic = responses[-1].to_s
-									        break
+										if responses[-1].to_s.match(/(\w*)\d/)
+											vmnic = responses[-1].to_s
+									        	break
+										end
 									end
 								end
 								Process.kill("HUP",pid)
