@@ -591,7 +591,7 @@ module VagrantPlugins
 				end
 			end
 			
-			def destroy(machine, id, ui)
+			def destroy(machine, id)
 				name = @machine.name
 				
 				## Ensure machine is halted
