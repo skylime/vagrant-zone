@@ -31,6 +31,7 @@ module VagrantPlugins
 			attr_accessor :vnc
 			attr_accessor :console
 			attr_accessor :hostbridge
+			attr_accessor :sshport
 			
 			
 			
@@ -61,6 +62,7 @@ module VagrantPlugins
 				@clean_shutdown_time  		= 300
 				@vmtype   			= 'production'
 				@parition_id   			= '0000'
+				@ssh_port  			= '22'
 				@vagrant_user   		= 'vagrant'
 				@vagrant_user_pass  		= 'vagrant'
 				@vagrant_user_private_key_path  =  UNSET_VALUE
