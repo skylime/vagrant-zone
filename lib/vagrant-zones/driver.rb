@@ -445,28 +445,7 @@ module VagrantPlugins
 					Process.kill("HUP",pid)
 				end
 			end	
-				
-			def zlogin(machine, cmd)
-				name = @machine.name
-				config = machine.provider_config
-				responses = []
-				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-					zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Error Code: $?\"\n") }
-					Timeout.timeout(30) do
-						loop do
-							zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-							if responses[-1].to_s.match(/Error Code: 0/)
-						        	break
-							elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
-						        	raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
-							elsif responses[-1].nil?
-						                break
-							end
-						end
-					end
-					Process.kill("HUP",pid)
-				end
-			end
+
 
 			def user(machine)
 				config = machine.provider_config
@@ -486,6 +465,27 @@ module VagrantPlugins
 				return vagrantuserpass
 			end
 
+			
+			def halt(machine, ui)
+				name = @machine.name
+				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
+				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
+				if vm_state == "running"
+					begin
+					 status = Timeout::timeout(config.clean_shutdown_time) {
+						execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
+					 }
+					rescue Timeout::Error
+  						puts "==> #{name}: VM failed to Shutdown in alloted time #{config.clean_shutdown_time}"
+						begin halt_status = Timeout::timeout(60) {
+							execute(false, "#{@pfexec} zoneadm -z #{name} halt")
+						}
+						rescue Timeout::Error
+							raise "==> #{name}: VM failed to halt in alloted time 60 after waiting to shutdown for #{config.clean_shutdown_time}"
+						end
+					end
+				end
+			end
 			
 			def destroy(machine, id)
 				name = @machine.name
