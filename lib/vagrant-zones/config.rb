@@ -32,6 +32,7 @@ module VagrantPlugins
 			attr_accessor :console
 			attr_accessor :hostbridge
 			attr_accessor :sshport
+			attr_accessor :rdpport
 			
 			
 			
@@ -63,6 +64,7 @@ module VagrantPlugins
 				@vmtype   			= 'production'
 				@parition_id   			= '0000'
 				@ssh_port  			= '22'
+				@rdp_port  			= '3389'
 				@vagrant_user   		= 'vagrant'
 				@vagrant_user_pass  		= 'vagrant'
 				@vagrant_user_private_key_path  =  UNSET_VALUE
