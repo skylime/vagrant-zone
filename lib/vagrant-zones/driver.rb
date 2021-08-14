@@ -347,9 +347,6 @@ module VagrantPlugins
 					end
 					
 					# Check whether OmniOS version is lower than r30
-					result = execute(true, "/usr/bin/bash -c \"RELEASE=1510380;VER=$(cat /etc/release | head -n 1 | cut -d' ' -f5 |  cut -c 2-); if (($VER -gt $RELEASE)); then exit 0; else exit 1; fi\"")
-					puts ""
-					
 					cutoff_release = "1510380"
 					cutoff_release = cutoff_release[0..-2].to_i 
 					release = File.open('/etc/release', &:readline)
