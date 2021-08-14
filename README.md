@@ -43,7 +43,7 @@ Vagrant Plugin which can be used to managed Bhyve, LX and native zones on illumo
 
 ### Boxes
 
-Collecting status of boxes from [Atlas](https://app.vagrantup.com/)
+Collecting status of boxes from [Vagrant Cloud](https://app.vagrantup.com/)
 
 | Box                                                             										         | OS             | Status
 | :---------------------------------------------------------------------------------	         |:------         | :------
