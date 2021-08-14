@@ -4,6 +4,7 @@ require "digest/md5"
 require "io/console"
 require "ruby_expect"
 require 'netaddr'
+require 'ipaddr'
 require "vagrant/util/numeric"
 require 'pty'
 require 'expect'
@@ -389,7 +390,7 @@ module VagrantPlugins
 					index = 1
 					if _type.to_s == "public_network"
 						ip        	= opts[:ip].to_s
-						netmask 	= IPAddr.new(opts[:netmask]).cidr_mask
+						netmask 	= IPAddr.new(opts[:netmask].to_s).cidr_mask
 						defrouter 	= opts[:gateway]
 						if !opts[:nameserver1].nil?
 							nameserver1  = opts[:nameserver1].to_s
