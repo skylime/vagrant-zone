@@ -35,18 +35,6 @@ module VagrantPlugins
 				end
 			end
 
-			class IPAddr
-			  def cidr_mask
-			    case (@family)
-			    when Socket::AF_INET
-			      32 - Math.log2((1<<32) - @mask_addr).to_i
-			    when Socket::AF_INET6
-			      128 - Math.log2((1<<128) - @mask_addr).to_i
-			    else
-			      raise AddressFamilyError, "unsupported address family"
-			    end
-			  end
-			end
 			
 			def state(machine)
 				uuid = machine.id
@@ -392,7 +380,7 @@ module VagrantPlugins
 					index = 1
 					if _type.to_s == "public_network"
 						ip        	= opts[:ip].to_s
-						netmask 	= Driver::IPAddr.new(opts[:netmask].to_s).cidr_mask
+						netmask 	= IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count("1")
 						defrouter 	= opts[:gateway]
 						if !opts[:nameserver1].nil?
 							nameserver1  = opts[:nameserver1].to_s
