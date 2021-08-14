@@ -386,6 +386,13 @@ module VagrantPlugins
 				return userkey
 			end
 
+			def vagrantuserpass(machine)
+				name = @machine.name
+				config = machine.provider_config
+				vagrantuserpass = config.vagrant_user_pass.to_s
+				return vagrantuserpass
+			end
+			
 			def halt(machine, ui)
 				name = @machine.name
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
