@@ -413,7 +413,7 @@ module VagrantPlugins
 				
 				## Nic Configurations
 				state = "config"
-				@driver.vnic(@machine, env[:ui], state)
+				@driver.vnic(@machine, ui, state)
 
 				## Write out Config
 				exit = %{
