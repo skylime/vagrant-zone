@@ -251,6 +251,21 @@ module VagrantPlugins
 							set type=string
 							set value=#{config.firmware}
 						end
+						add attr
+							set name=hostbridge
+							set type=string
+							set value=#{config.hostbridge}
+						end
+						add attr
+							set name=diskif
+							set type=string
+							set value=#{config.diskif}
+						end
+						add attr
+							set name=netif
+							set type=string
+							set value=#{config.netif}
+						end
 						add device
 							set match=/dev/zvol/rdsk#{config.zonepath}/boot
 						end
@@ -258,6 +273,11 @@ module VagrantPlugins
 							set name=bootdisk
 							set type=string
 							set value=#{config.zonepath.delete_prefix("/")}/boot
+						end
+						add attr
+							set name=type
+							set type=string
+							set value=#{config.os_type}
 						end
 					}
 
@@ -274,7 +294,7 @@ module VagrantPlugins
 					shared_disk_attr = %{
 						add fs
 							set dir=/vagrant
-							set special=#{lofs_current_dir}
+							set special=#{config.shared_dir}
 							set type=lofs
 						end
 					}
@@ -287,6 +307,36 @@ module VagrantPlugins
 					end
 				end
 				
+				## CDROM Configurations
+				if config.cdrom_path
+					cdrom_attr = %{
+						add attr
+						    set name=cdrom
+						    set type=string
+						    set value=#{config.cdrom_path}
+						end
+						add fs
+						    set dir=#{config.cdrom_path}
+						    set special=#{config.cdrom_path}
+						    set type=lofs
+						    add options ro
+						    add options nodevices
+						end
+					}
+					cdroms_data = %{
+						#{cdrom_att}
+					}
+				
+					File.open('zone_config', 'a') do |f|
+						f.puts cdroms_data
+					end
+				end
+
+				
+				## Passthrough PCI Devices
+				if config.ppt
+					puts config.ppt
+				end
 				
 				## Additional Disk Configurations
 				additional_disk_attr = %{
@@ -309,7 +359,6 @@ module VagrantPlugins
 				## Nic Configurations
 				state = "config"
 				@driver.vnic(@machine, env[:ui], state)
-
 
 				## Write out Config
 				exit = %{
@@ -413,7 +462,6 @@ module VagrantPlugins
 						## Apply the Configuration
 						puts "==> #{name}: Applying the network configuration"
 						zlogin(machine, 'netplan apply')
-						
 					end
 				end
 				
@@ -438,7 +486,6 @@ module VagrantPlugins
 								end
 							end
 						end
-
 					end
 					Process.kill("HUP",pid)
 				end
@@ -532,11 +579,9 @@ module VagrantPlugins
 				state = "delete"
 				@driver.vnic(@machine, env[:ui], state)
 				
-				
 				### Check State of additional Disks
 				#disks_configured = execute(false, "#{@pfexec}  zfs list ")
 
-				
 			end
 			
 		end
