@@ -205,6 +205,7 @@ module VagrantPlugins
 			end
 
 			def create_dataset(machine, ui)
+				name = @machine.name
 				config  = machine.provider_config				
 				dataset = config.zonepath.delete_prefix("/").to_s + "/boot"
 				datadir  = machine.data_dir
@@ -229,12 +230,14 @@ module VagrantPlugins
 			end
 
 			def delete_dataset(machine, ui)
+				name = @machine.name
 				config = machine.provider_config
 				puts "==> #{name}: Destroy dataset: #{config.zonepath.delete_prefix("/")}."
 				execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
 			end
 
 			def zonecfg(machine, ui)
+				name = @machine.name
 				## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console
 				config = machine.provider_config
 				config.shared_dir = Dir.pwd
