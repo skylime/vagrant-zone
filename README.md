@@ -65,6 +65,7 @@ Collecting status of boxes from [Atlas](https://atlas.hashicorp.com/boxes/search
   * system/bhyve/firmware
   * ooce/application/vagrant
   * ruby-26
+  * ooce/system/mbuffer
 
 ### Create a box from an existing box
 
