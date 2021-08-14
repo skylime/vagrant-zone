@@ -63,7 +63,7 @@ module VagrantPlugins
 				@setup_wait  			= 30
 				@clean_shutdown_time  		= 300
 				@vmtype   			= 'production'
-				@parition_id   			= '0000'
+				@partition_id  			= '0000'
 				@sshport  			= '22'
 				@rdpport  			= '3389'
 				@vagrant_user   		= 'vagrant'
