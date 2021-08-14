@@ -18,29 +18,36 @@ Vagrant Plugin which can be used to managed Bhyve, LX and native zones on illumo
 
 ### Functions
 
-| Function                  | Status
-| :----------               | :-----
-| Box format                | Defined
-| Check bhyve support       | Working
-| Packaging                 | Working
-| Network                   | Working
-| SSH/SSH run               | Working -- Key Based Only 
-| Graceful shutdown         | Work in Progress
-| ACPI shutdown             | Working
-| Destroying                | Working
-| Provision                 | Working -- Key Based Only
-| Booting (UEFI	and BIOS )  | Working
-| Port forwarding           | Work in Progress
-| Suspend                   | Not supported by bhyve
-| Resume                    | Not supported by bhyve
+| Function                    | Status
+| :----------                 | :-----
+| Box format                  | Defined
+| Emergency Console           | Working -- zlogin -C -- VNC switch(wip)
+| Check Bhyve support         | Working
+| Packaging                   | Working
+| Networking                  | Working -- via zlogin -C -- cloud-init cominig
+| SSH/SSH run                 | Working -- key based only
+| Graceful shutdown           | Work in Progress
+| Halt                        | Working
+| Destroying                  | Working
+| Convert                     | Work in Progress
+| Provision                   | Working -- key based only -- cloud-init cominig
+| Booting (UEFI	and BIOS)     | Working
+| Port forwarding             | Work in Progress
+| Vagrant Cloud Support       | Working -- Types: Zones,Virtualbox(wip)
+| Snapshots                   | Work in Progress
+| Bhyve Zone Support          | Working
+| LX Zone Support             | Working
+| Shared Folders              | Working -- Rsync, SSHFS, NFS(wip), LOFS(tbd)
+| Suspend                     | Not supported by bhyve
+| Resume                      | Not supported by bhyve
 
 ### Boxes
 
 Collecting status of boxes from [Atlas](https://app.vagrantup.com/)
 
-| Function										| Status
-| :---------------------------------------------------------------------------------	| :------
-| [Makr44/ubuntu2104-desktop](https://app.vagrantup.com/Makr44/boxes/ubuntu2104-desktop)			| Working 
+| Box                                                             										         | OS             | Status
+| :---------------------------------------------------------------------------------	         |:------         | :------
+| [Makr44/ubuntu2104-server](https://app.vagrantup.com/Makr44/boxes/ubuntu2104-server)		     | Ubuntu 20.04  	| Working 
 
 
 ## Test
