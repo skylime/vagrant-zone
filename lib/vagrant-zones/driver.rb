@@ -12,9 +12,6 @@ require 'vagrant-zones/util/timer'
 
 module VagrantPlugins
 	module ProviderZone
-		
-
-		
 		class Driver
 			attr_accessor :executor
 			def initialize(machine)
@@ -79,12 +76,10 @@ module VagrantPlugins
 				end
 			end
 
-
 			def install(machine, ui)
                                 config = machine.provider_config
 				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
 				name = @machine.name
-
 				if config.brand == 'lx'
 					execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
 				end
@@ -490,6 +485,7 @@ module VagrantPlugins
 			
 			def halt(machine, ui)
 				name = @machine.name
+				config = machine.provider_config
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
 				if vm_state == "running"
