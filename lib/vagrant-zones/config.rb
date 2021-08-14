@@ -79,32 +79,32 @@ module VagrantPlugins
 				
 				case @firmware_type
 				when "compatability"  
-					@firmware = 'BHYVE_RELEASE_CSM'
+					@firmware 		= 'BHYVE_RELEASE_CSM'
 					when "UEFI"  
-					@firmware = 'BHYVE_RELEASE'
+					@firmware 		= 'BHYVE_RELEASE'
 					when "BIOS"  
-					@firmware = 'BHYVE_CSM'
+					@firmware 		= 'BHYVE_CSM'
 					when "UEFI_DEBUG"  
-					@firmware = 'BHYVE_DEBUG'
+					@firmware 		= 'BHYVE_DEBUG'
 					when "BIOS_DEBUG"  
-					@firmware = 'BHYVE_RELEASE_CSM' 
+					@firmware 		= 'BHYVE_RELEASE_CSM' 
 				else  
-					@firmware = "BHYVE_RELEASE_CSM"
+					@firmware 		= "BHYVE_RELEASE_CSM"
 				end	
 				
 				case @vmtype
 				when 'template'
-					@vm_type = "1"
+					@vm_type 		= "1"
 				when 'development'
-					@vm_type = "2"
+					@vm_type 		= "2"
 				when 'production'
-					@vm_type = "3"
+					@vm_type 		= "3"
 				when 'firewall'
-					@vm_type = "4"
+					@vm_type 		= "4"
 				when 'other'
-					@vm_type = "5"
+					@vm_type 		= "5"
 				else
-					@vm_type = "3"
+					@vm_type 		= "3"
 				end
 			end
 		end
