@@ -327,42 +327,66 @@ module VagrantPlugins
 				execute(false, "cat zone_config | #{@pfexec} zonecfg -z #{machine.name}")
 			end
 
-			def check_zone_support(machine, ui)
-				config = machine.provider_config
-				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
-				name = @machine.name
 
-				if config.brand == 'lx'
-					return
-				end
-				if config.brand == 'bhyve'			
-					## Check for  bhhwcompat
-					result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
-					if result == 1
-						execute(true, "#{@pfexec} curl -o /usr/sbin/bhhwcompat https://downloads.omnios.org/misc/bhyve/bhhwcompat && #{@pfexec} chmod +x /usr/sbin/bhhwcompat")
-						result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
-						raise Errors::MissingCompatCheckTool if result == 0
-					end
-					
-					# Check whether OmniOS version is lower than r30
-					result = execute(true, "/usr/bin/bash -c \"RELEASE=1510380;VER=$(cat /etc/release | head -n 1 | cut -d' ' -f5 |  cut -c 2-); if (($VER -gt $RELEASE)); then exit 0; else exit 1; fi\"")
-					puts ""
-					puts result
-					puts ""
-					puts ""
-					puts ""
-					puts ""
-					puts ""
-					puts ""
-					raise Errors::SystemVersionIsTooLow if result == 0
-	
-					# Check Bhyve compatability
-					result = execute(false, "#{@pfexec} bhhwcompat -s")
-					raise Errors::MissingBhyve if result.length == 1 
-				end
-     			end
 			
-
+			def setup(machine, ui)
+				config = machine.provider_config
+				name = machine.name
+				insert_key = machine.config.ssh.insert_key
+				
+				puts "==> #{name}: Waiting for the Machine to boot..."
+				waitforboot(machine)
+				
+				## Check if already setup and skip the following
+				
+				if insert_key
+					zlogin(machine, "echo #{vagrant_user_key} > \/home\/#{config.vagrant_user}\/.ssh\/authorized_keys")
+					zlogin(machine, "chown -R #{config.vagrant_user}:#{config.vagrant_user} \/home\/#{config.vagrant_user}\/.ssh")
+					zlogin(machine, "chmod 600 \/home\/#{config.vagrant_user}\/.ssh\/authorized_keys")
+				end
+				
+				machine.config.vm.networks.each_with_index do |_type, opts, index|
+					index + 1
+					if _type.to_s == "public_network"
+						ip        	= opts[:ip].to_s
+						netmask 	= IPAddr.new(opts[:netmask]).to_cidr
+						defrouter 	= opts[:gateway]
+						if !opts[:nameserver1].nil?
+							nameserver1  = opts[:nameserver1].to_s
+						else
+							nameserver1  = "1.1.1.1"
+						end
+						if !opts[:nameserver2].nil?
+							nameserver2  = opts[:nameserver2].to_s
+						else
+							nameserver2  = "1.0.0.1"
+						end
+						## Remove old installer netplan config
+						zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
+						
+						## Create new netplan config
+						zlogin(machine, "touch /etc/netplan/00-installer-config.yaml")
+						zlogin(machine, 'echo "network:" > /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'sed -i "$ a \  version: 2" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'sed -i "$ a \  ethernets:" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'APT=$(ifconfig -s -a | grep -v lo | tail -1 | awk \'{ print $1 }\') &&  sed -i "$ a \    $APT:" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'sed -i "$ a \      dhcp-identifier: mac" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'sed -i "$ a \      dhcp4: no" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'sed -i "$ a \      dhcp6: no" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, 'sed -i "$ a \      nameservers:" /etc/netplan/00-installer-config.yaml')
+						zlogin(machine, "sed -i '$ a \\        addresses: [#{nameserver1} , #{nameserver2}]' /etc/netplan/00-installer-config.yaml")
+						zlogin(machine, "sed -i '$ a \\      addresses: [#{ip}\/#{netmask}]' /etc/netplan/00-installer-config.yaml")
+						zlogin(machine, "sed -i '$ a \\      gateway4: #{defrouter}' /etc/netplan/00-installer-config.yaml")
+						
+						
+						## Apply the Configuration
+						puts "==> #{name}: Applying the network configuration"
+						zlogin(machine, 'netplan apply')
+						
+					end
+				end
+				
+			end
 			
 			def waitforboot(machine)
 				name = @machine.name
