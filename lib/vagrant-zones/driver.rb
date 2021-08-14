@@ -241,7 +241,6 @@ end							}
 				name = @machine.name
 				## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console
 				config = machine.provider_config
-				config.shared_dir = Dir.pwd
 				attr = ''
 				if config.brand == 'lx'
 					puts "==> #{name}: Generating Configuration for LX Branded Zone"
