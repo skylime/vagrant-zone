@@ -24,12 +24,20 @@ Vagrant Plugin which can be used to managed Bhyve, LX and native zones on illumo
 | Emergency Console           | Working -- zlogin -C -- VNC switch(wip)
 | Check Bhyve support         | Working
 | Packaging                   | Working
+| Reload                      | Working
+| VLANs                       | Working
+| Multiple Nics               | Working
+| DHCP Address                | Work in Progress
+| Multiple Disks              | Partially Working (single disk only)
+| Start VNC Server            | Work in Progress
 | Networking                  | Working -- via zlogin -C -- cloud-init cominig
 | SSH/SSH run                 | Working -- key based only
-| Graceful shutdown           | Work in Progress
+| Graceful shutdown           | Working
 | Halt                        | Working
-| Destroying                  | Working
+| Destroy                     | Working
+| Packer Support              | Untested
 | Convert                     | Work in Progress
+| Find                        | Work in Progress
 | Provision                   | Working -- key based only -- cloud-init cominig
 | Booting (UEFI	and BIOS)     | Working
 | Port forwarding             | Work in Progress
@@ -127,6 +135,7 @@ This command will shutdown the booted VM and clean up environment
 | :---------------------------------------------------------------------------------	         |:------         | :------
 | `centos/7`                                                                                   | CentOS 7       | NFS Synced Folders Fail
 | All                                                                                          | All            | Cannot Detect OS Boot
+| All                                                                                          | All            | global-status incorrectly reports states
 
 ### NFS Synced Folders Fail
 
@@ -136,6 +145,10 @@ machine and box, you can:
   Vagrantfile to ensure that rsync type is used. Vagrant core will raise an
   error to inform you when there is not rsync find in PATH
 * Run `vagrant plugin install vagrant-sshfs` to enable vagrant-sshfs
+
+### NFS Synced Folders Fail
+
+After certain Vagrant commands or outside zone influence global-status becomes stale.
 
 ### Cannot Detect OS Boot
 
