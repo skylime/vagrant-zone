@@ -276,7 +276,7 @@ module VagrantPlugins
 					
 					
 					# Check whether OmniOS version is lower than r30
-					result = execute(true, "$VER=$(cat /etc/release | head -n 1 | cut -d' ' -f5 |  cut -c 2-); test $VER -ge 1510380")
+					result = execute(true, "VER=$(cat /etc/release | head -n 1 | cut -d' ' -f5 |  cut -c 2-); test $VER -ge 1510380")
 					puts ""
 					puts result
 					puts ""
