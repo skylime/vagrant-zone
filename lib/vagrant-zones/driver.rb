@@ -369,7 +369,7 @@ module VagrantPlugins
 				## Check if already setup and skip the following
 				
 				if insert_key
-					zlogin(machine, "echo #{vagrant_user_key} > \/home\/#{config.vagrant_user}\/.ssh\/authorized_keys")
+					zlogin(machine, "echo #{config.vagrant_user_key} > \/home\/#{config.vagrant_user}\/.ssh\/authorized_keys")
 					zlogin(machine, "chown -R #{config.vagrant_user}:#{config.vagrant_user} \/home\/#{config.vagrant_user}\/.ssh")
 					zlogin(machine, "chmod 600 \/home\/#{config.vagrant_user}\/.ssh\/authorized_keys")
 				end
