@@ -177,11 +177,11 @@ end							}
 							zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
 							responses=[]
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }'") }
+								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf('ifconfig -s -a | grep -v lo | tail -1 | awk \'{ print $1 }\'') }
 								Timeout.timeout(30) do
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-										if responses[-1].to_s.match(/(\w*)\d/)
+										if responses[-1].to_s.match(/(enp\w*)\d/)
 											vmnic = responses[-1].to_s
 											puts ""
 											puts ""
