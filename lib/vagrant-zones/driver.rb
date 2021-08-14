@@ -78,15 +78,19 @@ module VagrantPlugins
 				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
 				name = @machine.name
 				if config.brand == 'lx'
+					puts "==> #{name}: Installing LX Zone."
 					execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
 				end
 				if config.brand == 'bhyve'
+					puts "==> #{name}: Installing bhyve Zone."
 					execute(false, "#{@pfexec} zoneadm -z #{name} install")
 				end
 				if config.brand == 'kvm'
+					puts "==> #{name}: Installing KVM Zone."
 					execute(false, "#{@pfexec} zoneadm -z #{name} install")
 				end
 				if config.brand == 'illumos'
+					puts "==> #{name}: Installing Illumos Zone."
 					execute(false, "#{@pfexec} zoneadm -z #{name} install")
 				end
 			end
@@ -94,6 +98,7 @@ module VagrantPlugins
 			## Boot the Machine
 			def boot(machine, ui)
 				name = @machine.name
+				puts "==> #{name}: Starting the Bhyve Zone."
 				execute(false, "#{@pfexec} zoneadm -z #{name} boot")
 			end
 			
@@ -148,6 +153,7 @@ module VagrantPlugins
 						if state == "create"
 							if !opts[:vlan].nil?
 								vlan =  opts[:vlan]
+								puts "==> #{name}: Creating VNIC: vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id} with VLAN: {vlan}."
 								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id}")
 							else
 								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} vnic#{nic_type}#{config.vm_type}#{nic_number}-#{config.partition_id}")
@@ -171,9 +177,11 @@ module VagrantPlugins
 							end
 						elsif state == "setup"
 							## Remove old installer netplan config
+							puts "==> #{name}: Removing stale netplan configurations."
 							zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
 							
 							## Create new netplan config
+							puts "==> #{name}: Generate fresh netplan configurations."
 							zlogin(machine, "touch /etc/netplan/00-installer-config.yaml")
 							zlogin(machine, 'echo "network:" > /etc/netplan/00-installer-config.yaml')
 							zlogin(machine, 'sed -i "$ a \  version: 2" /etc/netplan/00-installer-config.yaml')
@@ -201,22 +209,28 @@ module VagrantPlugins
 				dataset = config.zonepath.delete_prefix("/").to_s + "/boot"
 				datadir  = machine.data_dir
 				datasetroot = config.zonepath.delete_prefix("/").to_s
-				if config.brand == 'lx'					
+				if config.brand == 'lx'	
+					puts "==> #{name}: Creating zoned ZFS dataset for LX zone"
 					execute(false, "#{@pfexec} zfs create -o zoned=on -p #{dataset}")
 				end
 				if config.brand == 'bhyve'
+					puts "==> #{name}: Creating ZFS root dataset for bhyve zone"
 					execute(false, "#{@pfexec} zfs create #{datasetroot}")
+					puts "==> #{name}: Creating ZFS boot volume dataset for bhyve zone"
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
+					puts "==> #{name}: Importing Template to ZFS boot volume for bhyve zone"
 					execute(false, "#{@pfexec} zfs recv -F #{dataset} < #{datadir.to_s}/box.zss'")
 				elsif config.disk1
 					disk1path = config.disk1.delete_prefix("/").to_s
 					disk1size = config.disk1_size.to_s
+					puts "==> #{name}: Creating additional ZFS volume for bhyve zone"
 					execute(false, "#{@pfexec} zfs create -V #{disk1size} #{disk1path}")
 				end
 			end
 
 			def delete_dataset(machine, ui)
 				config = machine.provider_config
+				puts "==> #{name}: Destroy dataset: #{config.zonepath.delete_prefix("/")}."
 				execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
 			end
 
@@ -226,6 +240,7 @@ module VagrantPlugins
 				config.shared_dir = Dir.pwd
 				attr = ''
 				if config.brand == 'lx'
+					puts "==> #{name}: Generating Cofnigruation for LX Branded Zone"
 					machine.config.vm.networks.each do |_type, opts|
 						index = 1
 						if _type.to_s == "public_network"
@@ -261,6 +276,7 @@ module VagrantPlugins
 				end
 				if config.brand == 'bhyve'
 					## General Configuration
+					puts "==> #{name}: Generating Cofnigruation for bhyve Branded Zone"
 					attr = %{
 						create
 						set zonepath=#{config.zonepath}/path
@@ -404,6 +420,7 @@ module VagrantPlugins
 					f.puts exit
 				end
 				
+				puts "==> #{name}: Exporting generated zonecfg configuration."
 				## Export config to zonecfg
 				execute(false, "cat zone_config | #{@pfexec} zonecfg -z #{machine.name}")
 			end
@@ -416,10 +433,13 @@ module VagrantPlugins
 				## Detect if Virtualbox is Running
 				## Kernel, KVM, and Bhyve cannot run conncurently with Virtualbox:
 				### https://forums.virtualbox.org/viewtopic.php?f=11&t=64652
+				puts "==> #{name}: Checking for Virtualbox"
 				result = execute(false, "#{@pfexec} VBoxManage list runningvms  ; echo $?")
 				raise Errors::VirtualBoxRunningConflictDetected if result == 0
 				
 				if config.brand == 'lx'
+					
+					puts "==> #{name}: No LX Zones Checked, We assume that you have all the Appropriate packages"
 					return
 				end
 				if config.brand == 'bhyve'			
@@ -432,14 +452,17 @@ module VagrantPlugins
 					end
 					
 					# Check whether OmniOS version is lower than r30
+					
 					cutoff_release = "1510380"
 					cutoff_release = cutoff_release[0..-2].to_i 
+					puts "==> #{name}: Checking OmniOS Release against cutoff:  #{cutoff_release}"
 					release = File.open('/etc/release', &:readline)
 					release = release.scan(/\w+/).values_at( -1)
 					release = release[0][1..-2].to_i 
 					raise Errors::SystemVersionIsTooLow if release  < cutoff_release
 	
 					# Check Bhyve compatability
+					puts "==> #{name}: Checking bhyve installation environment."
 					result = execute(false, "#{@pfexec} bhhwcompat -s")
 					raise Errors::MissingBhyve if result.length == 1 
 				end
@@ -448,14 +471,13 @@ module VagrantPlugins
 			def setup(machine, ui)
 				config = machine.provider_config
 				name = machine.name
-				insert_key = machine.config.ssh.insert_key
 				
 				puts "==> #{name}: Waiting for the Machine to boot..."
 				waitforboot(machine)
 				
 				## Check if already setup and skip the following
-				
-				if insert_key
+				if machine.config.ssh.insert_key
+					puts "==> #{name}: Inserting SSH Key"
 					zlogin(machine, "echo #{config.vagrant_user_key} > \/home\/#{config.vagrant_user}\/.ssh\/authorized_keys")
 					zlogin(machine, "chown -R #{config.vagrant_user}:#{config.vagrant_user} \/home\/#{config.vagrant_user}\/.ssh")
 					zlogin(machine, "chmod 600 \/home\/#{config.vagrant_user}\/.ssh\/authorized_keys")
@@ -473,8 +495,7 @@ module VagrantPlugins
 				responses = []
 				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 				        if zlogin_read.expect(/Last login: /)
-						puts "==> #{name}: Machine Booted, Running Setup"
-						sleep 5
+						puts "==> #{name}: Machine Booted, Checking for Login Access/Prompt over TTYS0"
 						Timeout.timeout(config.setup_wait) do
 							loop do
 				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
@@ -551,6 +572,7 @@ module VagrantPlugins
 				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
 				if vm_state == "running"
 					begin
+						puts "==> #{name}: Attempting Graceful Shutdown"
 						status = Timeout::timeout(config.clean_shutdown_time) {
 						execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
 					 }
@@ -570,11 +592,13 @@ module VagrantPlugins
 				name = @machine.name
 				
 				## Ensure machine is halted
+				puts "==> #{name}: Halting Zone"
 				execute(false, "#{@pfexec} zoneadm -z #{name} halt")
 				
 				## Check if it has a presence in zoneadm and if no presence in zoneadm destroy zonecfg
 				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
 				if vm_configured != name
+					puts "==> #{name}: Removing zonecfg configuration"
 					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
 				end
 				
@@ -583,6 +607,7 @@ module VagrantPlugins
 				
 				## If state is seen, uninstall from zoneadm and destroy from zonecfg
 				if vm_state == 'incomplete' || vm_state == 'configured' || vm_state ==  "installed"
+					puts "==> #{name}: Uninstalling Zone and Removing zonecfg configuration"
 					execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
 					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
 				end
