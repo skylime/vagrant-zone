@@ -16,3 +16,9 @@ en:
         Please install the Bhyve Compatability Tool from: https://omnios.org/info/bhyve
       missing_bhyve: |-    
         Your system Appears to be Missing Bhyve
+      virtual_box_running_conflict_detected: |-    
+        Virtualbox Box appears to be running VMs, to continue, please shut these down.
+        
+        
+        
+        
