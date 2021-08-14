@@ -247,7 +247,7 @@ module VagrantPlugins
 				config.shared_dir = Dir.pwd
 				attr = ''
 				if config.brand == 'lx'
-					puts "==> #{name}: Generating Cofnigruation for LX Branded Zone"
+					puts "==> #{name}: Generating Configuration for LX Branded Zone"
 					machine.config.vm.networks.each do |_type, opts|
 						index = 1
 						if _type.to_s == "public_network"
@@ -258,91 +258,91 @@ module VagrantPlugins
 					end
 					allowed_address  = @ip + @network.netmask.to_s
 					attr = %{
-						add attr
-							set name=kernel-version
-							set type=string
-							set value=#{config.kernel}
-						end
-						add net
-							set physical=#{machine.name}0
-							set global-nic=auto
-							add property (name=gateway,value="#{@defrouter.to_s}")
-							add property (name=ips,value="#{allowed_address}")
-							add property (name=primary,value="true")
-					        end
-						add capped-memory
-							set physical=#{config.memory}
-							set swap=#{config.memory}
-							set locked=#{config.memory}
-					        end
-						add dataset
-							set name=#{config.zonepath.delete_prefix("/")}/boot
-						end
-						set max-lwps=2000
+add attr
+	set name=kernel-version
+	set type=string
+	set value=#{config.kernel}
+end
+add net
+	set physical=#{machine.name}0
+	set global-nic=auto
+	add property (name=gateway,value="#{@defrouter.to_s}")
+	add property (name=ips,value="#{allowed_address}")
+	add property (name=primary,value="true")
+end
+add capped-memory
+	set physical=#{config.memory}
+	set swap=#{config.memory}
+	set locked=#{config.memory}
+end
+add dataset
+	set name=#{config.zonepath.delete_prefix("/")}/boot
+end
+set max-lwps=2000
 					}
 				end
 				if config.brand == 'bhyve'
 					## General Configuration
-					puts "==> #{name}: Generating Cofnigruation for bhyve Branded Zone"
+					puts "==> #{name}: Generating Configuration for bhyve Branded Zone"
 					attr = %{
-						create
-						set zonepath=#{config.zonepath}/path
-						set brand=#{config.brand}
-						set autoboot=#{config.autoboot}
-						set ip-type=exclusive
-						add attr
-							set name="acpi"
-							set type="string"
-							set value="#{config.acpi}"
-						end
-						add attr
-							set name="vcpus"
-							set type="string"
-							set value=#{config.cpus}
-						end
-						add attr
-							set name="ram"
-							set type="string"
-							set value=#{config.memory}
-						end
-						add attr
-							set name=bootrom
-							set type=string
-							set value=#{config.firmware}
-						end
-						add attr
-							set name=hostbridge
-							set type=string
-							set value=#{config.hostbridge}
-						end
-						add attr
-							set name=diskif
-							set type=string
-							set value=#{config.diskif}
-						end
-						add attr
-							set name=netif
-							set type=string
-							set value=#{config.netif}
-						end
-						add device
-							set match=/dev/zvol/rdsk#{config.zonepath}/boot
-						end
-						add attr
-							set name=bootdisk
-							set type=string
-							set value=#{config.zonepath.delete_prefix("/")}/boot
-						end
-						add attr
-							set name=type
-							set type=string
-							set value=#{config.os_type}
-						end
+create
+set zonepath=#{config.zonepath}/path
+set brand=#{config.brand}
+set autoboot=#{config.autoboot}
+set ip-type=exclusive
+add attr
+	set name="acpi"
+	set type="string"
+	set value="#{config.acpi}"
+end
+add attr
+	set name="vcpus"
+	set type="string"
+	set value=#{config.cpus}
+end
+add attr
+	set name="ram"
+	set type="string"
+	set value=#{config.memory}
+end
+add attr
+	set name=bootrom
+	set type=string
+	set value=#{config.firmware}
+end
+add attr
+	set name=hostbridge
+	set type=string
+	set value=#{config.hostbridge}
+end
+add attr
+	set name=diskif
+	set type=string
+	set value=#{config.diskif}
+end
+add attr
+	set name=netif
+	set type=string
+	set value=#{config.netif}
+end
+add device
+	set match=/dev/zvol/rdsk#{config.zonepath}/boot
+end
+add attr
+	set name=bootdisk
+	set type=string
+	set value=#{config.zonepath.delete_prefix("/")}/boot
+end
+add attr
+	set name=type
+	set type=string
+	set value=#{config.os_type}
+end
 					}
 
 				end
 				data = %{
-					#{attr}
+#{attr}
 				}
 				File.open('zone_config', 'w') do |f|
 					f.puts data
@@ -351,14 +351,14 @@ module VagrantPlugins
 				## Shared Disk Configurations
 				if config.shared_disk_enabled
 					shared_disk_attr = %{
-						add fs
-							set dir=/vagrant
-							set special=#{config.shared_dir}
-							set type=lofs
-						end
+add fs
+	set dir=/vagrant
+	set special=#{config.shared_dir}
+	set type=lofs
+end
 					}
 					shared_disk_data = %{
-						#{shared_disk_attr}
+#{shared_disk_attr}
 					}
 				
 					File.open('zone_config', 'a') do |f|
@@ -369,21 +369,21 @@ module VagrantPlugins
 				## CDROM Configurations
 				if config.cdrom_path
 					cdrom_attr = %{
-						add attr
-						    set name=cdrom
-						    set type=string
-						    set value=#{config.cdrom_path}
-						end
-						add fs
-						    set dir=#{config.cdrom_path}
-						    set special=#{config.cdrom_path}
-						    set type=lofs
-						    add options ro
-						    add options nodevices
-						end
+add attr
+    set name=cdrom
+    set type=string
+    set value=#{config.cdrom_path}
+end
+add fs
+    set dir=#{config.cdrom_path}
+    set special=#{config.cdrom_path}
+    set type=lofs
+    add options ro
+    add options nodevices
+end
 					}
 					cdroms_data = %{
-						#{cdrom_attr}
+#{cdrom_attr}
 					}
 				
 					File.open('zone_config', 'a') do |f|
@@ -399,17 +399,17 @@ module VagrantPlugins
 				
 				## Additional Disk Configurations
 				additional_disk_attr = %{
-					add device
-						set match=/dev/zvol/rdsk#{config.zonepath}/disk1
-					end
-					add attr
-						set name=disk
-						set type=string
-						set value=#{config.zonepath.delete_prefix("/")}/disk1
-					end
+add device
+	set match=/dev/zvol/rdsk#{config.zonepath}/disk1
+end
+add attr
+	set name=disk
+	set type=string
+	set value=#{config.zonepath.delete_prefix("/")}/disk1
+end
 				}
 				additional_disks_data = %{
-					#{additional_disk_attr}
+#{additional_disk_attr}
 				}
 				File.open('zone_config', 'a') do |f|
 					f.puts additional_disks_data
