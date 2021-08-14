@@ -88,7 +88,7 @@ module VagrantPlugins
 			
 			def get_ip_address(machine)
 				config = machine.provider_config
-				if config.dhcpenabled
+				if config.dhcp
 					raise "==> #{machine.name} ==> DHCP is not yet Configured for use"
 				else
 					machine.config.vm.networks.each do |_type, opts|
@@ -200,7 +200,7 @@ end							}
 							puts "==> #{name}: Applying the network configuration"
 							zlogin(machine, 'netplan apply')
 						elsif state == "get_ip"
-							if dhcpenabled
+							if config.dhcp
 								raise "==> #{machine.name} ==> DHCP is not yet Configured for use"
 							else
 								if opts[:managed]
