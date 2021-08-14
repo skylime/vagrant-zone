@@ -68,6 +68,7 @@ module VagrantPlugins
 
 				def snapshot_create(zonepath)
 					`pfexec zfs snapshot -r #{zonepath}/boot@vagrant_boxing`
+					puts "pfexec zfs snapshot -r #{zonepath}/boot@vagrant_boxing"
 				end
 				def snapshot_delete(zonepath)
 					`pfexec zfs destroy #{zonepath}/boot@vagrant_boxing`
