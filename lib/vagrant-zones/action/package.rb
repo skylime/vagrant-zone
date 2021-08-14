@@ -28,7 +28,23 @@ module VagrantPlugins
 					zonepath = config.zonepath.delete_prefix("/").to_s
 					brand  = @machine.provider_config.brand
 					kernel = @machine.provider_config.kernel
-
+					
+					
+					puts ""
+					puts ""
+					puts ""
+					puts ""
+					puts ""
+					puts "zonepath"
+					
+					
+					puts ""
+					puts ""
+					puts ""
+					puts ""
+					puts ""
+					puts ""
+					
 					snapshot_create(zonepath)
 					snapshot_send(zonepath, tmp_img)
 					snapshot_delete(zonepath)
