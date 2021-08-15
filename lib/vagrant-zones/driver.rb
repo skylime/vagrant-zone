@@ -188,7 +188,7 @@ end							}
 										puts ""
 										if responses[-1].to_s =~ /enp\d\w\d/
 											vmnicint = responses[-1]
-											vmnic = vmnicint
+											vmnic = vmnicint.strip
 											puts ""
 											puts ""
 											puts ""
