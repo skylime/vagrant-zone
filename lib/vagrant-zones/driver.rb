@@ -187,13 +187,14 @@ end							}
 										puts responses[-1]
 										puts ""
 										if responses[-1].to_s =~ /enp\d\w\d/
+											
 											vmnicint = responses[-1]
-											vmnic = vmnicint.to_s
+											vmnic = vmnicint
 											puts ""
 											puts ""
 											puts ""
 											puts vmnic
-											puts vmnic.to_s
+											p vmnic
 											puts ""
 											puts ""
 											puts ""
