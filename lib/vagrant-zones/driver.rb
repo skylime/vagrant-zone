@@ -203,7 +203,6 @@ end							}
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]
 	    							}
-								puts netplan
 								zlogin(machine, "touch /etc/netplan/#{vnic_name}.yaml")
 								zlogin(machine, "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml")
 								puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
@@ -222,7 +221,6 @@ end							}
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]
 	    							}
-								puts netplan
 								zlogin(machine, "touch /etc/netplan/#{vnic_name}.yaml")
 								zlogin(machine, "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml")
 							end
