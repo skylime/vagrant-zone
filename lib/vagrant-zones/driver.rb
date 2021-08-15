@@ -182,13 +182,9 @@ end							}
 								Timeout.timeout(30) do
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-										puts ""
-										puts ""
-										puts responses[-1]
-										puts ""
 										if responses[-1].to_s =~ /enp\d\w\d/
 											
-											vmnic = responses[-1].to_s.rstrip.gsub(/\e\[\?2004l/, "").lstrip
+											vmnic = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
 											puts ""
 											puts ""
 											puts ""
