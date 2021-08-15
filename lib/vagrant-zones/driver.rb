@@ -176,6 +176,7 @@ end							}
 							puts "==> #{name}: Removing stale netplan configurations."
 							zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
 							responses=[]
+							vmnic="enp0s6"
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }'\r\n") }
 								Timeout.timeout(30) do
@@ -186,7 +187,8 @@ end							}
 										puts responses[-1]
 										puts ""
 										if responses[-1].to_s =~ /enp\d\w\d/
-											vmnic = responses[-1].to_s
+											vmnicint = responses[-1].to_s
+											vmnic = vmnicint
 											puts ""
 											puts ""
 											puts ""
