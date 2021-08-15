@@ -188,7 +188,7 @@ end							}
 										puts ""
 										if responses[-1].to_s =~ /enp\d\w\d/
 											
-											vmnic = responses[-1].rstrip.gsub(/\e\[\?2004l/, "").lstrip
+											vmnic = responses[-1].to_s.rstrip.gsub(/\e\[\?2004l/, "").lstrip
 											puts ""
 											puts ""
 											puts ""
