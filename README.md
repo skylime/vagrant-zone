@@ -53,9 +53,17 @@ Vagrant Plugin which can be used to managed Bhyve, LX and native zones on illumo
 
 Collecting status of boxes from [Vagrant Cloud](https://app.vagrantup.com/)
 
-| Box                                                             										         | OS             | Status
-| :---------------------------------------------------------------------------------	         |:------         | :------
-| [Makr44/ubuntu2104-server](https://app.vagrantup.com/Makr44/boxes/ubuntu2104-server)		     | Ubuntu 20.04  	| Working 
+| Box                                                             										     | Version   | OS           | Purpose    | Status
+| :---------------------------------------------------------------------------------	     | :------   |:------       | :------    | :------
+| [Makr44/ubuntu2104-server](https://app.vagrantup.com/Makr44/boxes/ubuntu2104-server)		 |  v.0.08   | Ubuntu 21.04 | Multi      | Working 
+| [Makr44/ubuntu2104-desktop](https://app.vagrantup.com/Makr44/boxes/ubuntu2104-desktop)	 |  v.0.20   | Ubuntu 21.04 | Desktop    | Work in Progress 
+| [Makr44/ubuntu2004-server](https://app.vagrantup.com/Makr44/boxes/ubuntu2004-server)		 |  v.0.05   | Ubuntu 20.04 | Multi      | Work in Progress 
+| [Makr44/ubuntu2004-desktop](https://app.vagrantup.com/Makr44/boxes/ubuntu2004-desktop)	 |  v.0.07   | Ubuntu 20.04 | Desktop    | Work in Progress  
+| [Makr44/Alma84-server](https://app.vagrantup.com/Makr44/boxes/Alma84-server)	    	     |  v.0.03   | Alma 8.4     | Multi      | Work in Progress 
+| [Makr44/ubuntu2104-server](https://app.vagrantup.com/Makr44/boxes/ubuntu2104-server)		 |           | Ubuntu 20.04 |            | Work in Progress  
+| [Makr44/ubuntu2104-server](https://app.vagrantup.com/Makr44/boxes/ubuntu2104-server)		 |           | Ubuntu 20.04 |            | Work in Progress 
+| [Makr44/ubuntu2104-server](https://app.vagrantup.com/Makr44/boxes/ubuntu2104-server)		 |           | Ubuntu 20.04 |            | Work in Progress 
+
 
 
 ## Development Installation Instructions
@@ -131,11 +139,11 @@ This command will shutdown the booted VM and clean up environment
 
 ## Known Issues
 
-| Box                                                             										         | OS             | Status
-| :---------------------------------------------------------------------------------	         |:------         | :------
-| `centos/7`                                                                                   | CentOS 7       | NFS Synced Folders Fail
-| All                                                                                          | All            | Cannot Detect OS Boot
-| All                                                                                          | All            | global-status incorrectly reports states
+| Box                 | OS             | Status
+| :--------------     |:------         | :------
+| `centos/7`          | CentOS 7       | NFS Synced Folders Fail
+| All                 | All            | Cannot Detect OS Boot
+| All                 | All            | global-status incorrectly reports states -- [Known Bug](https://github.com/hashicorp/vagrant/issues/4360) in Vagrant 
 
 ### NFS Synced Folders Fail
 
