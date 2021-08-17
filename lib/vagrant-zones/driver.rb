@@ -177,10 +177,10 @@ end							}
 							zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
 							responses=[]
 							vmnic=""
-							
+							run = 0
 							regex=/(eno|ens|enp|eth|enx)([0-9A-Fa-f]{2}{6}|\d?)(s\d)?(f\d)?/
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }'\n;echo \"Error Code: $?\"\n") }
+								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }'\n") }
 								Timeout.timeout(30) do
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
@@ -188,14 +188,7 @@ end							}
 										if responses[-1].to_s =~ regex
 											vmnic = responses[-1][0][/#{regex}/]
 										end
-										
-								
-										
-										puts
-										p vmnic
-										puts vmnic
-										puts
-										puts
+
 										interface = vmnic
 										nicfunction = ""
 										if !interface[/#{regex}/, 1].nil?
@@ -225,6 +218,7 @@ end							}
 											nicfunction = nicfunction.gsub /f/, ''
 											if nic_number == nicfunction
 												if config.dhcp
+													run+=1
 													puts "==> #{name}: Generate fresh DHCP netplan configurations."
 													netplan = %{network:
   version: 2
@@ -235,7 +229,9 @@ end							}
       dhcp6: yes
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]							}
-													zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Subprocess Error Code: $?\"\n")
+													if run != 0
+														zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Subprocess Error Code: $?\"\n")
+													end
 													if responses[-1].to_s.match(/Subprocess Error Code: 0/)
 														puts "==> #{name}: Fresh DHCP netplan configurations applied."
 														break
@@ -246,6 +242,7 @@ end							}
 													end
 													puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
 												else	
+													run+=1
 													puts "==> #{name}: Generate fresh static netplan configurations."
 													netplan = %{network:
   version: 2
@@ -258,8 +255,9 @@ end							}
       gateway4: #{defrouter}
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]							}
-													##Command to Write out Config 
-													zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Subprocess Error Code: $?\"\n")
+													if run != 0
+														zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Subprocess Error Code: $?\"\n")
+													end
 													if responses[-1].to_s.match(/Subprocess Error Code: 0/)
 														puts "==> #{name}: Fresh static netplan configurations applied."
 														break
