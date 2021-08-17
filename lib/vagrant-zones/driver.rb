@@ -187,7 +187,7 @@ end							}
 										if responses[-1].to_s =~ regex
 											vmnic = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
 										end
-
+									
 										interface = vmnic
 										nicfunction = ""
 										if !interface[/#{regex}/, 1].nil?
@@ -247,7 +247,7 @@ end							}
 													netplan = %{network:
   version: 2
   ethernets:
-    #{vmnic}:
+    #{vmnic.to_s}:
       dhcp-identifier: mac
       dhcp4: no
       dhcp6: no
