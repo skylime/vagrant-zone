@@ -184,8 +184,9 @@ end							}
 								Timeout.timeout(30) do
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-										if responses[-1].to_s =~ regex
-											vmnic = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
+
+										if !interface[/#{regex}/].nil?
+											vmnic = interface[/#{regex}/]
 										end
 										puts
 										p vmnic
@@ -219,7 +220,6 @@ end							}
 										end
 										if !nicfunction.nil? 
 											nicfunction = nicfunction.gsub /f/, ''
-											puts nicfunction
 											if nic_number == nicfunction
 												if config.dhcp
 													puts "==> #{name}: Generate fresh DHCP netplan configurations."
@@ -247,7 +247,7 @@ end							}
 													netplan = %{network:
   version: 2
   ethernets:
-    #{vmnic.to_s}:
+    #{vmnic}:
       dhcp-identifier: mac
       dhcp4: no
       dhcp6: no
