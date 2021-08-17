@@ -239,7 +239,7 @@ end							}
 															zlogin_read.expect(/\r\n/) { |line|  resp.push line}
 															if resp[-1].to_s.match(/Error Code: 0/)
 						        									break
-															elsif resp[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+															elsif resp[-1].to_s.match(/Exit Code: \b(?![0]\b)\d{1,4}\b/)
 						        									raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n #{resp[-1]}"
 															elsif resp[-1].nil?
 						        								        break
@@ -247,7 +247,8 @@ end							}
 														end
 													end
 													puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
-												else
+												else	
+													resp=[]
 													puts "==> #{name}: Generate fresh netplan configurations."
 													netplan = %{network:
   version: 2
@@ -266,7 +267,7 @@ end							}
 															zlogin_read.expect(/\r\n/) { |line|  resp.push line}
 															if resp[-1].to_s.match(/Error Code: 0/)
 						        									break
-															elsif resp[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+															elsif resp[-1].to_s.match(/Exit Code: \b(?![0]\b)\d{1,4}\b/)
 						        									raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n #{resp[-1]}"
 															elsif resp[-1].nil?
 						        								        break
