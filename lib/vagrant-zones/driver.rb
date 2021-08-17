@@ -258,11 +258,9 @@ end							}
 													##Command to Write out Config 
 													zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n")
 													if responses[-1].to_s.match(/Exit Code: 0/)
-														break
+														puts "==> #{name}: Fresh static netplan configurations applied."
 													elsif responses[-1].to_s.match(/Exit Code: \b(?![0]\b)\d{1,4}\b/)
 														raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
-													elsif responses[-1].nil?
-													        break
 													end
 												end
 											end
