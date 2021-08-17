@@ -177,7 +177,7 @@ end							}
 							zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
 							responses=[]
 							vmnic=""
-							nicfunction = ""
+							
 							regex=/(eno|ens|enp|eth|enx)([0-9A-Fa-f]{2}{6}|\d?)(s\d)?(f\d)?/
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }'\n;echo \"Error Code: $?\"\n") }
@@ -187,40 +187,36 @@ end							}
 										if responses[-1].to_s =~ regex
 											vmnic = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
 										end
-										
-										
-										puts
-										puts
-										puts
-										p vmnic
-										puts vmnic
-										
+
 										interface = vmnic
-										
+										nicfunction = ""
 										if !interface[/#{regex}/, 1].nil?
 											print "Ethernet adapter location on the machine: "
 											nic = interface[/#{regex}/, 1]
 											puts nic
 											print "Prefix/bus number of device: "
 											puts interface[/#{regex}/, 2]
-											nicbus = interface[/#{regex}/, 1]
-											
+											nicbus = interface[/#{regex}/, 2]
 											if !interface[/#{regex}/, 3].nil?
-												print "Slot/device number of device: "
+												print "Slot/device number of interface: "
 												puts interface[/#{regex}/, 3]
-												nicdevice = interface[/#{regex}/, 1]
+												nicdevice = interface[/#{regex}/, 3]
 												if !interface[/#{regex}/, 4].nil?
-													print "function number of device: "
+													print "function number of interface: "
 													puts interface[/#{regex}/, 4]  
-													nicfunction = interface[/#{regex}/, 1]
+													nicfunction = interface[/#{regex}/, 4]
 												else
 													nicfunction = "f0"
+													puts "Setting nicfunction "
 												end
 											else
 												nicfunction = nicbus
 											end
 										end
-										
+										puts
+										puts nicfunction
+										puts
+										puts
 										if !nicfunction.nil? 
 											nicfunction = nicfunction.gsub /f/, ''
 											if nic_number == nicfunction
