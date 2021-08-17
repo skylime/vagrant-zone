@@ -220,15 +220,60 @@ end							}
 										if !nicfunction.nil? 
 											nicfunction = nicfunction.gsub /f/, ''
 											if nic_number == nicfunction
-												puts SUCCESSS
-												puts SUCCESSS
-												puts SUCCESSS
-												puts SUCCESSS
-												puts SUCCESSS
-												puts SUCCESSS
-												puts SUCCESSS
-												puts SUCCESSS
-												puts SUCCESSS
+												if config.dhcp
+													puts "==> #{name}: Generate fresh netplan configurations."
+													netplan = %{network:
+  version: 2
+  ethernets:
+    #{vmnic}:
+      dhcp-identifier: mac
+      dhcp4: yes
+      dhcp6: yes
+      nameservers:
+        addresses: [#{nameserver1} , #{nameserver2}]							}
+													##Command to Write out Config 
+													resp=[]
+													zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("touch /etc/netplan/#{vnic_name}.yaml && echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n") }
+													Timeout.timeout(30) do
+														loop do
+															zlogin_read.expect(/\r\n/) { |line|  resp.push line}
+															if resp[-1].to_s.match(/Error Code: 0/)
+						        									break
+															elsif resp[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+						        									raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n #{resp[-1]}"
+															elsif resp[-1].nil?
+						        								        break
+															end
+														end
+													end
+													puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
+												else
+													puts "==> #{name}: Generate fresh netplan configurations."
+													netplan = %{network:
+  version: 2
+  ethernets:
+    #{vmnic}:
+      dhcp-identifier: mac
+      dhcp4: no
+      dhcp6: no
+      addresses: [#{ip}/#{netmask}]
+      gateway4: #{defrouter}
+      nameservers:
+        addresses: [#{nameserver1} , #{nameserver2}]							}
+													zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("touch /etc/netplan/#{vnic_name}.yaml && echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n") }
+													Timeout.timeout(30) do
+														loop do
+															zlogin_read.expect(/\r\n/) { |line|  resp.push line}
+															if resp[-1].to_s.match(/Error Code: 0/)
+						        									break
+															elsif resp[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+						        									raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n #{resp[-1]}"
+															elsif resp[-1].nil?
+						        								        break
+															end
+														end
+													end
+												end
 											end
 										end
 										if responses[-1].to_s.match(/Error Code: 0/)
@@ -242,38 +287,6 @@ end							}
 								end
 								Process.kill("HUP",pid)
 							end
-							if config.dhcp
-								puts "==> #{name}: Generate fresh netplan configurations."
-								netplan = %{network:
-  version: 2
-  ethernets:
-    #{vmnic}:
-      dhcp-identifier: mac
-      dhcp4: yes
-      dhcp6: yes
-      nameservers:
-        addresses: [#{nameserver1} , #{nameserver2}]		}
-								zlogin(machine, "touch /etc/netplan/#{vnic_name}.yaml")
-								zlogin(machine, "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml")
-								puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
-							else
-								## Create new netplan config
-								puts "==> #{name}: Generate fresh netplan configurations."
-								netplan = %{network:
-  version: 2
-  ethernets:
-    #{vmnic}:
-      dhcp-identifier: mac
-      dhcp4: no
-      dhcp6: no
-      addresses: [#{ip}/#{netmask}]
-      gateway4: #{defrouter}
-      nameservers:
-        addresses: [#{nameserver1} , #{nameserver2}]		}
-								zlogin(machine, "touch /etc/netplan/#{vnic_name}.yaml")
-								zlogin(machine, "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml")
-							end
-
 							## Apply the Configuration
 							puts "==> #{name}: Applying the network configuration"
 							zlogin(machine, 'netplan apply')
