@@ -232,21 +232,7 @@ end							}
       dhcp6: yes
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]							}
-													##Command to Write out Config 
-													resp=[]
-													zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("touch /etc/netplan/#{vnic_name}.yaml && echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n") }
-													Timeout.timeout(30) do
-														loop do
-															zlogin_read.expect(/\r\n/) { |line|  resp.push line}
-															if resp[-1].to_s.match(/Exit Code: 0/)
-						        									break
-															elsif resp[-1].to_s.match(/Exit Code: \b(?![0]\b)\d{1,4}\b/)
-						        									raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n #{resp[-1]}"
-															elsif resp[-1].nil?
-						        								        break
-															end
-														end
-													end
+
 													puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
 												else	
 													resp=[]
@@ -262,19 +248,22 @@ end							}
       gateway4: #{defrouter}
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]							}
-													zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("touch /etc/netplan/#{vnic_name}.yaml && echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n") }
-													Timeout.timeout(30) do
-														loop do
-															zlogin_read.expect(/\r\n/) { |line|  resp.push line}
-															if resp[-1].to_s.match(/Exit Code: 0/)
-						        									break
-															elsif resp[-1].to_s.match(/Exit Code: \b(?![0]\b)\d{1,4}\b/)
-						        									raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n #{resp[-1]}"
-															elsif resp[-1].nil?
-						        								        break
-															end
-														end
-													end
+
+												end
+											end
+										end
+										##Command to Write out Config 
+										resp=[]
+										zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("touch /etc/netplan/#{vnic_name}.yaml && echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n") }
+										Timeout.timeout(30) do
+											loop do
+												zlogin_read.expect(/\r\n/) { |line|  resp.push line}
+												if resp[-1].to_s.match(/Exit Code: 0/)
+													break
+												elsif resp[-1].to_s.match(/Exit Code: \b(?![0]\b)\d{1,4}\b/)
+													raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n #{resp[-1]}"
+												elsif resp[-1].nil?
+												        break
 												end
 											end
 										end
