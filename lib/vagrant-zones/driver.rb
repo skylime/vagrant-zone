@@ -221,7 +221,7 @@ end							}
 										end
 										
 										puts 
-										puts nicfunction
+										puts nicfunction.gsub(/f/, "")
 										puts
 										puts
 										if !nicfunction.nil? 
