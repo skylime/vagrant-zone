@@ -185,8 +185,8 @@ end							}
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 
-										if !interface[/#{regex}/].nil?
-											vmnic = interface[/#{regex}/]
+										if !responses[-1][/#{regex}/].nil?
+											vmnic = responses[-1][/#{regex}/]
 										end
 										puts
 										p vmnic
