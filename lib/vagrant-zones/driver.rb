@@ -177,14 +177,49 @@ end							}
 							zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
 							responses=[]
 							vmnic=""
+							regex=/(eno|ens|enp|eth|enx)([0-9A-Fa-f]{2}{6}|\d?)(s\d)?(f\d)?/
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }'\r\n") }
+								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }'\n;echo \"Error Code: $?\"\n") }
 								Timeout.timeout(30) do
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-										if responses[-1].to_s =~ /enp\d\w\d/
+										if responses[-1].to_s =~ regex
 											vmnic = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
-									        	break
+										end
+										
+										
+										puts
+										puts
+										puts
+										p vmnic
+										puts vmnic
+										
+										interface = vmnic
+										
+										if !interface[/#{regex}/, 1].nil?
+										    print "Ethernet adapter location on the machine: "
+										    nic = interface[/#{regex}/, 1]
+										    puts nic
+										    print "Prefix/bus number of device: "
+										    puts interface[/#{regex}/, 2]
+										    nicbus = interface[/#{regex}/, 1]
+										    if !interface[/#{regex}/, 3].nil?
+										        print "Slot/device number of device: "
+										        puts interface[/#{regex}/, 3]
+										        nicdevice = interface[/#{regex}/, 1]
+										        if !interface[/#{regex}/, 4].nil?
+										            print "function number of device: "
+										            puts interface[/#{regex}/, 4]  
+										            nicfunction = interface[/#{regex}/, 1]
+										        end
+										    end
+										end
+										if responses[-1].to_s.match(/Error Code: 0/)
+						        				break
+										elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+						        				raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
+										elsif responses[-1].nil?
+						        			        break
 										end
 									end
 								end
