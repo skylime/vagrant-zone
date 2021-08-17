@@ -222,7 +222,7 @@ end							}
 											puts nicfunction
 											if nic_number == nicfunction
 												if config.dhcp
-													puts "==> #{name}: Generate fresh netplan configurations."
+													puts "==> #{name}: Generate fresh DHCP netplan configurations."
 													netplan = %{network:
   version: 2
   ethernets:
@@ -234,7 +234,7 @@ end							}
         addresses: [#{nameserver1} , #{nameserver2}]							}
 													##Command to Write out Config 
 													resp=[]
-													zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n") }
+													zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n") 
 													Timeout.timeout(30) do
 														loop do
 															zlogin_read.expect(/\r\n/) { |line|  resp.push line}
@@ -250,7 +250,7 @@ end							}
 													puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
 												else	
 													resp=[]
-													puts "==> #{name}: Generate fresh netplan configurations."
+													puts "==> #{name}: Generate fresh static netplan configurations."
 													netplan = %{network:
   version: 2
   ethernets:
@@ -264,7 +264,7 @@ end							}
         addresses: [#{nameserver1} , #{nameserver2}]							}
 													##Command to Write out Config 
 													resp=[]
-													zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n") }
+													zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n")
 													Timeout.timeout(30) do
 														loop do
 															zlogin_read.expect(/\r\n/) { |line|  resp.push line}
