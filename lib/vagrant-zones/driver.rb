@@ -218,7 +218,6 @@ end							}
 											nicfunction = nicfunction.gsub /f/, ''
 											if nic_number == nicfunction
 												if config.dhcp
-													run+=1
 													puts "==> #{name}: Generate fresh DHCP netplan configurations."
 													netplan = %{network:
   version: 2
@@ -229,8 +228,9 @@ end							}
       dhcp6: yes
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]							}
-													if run != 0
+													if run == 0
 														zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Subprocess Error Code: $?\"\n")
+														run+=1
 													end
 													if responses[-1].to_s.match(/Subprocess Error Code: 0/)
 														puts "==> #{name}: Fresh DHCP netplan configurations applied."
@@ -242,7 +242,6 @@ end							}
 													end
 													puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
 												else	
-													run+=1
 													puts "==> #{name}: Generate fresh static netplan configurations."
 													netplan = %{network:
   version: 2
@@ -255,8 +254,9 @@ end							}
       gateway4: #{defrouter}
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]							}
-													if run != 0
+													if run == 0
 														zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Subprocess Error Code: $?\"\n")
+														run+=1
 													end
 													if responses[-1].to_s.match(/Subprocess Error Code: 0/)
 														puts "==> #{name}: Fresh static netplan configurations applied."
@@ -266,14 +266,6 @@ end							}
 													end
 												end
 											end
-										end
-
-										if responses[-1].to_s.match(/Error Code: 0/)
-						        				break
-										elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
-						        				raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
-										elsif responses[-1].nil?
-						        			        break
 										end
 									end
 								end
