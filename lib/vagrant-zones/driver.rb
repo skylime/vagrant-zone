@@ -237,7 +237,7 @@ end							}
 										loop do
 											zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 											if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
-												ip = responses[-1].to_s
+												ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
 												return nil if ip.length == 0
 												return ip.gsub /\t/, ''
 										        	break
