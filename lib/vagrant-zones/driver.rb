@@ -176,93 +176,96 @@ end							}
 							puts "==> #{name}: Removing stale netplan configurations."
 							zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
 							responses=[]
-							vmnic=""
+							vmnic=[]
 							run = 0
 							regex=/(eno|ens|enp|eth|enx)([0-9A-Fa-f]{2}{6}|\d?)(s\d)?(f\d)?/
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }'\n") }
+								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface'\n") }
 								Timeout.timeout(30) do
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 
 										if responses[-1].to_s =~ regex
-											vmnic = responses[-1][0][/#{regex}/]
+											vmnic.append(responses[-1][0][/#{regex}/])
 										end
-
-										interface = vmnic
-										nicfunction = ""
-										if !interface[/#{regex}/, 1].nil?
-											print "Ethernet adapter location on the machine: "
-											nic = interface[/#{regex}/, 1]
-											puts nic
-											print "Prefix/bus number of device: "
-											puts interface[/#{regex}/, 2]
-											nicbus = interface[/#{regex}/, 2]
-											if !interface[/#{regex}/, 3].nil?
-												print "Slot/device number of interface: "
-												puts interface[/#{regex}/, 3]
-												nicdevice = interface[/#{regex}/, 3]
-												if !interface[/#{regex}/, 4].nil?
-													print "function number of interface: "
-													puts interface[/#{regex}/, 4]  
-													nicfunction = interface[/#{regex}/, 4]
+										
+										puts vmnic
+										p vmnic
+										vmnic.each { |interface|
+											nicfunction = ""
+											if !interface[/#{regex}/, 1].nil?
+												print "Ethernet adapter location on the machine: "
+												nic = interface[/#{regex}/, 1]
+												puts nic
+												print "Prefix/bus number of device: "
+												puts interface[/#{regex}/, 2]
+												nicbus = interface[/#{regex}/, 2]
+												if !interface[/#{regex}/, 3].nil?
+													print "Slot/device number of interface: "
+													puts interface[/#{regex}/, 3]
+													nicdevice = interface[/#{regex}/, 3]
+													if !interface[/#{regex}/, 4].nil?
+														print "function number of interface: "
+														puts interface[/#{regex}/, 4]  
+														nicfunction = interface[/#{regex}/, 4]
+													else
+														nicfunction = "f0"
+														puts "Setting nicfunction "
+													end
 												else
-													nicfunction = "f0"
-													puts "Setting nicfunction "
+													nicfunction = nicbus
 												end
-											else
-												nicfunction = nicbus
 											end
-										end
-										if !nicfunction.nil? 
-											nicfunction = nicfunction.gsub /f/, ''
-											if nic_number == nicfunction
-												if config.dhcp
-													puts "==> #{name}: Generate fresh DHCP netplan configurations."
-													netplan = %{network:
+											if !nicfunction.nil? 
+												nicfunction = nicfunction.gsub /f/, ''
+												if nic_number == nicfunction
+													if config.dhcp
+														puts "==> #{name}: Generate fresh DHCP netplan configurations."
+														netplan = %{network:
   version: 2
   ethernets:
-    #{vmnic}:
+    #{interface}:
       dhcp-identifier: mac
       dhcp4: yes
       dhcp6: yes
       nameservers:
-        addresses: [#{nameserver1} , #{nameserver2}]							}
-													if run == 0
-														zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Subprocess Error Code: $?\"\n")
-														run+=1
-													end
-													if responses[-1].to_s.match(/Subprocess Error Code: 0/)
-														puts "==> #{name}: Fresh DHCP netplan configurations applied."
-														break
-													elsif responses[-1].to_s.match(/Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
-														raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
-													elsif responses[-1].nil?
-													        break
-													end
-													puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
-												else	
-													puts "==> #{name}: Generate fresh static netplan configurations."
-													netplan = %{network:
+        addresses: [#{nameserver1} , #{nameserver2}]								}
+														if run == 0
+															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Subprocess Error Code: $?\"\n")
+															run+=1
+														end
+														if responses[-1].to_s.match(/Subprocess Error Code: 0/)
+															puts "==> #{name}: Fresh DHCP netplan configurations applied."
+															break
+														elsif responses[-1].to_s.match(/Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
+															raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
+														elsif responses[-1].nil?
+														        break
+														end
+														puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
+													else	
+														puts "==> #{name}: Generate fresh static netplan configurations."
+														netplan = %{network:
   version: 2
   ethernets:
-    #{vmnic}:
+    #{interface}:
       dhcp-identifier: mac
       dhcp4: no
       dhcp6: no
       addresses: [#{ip}/#{netmask}]
       gateway4: #{defrouter}
       nameservers:
-        addresses: [#{nameserver1} , #{nameserver2}]							}
-													if run == 0
-														zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Subprocess Error Code: $?\"\n")
-														run+=1
-													end
-													if responses[-1].to_s.match(/Subprocess Error Code: 0/)
-														puts "==> #{name}: Fresh static netplan configurations applied."
-														break
-													elsif responses[-1].to_s.match(/Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
-														raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
+        addresses: [#{nameserver1} , #{nameserver2}]								}
+														if run == 0
+															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Subprocess Error Code: $?\"\n")
+															run+=1
+														end
+														if responses[-1].to_s.match(/Subprocess Error Code: 0/)
+															puts "==> #{name}: Fresh static netplan configurations applied."
+															break
+														elsif responses[-1].to_s.match(/Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
+															raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
+														end
 													end
 												end
 											end
