@@ -213,7 +213,7 @@ end							}
 													puts interface[/#{regex}/, 4]  
 													nicfunction = interface[/#{regex}/, 1]
 												else
-													nicfunction = interface["f0",1]
+													nicfunction = "f0"
 												end
 											else
 												nicfunction = nicbus
