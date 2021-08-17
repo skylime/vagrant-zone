@@ -234,6 +234,7 @@ end							}
         addresses: [#{nameserver1} , #{nameserver2}]							}
 													zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n")
 													if responses[-1].to_s.match(/Exit Code: 0/)
+														puts "==> #{name}: Fresh DHCP netplan configurations applied."
 														break
 													elsif responses[-1].to_s.match(/Exit Code: \b(?![0]\b)\d{1,4}\b/)
 														raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
@@ -242,7 +243,6 @@ end							}
 													end
 													puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
 												else	
-													resp=[]
 													puts "==> #{name}: Generate fresh static netplan configurations."
 													netplan = %{network:
   version: 2
@@ -259,6 +259,7 @@ end							}
 													zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n")
 													if responses[-1].to_s.match(/Exit Code: 0/)
 														puts "==> #{name}: Fresh static netplan configurations applied."
+														break
 													elsif responses[-1].to_s.match(/Exit Code: \b(?![0]\b)\d{1,4}\b/)
 														raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
 													end
