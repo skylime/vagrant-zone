@@ -177,6 +177,7 @@ end							}
 							zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
 							responses=[]
 							vmnic=""
+							nicfunction = ""
 							regex=/(eno|ens|enp|eth|enx)([0-9A-Fa-f]{2}{6}|\d?)(s\d)?(f\d)?/
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ifconfig -s -a | grep -v lo | tail -1 | awk '{ print $1 }'\n;echo \"Error Code: $?\"\n") }
@@ -195,7 +196,7 @@ end							}
 										puts vmnic
 										
 										interface = vmnic
-										nicfunction = ""
+										
 										if !interface[/#{regex}/, 1].nil?
 											print "Ethernet adapter location on the machine: "
 											nic = interface[/#{regex}/, 1]
