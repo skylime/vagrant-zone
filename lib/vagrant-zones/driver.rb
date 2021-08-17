@@ -214,6 +214,7 @@ end							}
 										        end
 										    end
 										end
+										puts nicfunction
 										if responses[-1].to_s.match(/Error Code: 0/)
 						        				break
 										elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
