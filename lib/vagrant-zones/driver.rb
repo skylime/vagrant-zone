@@ -220,37 +220,15 @@ end							}
 										if !nicfunction.nil? 
 											nicfunction = nicfunction.gsub /f/, ''
 											if nic_number == nicfunction
-												if config.dhcp
-												puts "==> #{name}: Generate fresh netplan configurations."
-												netplan = %{network:
-  version: 2
-  ethernets:
-    #{vmnic}:
-      dhcp-identifier: mac
-      dhcp4: yes
-      dhcp6: yes
-      nameservers:
-        addresses: [#{nameserver1} , #{nameserver2}]							}
-													zlogin(machine, "touch /etc/netplan/#{vnic_name}.yaml")
-													zlogin(machine, "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml")
-													puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
-												else
-													## Create new netplan config
-													puts "==> #{name}: Generate fresh netplan configurations."
-													netplan = %{network:
-  version: 2
-  ethernets:
-    #{vmnic}:
-      dhcp-identifier: mac
-      dhcp4: no
-      dhcp6: no
-      addresses: [#{ip}/#{netmask}]
-      gateway4: #{defrouter}
-      nameservers:
-        addresses: [#{nameserver1} , #{nameserver2}]							}
-													zlogin(machine, "touch /etc/netplan/#{vnic_name}.yaml")
-													zlogin(machine, "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml")
-												end	
+												puts SUCCESSS
+												puts SUCCESSS
+												puts SUCCESSS
+												puts SUCCESSS
+												puts SUCCESSS
+												puts SUCCESSS
+												puts SUCCESSS
+												puts SUCCESSS
+												puts SUCCESSS
 											end
 										end
 										if responses[-1].to_s.match(/Error Code: 0/)
@@ -264,9 +242,38 @@ end							}
 								end
 								Process.kill("HUP",pid)
 							end
-							
-							
-							
+							if config.dhcp
+								puts "==> #{name}: Generate fresh netplan configurations."
+								netplan = %{network:
+  version: 2
+  ethernets:
+    #{vmnic}:
+      dhcp-identifier: mac
+      dhcp4: yes
+      dhcp6: yes
+      nameservers:
+        addresses: [#{nameserver1} , #{nameserver2}]		}
+								zlogin(machine, "touch /etc/netplan/#{vnic_name}.yaml")
+								zlogin(machine, "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml")
+								puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
+							else
+								## Create new netplan config
+								puts "==> #{name}: Generate fresh netplan configurations."
+								netplan = %{network:
+  version: 2
+  ethernets:
+    #{vmnic}:
+      dhcp-identifier: mac
+      dhcp4: no
+      dhcp6: no
+      addresses: [#{ip}/#{netmask}]
+      gateway4: #{defrouter}
+      nameservers:
+        addresses: [#{nameserver1} , #{nameserver2}]		}
+								zlogin(machine, "touch /etc/netplan/#{vnic_name}.yaml")
+								zlogin(machine, "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml")
+							end
+
 							## Apply the Configuration
 							puts "==> #{name}: Applying the network configuration"
 							zlogin(machine, 'netplan apply')
