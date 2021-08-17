@@ -191,6 +191,7 @@ end							}
 										
 										puts vmnic
 										p vmnic
+										
 										vmnic.each { |interface|
 											nicfunction = ""
 											if !interface[/#{regex}/, 1].nil?
@@ -268,8 +269,8 @@ end							}
 														end
 													end
 												end
-												}
 											end
+											}
 										end
 									end
 								end
