@@ -232,20 +232,13 @@ end							}
       dhcp6: yes
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]							}
-													##Command to Write out Config 
-													resp=[]
-													zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n") 
-													Timeout.timeout(30) do
-														loop do
-															zlogin_read.expect(/\r\n/) { |line|  resp.push line}
-															if resp[-1].to_s.match(/Exit Code: 0/)
-																break
-															elsif resp[-1].to_s.match(/Exit Code: \b(?![0]\b)\d{1,4}\b/)
-																raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n #{resp[-1]}"
-															elsif resp[-1].nil?
-															        break
-															end
-														end
+													zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n")
+													if responses[-1].to_s.match(/Exit Code: 0/)
+														break
+													elsif responses[-1].to_s.match(/Exit Code: \b(?![0]\b)\d{1,4}\b/)
+														raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
+													elsif responses[-1].nil?
+													        break
 													end
 													puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
 												else	
@@ -264,15 +257,13 @@ end							}
         addresses: [#{nameserver1} , #{nameserver2}]							}
 													##Command to Write out Config 
 													zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Exit Code: $?\"\n")
-															if responses[-1].to_s.match(/Exit Code: 0/)
-																break
-															elsif responses[-1].to_s.match(/Exit Code: \b(?![0]\b)\d{1,4}\b/)
-																raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
-															elsif responses[-1].nil?
-															        break
-															end
-
-													
+													if responses[-1].to_s.match(/Exit Code: 0/)
+														break
+													elsif responses[-1].to_s.match(/Exit Code: \b(?![0]\b)\d{1,4}\b/)
+														raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
+													elsif responses[-1].nil?
+													        break
+													end
 												end
 											end
 										end
