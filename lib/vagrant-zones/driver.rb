@@ -219,9 +219,10 @@ end							}
 												nicfunction = nicbus
 											end
 										end
-
+										
 										if !nicfunction.nil? 
-											if nic_number == nicfunction.gsub /f/, ''
+											nicfunction = nicfunction.gsub /f/, ''
+											if nic_number == nicfunction
 												if config.dhcp
 												puts "==> #{name}: Generate fresh netplan configurations."
 												netplan = %{network:
