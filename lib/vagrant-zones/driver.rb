@@ -225,7 +225,7 @@ end							}
 										puts
 										puts
 										if !nicfunction.nil? 
-											if nic_number == nicfunction
+											if nic_number == nicfunction.gsub /f/, ''
 												if config.dhcp
 												puts "==> #{name}: Generate fresh netplan configurations."
 												netplan = %{network:
