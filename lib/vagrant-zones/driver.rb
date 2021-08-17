@@ -187,7 +187,11 @@ end							}
 										if responses[-1].to_s =~ regex
 											vmnic = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
 										end
-									
+										puts
+										p vmnic
+										puts vmnic
+										puts
+										puts
 										interface = vmnic
 										nicfunction = ""
 										if !interface[/#{regex}/, 1].nil?
@@ -213,10 +217,6 @@ end							}
 												nicfunction = nicbus
 											end
 										end
-										puts
-										puts nicfunction
-										puts
-										puts
 										if !nicfunction.nil? 
 											nicfunction = nicfunction.gsub /f/, ''
 											puts nicfunction
