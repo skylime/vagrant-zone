@@ -195,7 +195,7 @@ end							}
 										puts vmnic
 										
 										interface = vmnic
-										
+										nicfunction = ""
 										if !interface[/#{regex}/, 1].nil?
 											print "Ethernet adapter location on the machine: "
 											nic = interface[/#{regex}/, 1]
@@ -219,11 +219,7 @@ end							}
 												nicfunction = nicbus
 											end
 										end
-										
-										puts 
-										puts nicfunction.gsub /f/, ''
-										puts
-										puts
+
 										if !nicfunction.nil? 
 											if nic_number == nicfunction.gsub /f/, ''
 												if config.dhcp
