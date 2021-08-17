@@ -270,8 +270,8 @@ end							}
 													end
 												end
 											end
-											}
-										end
+										}
+										
 									end
 								end
 								Process.kill("HUP",pid)
