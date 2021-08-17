@@ -197,24 +197,68 @@ end							}
 										interface = vmnic
 										
 										if !interface[/#{regex}/, 1].nil?
-										    print "Ethernet adapter location on the machine: "
-										    nic = interface[/#{regex}/, 1]
-										    puts nic
-										    print "Prefix/bus number of device: "
-										    puts interface[/#{regex}/, 2]
-										    nicbus = interface[/#{regex}/, 1]
-										    if !interface[/#{regex}/, 3].nil?
-										        print "Slot/device number of device: "
-										        puts interface[/#{regex}/, 3]
-										        nicdevice = interface[/#{regex}/, 1]
-										        if !interface[/#{regex}/, 4].nil?
-										            print "function number of device: "
-										            puts interface[/#{regex}/, 4]  
-										            nicfunction = interface[/#{regex}/, 1]
-										        end
-										    end
+											print "Ethernet adapter location on the machine: "
+											nic = interface[/#{regex}/, 1]
+											puts nic
+											print "Prefix/bus number of device: "
+											puts interface[/#{regex}/, 2]
+											nicbus = interface[/#{regex}/, 1]
+											
+											if !interface[/#{regex}/, 3].nil?
+												print "Slot/device number of device: "
+												puts interface[/#{regex}/, 3]
+												nicdevice = interface[/#{regex}/, 1]
+												if !interface[/#{regex}/, 4].nil?
+													print "function number of device: "
+													puts interface[/#{regex}/, 4]  
+													nicfunction = interface[/#{regex}/, 1]
+												else
+													nicfunction = interface["f0",1]
+												end
+											else
+												nicfunction = nicbus
+											end
 										end
+										
+										puts 
 										puts nicfunction
+										puts
+										puts
+										if !nicfunction.nil? 
+											if nic_number == nicfunction
+												if config.dhcp
+												puts "==> #{name}: Generate fresh netplan configurations."
+												netplan = %{network:
+  version: 2
+  ethernets:
+    #{vmnic}:
+      dhcp-identifier: mac
+      dhcp4: yes
+      dhcp6: yes
+      nameservers:
+        addresses: [#{nameserver1} , #{nameserver2}]							}
+													zlogin(machine, "touch /etc/netplan/#{vnic_name}.yaml")
+													zlogin(machine, "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml")
+													puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
+												else
+													## Create new netplan config
+													puts "==> #{name}: Generate fresh netplan configurations."
+													netplan = %{network:
+  version: 2
+  ethernets:
+    #{vmnic}:
+      dhcp-identifier: mac
+      dhcp4: no
+      dhcp6: no
+      addresses: [#{ip}/#{netmask}]
+      gateway4: #{defrouter}
+      nameservers:
+        addresses: [#{nameserver1} , #{nameserver2}]							}
+													zlogin(machine, "touch /etc/netplan/#{vnic_name}.yaml")
+													zlogin(machine, "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml")
+												end	
+											end
+										end
 										if responses[-1].to_s.match(/Error Code: 0/)
 						        				break
 										elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
@@ -227,39 +271,7 @@ end							}
 								Process.kill("HUP",pid)
 							end
 							
-							if config.dhcp
-								puts "==> #{name}: Generate fresh netplan configurations."
-								netplan = %{network:
-  version: 2
-  ethernets:
-    #{vmnic}:
-      dhcp-identifier: mac
-      dhcp4: yes
-      dhcp6: yes
-      nameservers:
-        addresses: [#{nameserver1} , #{nameserver2}]
-	    							}
-								zlogin(machine, "touch /etc/netplan/#{vnic_name}.yaml")
-								zlogin(machine, "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml")
-								puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
-							else
-								## Create new netplan config
-								puts "==> #{name}: Generate fresh netplan configurations."
-								netplan = %{network:
-  version: 2
-  ethernets:
-    #{vmnic}:
-      dhcp-identifier: mac
-      dhcp4: no
-      dhcp6: no
-      addresses: [#{ip}/#{netmask}]
-      gateway4: #{defrouter}
-      nameservers:
-        addresses: [#{nameserver1} , #{nameserver2}]
-	    							}
-								zlogin(machine, "touch /etc/netplan/#{vnic_name}.yaml")
-								zlogin(machine, "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml")
-							end
+							
 							
 							## Apply the Configuration
 							puts "==> #{name}: Applying the network configuration"
