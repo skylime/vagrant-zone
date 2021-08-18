@@ -194,7 +194,7 @@ end							}
 
 										if responses[-1][0] =~ regex
 											puts responses[-1][0][/#{regex}/]
-											vmnic.append(responses[-1][/#{regex}/])
+											vmnic.append(responses[-1][0][/#{regex}/])
 										end
 										
 										puts vmnic.to_s
