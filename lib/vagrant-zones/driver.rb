@@ -294,7 +294,6 @@ end							}
 														netplan = %{network:
   version: 2
   ethernets:
-    #{interface}:
       dhcp-identifier: mac
       dhcp4: no
       dhcp6: no
