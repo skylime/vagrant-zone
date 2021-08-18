@@ -187,6 +187,7 @@ end							}
 								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n") }
 								Timeout.timeout(30) do
 									run = 0
+									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 										puts responses[-1][0]
 										if responses[-1][0] =~ regex
@@ -312,8 +313,14 @@ end							}
 												end
 											end
 										}
-										break										
-									
+										zlogin_write.printf("echo \"Subprocess Error Code: $?\"\n")
+										if responses[-1].to_s.match(/Error Code: 0/)
+											puts "==> #{name}: netplan configurations applied."
+											break
+										elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+											raise "==> #{name}: \nCommand: \n ==>  \nFailed with: \n responses[-1]"
+										end									
+									end
 								end
 								Process.kill("HUP",pid)
 							end
