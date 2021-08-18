@@ -277,11 +277,11 @@ end							}
 														end
 														if responses[-1].to_s.match(/Subprocess Error Code: 0/)
 															puts "==> #{name}: Fresh DHCP netplan configurations applied."
-															break
+															
 														elsif responses[-1].to_s.match(/Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
 															raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
 														elsif responses[-1].nil?
-														        break
+														        
 														end
 														puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
 													else	
@@ -304,7 +304,7 @@ end							}
 														end
 														if responses[-1].to_s.match(/Subprocess Error Code: 0/)
 															puts "==> #{name}: Fresh static netplan configurations applied."
-															break
+															
 														elsif responses[-1].to_s.match(/Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
 															raise "==> #{name}: \nCommand: \n ==>  \nFailed with: \n responses[-1]"
 														end
@@ -312,7 +312,7 @@ end							}
 												end
 											end
 										}
-										
+										break										
 									end
 								end
 								Process.kill("HUP",pid)
