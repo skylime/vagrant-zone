@@ -270,9 +270,9 @@ end							}
       dhcp4: yes
       dhcp6: yes
       nameservers:
-        addresses: [#{nameserver1} , #{nameserver2}]								}
+        addresses: [#{nameserver1} , #{nameserver2}]								}if
 														if run == 0
-															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Subprocess Error Code: $?\"\n")
+															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"Subprocess Error Code: $?\"\n")
 															run+=1
 														end
 														if responses[-1].to_s.match(/Subprocess Error Code: 0/)
@@ -286,10 +286,11 @@ end							}
 														puts "==> #{machine.name} ==> DHCP is not yet Configured for use, this may not work"
 													else	
 														puts "==> #{name}: Generate fresh static netplan configurations."
+														vnic=vmnic[devid.to_i]
 														netplan = %{network:
   version: 2
   ethernets:  
-    #{vmnic[devid.to_i]}:
+    #{vnic}:
       dhcp-identifier: mac
       dhcp4: no
       dhcp6: no
@@ -298,7 +299,7 @@ end							}
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]								}
 														if run == 0
-															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Subprocess Error Code: $?\"\n")
+															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"Subprocess Error Code: $?\"\n")
 															run+=1
 														end
 														if responses[-1].to_s.match(/Subprocess Error Code: 0/)
