@@ -185,7 +185,7 @@ end							}
 							responses=[]
 							vmnic=[]
 							
-							regex=/([e][nt][hpxo])([0-9A-Fa-f]{2}{6}|\d|(s\d)(f\d)?)/
+							regex=/(eno|ens|enp|eth|enx)([0-9A-Fa-f]{2}{6}|\d|(s\d)(f\d)?)/
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n") }
 								Timeout.timeout(30) do
@@ -220,7 +220,7 @@ end							}
 														puts interface[/#{regex}/, 4]  
 														nicfunction = interface[/#{regex}/, 4]
 													else
-														nicfunction = "f0"
+														nicfunction = "f0".gsub /f/, ''
 														puts "Setting nicfunction "
 													end
 												else
@@ -228,7 +228,6 @@ end							}
 												end
 											end
 											if !nicfunction.nil? 
-												nicfunction = nicfunction.gsub /f/, ''
 												if nic_number == nicfunction
 													if config.dhcp
 														puts "==> #{name}: Generate fresh DHCP netplan configurations."
