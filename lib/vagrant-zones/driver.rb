@@ -196,8 +196,6 @@ end							}
 												vmnic.append(responses[-1][0][/#{regex}/])
 											end
 										end
-										p vmnic
-										puts vmnic
 										run = 0
 										vmnic.each { |interface|
 											nicfunction = ""
@@ -267,7 +265,7 @@ end							}
 														netplan = %{network:
   version: 2
   ethernets:
-    #{interface[devid]}:
+    #{vmnic[devid]}:
       dhcp-identifier: mac
       dhcp4: yes
       dhcp6: yes
@@ -291,7 +289,7 @@ end							}
 														netplan = %{network:
   version: 2
   ethernets:  
-    #{interface[devid]}:
+    #{vmnic[devid]}:
       dhcp-identifier: mac
       dhcp4: no
       dhcp6: no
@@ -307,7 +305,7 @@ end							}
 															puts "==> #{name}: Fresh static netplan configurations applied."
 															break
 														elsif responses[-1].to_s.match(/Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
-															raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
+															raise "==> #{name}: \nCommand: \n ==>  \nFailed with: \n responses[-1]"
 														end
 													end
 												end
