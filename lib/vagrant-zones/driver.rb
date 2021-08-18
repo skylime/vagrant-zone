@@ -184,7 +184,7 @@ end							}
 							zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
 							responses=[]
 							vmnic=[]
-							run = 0
+							
 							regex=/(eno|ens|enp|eth|enx)([0-9A-Fa-f]{2}{6}|\d?)(s\d)?(f\d)?/
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n") }
@@ -198,7 +198,7 @@ end							}
 										end
 										p vmnic
 										puts vmnic
-										
+										run = 0
 										vmnic.each { |interface|
 											nicfunction = ""
 											if !interface[/#{regex}/, 1].nil?
