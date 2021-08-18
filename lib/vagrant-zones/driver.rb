@@ -270,7 +270,7 @@ end							}
 														netplan = %{network:
   version: 2
   ethernets:
-    #{interface}:
+    #{interface[devid]}:
       dhcp-identifier: mac
       dhcp4: yes
       dhcp6: yes
@@ -293,7 +293,8 @@ end							}
 														puts "==> #{name}: Generate fresh static netplan configurations."
 														netplan = %{network:
   version: 2
-  ethernets:
+  ethernets:  
+    #{interface[devid]}:
       dhcp-identifier: mac
       dhcp4: no
       dhcp6: no
