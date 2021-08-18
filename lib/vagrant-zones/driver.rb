@@ -185,16 +185,19 @@ end							}
 							responses=[]
 							vmnic=[]
 							
-							regex=/(eno|ens|enp|eth|enx)([0-9A-Fa-f]{2}{6}|\d?)(s\d)?(f\d)?/
+							regex=/([e][nt][hpxo])([0-9A-Fa-f]{2}{6}|\d|(s\d)(f\d)?)/
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n") }
 								Timeout.timeout(30) do
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-
+										puts responses[-1][0]
 										if responses[-1][0] =~ regex
 											puts responses[-1][0][/#{regex}/]
-											vmnic.append(responses[-1][0][/#{regex}/])
+											
+											if !vmnic.include? responses[-1][0][/#{regex}/]
+												vmnic.append(responses[-1][0][/#{regex}/])
+											end
 										end
 										p vmnic
 										puts vmnic
