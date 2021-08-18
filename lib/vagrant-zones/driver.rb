@@ -170,10 +170,8 @@ module VagrantPlugins
 						elsif state == "config"
 							nic_attr = %{add net
 	set physical=#{vnic_name}
-	set global-nic=auto
-	add property (name=gateway,value="#{defrouter}")
-	add property (name=ips,value="#{allowed_address}")
-	add property (name=primary,value="true")
+	set defrouter=#{defrouter}
+	set allowed-addres=#{allowed_address}
 end							}
 							File.open('zone_config', 'a') do |f|
 								f.puts nic_attr
