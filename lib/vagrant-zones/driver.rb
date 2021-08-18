@@ -184,7 +184,8 @@ end							}
 								Timeout.timeout(30) do
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-
+										puts "test"
+										puts responses[-1]
 										if responses[-1].to_s =~ regex
 											puts responses[-1][/#{regex}/]
 											puts responses[-1][0][/#{regex}/]
