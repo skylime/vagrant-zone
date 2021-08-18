@@ -196,9 +196,8 @@ end							}
 											puts responses[-1][0][/#{regex}/]
 											vmnic.append(responses[-1][0][/#{regex}/])
 										end
-										
-										puts vmnic.to_s
 										p vmnic
+										puts vmnic
 										
 										vmnic.each { |interface|
 											nicfunction = ""
