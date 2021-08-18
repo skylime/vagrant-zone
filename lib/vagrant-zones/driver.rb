@@ -113,6 +113,7 @@ module VagrantPlugins
 						netmask 	= IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count("1")
 						ip        	= opts[:ip].to_s
 						defrouter 	= opts[:gateway].to_s
+						allowed_address = ip + "/" + netmask
 						if ip.length == 0
 							ip = nil
 						else
@@ -167,6 +168,10 @@ module VagrantPlugins
 						elsif state == "config"
 							nic_attr = %{add net
 	set physical=#{vnic_name}
+	set global-nic=auto
+	add property (name=gateway,value="#{defrouter}")
+	add property (name=ips,value="#{allowed_address}")
+	add property (name=primary,value="true")
 end							}
 							File.open('zone_config', 'a') do |f|
 								f.puts nic_attr
@@ -181,14 +186,12 @@ end							}
 							regex=/(eno|ens|enp|eth|enx)([0-9A-Fa-f]{2}{6}|\d?)(s\d)?(f\d)?/
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n") }
-								sleep 25
-								zlogin_write.printf("\n")
 								Timeout.timeout(30) do
-									
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 										puts "test"
-										puts responses[-1]
+										p responses[-1]
+										puts responses[-1][0]
 										if responses[-1].to_s =~ regex
 											puts responses[-1][/#{regex}/]
 											puts responses[-1][0][/#{regex}/]
