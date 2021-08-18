@@ -197,7 +197,7 @@ end							}
 											vmnic.append(responses[-1][/#{regex}/])
 										end
 										
-										puts vmnic
+										puts vmnic.to_s
 										p vmnic
 										
 										vmnic.each { |interface|
