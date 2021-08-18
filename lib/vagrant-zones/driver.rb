@@ -113,7 +113,9 @@ module VagrantPlugins
 						netmask 	= IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count("1")
 						ip        	= opts[:ip].to_s
 						defrouter 	= opts[:gateway].to_s
-						allowed_address = ip + "/" + netmask
+						
+
+						allowed_address = ip.to_s + "/" + netmask.to_s
 						if ip.length == 0
 							ip = nil
 						else
