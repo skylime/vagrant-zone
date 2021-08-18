@@ -265,7 +265,7 @@ end							}
 														netplan = %{network:
   version: 2
   ethernets:
-    #{vmnic[devid]}:
+    #{vmnic[devid.to_i]}:
       dhcp-identifier: mac
       dhcp4: yes
       dhcp6: yes
@@ -289,7 +289,7 @@ end							}
 														netplan = %{network:
   version: 2
   ethernets:  
-    #{vmnic[devid]}:
+    #{vmnic[devid.to_i]}:
       dhcp-identifier: mac
       dhcp4: no
       dhcp6: no
