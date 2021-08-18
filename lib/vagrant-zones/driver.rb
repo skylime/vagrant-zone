@@ -262,9 +262,9 @@ end							}
 											    	devid = nicfunction
 											    end
 											end												
-											puts devid
+											devid = devid.gsub /f/, ''
 											if !devid.nil? 
-												if nic_number == devid.gsub /f/, ''
+												if nic_number == devid
 													if config.dhcp
 														puts "==> #{name}: Generate fresh DHCP netplan configurations."
 														netplan = %{network:
