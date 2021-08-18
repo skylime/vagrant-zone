@@ -186,7 +186,7 @@ end							}
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n") }
 								Timeout.timeout(30) do
-									loop do
+									run = 0
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 										puts responses[-1][0]
 										if responses[-1][0] =~ regex
@@ -196,7 +196,7 @@ end							}
 												vmnic.append(responses[-1][0][/#{regex}/])
 											end
 										end
-										run = 0
+										
 										vmnic.each { |interface|
 											nicfunction = ""
 											devid = ""
@@ -265,7 +265,7 @@ end							}
 														netplan = %{network:
   version: 2
   ethernets:
-    #{vmnic[devid.to_i]}:
+    #{vnic}:
       dhcp-identifier: mac
       dhcp4: yes
       dhcp6: yes
@@ -313,7 +313,7 @@ end							}
 											end
 										}
 										break										
-									end
+									
 								end
 								Process.kill("HUP",pid)
 							end
