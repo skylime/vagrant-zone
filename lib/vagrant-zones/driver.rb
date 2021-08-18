@@ -186,7 +186,9 @@ end							}
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 
 										if responses[-1].to_s =~ regex
-											vmnic.append(responses[-1][0][/#{regex}/])
+											puts responses[-1][/#{regex}/]
+											puts responses[-1][0][/#{regex}/]
+											vmnic.append(responses[-1][/#{regex}/])
 										end
 										
 										puts vmnic
