@@ -32,7 +32,7 @@ module VagrantPlugins
 					end
 					# if interrupted above, just terminate immediately
 					return terminate(env) if env[:interrupted]
-					@logger.info("Time for SSH ready: #{env[:metrics]['instance_ssh_time']}")
+					@logger.info("SSH appears to be ready: #{env[:metrics]['instance_ssh_time']}")
 
 					@app.call(env)
 				end

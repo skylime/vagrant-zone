@@ -27,7 +27,7 @@ module VagrantPlugins
 					if image[-4, 4] == '.zss'
 						if File.exist?(curdir + '/' + image)
 							FileUtils.cp(curdir + '/' + image, datadir.to_s + '/' + image)
-							puts "==> #{name}: ZFS Snapshot Stream detected."
+							ui.info(I18n.t("vagrant_zones.zfs_snapshot_stream_detected"))
 						elsif not File.exist?(datadir.to_s + '/' + image)
 							raise Vagrant::Errors::BoxNotFound
 						end
@@ -36,7 +36,8 @@ module VagrantPlugins
 					elsif validate_uuid_format(image)
 						raise Vagrant::Errors::BoxNotFound if not check(image)
 						download(image, datadir.to_s + '/' + image)
-						puts "==> #{name}: Joyent Image detected."
+						ui.info(I18n.t("vagrant_zones.joyent_image_uuid_detected"))
+
 					## If it's a regular name (everything else), try to find it
 					## on Vagrant Cloud
 					else
@@ -51,7 +52,7 @@ module VagrantPlugins
 						end
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
 						FileUtils.cp(env[:machine].box.directory.join('box.zss').to_s, datadir.to_s + '/box.zss')# + image)
-						puts "==> #{name}: Vagrant Cloud Box detected."
+						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected"))
 					end
 					@app.call(env)
 				end

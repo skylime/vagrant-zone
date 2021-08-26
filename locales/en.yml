@@ -23,17 +23,17 @@ en:
     halting_zone: |-
       Haltiing the zone
     graceful_shutdown_failed: |-
-      VM failed to Shutdown in alloted time #{config.clean_shutdown_time.to_i}
+      VM failed to Shutdown in alloted time %{cst}
     graceful_shutdown: |-
       Attempting Graceful Shutdown
     creating_vnic: |-
-      Creating VNIC: #{vnic_name} with VLAN: #{vlan}.
+      Creating VNIC: %{cvnic_name} with VLAN: %{cvlan}.
     removing_vnic: |-
       Deleting Associated VNICs    
     delete_disks: |-
       Deleting Associated Disks
     installing_zone: |-
-      Installing #{config.brand} Zone.
+      Installing %{config.brand} Zone.
     netplan_remove: |-
       Removing stale netplan configurations.
     netplan_set: |-
@@ -55,7 +55,7 @@ en:
     bhyve_zone_dataset_additional_volume: |-
       Creating Additional ZFS Volume for bhyve Zone
     destroy_dataset: |-
-      Destroying dataset: #{config.zonepath.delete_prefix("/")}.
+      Destroying dataset: %{zp}.
     lx_zone_config_gen: |-
       Generating Configuration for LX Branded Zone
     bhyve_zone_config_gen: |-
@@ -71,7 +71,7 @@ en:
     lx_check: |-
       No LX Zones Checked, We assume that you have all the Appropriate packages
     bhyve_check: |-
-      Checking OmniOS Release against cutoff:  %{cutoff_release}
+      Checking OmniOS Release against cutoff:  %{cr}
     bhyve_compat_check: |-
       Checking bhyve installation environment.
     wait_for_boot: |-
@@ -82,4 +82,9 @@ en:
       Machine Booted, Checking for Login Access/Prompt over TTYS0
     booted_check_terminal_access_auto_login: |-
       Could not login as Root, Check if Root Autologin Works -- NOT IMPLEMENTED YET
-
+    zfs_snapshot_stream_detected: |-
+      ZFS Snapshot Stream detected
+    joyent_image_uuid_detected: |-
+      Joyen UUID Detected
+    vagrant_cloud_box_detected: |-
+      Vagrant Cloud Detected

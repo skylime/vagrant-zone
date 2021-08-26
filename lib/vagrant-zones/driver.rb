@@ -161,7 +161,7 @@ module VagrantPlugins
 						if state == "create"
 							if !opts[:vlan].nil?
 								vlan =  opts[:vlan]
-								ui.info(I18n.t("vagrant_zones.creating_vnic"))
+								ui.info(I18n.t("vagrant_zones.creating_vnic"), cvnic_name = vlan, cvnic = vnic)
 								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
 							else
 								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
@@ -391,7 +391,7 @@ end							}
 			def delete_dataset(machine, ui)
 				name = @machine.name
 				config = machine.provider_config
-				ui.info(I18n.t("vagrant_zones.destroy_dataset"))
+				ui.info(I18n.t("vagrant_zones.destroy_dataset"),zp = config.zonepath.delete_prefix("/") )
 				execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
 			end
 
@@ -619,7 +619,7 @@ end
 					raise Errors::SystemVersionIsTooLow if release  < cutoff_release
 	
 					# Check Bhyve compatability
-					ui.info(I18n.t("vagrant_zones.bhyve_compat_check"))
+					ui.info(I18n.t("vagrant_zones.bhyve_compat_check"), bhyve_check = cutoff_release)
 					result = execute(false, "#{@pfexec} bhhwcompat -s")
 					raise Errors::MissingBhyve if result.length == 1 
 				end
@@ -734,7 +734,7 @@ end
 						execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
 					 }
 					rescue Timeout::Error
-						ui.info(I18n.t("vagrant_zones.graceful_shutdown_failed"))
+						ui.info(I18n.t("vagrant_zones.graceful_shutdown_failed"), cst = config.clean_shutdown_time.to_i)
 						begin halt_status = Timeout::timeout(60) {
 							execute(false, "#{@pfexec} zoneadm -z #{name} halt")
 						}
