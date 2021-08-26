@@ -87,3 +87,6 @@ en:
       Joyen UUID Detected
     vagrant_cloud_box_detected: |-
       Vagrant Cloud Box Detected
+    ssh_ready: "SSH appears to be ready #{env[:metrics]['instance_ssh_time']}"
+
+      

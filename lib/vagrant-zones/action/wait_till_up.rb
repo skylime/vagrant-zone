@@ -16,7 +16,7 @@ module VagrantPlugins
 				def call(env)
 					@machine = env[:machine]
 					@driver  = @machine.provider.driver
-
+					ui =env[:ui]
 					# Initialize metrics if they haven't been
 					env[:metrics] ||= {}
 
@@ -32,8 +32,7 @@ module VagrantPlugins
 					end
 					# if interrupted above, just terminate immediately
 					return terminate(env) if env[:interrupted]
-					@logger.info("SSH appears to be ready: #{env[:metrics]['instance_ssh_time']}")
-
+					ui.info(I18n.t("vagrant_zones.ssh_ready"))
 					@app.call(env)
 				end
 			end
