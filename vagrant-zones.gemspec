@@ -27,17 +27,17 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "ruby_expect"
   spec.add_runtime_dependency "netaddr"
-  spec.add_runtime_dependency 'i18n', '> 1.0'
-  spec.add_runtime_dependency 'log4r', '> 1.1'
-  spec.add_runtime_dependency "iniparse", '> 1.0'
-  spec.add_runtime_dependency 'nokogiri', '> 1.12.3'
+  spec.add_runtime_dependency 'i18n', '>= 1.0'
+  spec.add_runtime_dependency 'log4r', '>= 1.1'
+  spec.add_runtime_dependency "iniparse", '>= 1.0'
+  spec.add_runtime_dependency 'nokogiri', '>= 1.12.3'
 
-  spec.add_development_dependency "bundler", "> 2.2.25"
-  spec.add_development_dependency "rake", "> 12.3.3"
-  spec.add_development_dependency "rspec", "> 3.4"
-  spec.add_development_dependency 'rspec-core', '> 3.4'
-  spec.add_development_dependency 'rspec-expectations', '> 3.10.0'
-  spec.add_development_dependency 'rspec-mocks', '> 3.10.0'
-  spec.add_development_dependency 'rubocop', '> 1.0'
-  spec.add_development_dependency 'code-scanning-rubocop', '> 0.5.0'
+  spec.add_development_dependency "bundler", ">= 2.2.25"
+  spec.add_development_dependency "rake", ">= 12.3.3"
+  spec.add_development_dependency "rspec", ">= 3.4"
+  spec.add_development_dependency 'rspec-core', '>= 3.4'
+  spec.add_development_dependency 'rspec-expectations', '>= 3.10.0'
+  spec.add_development_dependency 'rspec-mocks', '>= 3.10.0'
+  spec.add_development_dependency 'rubocop', '>= 1.0'
+  spec.add_development_dependency 'code-scanning-rubocop', '>= 0.5.0'
 end
