@@ -64,18 +64,22 @@ module VagrantPlugins
 				name = @machine.name
 				if config.brand == 'lx'
 					ui.info(I18n.t("vagrant_zones.installing_zone"))
+					ui.info(" -- Brand: #{config.brand}")
 					execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
 				end
 				if config.brand == 'bhyve'
 					ui.info(I18n.t("vagrant_zones.installing_zone"))
+					ui.info(" -- Brand: #{config.brand}")
 					execute(false, "#{@pfexec} zoneadm -z #{name} install")
 				end
 				if config.brand == 'kvm'
 					ui.info(I18n.t("vagrant_zones.installing_zone"))
+					ui.info(" -- Brand: #{config.brand}")
 					execute(false, "#{@pfexec} zoneadm -z #{name} install")
 				end
 				if config.brand == 'illumos'
 					ui.info(I18n.t("vagrant_zones.installing_zone"))
+					ui.info(" -- Brand: #{config.brand}")
 					execute(false, "#{@pfexec} zoneadm -z #{name} install")
 				end
 			end
