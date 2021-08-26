@@ -74,7 +74,7 @@ Collecting status of boxes from [Vagrant Cloud](https://app.vagrantup.com/)
   * system/bhyve
   * system/bhyve/firmware
   * ooce/application/vagrant
-  * ruby-26
+  * ruby-27
   * ooce/system/mbuffer
 
 ### Setup vagrant development environment
