@@ -11,7 +11,7 @@ module VagrantPlugins
         def initialize(argv, env)
           @main_args, @sub_command, @sub_args = split_main_and_subcommand(argv)
           #@subcommands = Vagrant::Registry.new
-         # @subcommands.register(:images) do
+          #@subcommands.register(:images) do
           #  require File.expand_path("../images", __FILE__)
           #  Images
           #end
@@ -19,7 +19,7 @@ module VagrantPlugins
           #  require File.expand_path("../flavors", __FILE__)
           #  Flavors
           #end
-          @subcommands.register(:zfsSnapshot) do
+          @subcommands.register(:zfssnapshot) do
             require File.expand_path("../zfsSnapshot", __FILE__)
             zfsSnapshot
           end
