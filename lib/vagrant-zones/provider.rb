@@ -24,7 +24,7 @@ module VagrantPlugins
 				user = driver.user(@machine)
 				userkey = driver.userprivatekeypath(@machine).to_s
 				vagrantuserpassword = driver.vagrantuserpass(@machine).to_s
-				passwordauth = "yes" 
+				passwordauth = "no" 
 				return nil if !ip
 				portnumber = "22"
 				unless portnumber.to_s.nil? || portnumber.to_s == 0
