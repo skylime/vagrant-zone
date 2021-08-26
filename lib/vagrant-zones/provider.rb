@@ -34,7 +34,6 @@ module VagrantPlugins
 					port: portnumber,
 					username: user,
 					private_key_path: userkey,
-					password: vagrantuserpassword,
 					PasswordAuthentication: 'passwordauth'
 				}
 					
