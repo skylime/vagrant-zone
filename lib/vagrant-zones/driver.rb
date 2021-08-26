@@ -758,8 +758,8 @@ end
 				puts != name
 				if vm_configured != name
 					id.info(I18n.t("vagrant_zones.bhyve_zone_config_remove"))
-					if vmcfg_set  = name
-					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
+					if vmcfg_set  == name
+						execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
 					end
 				end
 				
