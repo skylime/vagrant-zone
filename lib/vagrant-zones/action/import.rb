@@ -44,7 +44,7 @@ module VagrantPlugins
 					else
 						# Support zss format only for now, use other images and convert later
 						box_format = env[:machine].box.metadata['format']
-						p box_image_file
+						p box_format
 						if box_format.nil?
 							raise Errors::NoBoxFormatSet
 						elsif box_format != 'zss'
