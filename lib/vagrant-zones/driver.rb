@@ -751,17 +751,7 @@ end
 				
 				## Ensure machine is halted
 				id.info(I18n.t("vagrant_zones.halting_zone"))
-				
-				## Check if it has a presence in zoneadm and if no presence in zoneadm destroy zonecfg
-				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
-				vmcfg_set = execute(false, "#{@pfexec} zonecfg -z #{name} export -f #{name}.zoneconfig && test #{name}.zoneconfig && echo #{name} || true")
-				puts != name
-				if vm_configured != name
-					id.info(I18n.t("vagrant_zones.bhyve_zone_config_remove"))
-					if vmcfg_set  == name
-						execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
-					end
-				end
+
 				
 				## Check state in zoneadm
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
@@ -773,6 +763,20 @@ end
 					id.info(I18n.t("vagrant_zones.bhyve_zone_config_remove"))
 					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
 				end
+
+
+				## Check if it has a presence in zoneadm and if no presence in zoneadm destroy zonecfg
+				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
+				vmcfg_set = execute(false, "#{@pfexec} zonecfg -z #{name} export -f #{name}.zoneconfig && test #{name}.zoneconfig && echo #{name} || true")
+				puts != name
+				if vm_configured != name
+					id.info(I18n.t("vagrant_zones.bhyve_zone_config_remove"))
+					if vmcfg_set  == name
+						execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
+					end
+				end
+				
+
 
 				### Nic Configurations
 				id.info(I18n.t("vagrant_zones.removing_vnic"))
