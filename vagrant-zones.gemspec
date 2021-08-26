@@ -41,9 +41,3 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop', '>= 1.0'
   spec.add_development_dependency 'code-scanning-rubocop', '>= 0.5.0'
 end
-
-
-export LANG=en_US.UTF-8
-export LANGUAGE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-export VAGRANT_I_KNOW_WHAT_IM_DOING_PLEASE_BE_QUIET=1
