@@ -35,7 +35,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 2.2.25"
   spec.add_development_dependency "rake", "~> 12.3.3"
   spec.add_development_dependency "rspec", "~> 3.4"
-  spec.add_development_dependency 'rspec-core', '~> 3.10.1'
+  spec.add_development_dependency 'rspec-core', '~> 3.4'
   spec.add_development_dependency 'rspec-expectations', '~> 2.12.1'
   spec.add_development_dependency 'rspec-mocks', '~> 2.12.1'
   spec.add_development_dependency 'rubocop', '~> 0.32.1'
