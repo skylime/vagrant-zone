@@ -55,7 +55,7 @@ en:
     bhyve_zone_dataset_additional_volume: |-
       Creating Additional ZFS Volume for bhyve Zone
     destroy_dataset: |-
-      Destroying dataset: %{zp}.
+      Destroying dataset: %{config.zonepath.delete_prefix("/")}.
     lx_zone_config_gen: |-
       Generating Configuration for LX Branded Zone
     bhyve_zone_config_gen: |-
