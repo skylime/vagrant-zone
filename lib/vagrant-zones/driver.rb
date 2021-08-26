@@ -161,7 +161,7 @@ module VagrantPlugins
 						elsif state == "delete"
 							vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
 							if vnic_configured == "#{vnic_name}"
-								ui.info("vagrant_zones.creating_vnic"))
+								ui.info("vagrant_zones.creating_vnic")
 								execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
 							end
 						elsif state == "config"
