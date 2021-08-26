@@ -64,7 +64,7 @@ module VagrantPlugins
 			setup_logging
 			setup_i18n
 			command('zone') do
-				require_relative "command/zone"
+				require_relative "command/zone.rb"
 				Command::Zone
 			end
 		end
