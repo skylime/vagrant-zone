@@ -554,7 +554,7 @@ end					}
 
 				
 				## Additional Disk Configurations
-				unless config.disk1path != 'none' || config.disk1path.to_s.nil?
+				unless config.disk1path != 'none' || config.disk1path
 					additional_disk_attr = %{add device
 	set match=/dev/zvol/rdsk#{config.zonepath}/disk1
 end
