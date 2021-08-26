@@ -1,40 +1,37 @@
 AllCops:
-  Exclude:
-    - '.bundle/**/*'
-    - 'out/**/*'
-    - '**/Vagrantfile'
-  DisplayCopNames: true
+  NewCops: enable
 
-Style/FileName:
+Metrics/MethodLength:
+  CountComments: false  # count full line comments?
+  Enabled: false
+
+Naming/MethodName:
+  EnforcedStyle: snake_case
+
+Naming/AccessorMethodName:
+  Description: Check the naming of accessor methods for get_/set_.
   Enabled: false
 
 Style/Encoding:
-  Enabled: false
+  Description: 'Use UTF-8 as the source file encoding.'
+  Enabled: true
 
-Style/Documentation:
+Style/HashSyntax:
+  Description: >-
+                 Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
+                 { :a => 1, :b => 2 }.
   Enabled: false
+  EnforcedStyle: hash_rockets
 
-Style/ClassVars:
-  Enabled: false
-
-Metrics/ClassLength:
-  Max: 300
+Style/LineEndConcatenation:
+  Description: 'Use \\ instead of + to concatenate two string literals at line end.'
+  Enabled: true
+  
+Layout/LineLength:
+  Description: 'Limit lines to 79 characters.'
+  Enabled: true
+  Max: 80
 
 Metrics/CyclomaticComplexity:
-  Severity: warning
-  Max: 15
-
-Metrics/MethodLength:
-  Max: 65
-
-Metrics/LineLength:
-  Max: 150
-
-Metrics/ParameterLists:
-  Max: 6
-
-Metrics/AbcSize:
-  Max: 110
-
-Metrics/PerceivedComplexity:
-  Max: 45
+  Description: 'Avoid complex methods.'
+  Enabled: false
