@@ -10,5 +10,5 @@ group :development do
 end
 
 group :plugins do
-  gem "vagrant-zones" , path: "."
+  gemspec
 end
