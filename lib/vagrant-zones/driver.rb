@@ -385,7 +385,7 @@ end							}
 			def delete_dataset(machine, ui)
 				name = @machine.name
 				config = machine.provider_config
-				ui.info(I18n.t("vagrant_zones.destroy_dataset"))
+				ui.info(I18n.t("vagrant_zones.destroy_dataset"),zp =  )
 				ui.info(" -- Zone Prefix: #{config.zonepath.delete_prefix("/")}")
 				execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
 			end
@@ -614,7 +614,8 @@ end
 					raise Errors::SystemVersionIsTooLow if release  < cutoff_release
 	
 					# Check Bhyve compatability
-					ui.info(I18n.t("vagrant_zones.bhyve_compat_check"), bhyve_check = cutoff_release)
+					ui.info(I18n.t("vagrant_zones.bhyve_compat_check"))
+					ui.info(" -- Cutoff Release: #{cutoff_release}")
 					result = execute(false, "#{@pfexec} bhhwcompat -s")
 					raise Errors::MissingBhyve if result.length == 1 
 				end
