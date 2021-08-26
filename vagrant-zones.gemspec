@@ -39,6 +39,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec-expectations', '~> 3.10.0'
   spec.add_development_dependency 'rspec-mocks', '~> 3.10.0'
   spec.add_development_dependency 'rubocop', '~> 0.32.1'
-  spec.add_development_dependency 'code-scanning-rubocop', '~> 0.5'
-
+  spec.add_development_dependency 'code-scanning-rubocop', '~> 1.0'
 end
