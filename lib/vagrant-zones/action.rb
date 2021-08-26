@@ -19,21 +19,13 @@ module VagrantPlugins
 
 						if !env[:result]
 							b2.use Import
-							ui.info("This should be 1")
 							b2.use Create
-							ui.info("This should be 2")
 							b2.use Network
-							ui.info("This should be 3")
 							b2.use Start
-							ui.info("This should be 4")
 							b2.use Setup
-							ui.info("This should be 5")
 							b2.use WaitTillUp
-							ui.info("This should be 6")
 							b2.use SyncedFolderCleanup
-							ui.info("This should be 7")
 							b2.use SyncedFolders
-							ui.info("This should be 8")
 							b2.use Provision
 						else
 							env[:halt_on_error] = true
