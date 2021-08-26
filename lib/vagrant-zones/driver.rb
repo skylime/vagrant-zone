@@ -62,26 +62,20 @@ module VagrantPlugins
                                 config = machine.provider_config
 				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
 				name = @machine.name
+				ui.info(I18n.t("vagrant_zones.installing_zone"))
 				if config.brand == 'lx'
-					ui.info(I18n.t("vagrant_zones.installing_zone"))
-					ui.info(" -- Brand: #{config.brand}")
 					execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
 				end
 				if config.brand == 'bhyve'
-					ui.info(I18n.t("vagrant_zones.installing_zone"))
-					ui.info(" -- Brand: #{config.brand}")
 					execute(false, "#{@pfexec} zoneadm -z #{name} install")
 				end
 				if config.brand == 'kvm'
-					ui.info(I18n.t("vagrant_zones.installing_zone"))
-					ui.info(" -- Brand: #{config.brand}")
 					execute(false, "#{@pfexec} zoneadm -z #{name} install")
 				end
 				if config.brand == 'illumos'
-					ui.info(I18n.t("vagrant_zones.installing_zone"))
-					ui.info(" -- Brand: #{config.brand}")
 					execute(false, "#{@pfexec} zoneadm -z #{name} install")
 				end
+				ui.info(" -- Brand: #{config.brand}")
 			end
 			
 			## Boot the Machine
@@ -734,7 +728,7 @@ end
 						execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
 					 }
 					rescue Timeout::Error
-						ui.info(I18n.t("vagrant_zones.graceful_shutdown_failed"), cst = config.clean_shutdown_time.to_i)
+						ui.info(I18n.t("vagrant_zones.graceful_shutdown_failed"))
 						begin halt_status = Timeout::timeout(60) {
 							execute(false, "#{@pfexec} zoneadm -z #{name} halt")
 						}
