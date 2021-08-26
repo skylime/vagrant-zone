@@ -385,7 +385,7 @@ end							}
 			def delete_dataset(machine, ui)
 				name = @machine.name
 				config = machine.provider_config
-				ui.info(I18n.t("vagrant_zones.destroy_dataset"),zp =  )
+				ui.info(I18n.t("vagrant_zones.destroy_dataset") )
 				ui.info(" -- Zone Prefix: #{config.zonepath.delete_prefix("/")}")
 				execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
 			end
