@@ -374,7 +374,9 @@ end							}
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume"))	
 									
 					execute(false, "#{@pfexec} zfs recv -F #{dataset} < #{datadir.to_s}/box.zss'")
-					ui.report_progress(progress, 100, false)
+					
+		
+
 				end
 				## Create Additional Disks
 				if config.disk1
