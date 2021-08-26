@@ -392,7 +392,7 @@ end							}
 				config = machine.provider_config
 				ui.info(I18n.t("vagrant_zones.destroy_dataset") )
 				ui.info(" -- #{config.zonepath.delete_prefix("/")}")
-				execute(true, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
+				execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
 			end
 
 			def zonecfg(machine, ui)
@@ -761,7 +761,7 @@ end
 				puts vm_state
 				puts vm_state
 				puts vm_state
-				if vm_state == 'incomplete' || vm_state == 'configured' || vm_state ==  "installed"
+				if vm_state == 'incomplete' || vm_state == 'configured' || vm_state ==  'installed'
 					id.info(I18n.t("vagrant_zones.bhyve_zone_config_uninstall"))
 					execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
 					id.info(I18n.t("vagrant_zones.bhyve_zone_config_remove"))
