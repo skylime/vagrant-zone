@@ -71,7 +71,7 @@ en:
     lx_check: |-
       No LX Zones Checked, We assume that you have all the Appropriate packages
     bhyve_check: |-
-      Checking OmniOS Release against cutoff:  #{cutoff_release}
+      Checking OmniOS Release against cutoff:  %{cutoff_release}
     bhyve_compat_check: |-
       Checking bhyve installation environment.
     wait_for_boot: |-

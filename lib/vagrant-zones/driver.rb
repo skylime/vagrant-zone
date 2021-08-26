@@ -626,7 +626,7 @@ end
 				name = machine.name
 				
 				ui.info(I18n.t("vagrant_zones.wait_for_boot"))
-				waitforboot(machine)
+				waitforboot(machine, ui)
 				
 				## Check if already setup and skip the following
 				if machine.config.ssh.insert_key
@@ -643,7 +643,7 @@ end
 				
 			end
 			
-			def waitforboot(machine)
+			def waitforboot(machine, ui)
 				name = @machine.name
 				config = machine.provider_config
 				responses = []
