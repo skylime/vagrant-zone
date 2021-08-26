@@ -186,9 +186,9 @@ end							}
 									run = 0
 									loop do
 										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-										puts responses[-1][0]
+										#puts responses[-1][0]
 										if responses[-1][0] =~ regex
-											puts responses[-1][0][/#{regex}/]
+											#puts responses[-1][0][/#{regex}/]
 											
 											if !vmnic.include? responses[-1][0][/#{regex}/]
 												vmnic.append(responses[-1][0][/#{regex}/])
@@ -199,20 +199,20 @@ end							}
 											nicfunction = ""
 											devid = ""
 											if !interface[/#{regex}/, 1].nil?
-											    print "Ethernet adapter location on the machine: "
+											    #print "Ethernet adapter location on the machine: "
 											    if !interface[/#{regex}/, 3].nil?
 											        nic = interface[/#{regex}/, 1]
-											        puts nic
+											        #puts nic
 											        
-											        print "Prefix/bus number of device: "
-											        puts interface[/#{regex}/, 3]
+											        #print "Prefix/bus number of device: "
+											        #puts interface[/#{regex}/, 3]
 											        nicbus = interface[/#{regex}/, 3]
 											        devid = nicbus
 											    else
 											        if interface[/#{regex}/, 1] == "en"
 											            interface_desc = interface[/#{regex}/, 2].split("")
 											            nic = interface[/#{regex}/, 1] + interface_desc[0]
-											            puts nic
+											            #puts nic
 											            if interface_desc[0] == "x"
 											                mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
 											                mac_interface = mac_interface.split("enx",0)
@@ -222,31 +222,31 @@ end							}
 											            end
 											            
 											            print "Prefix/bus number of device: "
-											            puts nicbus
+											            #puts nicbus
 											            devid = nicbus
 											            
 											        else
 											            nic = interface[/#{regex}/, 1]
-											            puts nic
+											            #puts nic
 											            
 											            print "Prefix/bus number of device: "
 											            nicbus = interface[/#{regex}/, 2]
-											            puts nicbus
+											            #puts nicbus
 											            devid = nicbus
 											        end
 											    end
 											    if !interface[/#{regex}/, 4].nil?
-											    	print "Slot/device number of interface: "
-											    	puts interface[/#{regex}/, 4]
+											    	#print "Slot/device number of interface: "
+											    	#puts interface[/#{regex}/, 4]
 											    	nicdevice = interface[/#{regex}/, 4]
 											    	if interface[/#{regex}/, 5][/f\d/].nil?
-											    		print "function number of interface: "
+											    		#print "function number of interface: "
 											    		nicfunction = "f0"
-											    		puts nicfunction
+											    		#puts nicfunction
 											    		devid = nicfunction
 											    	else
-											    		print "function number of interface: "
-											    		puts interface[/#{regex}/, 5]
+											    		#print "function number of interface: "
+											    		#puts interface[/#{regex}/, 5]
 											    		nicfunction = interface[/#{regex}/, 5]
 											    		devid = nicfunction
 											    	end
