@@ -1,5 +1,4 @@
 require "pathname"
-require 'vagrant'
 
 module VagrantPlugins
 	module ProviderZone
@@ -17,6 +16,16 @@ module VagrantPlugins
 			@source_root ||= Pathname.new(File.expand_path("../../", __FILE__))
 		end
 	end
+end
+
+begin
+	require 'vagrant'
+  rescue LoadError
+	raise 'The Vagrant Libvirt plugin must be run within Vagrant.'
+end
+
+if Vagrant::VERSION < '2'
+	raise 'The Vagrant Libvirt plugin is only compatible with Vagrant 2+.'
 end
 
 require "vagrant-zones/plugin"
