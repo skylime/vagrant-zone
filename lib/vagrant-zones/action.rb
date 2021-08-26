@@ -18,6 +18,7 @@ module VagrantPlugins
 						
 
 						if !env[:result]
+							#b2.use BoxUpdate
 							b2.use Import
 							b2.use Create
 							b2.use Network
@@ -131,6 +132,7 @@ module VagrantPlugins
 			end
 
 			action_root = Pathname.new(File.expand_path('../action', __FILE__))
+			##autoload :BoxUpdate, action_root.join('box_update')
 			autoload :Import, action_root.join('import')
 			autoload :Create, action_root.join('create')
 			autoload :Network, action_root.join('network')

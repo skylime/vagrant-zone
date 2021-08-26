@@ -33,6 +33,8 @@ module VagrantPlugins
 					# if interrupted above, just terminate immediately
 					return terminate(env) if env[:interrupted]
 					ui.info(I18n.t("vagrant_zones.ssh_ready"))
+					ui.info("#{env[:metrics]['instance_ssh_time']}")
+					
 					@app.call(env)
 				end
 			end
