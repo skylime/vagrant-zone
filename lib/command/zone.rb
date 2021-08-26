@@ -3,7 +3,7 @@ require 'vagrant-zones/action'
 module VagrantPlugins
 	module ProviderZone
       module Command
-      class Root < Vagrant.plugin("2", :command)
+      class Zone < Vagrant.plugin("2", :command)
         def self.synopsis
           "query Zones for available images or flavors"
         end
