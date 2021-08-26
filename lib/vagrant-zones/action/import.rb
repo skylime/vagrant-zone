@@ -21,6 +21,7 @@ module VagrantPlugins
 					curdir   = Dir.pwd
 					datadir  = @machine.data_dir
 					name = @machine.name
+					ui = env[:ui]
 					@logger.info("DATADIR #{datadir}")
 					# If image ends on '.zss' it's a local ZFS snapshot which
 					# should be used
