@@ -33,6 +33,7 @@ module VagrantPlugins
 				ssh_info = {
 					host: ip,
 					port: portnumber,
+					password: vagrantuserpassword,
 					username: user,
 					private_key_path: userkey,
 					PasswordAuthentication: 'passwordauth'
