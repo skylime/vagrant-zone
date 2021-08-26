@@ -21,19 +21,19 @@ en:
     starting_zone: |-
       Starting the zone
     halting_zone: |-
-      Haltiing the zone
+      Halting the zone
     graceful_shutdown_failed: |-
-      VM failed to Shutdown in alloted time %{cst}
+      VM failed to Shutdown in alloted time:
     graceful_shutdown: |-
-      Attempting Graceful Shutdown
+      Attempting a graceful shutdown
     creating_vnic: |-
-      Creating VNIC: %{cvnic_name} with VLAN: %{cvlan}.
+      Creating VNIC . . .
     removing_vnic: |-
       Deleting Associated VNICs    
     delete_disks: |-
       Deleting Associated Disks
     installing_zone: |-
-      Installing %{config.brand} Zone.
+      Installing zone.
     netplan_remove: |-
       Removing stale netplan configurations.
     netplan_set: |-
@@ -47,18 +47,18 @@ en:
     lx_zone_dataset: |-
       Creating zoned ZFS dataset for LX zone
     bhyve_zone_dataset_root: |-
-      Creating zone ZFS dataset for Bhyve zone
+      Creating ZFS root dataset for bhyve zone
     bhyve_zone_dataset_boot: |-
       Creating ZFS boot volume dataset for bhyve zone
     bhyve_zone_dataset_boot_volume: |-
-      Importing Template to ZFS boot volume for bhyve zone
+      Importing template to ZFS boot volume for bhyve zone
     bhyve_zone_dataset_additional_volume: |-
-      Creating Additional ZFS Volume for bhyve Zone
+      Creating Additional ZFS Volume for bhyve zone
     destroy_dataset: "Destroying dataset: #{config.zonepath.delete_prefix('/')}."
     lx_zone_config_gen: |-
-      Generating Configuration for LX Branded Zone
+      Generating Configuration for LX Branded zone
     bhyve_zone_config_gen: |-
-      Generating Configuration for bhyve Branded Zone
+      Generating Configuration for bhyve Branded zone
     bhyve_zone_config_remove: |-
       Removing zonecfg configuration
     bhyve_zone_config_uninstall: |-
@@ -86,4 +86,4 @@ en:
     joyent_image_uuid_detected: |-
       Joyen UUID Detected
     vagrant_cloud_box_detected: |-
-      Vagrant Cloud Detected
+      Vagrant Cloud Box Detected

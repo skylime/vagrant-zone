@@ -56,10 +56,8 @@ module VagrantPlugins
 				@executor.execute(*cmd, **opts, &block)
 			end
 
-
-
 			def install(machine, ui)
-                                config = machine.provider_config
+                config = machine.provider_config
 				box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
 				name = @machine.name
 				ui.info(I18n.t("vagrant_zones.installing_zone"))
@@ -155,7 +153,7 @@ module VagrantPlugins
 						if state == "create"
 							if !opts[:vlan].nil?
 								vlan =  opts[:vlan]
-								ui.info(I18n.t("vagrant_zones.creating_vnic"), cvnic_name = vlan, cvnic = vnic)
+								ui.info(I18n.t("vagrant_zones.creating_vnic"))
 								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
 							else
 								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
@@ -163,6 +161,7 @@ module VagrantPlugins
 						elsif state == "delete"
 							vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
 							if vnic_configured == "#{vnic_name}"
+								ui.info("vagrant_zones.creating_vnic"))
 								execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
 							end
 						elsif state == "config"
@@ -386,7 +385,7 @@ end							}
 				name = @machine.name
 				config = machine.provider_config
 				ui.info(I18n.t("vagrant_zones.destroy_dataset") )
-				ui.info(" -- Zone Prefix: #{config.zonepath.delete_prefix("/")}")
+				ui.info(" -- #{config.zonepath.delete_prefix("/")}")
 				execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
 			end
 
