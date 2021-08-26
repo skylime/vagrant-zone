@@ -87,7 +87,7 @@ Collecting status of boxes from [Vagrant Cloud](https://app.vagrantup.com/)
 ### Setup vagrant-zones environment
 
     $ git clone https://github.com/Makr91/vagrant-zones.git
-    $ cd vagrant-bhyve
+    $ cd vagrant-zones
     bundle config set --local path 'vendor/bundle'
     $ bundle install
     $ bundle --binstubs exec
