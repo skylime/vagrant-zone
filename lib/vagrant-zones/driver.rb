@@ -379,10 +379,9 @@ end							}
 
 				end
 				## Create Additional Disks
-				if config.disk1
+				unless config.disk1.to_s.nil? || config.disk1.to_s == 0
 					disk1path = config.disk1.delete_prefix("/").to_s
 					disk1size = config.disk1_size.to_s
-					
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume"))
 					execute(false, "#{@pfexec} zfs create -V #{disk1size} #{disk1path}")
 				end
