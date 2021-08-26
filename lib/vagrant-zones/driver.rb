@@ -153,7 +153,7 @@ module VagrantPlugins
 						if state == "create"
 							if !opts[:vlan].nil?
 								vlan =  opts[:vlan]
-								ui.info(I18n.t("vagrant_zones.creating_vnic"))
+								ui.info(I18n.t("#{vnic_name}"))
 								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
 							else
 								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
@@ -161,7 +161,7 @@ module VagrantPlugins
 						elsif state == "delete"
 							vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
 							if vnic_configured == "#{vnic_name}"
-								ui.info("vagrant_zones.creating_vnic")
+								ui.info("#{vnic_name}")
 								execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
 							end
 						elsif state == "config"
@@ -606,7 +606,8 @@ end
 					
 					cutoff_release = "1510380"
 					cutoff_release = cutoff_release[0..-2].to_i 
-					ui.info(I18n.t("vagrant_zones.bhyve_check"))
+					ui.info(I18n.t("vagrant_zones.bhyve_check"))					
+					ui.info(" -- Cutoff Release: #{cutoff_release}")
 					release = File.open('/etc/release', &:readline)
 					release = release.scan(/\w+/).values_at( -1)
 					release = release[0][1..-2].to_i 
@@ -614,7 +615,6 @@ end
 	
 					# Check Bhyve compatability
 					ui.info(I18n.t("vagrant_zones.bhyve_compat_check"))
-					ui.info(" -- Cutoff Release: #{cutoff_release}")
 					result = execute(false, "#{@pfexec} bhhwcompat -s")
 					raise Errors::MissingBhyve if result.length == 1 
 				end
