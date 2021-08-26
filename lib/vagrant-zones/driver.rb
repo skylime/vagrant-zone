@@ -84,7 +84,7 @@ module VagrantPlugins
 			def boot(machine, ui)
 				name = @machine.name
 				puts "==> #{name}: Starting the zone."
-				ui.info(I18n.t("vagrant_rackspace.waiting_for_rackconnect"))
+				ui.info(I18n.t("vagrant_zones.starting_zone"))
 				execute(false, "#{@pfexec} zoneadm -z #{name} boot")
 			end
 			
