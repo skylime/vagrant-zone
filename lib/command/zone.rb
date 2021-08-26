@@ -20,7 +20,7 @@ module VagrantPlugins
           #  Flavors
           #end
           @subcommands.register(:zfssnapshot) do
-            require File.expand_path("../zfsSnapshot", __FILE__)
+            require File.expand_path("../zfssnapshot", __FILE__)
             zfsSnapshot
           end
           #@subcommands.register(:networks) do
