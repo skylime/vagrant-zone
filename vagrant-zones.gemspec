@@ -30,10 +30,10 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'i18n', '>= 1.0'
   spec.add_runtime_dependency 'log4r', '>= 1.1'
   spec.add_runtime_dependency "iniparse", '>= 1.0'
-  spec.add_runtime_dependency 'nokogiri', '>= 1.12.3'
+  spec.add_runtime_dependency 'nokogiri'
 
   spec.add_development_dependency "bundler", ">= 2.2.25"
-  spec.add_development_dependency "rake", ">= 12.3.3"
+  spec.add_development_dependency "rake", ">= 13.0.6"
   spec.add_development_dependency "rspec", ">= 3.4"
   spec.add_development_dependency 'rspec-core', '>= 3.4'
   spec.add_development_dependency 'rspec-expectations', '>= 3.10.0'
@@ -41,3 +41,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop', '>= 1.0'
   spec.add_development_dependency 'code-scanning-rubocop', '>= 0.5.0'
 end
+
+
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export VAGRANT_I_KNOW_WHAT_IM_DOING_PLEASE_BE_QUIET=1
