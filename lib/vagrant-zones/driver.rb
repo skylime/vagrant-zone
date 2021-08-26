@@ -379,7 +379,10 @@ end							}
 
 				end
 				## Create Additional Disks
-				unless config.disk1.to_s.nil? || config.disk1.to_s == 0
+				p disk1.to_s.nil?
+				p disk1.to_s
+				p disk1
+				unless config.disk1.to_s.nil?
 					disk1path = config.disk1.delete_prefix("/").to_s
 					disk1size = config.disk1_size.to_s
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume"))
