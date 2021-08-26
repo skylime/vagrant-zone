@@ -63,6 +63,10 @@ module VagrantPlugins
 			# from the parent logger.
 			setup_logging
 			setup_i18n
+			command('zone') do
+				require_relative "command/zone"
+				Command::Zone
+			end
 		end
 	end
 end

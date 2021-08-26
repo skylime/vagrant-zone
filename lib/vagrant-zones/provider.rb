@@ -16,21 +16,7 @@ module VagrantPlugins
 				@driver = Driver.new(@machine)
 			end
 
-			# This should return a hash of information that explains how to SSH
-			# into the machine. If the machine is not at a point where SSH is 
-			# even possiable, then 'nil' should be returned
-			#
-			# The general structure of this returned hash should be the
-			# following:
-			#
-			#			   {
-			#			    host: "1.2.3.4",
-			#			    port: "22",
-			#			    username: "vagrant",
-			#			    private_key_path: "/path/to/my/key"
-			#			   }
-			def ssh_info
-				
+			def ssh_info				
 				# We just return nil if were not able to identify the VM's IP and
 				# let Vagrant core deal with it like docker provider does
 				return nil if state.id != :running
@@ -38,14 +24,18 @@ module VagrantPlugins
 				user = driver.user(@machine)
 				userkey = driver.userprivatekeypath(@machine).to_s
 				vagrantuserpassword = driver.vagrantuserpass(@machine).to_s
+				passwordauth = "no"
+				passwordauth = "yes" if !vagrantuserpassword.nil
 				return nil if !ip
-				portnumber = driver.sshport(@machine).to_s
+				portnumber = "22"
+				portnumber = driver.sshport(@machine).to_s if !driver.sshport(@machine).to_s.nil
 				ssh_info = {
 					host: ip,
 					port: portnumber,
 					username: user,
 					private_key_path: userkey,
 					password: vagrantuserpassword
+					PasswordAuthentication: 'passwordauth'
 				}
 					
 			end

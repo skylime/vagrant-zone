@@ -18,6 +18,8 @@ en:
         Your system Appears to be Missing Bhyve
       virtual_box_running_conflict_detected: |-    
         Virtualbox Box appears to be running VMs, to continue, please shut these down.
+      staring_zone: |-
+        Starting the zone
         
         
         

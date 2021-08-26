@@ -1,0 +1,40 @@
+AllCops:
+  Exclude:
+    - '.bundle/**/*'
+    - 'out/**/*'
+    - '**/Vagrantfile'
+  DisplayCopNames: true
+
+Style/FileName:
+  Enabled: false
+
+Style/Encoding:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/ClassVars:
+  Enabled: false
+
+Metrics/ClassLength:
+  Max: 300
+
+Metrics/CyclomaticComplexity:
+  Severity: warning
+  Max: 15
+
+Metrics/MethodLength:
+  Max: 65
+
+Metrics/LineLength:
+  Max: 150
+
+Metrics/ParameterLists:
+  Max: 6
+
+Metrics/AbcSize:
+  Max: 110
+
+Metrics/PerceivedComplexity:
+  Max: 45

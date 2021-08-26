@@ -1,4 +1,5 @@
 require "pathname"
+require 'vagrant'
 
 module VagrantPlugins
 	module ProviderZone
