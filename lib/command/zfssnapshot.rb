@@ -1,7 +1,7 @@
 module VagrantPlugins
 	module ProviderZone
       module Command
-        class zfsSnapshot < Vagrant.plugin("2", :command)
+        class ZFSSnapshot < Vagrant.plugin("2", :command)
           def execute
             options = {}
             opts = OptionParser.new do |o|

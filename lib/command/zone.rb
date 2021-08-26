@@ -21,7 +21,7 @@ module VagrantPlugins
           #end
           @subcommands.register(:zfssnapshot) do
             require File.expand_path("../zfssnapshot", __FILE__)
-            zfsSnapshot
+            ZFSSnapshot
           end
           #@subcommands.register(:networks) do
           #  require File.expand_path("../networks", __FILE__)
