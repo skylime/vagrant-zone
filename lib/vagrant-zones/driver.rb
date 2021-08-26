@@ -358,6 +358,7 @@ end							}
 				dataset = config.zonepath.delete_prefix("/").to_s + "/boot"
 				datadir  = machine.data_dir
 				datasetroot = config.zonepath.delete_prefix("/").to_s
+				## Create Boot Volume
 				if config.brand == 'lx'	
 					ui.info(I18n.t("vagrant_zones.lx_zone_dataset"))	
 					execute(false, "#{@pfexec} zfs create -o zoned=on -p #{dataset}")
@@ -366,13 +367,17 @@ end							}
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_root"))
 					execute(false, "#{@pfexec} zfs create #{datasetroot}")
 
-					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot"))
+					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot"))					
+					ui.info(" -- Dataset: #{dataset} Size: #{config.zonepathsize}")
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
 
-					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume"))
+					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume"))	
+									
 					execute(false, "#{@pfexec} zfs recv -F #{dataset} < #{datadir.to_s}/box.zss'")
-
-				elsif config.disk1
+					ui.report_progress(progress, 100, false)
+				end
+				## Create Additional Disks
+				if config.disk1
 					disk1path = config.disk1.delete_prefix("/").to_s
 					disk1size = config.disk1_size.to_s
 					
