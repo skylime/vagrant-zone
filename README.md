@@ -88,7 +88,9 @@ Collecting status of boxes from [Vagrant Cloud](https://app.vagrantup.com/)
 
     $ git clone https://github.com/Makr91/vagrant-zones.git
     $ cd vagrant-bhyve
-    $ bundle install --path vendor/bundle --binstubs
+    bundle config set --local path 'vendor/bundle'
+    $ bundle install
+    $ bundle --binstubs exec
 
 
 ### Create a box from an existing box
