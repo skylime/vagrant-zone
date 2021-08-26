@@ -754,11 +754,13 @@ end
 				
 				## Check if it has a presence in zoneadm and if no presence in zoneadm destroy zonecfg
 				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
+				vmcfg_set = execute(false, "#{@pfexec} zonecfg -z #{name} export -f #{name}.zoneconfig && test #{name}.zoneconfig && echo #{name} || true")
+				puts != name
 				if vm_configured != name
 					id.info(I18n.t("vagrant_zones.bhyve_zone_config_remove"))
+					if vmcfg_set  = name
 					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
-					## Check if zone doesn't exist in config
-
+					end
 				end
 				
 				## Check state in zoneadm
