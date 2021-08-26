@@ -368,14 +368,14 @@ end							}
 					execute(false, "#{@pfexec} zfs create #{datasetroot}")
 
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot"))					
-					ui.info(" -- Dataset: #{dataset} Size: #{config.zonepathsize}")
+					ui.info(" -- Dataset: #{dataset}")
+					ui.info(" -- Size: #{config.zonepathsize}")
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
 
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume"))	
 									
 					execute(false, "#{@pfexec} zfs recv -F #{dataset} < #{datadir.to_s}/box.zss'")
-					
-		
+
 
 				end
 				## Create Additional Disks
@@ -757,6 +757,8 @@ end
 				if vm_configured != name
 					id.info(I18n.t("vagrant_zones.bhyve_zone_config_remove"))
 					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
+					## Check if zone doesn't exist in config
+
 				end
 				
 				## Check state in zoneadm
