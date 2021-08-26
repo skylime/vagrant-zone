@@ -1,7 +1,7 @@
 begin
 	require "vagrant"
 rescue LoadError
-	raise "The Vagrant Zone plugin must be run within Vagrant."
+	raise "The Vagrant Zones plugin must be run within Vagrant."
 end
 
 module VagrantPlugins
@@ -64,7 +64,7 @@ module VagrantPlugins
 			setup_logging
 			setup_i18n
 			command('zone') do
-				require_relative "command/zone.rb"
+				require_relative "../command/zone"
 				Command::Zone
 			end
 		end
