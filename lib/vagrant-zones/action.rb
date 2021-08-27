@@ -48,7 +48,7 @@ module VagrantPlugins
 							next
 						end
 						b1.use Call, IsState, :uncleaned do |env1, b2|
-							puts env1[:result]
+							puts IsState
 							puts :uncleaned
 							if env1[:result]
 								b2.use Cleanup
