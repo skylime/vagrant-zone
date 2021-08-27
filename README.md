@@ -20,7 +20,7 @@ Vagrant Plugin which can be used to managed Bhyve, LX and native zones on illumo
 
 | Function                    | Status
 | :----------                 | :-----
-| Box format                  | Defined
+| Zone Box format             | Defined
 | Emergency Console           | Working -- zlogin -C -- VNC switch(wip)
 | Check Bhyve support         | Working
 | Packaging                   | Working
@@ -35,7 +35,7 @@ Vagrant Plugin which can be used to managed Bhyve, LX and native zones on illumo
 | Graceful shutdown           | Working
 | Halt                        | Working
 | Destroy                     | Working
-| Packer Support              | Untested
+| Packer Support              | Untested -- Needs Go Lang Provider Plugin
 | Convert                     | Work in Progress
 | Find                        | Work in Progress
 | Provision                   | Working -- key based only -- cloud-init cominig
@@ -89,7 +89,7 @@ Collecting status of boxes from [Vagrant Cloud](https://app.vagrantup.com/)
     $ git clone https://github.com/Makr91/vagrant-zones.git
     $ cd vagrant-zones
     $ bundle config set --local path 'vendor/bundle'
-    $ bundle install
+    $ bundle install  --binstubs
     $ bundle --binstubs exec
 
 

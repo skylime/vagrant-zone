@@ -614,7 +614,7 @@ end
 				end
 				ui.info(I18n.t("vagrant_zones.exporting_bhyve_zone_config_gen"))
 				## Export config to zonecfg
-				execute(false, "cat zone_config | #{@pfexec} zonecfg -z #{machine.name}")
+				execute(false, "cat #{name}.zoneconfig | #{@pfexec} zonecfg -z #{machine.name}")
 			end
 
 			def check_zone_support(machine, ui)
