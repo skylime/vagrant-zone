@@ -39,7 +39,7 @@ en:
     netplan_remove: |-
       Removing stale netplan configurations.
     netplan_set: |-
-      Generate fresh DHCP netplan configurations.
+      Generate fresh netplan configurations.
     netplan_applied: |-
       New Netplan configurations Applied
     netplan_applied_dhcp: |-

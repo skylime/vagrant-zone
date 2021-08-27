@@ -396,8 +396,8 @@ end							}
 
 				if dataset_exists == "#{config.zonepath.delete_prefix("/")}/boot"
 					ui.info(I18n.t("vagrant_zones.destroy_dataset") )
-					ui.info(" -- #{config.zonepath.delete_prefix("/")}")
-					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
+					ui.info(" -- #{config.zonepath.delete_prefix("/")}boot")
+					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}/boot")
 					ui.info(" -- Data set removed")
 					
 				else
@@ -792,7 +792,7 @@ end
 					id.info(I18n.t("vagrant_zones.bhyve_zone_config_remove"))
 					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
 				end
-				
+
 				### Nic Configurations
 				id.info(I18n.t("vagrant_zones.removing_vnic"))
 				state = "delete"
