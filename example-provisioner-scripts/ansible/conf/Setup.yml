@@ -50,7 +50,9 @@
         state: present
         update_cache: yes
       name: "Ensuring Aptitude is installed."
-#  roles:
+  roles:
+    -
+      role: hostname
 #    -
 #      role: java
 #    -
