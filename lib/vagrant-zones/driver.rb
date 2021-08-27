@@ -10,6 +10,7 @@ require 'pty'
 require 'expect'
 require "vagrant"
 require 'vagrant-zones/util/timer'
+require 'ruby-pv'
 
 module VagrantPlugins
 	module ProviderZone
@@ -96,6 +97,7 @@ module VagrantPlugins
 
 			## Manage Network Interfaces
 			def vnic(machine, ui, state)
+				Pv.inspect
 				config = machine.provider_config
 				dhcpenabled = config.dhcp
 				name = @machine.name

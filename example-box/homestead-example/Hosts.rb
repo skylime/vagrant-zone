@@ -47,6 +47,7 @@ class Hosts
                   vm.complex_cpu_conf                     = host['complex_cpu_conf']
                   vm.vnc                                  = host['vnc']
                   vm.console                              = host['console']
+                  vm.override                             = host['override']
                   vm.firmware_type                        = host['firmware_type']
                   vm.acpi                                 = host['acpi']
                   vm.dhcp                                 = host['dhcp']

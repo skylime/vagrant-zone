@@ -36,6 +36,7 @@ module VagrantPlugins
 			attr_accessor :hostbridge
 			attr_accessor :sshport
 			attr_accessor :rdpport
+			attr_accessor :override
 			def initialize
 				# pkgsrc, lx, bhyve, kvm, illumos
 				@brand    						= 'bhyve'
@@ -72,6 +73,7 @@ module VagrantPlugins
 				@vagrant_user   				= 'vagrant'
 				@vagrant_user_pass  			= 'vagrant'
 				@vagrant_user_private_key_path  =  './id_rsa'
+				@override						  =  false
 				
 				case @firmware_type
 					when "compatability"  

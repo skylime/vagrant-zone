@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "iniparse", '>= 1.0'
   spec.add_runtime_dependency 'nokogiri', '1.11.4'
 
+  spec.add_development_dependency "ruby-pv"
   spec.add_development_dependency "bundler", ">= 2.2.25"
   spec.add_development_dependency "rake", ">= 13.0.6"
   spec.add_development_dependency "rspec", ">= 3.4"
