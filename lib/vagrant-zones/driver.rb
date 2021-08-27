@@ -388,18 +388,15 @@ end								}
 				## If boot Dataset exists, delete it
 				if dataset_boot_exists == "#{config.zonepath.delete_prefix("/")}/boot"
 					## Remove extra Disks first
-					ui.info(I18n.t("vagrant_zones.destroy_dataset") )
-					ui.info(" - #{config.zonepath.delete_prefix("/")}/NotYetImplemented")
+					ui.info(I18n.t("vagrant_zones.destroy_dataset") + "#{config.zonepath.delete_prefix("/")}/NotYetImplemented")
 					#execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}/boot")
 
 					## Delete Boot dataset
-					ui.info(I18n.t("vagrant_zones.destroy_dataset") )
-					ui.info(" - #{config.zonepath.delete_prefix("/")}/boot")
+					ui.info(I18n.t("vagrant_zones.destroy_dataset") + "#{config.zonepath.delete_prefix("/")}/boot" )
 					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}/boot")
 
 					## Check if root dataset exists
-					ui.info(I18n.t("vagrant_zones.destroy_dataset") )
-					ui.info(" - #{config.zonepath.delete_prefix("/")}")
+					ui.info(I18n.t("vagrant_zones.destroy_dataset") + "#{config.zonepath.delete_prefix("/")}")
 					dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")} |  awk '{ print $1 }' || true")
 					if dataset_root_exists == "#{config.zonepath.delete_prefix("/")}"
 						execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
