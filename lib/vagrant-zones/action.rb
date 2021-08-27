@@ -15,10 +15,7 @@ module VagrantPlugins
 						re = env[:result]
 						m = env[:machine].state.id
 						ui = env[:ui]
-						
-						puts re
-						puts re
-						puts re
+
 						if !env[:result]
 							#b2.use BoxUpdate
 							b2.use Import
@@ -51,13 +48,15 @@ module VagrantPlugins
 							next
 						end
 						b1.use Call, IsState, :uncleaned do |env1, b2|
+							puts env1[:result]
+							puts :uncleaned
 							if env1[:result]
 								b2.use Cleanup
 							end
 						end
 
 						b1.use Start
-						b1.use Setup
+						#b1.use Setup
 					end
 				end
 			end
