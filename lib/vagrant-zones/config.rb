@@ -67,7 +67,7 @@ module VagrantPlugins
 				@rdpport  						= '3389'
 				@vagrant_user   				= 'vagrant'
 				@vagrant_user_pass  			= 'vagrant'
-				@vagrant_user_private_key_path  =  ./id_rsa
+				@vagrant_user_private_key_path  =  './id_rsa'
 				
 				case @firmware_type
 					when "compatability"  
