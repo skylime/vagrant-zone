@@ -84,7 +84,7 @@ en:
     inserting_ssh_key: |-
       Inserting SSH key
     booted_check_terminal_access: |-
-      Machine booted, checking for login access/prompt over TTYS0
+      Zone booted, checking for login access/prompt over TTYS0
     booted_check_terminal_access_auto_login: |-
       Could not login as root, check if root auto-login works -- NOT IMPLEMENTED YET
     zfs_snapshot_stream_detected: |-

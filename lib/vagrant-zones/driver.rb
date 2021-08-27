@@ -172,7 +172,7 @@ end							}
 								nic_attr = %{add net
 	set physical=#{vnic_name}
 end								}
-								File.open('zone_config', 'a') do |f|
+								File.open("#{name}.zoneconfig", 'a') do |f|
 									f.puts nic_attr
 								end
 							end
@@ -526,7 +526,7 @@ add attr
 	set value=#{config.os_type}
 end					}
 				end
-				File.open('zone_config', 'w') do |f|
+				File.open("#{name}.zoneconfig", 'w') do |f|
 					f.puts attr
 				end
 				
@@ -537,7 +537,7 @@ end					}
 	set special=#{config.shared_dir}
 	set type=lofs
 end					}				
-					File.open('zone_config', 'a') do |f|
+					File.open("#{name}.zoneconfig", 'a') do |f|
 						f.puts shared_disk_attr
 					end
 				end
@@ -557,7 +557,7 @@ add fs
     add options ro
     add options nodevices
 end					}
-					File.open('zone_config', 'a') do |f|
+					File.open("#{name}.zoneconfig", 'a') do |f|
 						f.puts cdrom_attr
 					end
 				end
@@ -581,7 +581,7 @@ end					}
 #{ppt_data}
 				#	}
 				
-				#	File.open('zone_config', 'a') do |f|
+				#	File.open("#{name}.zoneconfig", 'a') do |f|
 				#		f.puts ppt_data_attr
 				#	end
 				#end
@@ -598,7 +598,7 @@ add attr
 	set value=#{config.zonepath.delete_prefix("/")}/disk1
 end
 					}
-					File.open('zone_config', 'a') do |f|
+					File.open("#{name}.zoneconfig", 'a') do |f|
 						f.puts additional_disk_attr
 					end
 				end
@@ -609,7 +609,7 @@ end
 
 				## Write out Config
 				exit = %{exit}
-				File.open('zone_config', 'a') do |f|
+				File.open("#{name}.zoneconfig", 'a') do |f|
 					f.puts exit
 				end
 				ui.info(I18n.t("vagrant_zones.exporting_bhyve_zone_config_gen"))

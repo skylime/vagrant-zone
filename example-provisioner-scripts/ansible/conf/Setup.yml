@@ -1,0 +1,69 @@
+---
+-
+  become: true
+  gather_facts: true
+  hosts: all
+  vars:
+    user_email: "{{ email }}"
+    run_letsencrypt: "{{ letsencrypt }}"
+    jenkins_git_user: "{{ git_user }}"
+    certbot_admin_email: "{{ user_email }}"
+    certbot_create_if_missing: false
+    certbot_create_method: standalone
+    certbot_create_standalone_stop_services:
+      - jenkins
+    jenkins_ssl: "{{ enable_jenkins_ssl }}"
+    certbot_domain: "{{ identifier }}"
+    certbot_ssl_passphrase: "{{ ssl_passphrase }}"
+    certbot_renewal_days: "{{ letsencrypt_certbot_renewal_days }}"
+
+    jenkins_port: "{{ jenkins_https_port }}"
+
+    cnergy_download_url: "https://c-nergy.be/downloads/xRDP/"
+
+    timezone: 'America/Chicago'
+    user: prominic
+    group: prominic
+
+    jruby_version: "9.2.9.0"
+    jython_version: "2.7.1"
+
+    leptonica_install_dir: "/tmp/{{ leptonica_version }}"
+    leptonica_tarball_url: "https://github.com/DanBloomberg/leptonica/releases/download/1.78.0/{{ leptonica_version }}.tar.gz"
+    leptonica_version: leptonica-1.78.0
+
+    sikulix_download_url: "https://launchpad.net/sikuli/sikulix/2.0.4/+download/"
+    sikulix_jar: sikulixide-2.0.4.jar
+    sikulixapi_download_url: "https://launchpad.net/sikuli/sikulix/2.0.5/+download/"
+    sikulixapi_jar: sikulixapi-2.0.5-lux.jar
+
+    tesseract_install_dir: "/tmp/tesseract-{{ tesseract_version }}"
+    tesseract_tarball_url: "https://github.com/tesseract-ocr/tesseract/archive/{{ tesseract_version }}.tar.gz"
+    tesseract_version: "3.05.02"
+
+    xrdp_script: xrdp-installer-1.2.3.zip
+  pre_tasks:
+    -
+      apt:
+        force_apt_get: true
+        name: aptitude
+        state: present
+        update_cache: yes
+      name: "Ensuring Aptitude is installed."
+#  roles:
+#    -
+#      role: java
+#    -
+#      role: desktop
+#    -
+#      role: sikulix
+#    -
+#      role: jenkins
+#    -
+#      role: xrdp
+#    -
+#      role: view
+#    -
+#      role: letsencrypt
+#      when: item
+#      with_items: run_letsencrypt
