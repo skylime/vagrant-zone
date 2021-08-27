@@ -526,7 +526,7 @@ end					}
 					cpu_attr = %{add attr
 	set name=vcpus
 	set type=string
-	set value="sockets=#{hash["sockets"]},cores=#{hash["cores"]},threads=#{hash["threads"]"}
+	set value="sockets=#{hash["sockets"]},cores=#{hash["cores"]},threads=#{hash["threads"]}"
 end					}				
 					File.open("#{name}.zoneconfig", 'a') do |f|
 						f.puts cpu_attr
