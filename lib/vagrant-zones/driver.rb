@@ -514,7 +514,31 @@ end					}
 						f.puts shared_disk_attr
 					end
 				end
-				
+
+
+				## CPU Configurations
+				if config.cpu_configuration == 'simple'
+					cpu_attr = %{add attr
+set name=vcpus
+set type=string
+set value=#{config.cpus}
+end					}				
+					File.open("#{name}.zoneconfig", 'a') do |f|
+						f.puts cpu_disk_attr
+					end
+				elsif config.cpu_configuration == 'complex'
+					sockets=config.complex_cpu_conf.sockets
+					cores=config.complex_cpu_conf.cores
+					threads=config.complex_cpu_conf.threads
+					cpu_attr = %{add attr
+set name=vcpus
+set type=string
+set value=sockets=#{sockets},cores=#{cores},threads=#{threads}
+end					}				
+					File.open("#{name}.zoneconfig", 'a') do |f|
+						f.puts cpu_disk_attr
+					end
+				end
 				## CDROM Configurations
 				if config.cdrom_path != 'none'
 					puts config.cdrom_path
