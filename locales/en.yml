@@ -38,6 +38,8 @@ en:
       Creating VNIC: 
     configure_interface_using_vnic: |-
       Configuring the Interface on the VM for VNIC: 
+    vnic_setup: |-
+       Setting up the VNIC: 
     removing_vnic: |-
       Deleting VNIC: 
     delete_disks: |-
