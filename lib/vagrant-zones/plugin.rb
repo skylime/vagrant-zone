@@ -17,6 +17,9 @@ module VagrantPlugins
 				require_relative "config"
 				Config
 			end
+			
+			## Experimental Parallel Execucution
+			## provider(:zone, parallel: true) do
 
 			provider(:zone) do
 				require_relative "provider"

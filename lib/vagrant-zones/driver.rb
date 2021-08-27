@@ -19,7 +19,6 @@ module VagrantPlugins
 				@logger = Log4r::Logger.new("vagrant_zones::driver")
 				@machine = machine
 				@executor = Executor::Exec.new
-
 				if Process.uid == 0
 					@pfexec = ''
 				else
@@ -32,7 +31,6 @@ module VagrantPlugins
 				end
 			end
 
-			
 			def state(machine)
 				uuid = machine.id
 				name = machine.name
@@ -73,7 +71,7 @@ module VagrantPlugins
 				if config.brand == 'illumos'
 					execute(false, "#{@pfexec} zoneadm -z #{name} install")
 				end
-				ui.info(" -- Brand: #{config.brand}")
+				ui.info(" - Brand: #{config.brand}")
 			end
 			
 			## Boot the Machine
@@ -83,7 +81,7 @@ module VagrantPlugins
 				execute(false, "#{@pfexec} zoneadm -z #{name} boot")
 			end
 			
-			
+			## Moving to Below Function as Subfunction
 			def get_ip_address(machine)
 				config = machine.provider_config
 				machine.config.vm.networks.each do |_type, opts|
@@ -95,9 +93,8 @@ module VagrantPlugins
 					end
 				end
 			end
-			
-			
-			## Create Network Interfaces
+
+			## Manage Network Interfaces
 			def vnic(machine, ui, state)
 				config = machine.provider_config
 				dhcpenabled = config.dhcp
@@ -362,22 +359,28 @@ end							}
 				if config.brand == 'lx'	
 					ui.info(I18n.t("vagrant_zones.lx_zone_dataset"))	
 					execute(false, "#{@pfexec} zfs create -o zoned=on -p #{dataset}")
-				end
-				if config.brand == 'bhyve'
+				elsif config.brand == 'bhyve'
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_root"))
 					execute(false, "#{@pfexec} zfs create #{datasetroot}")
 
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot"))					
-					ui.info(" -- Dataset: #{dataset}")
-					ui.info(" -- Size: #{config.zonepathsize}")
+					ui.info(" - Dataset: #{dataset}")
+					ui.info(" - Size: #{config.zonepathsize}")
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
 
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume"))	
 									
 					execute(false, "#{@pfexec} zfs recv -F #{dataset} < #{datadir.to_s}/box.zss'")
+				elsif config.brand == 'illumos'
+					raise Errors::NotYetImplemented
+				elsif config.brand == 'kvm'
+					raise Errors::NotYetImplemented
+				else
+					raise Errors::InvalidBrand
 				end
 				## Create Additional Disks
 				unless config.disk1.to_s
+					raise Errors::NotYetImplemented
 					disk1path = config.disk1.delete_prefix("/").to_s
 					disk1size = config.disk1_size.to_s
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume"))
@@ -394,14 +397,25 @@ end							}
 
 				## If boot Dataset exists, delete it
 				if dataset_boot_exists == "#{config.zonepath.delete_prefix("/")}/boot"
+					## Remove extra Disks first
 					ui.info(I18n.t("vagrant_zones.destroy_dataset") )
-					ui.info(" -- #{config.zonepath.delete_prefix("/")}")
+					ui.info(" - #{config.zonepath.delete_prefix("/")}/NotYetImplemented")
+					#execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}/boot")
+
+					## Delete Boot dataset
+					ui.info(I18n.t("vagrant_zones.destroy_dataset") )
+					ui.info(" - #{config.zonepath.delete_prefix("/")}/boot")
 					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}/boot")
-					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
-					ui.info(" -- Data set removed")
-					
+
+					## Check if root dataset exists
+					ui.info(I18n.t("vagrant_zones.destroy_dataset") )
+					ui.info(" - #{config.zonepath.delete_prefix("/")}")
+					dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")} |  awk '{ print $1 }' || true")
+					if dataset_root_exists == "#{config.zonepath.delete_prefix("/")}"
+						execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
+					end
 				else
-					ui.info(" -- No Dataset to be removed")
+					ui.info(I18n.t("vagrant_zones.dataset_nil") )
 				end
 				
 			end
@@ -624,7 +638,7 @@ end
 					cutoff_release = "1510380"
 					cutoff_release = cutoff_release[0..-2].to_i 
 					ui.info(I18n.t("vagrant_zones.bhyve_check"))					
-					ui.info(" -- Cutoff Release: #{cutoff_release}")
+					ui.info(" - Cutoff Release: #{cutoff_release}")
 					release = File.open('/etc/release', &:readline)
 					release = release.scan(/\w+/).values_at( -1)
 					release = release[0][1..-2].to_i 

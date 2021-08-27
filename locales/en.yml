@@ -6,34 +6,38 @@ en:
       is_running: |-
         Your instance has already be booted.
     errors:
+      not_yet_implemented: |-
+        Your configuration is not yet implemented.
+      invalid_brand: |-
+        Invalid brand detected.
       execute_error: |-
         Failed when execute commands.
       timeout_error: |-
         Timeout exceeded.
       system_version_too_low: |-
-        Please update to OmniOS r38 or higher
+        Please update to OmniOS r38 or higher.
       missing_compatability_check_tool: |-    
-        Please install the Bhyve Compatability Tool from: https://omnios.org/info/bhyve
+        Please install the Bhyve compatability tool from: https://omnios.org/info/bhyve
       missing_bhyve: |-    
-        Your system Appears to be Missing Bhyve
+        Your system appears to be missing bhyve.
       virtual_box_running_conflict_detected: |-    
         Virtualbox Box appears to be running VMs, to continue, please shut these down.
     starting_zone: |-
-      Starting the zone
+      Starting the zone.
     halting_zone: |-
-      Halting the zone
+      Halting the zone.
     destroy_zone: |-
-      destroying the zone
+      destroying the zone.
     graceful_shutdown_failed: |-
-      VM failed to Shutdown in alloted time:
+      VM failed to shutdown in alloted time:
     graceful_shutdown: |-
       Attempting a graceful shutdown
     creating_vnic: |-
-      Creating VNIC . . .
+      Creating VNIC.
     removing_vnic: |-
-      Deleting Associated VNICs    
+      Deleting associated VNICs.    
     delete_disks: |-
-      Deleting Associated Disks
+      Deleting associated disks.
     installing_zone: |-
       Installing zone.
     netplan_remove: |-
@@ -41,54 +45,58 @@ en:
     netplan_set: |-
       Generate fresh netplan configurations.
     netplan_applied: |-
-      New Netplan configurations Applied
+      New Netplan configurations Applied.
     netplan_applied_dhcp: |-
-      Set DHCP Netplan configurations
+      Set DHCP Netplan configurations.
     netplan_applied_static: |-
-      Set Static Netplan configurations
+      Set Static Netplan configurations.
     lx_zone_dataset: |-
-      Creating zoned ZFS dataset for LX zone
+      Creating zoned ZFS dataset for LX zone.
     bhyve_zone_dataset_root: |-
-      Creating ZFS root dataset for bhyve zone
+      Creating ZFS root dataset for bhyve zone.
     bhyve_zone_dataset_boot: |-
-      Creating ZFS boot volume dataset for bhyve zone
+      Creating ZFS boot volume dataset for bhyve zone.
     bhyve_zone_dataset_boot_volume: |-
-      Importing template to ZFS boot volume for bhyve zone
+      Importing template to ZFS boot volume for bhyve zone.
     bhyve_zone_dataset_additional_volume: |-
-      Creating Additional ZFS Volume for bhyve zone
-    destroy_dataset: "Destroying datasets. . ."
+      Creating additional ZFS Volume for bhyve zone.
+    destroy_dataset: |-
+      Destroying datasets.
     lx_zone_config_gen: |-
-      Generating Configuration for LX Branded zone
+      Generating configuration for LX zone.
     bhyve_zone_config_gen: |-
-      Generating Configuration for bhyve Branded zone
+      Generating configuration for bhyve zone.
     bhyve_zone_config_remove: |-
       Removing zonecfg configuration
     bhyve_zone_config_uninstall: |-
-      Uninstalling Zone and Removing zonecfg configuration
+      Uninstalling zone and removing zonecfg configuration.
     exporting_bhyve_zone_config_gen: |-
       Exporting generated zonecfg configuration.
     vbox_run_check: |-
-      Checking if Virtualbox is loaded as it may conflict with bhyve.
+      Checking if VirtualBox is loaded as it may conflict with bhyve.
     lx_check: |-
-      No LX Zones Checked, We assume that you have all the Appropriate packages
+      No checks performed on the host OS, please use with caution!
     bhyve_check: |-
-      Checking OmniOS Release . . .
+      Checking OmniOS release.
     bhyve_compat_check: |-
       Checking bhyve installation environment.
     wait_for_boot: |-
-      Waiting for the zone to boot
+      Waiting for the zone to boot.
     inserting_ssh_key: |-
-      Inserting SSH Key
+      Inserting SSH key
     booted_check_terminal_access: |-
-      Machine Booted, Checking for Login Access/Prompt over TTYS0
+      Machine booted, checking for login access/prompt over TTYS0.
     booted_check_terminal_access_auto_login: |-
-      Could not login as Root, Check if Root Autologin Works -- NOT IMPLEMENTED YET
+      Could not login as root, check if root auto-login works -- NOT IMPLEMENTED YET.
     zfs_snapshot_stream_detected: |-
-      ZFS Snapshot Stream detected
+      ZFS Snapshot Stream detected.
     joyent_image_uuid_detected: |-
-      Joyen UUID Detected
+      Joyen UUID detected
     vagrant_cloud_box_detected: |-
-      Vagrant Cloud Box Detected
-    ssh_ready: "SSH appears to be ready "
+      Vagrant Cloud Box detected.
+    ssh_ready: |-
+      SSH appears to be ready.
+    dataset_nil: |-
+      No dataset to remove.
 
       

@@ -26,6 +26,7 @@ module VagrantPlugins
 							b2.use Setup
 							b2.use WaitTillUp
 							
+							## Counter intuitive, but Provision must go before SyncFolders for some reason  . .
 							b2.use Provision
 							b2.use SyncedFolders
 							b2.use SyncedFolderCleanup

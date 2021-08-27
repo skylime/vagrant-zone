@@ -34,7 +34,16 @@ module VagrantPlugins
 			class VirtualBoxRunningConflictDetected < VagrantZonesError
 				error_key(:virtual_box_running_conflict_detected)
 			end
-		
+
+			class NotYetImplemented < VagrantZonesError
+				error_key(:not_yet_implemented)
+			end
+			
+			class InvalidBrand < VagrantZonesError
+				error_key(:invalid_brand)
+			end
+			
+
 		end
 	end
 end
