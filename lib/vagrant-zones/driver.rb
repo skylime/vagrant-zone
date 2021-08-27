@@ -763,10 +763,6 @@ end
 				
 				id.info(I18n.t("vagrant_zones.destroy_zone"))
 
-				
-
-
-
 				## Check if it has a presence in zoneadm and if no presence in zoneadm destroy zonecfg
 				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
 				vmcfg_set = execute(false, "#{@pfexec} zonecfg -z #{name} export -f #{name}.zoneconfig && test #{name}.zoneconfig && echo #{name} || true")
