@@ -106,7 +106,7 @@ class Hosts
                 ansible.playbook =  script
                 ansible.compatibility_mode = "2.0"
                 #ansible.install_mode = "pip"
-                ansible.extra_vars = {ip:host['ip']}
+                ansible.extra_vars = {ip:host['ip'], ansible_python_interpreter:"/usr/bin/python3"}
               end
             end
           end
