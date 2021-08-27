@@ -16,10 +16,9 @@ module VagrantPlugins
 				def call(env)
 					@machine = env[:machine]
 					@driver  = @machine.provider.driver
-					ui =env[:ui]
+					ui = env[:ui]
 					# Initialize metrics if they haven't been
 					env[:metrics] ||= {}
-
 					env[:metrics]['instance_ssh_time'] = Util::Timer.time do
 						retryable(on: Errors::TimeoutError, tries: 60) do
 							# If we're interrupted don't worry about waiting
