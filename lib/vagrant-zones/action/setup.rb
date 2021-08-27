@@ -16,7 +16,6 @@ module VagrantPlugins
 					@driver  = @machine.provider.driver
 					sleep 2
 					@driver.check_zone_support(@machine, env[:ui])
-					@driver.waitforboot(@machine, env[:ui])
 					@driver.setup(@machine, env[:ui])
 					@app.call(env)
 				end
