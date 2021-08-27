@@ -58,7 +58,7 @@ module VagrantPlugins
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
 						#FileUtils.cp(env[:machine].box.directory.join('box.zss').to_s, datadir.to_s + '/box.zss')# + image)
 
-						@driver.execute(false, "#{@pfexec} pv #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s} + '/box.zss'")
+						@driver.execute(false, "#{@pfexec} pv #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} ")
 
 						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected"))
 					end
