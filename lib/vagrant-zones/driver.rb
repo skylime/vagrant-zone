@@ -163,9 +163,10 @@ module VagrantPlugins
 								execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
 							end
 						elsif state == "config"
+#set allowed-address=#{allowed_address}
 							nic_attr = %{add net
 	set physical=#{vnic_name}
-	set allowed-address=#{allowed_address}
+
 end							}
 							File.open('zone_config', 'a') do |f|
 								f.puts nic_attr
