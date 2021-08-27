@@ -156,6 +156,7 @@ module VagrantPlugins
 								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
 							end		
 						elsif state == "delete"
+							id.info(I18n.t("vagrant_zones.removing_vnic"))
 							vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
 							if vnic_configured == "#{vnic_name}"
 								ui.info("#{vnic_name}")
@@ -391,7 +392,7 @@ end							}
 			def delete_dataset(machine, ui)
 				name = @machine.name
 				config = machine.provider_config
-
+				id.info(I18n.t("vagrant_zones.delete_disks"))
 				## Check if Boot Dataset exists
 				dataset_boot_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")}/boot |  awk '{ print $1 }' || true")
 
@@ -798,12 +799,11 @@ end
 				end
 
 				### Nic Configurations
-				id.info(I18n.t("vagrant_zones.removing_vnic"))
 				state = "delete"
 				vnic(@machine, id, state)
 				
 				### Check State of additional Disks
-				id.info(I18n.t("vagrant_zones.delete_disks"))
+				
 				#disks_configured = execute(false, "#{@pfexec}  zfs list ")
 
 			end
