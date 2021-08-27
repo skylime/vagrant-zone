@@ -530,7 +530,7 @@ set type=string
 set value=sockets=#{sockets},cores=#{cores},threads=#{threads}
 end					}				
 					File.open("#{name}.zoneconfig", 'a') do |f|
-						f.puts cpu_disk_attr
+						f.puts cpu_attr
 					end
 				end
 
