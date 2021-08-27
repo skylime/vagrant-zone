@@ -539,6 +539,7 @@ end					}
 						f.puts cpu_disk_attr
 					end
 				end
+				
 				## CDROM Configurations
 				if config.cdrom_path != 'none'
 					puts config.cdrom_path
