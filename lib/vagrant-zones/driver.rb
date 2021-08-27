@@ -521,9 +521,9 @@ end					}
 						f.puts cpu_attr
 					end
 				elsif config.cpu_configuration == 'complex'
-					sockets=config.complex_cpu_conf.sockets
-					cores=config.complex_cpu_conf.cores
-					threads=config.complex_cpu_conf.threads
+					sockets=config.complex_cpu_conf[sockets]
+					cores=config.complex_cpu_conf[cores]
+					threads=config.complex_cpu_conf[threads]
 					cpu_attr = %{add attr
 set name=vcpus
 set type=string
