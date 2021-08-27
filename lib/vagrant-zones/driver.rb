@@ -375,8 +375,6 @@ end							}
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume"))	
 									
 					execute(false, "#{@pfexec} zfs recv -F #{dataset} < #{datadir.to_s}/box.zss'")
-
-
 				end
 				## Create Additional Disks
 				unless config.disk1.to_s
@@ -393,15 +391,16 @@ end							}
 				ui.info(I18n.t("vagrant_zones.destroy_dataset") )
 				ui.info(" -- #{config.zonepath.delete_prefix("/")}")
 
-				dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")} |  awk '{ print $1 }' || true")
+				dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")}/boot |  awk '{ print $1 }' || true")
 
 				puts dataset_exists
 
-				if dataset_exists == config.zonepath.delete_prefix("/")
+				if dataset_exists == "#{config.zonepath.delete_prefix("/")}/boot"
 					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
+					ui.info("Data set removed")
 					
 				end
-				ui.info("Data set removed")
+				ui.info("No Dataset to be removed")
 
 				
 			end
