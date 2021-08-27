@@ -23,6 +23,9 @@ module VagrantPlugins
 					name = @machine.name
 					@driver  = @machine.provider.driver
 					ui = env[:ui]
+					ui.info(I18n.t("vagrant_zones.meeting"))
+					ui.info(I18n.t("vagrant_zones.detecting_box"))
+					
 					@logger.info("DATADIR #{datadir}")
 					# If image ends on '.zss' it's a local ZFS snapshot which
 					# should be used
@@ -38,7 +41,7 @@ module VagrantPlugins
 					elsif validate_uuid_format(image)
 						raise Vagrant::Errors::BoxNotFound if not check(image)
 						download(image, datadir.to_s + '/' + image)
-						ui.info(I18n.t("vagrant_zones.joyent_image_uuid_detected"))
+						ui.info(I18n.t("vagrant_zones.joyent_image_uuid_detected") + image)
 
 					## If it's a regular name (everything else), try to find it
 					## on Vagrant Cloud
@@ -55,13 +58,10 @@ module VagrantPlugins
 							## Code to try to convert existing box
 							raise Errors::WrongBoxFormatSet
 						end
-						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected"))
+						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected") + image)
 
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
 						@driver.execute(false, "#{@pfexec} pv #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} ")
-
-						
-
 					end
 					@app.call(env)
 				end

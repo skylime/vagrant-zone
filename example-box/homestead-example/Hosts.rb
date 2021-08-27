@@ -9,7 +9,7 @@ class Hosts
       # Main loop to configure VM
       settings['hosts'].each_with_index do |host, index|
         autostart = host.has_key?('autostart') && host['autostart']
-        config.vm.define "#{host['name']}", autostart: autostart do |server|
+        config.vm.define "#{host['parition_id']}-#{host['name']}", autostart: autostart do |server|
           server.vm.box = host['box']
           server.vm.boot_timeout = 900
   
@@ -36,7 +36,7 @@ class Hosts
                   vm.brand                                = host['brand']
                   vm.autoboot                             = host['autostart']
                   vm.parition_id                          = host['parition_id']
-                  vm.zonepath                             = host['zonepath']
+                  vm.zonepath                             = "#{host['zonepath']}/#{host['parition_id']}-#{host['name']}"
                   vm.zonepathsize                         = host['rootdisksize']
   #               vm.disk1                                = "rpool/#{vm.parition_id}-ubuntu2/disk1"
   #               vm.disk1_size                           = '50G'
@@ -60,7 +60,7 @@ class Hosts
                   vm.vagrant_user                         = host['vagrant_user']
                   vm.vagrant_user_pass                    = host['vagrant_user_pass']
                   vm.hostname                             = host['name']
-                  vm.name                                 = host['name']
+                  vm.name                                 = "#{host['parition_id']}-#{host['name']}"
   #               vm.customize                            ['modifyvm', :id, '--ostype', 'RedHat_64']
   #               vm.customize                            ["modifyvm", :id, "--vrde", "on"]
   #               vm.customize                            ["modifyvm", :id, "--vrdeport", "3941"]

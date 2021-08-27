@@ -22,11 +22,14 @@ en:
         Your system appears to be missing bhyve
       virtual_box_running_conflict_detected: |-    
         Virtualbox Box appears to be running VMs, to continue, please shut these down.
-    starting_zone: |-
-      Starting the zone
+    meeting: |-
+      Helllooooo World! Nice to Meet you!
+    leaving: |-
+      Oh No, I don't want to go . . 
     halting_zone: |-
       Halting the zone
-    destroy_zone: "destroying the zone"
+    destroy_zone: |-
+      Destroying the zone
     graceful_shutdown_failed: |-
       VM failed to shutdown in alloted time:
     graceful_shutdown: |-
@@ -88,11 +91,11 @@ en:
     booted_check_terminal_access_auto_login: |-
       Could not login as root, check if root auto-login works -- NOT IMPLEMENTED YET
     zfs_snapshot_stream_detected: |-
-      ZFS Snapshot Stream detected
+      ZFS Snapshot Stream detected: 
     joyent_image_uuid_detected: |-
-      Joyen UUID detected
+      Joyen UUID detected: 
     vagrant_cloud_box_detected: |-
-      Vagrant Cloud Box detected
+      Vagrant Cloud Box detected: 
     ssh_ready: |-
       SSH appears to be ready
     boot_ready: |-
