@@ -655,9 +655,6 @@ end
 				config = machine.provider_config
 				name = machine.name
 				
-				ui.info(I18n.t("vagrant_zones.wait_for_boot"))
-				waitforboot(machine, ui)
-				
 				## Check if already setup and skip the following
 				if machine.config.ssh.insert_key
 					
@@ -668,12 +665,14 @@ end
 				end
 				
 				### Nic Configurations
+
 				state = "setup"
 				vnic(@machine, ui, state)
 				
 			end
 			
 			def waitforboot(machine, ui)
+				ui.info(I18n.t("vagrant_zones.wait_for_boot"))
 				name = @machine.name
 				config = machine.provider_config
 				responses = []
