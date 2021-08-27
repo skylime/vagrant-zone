@@ -42,7 +42,9 @@ class Hosts
   #               vm.disk1_size                           = '50G'
                   vm.setup_wait                           = host['setup_wait']
                   vm.memory                               = host['memory']
-                  vm.cpus                                 = host['cpus']
+                  vm.cpus                                 = host['simple_vcpu_conf']
+                  vm.cpu_configuration                    = host['cpu_configuration']
+                  vm.complex_cpu_conf                     = host['complex_cpu_conf']
                   vm.vnc                                  = host['vnc']
                   vm.console                              = host['console']
                   vm.firmware_type                        = host['firmware_type']

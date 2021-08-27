@@ -14,6 +14,8 @@ module VagrantPlugins
 			attr_accessor :disk1path
 			attr_accessor :disk1size
 			attr_accessor :cpus
+			attr_accessor :cpu_configuration
+			attr_accessor :complex_cpu_conf
 			attr_accessor :memory
 			attr_accessor :vagrant_user
 			attr_accessor :vagrant_user_private_key_path
@@ -53,6 +55,8 @@ module VagrantPlugins
 				@diskif   						= 'virtio-blk'
 				@netif   						= 'virtio-net-viona'
 				@cpus   						= 2
+				@cpu_configuration				= 'simple'
+				@complex_cpu_conf   			= UNSET_VALUE
 				@hostbridge   					= 'i440fx'
 				@acpi 							= 'on'
 				@firmware_type 					= "compatability"
