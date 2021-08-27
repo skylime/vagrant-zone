@@ -35,17 +35,17 @@ en:
     graceful_shutdown: |-
       Attempting a graceful shutdown
     creating_vnic: |-
-      Creating VNIC: 
+      Creating VNIC ==> 
     configure_interface_using_vnic: |-
-      Configuring the interface on the zone for VNIC: 
+      Configuring the interface on the zone for VNIC ==> 
     vnic_setup: |-
-       Setting up the VNIC: 
+       Setting up the VNIC ==> 
     removing_vnic: |-
       Deleting VNIC: 
     delete_disks: |-
       Removing associated disks
     installing_zone: |-
-      Installing zone,
+      Installing zone as brand ==> 
     netplan_remove: |-
       - Removing stale netplan configurations
     netplan_set: |-
@@ -59,9 +59,9 @@ en:
     lx_zone_dataset: |-
       Creating zoned ZFS dataset for LX zone
     bhyve_zone_dataset_root: |-
-      Creating ZFS root dataset for bhyve zone
+      Creating ZFS root dataset ==> 
     bhyve_zone_dataset_boot: |-
-      Creating ZFS boot volume, 
+      Creating ZFS boot volume ==> 
     bhyve_zone_dataset_boot_volume: |-
       Importing template to: 
     bhyve_zone_dataset_additional_volume: |-
@@ -83,9 +83,9 @@ en:
     lx_check: |-
       No checks performed on the host OS, please use with caution!
     bhyve_check: |-
-      Checking OmniOS release against version: 
+      Checking OmniOS release against version ==>  
     bhyve_compat_check: |-
-      Checking bhyve installation environment.
+      Checking bhyve installation environment
     wait_for_boot: |-
       Waiting for the zone to boot
     inserting_ssh_key: |-
@@ -97,11 +97,11 @@ en:
     detecting_box: |-
       Detecting Box and Importing
     zfs_snapshot_stream_detected: |-
-      ZFS Snapshot Stream detected: 
+      ZFS Snapshot Stream detected ==>  
     joyent_image_uuid_detected: |-
-      Joyen UUID detected: 
+      Joyent UUID detected ==>  
     vagrant_cloud_box_detected: |-
-      Vagrant Cloud Box detected: 
+      Vagrant Cloud Box detected ==>  
     ssh_ready: |-
       SSH appears to be ready
     boot_ready: |-
