@@ -182,7 +182,7 @@ end								}
 							## Remove old installer netplan config
 							ui.info(I18n.t("vagrant_zones.configure_interface_using_vnic") + vnic_name)
 							ui.info(I18n.t("vagrant_zones.netplan_remove"))
-							zlogin(machine, "rm -rf /etc/netplan/00-installer-config.yaml")
+							zlogin(machine, "[ -e '/etc/netplan/00-installer-config.yaml' ] && echo 1 || echo 0 ; if $? == 0; then rm -rf /etc/netplan/00-installer-config.yaml; fi;")
 							responses=[]
 							vmnic=[]
 							
@@ -259,10 +259,9 @@ end								}
 															run+=1
 														end
 														if responses[-1].to_s.match(/Subprocess Error Code: 0/)
-															ui.info(I18n.t("vagrant_zones.netplan_applied_dhcp"))															
+															ui.info(I18n.t("vagrant_zones.netplan_applied_dhcp") + "/etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml")														
 														elsif responses[-1].to_s.match(/Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
-															raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
-														elsif responses[-1].nil?														        
+															raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"														        
 														end
 													else	
 														vnic=vmnic[devid.to_i]
@@ -282,9 +281,9 @@ end								}
 															run+=1
 														end
 														if responses[-1].to_s.match(/Subprocess Error Code: 0/)
-															ui.info(I18n.t("vagrant_zones.netplan_applied_static"))															
+															ui.info(I18n.t("vagrant_zones.netplan_applied_static") + "/etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml")															
 														elsif responses[-1].to_s.match(/Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
-															raise "==> #{name}: \nCommand: \n ==>  \nFailed with: \n responses[-1]"
+															raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
 														end
 													end
 												end
