@@ -22,6 +22,8 @@ en:
       Starting the zone
     halting_zone: |-
       Halting the zone
+    destroy_zone: |-
+      destroying the zone
     graceful_shutdown_failed: |-
       VM failed to Shutdown in alloted time:
     graceful_shutdown: |-
