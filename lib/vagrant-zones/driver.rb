@@ -401,7 +401,7 @@ end							}
 					ui.info(" -- Data set removed")
 					
 				else
-					ui.info("No Dataset to be removed")
+					ui.info(" -- No Dataset to be removed")
 				end
 				
 			end
