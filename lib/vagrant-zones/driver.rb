@@ -396,7 +396,9 @@ end							}
 				dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")} |  awk '{ print $1 }' || true")
 				if dataset_exists == config.zonepath.delete_prefix("/")
 					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
+					
 				end
+				ui.info("Data set removed")
 
 				
 			end
