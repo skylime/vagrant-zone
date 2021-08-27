@@ -370,8 +370,10 @@ end							}
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
 
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume"))	
-									
-					execute(false, "#{@pfexec} zfs recv -F #{dataset} < #{datadir.to_s}/box.zss'")
+					
+
+					execute(false, "#{@pfexec} pv #{datadir.to_s}/box.zss   | #{@pfexec} zfs recv -u -v -F #{dataset}")
+
 				elsif config.brand == 'illumos'
 					raise Errors::NotYetImplemented
 				elsif config.brand == 'kvm'
