@@ -513,9 +513,9 @@ end					}
 				## CPU Configurations
 				if config.cpu_configuration == 'simple'
 					cpu_attr = %{add attr
-set name=vcpus
-set type=string
-set value=#{config.cpus}
+	set name=vcpus
+	set type=string
+	set value=#{config.cpus}
 end					}				
 					File.open("#{name}.zoneconfig", 'a') do |f|
 						f.puts cpu_attr
@@ -524,9 +524,9 @@ end					}
 					
 					hash = config.complex_cpu_conf[0]
 					cpu_attr = %{add attr
-set name=vcpus
-set type=string
-set value=sockets=#{hash["sockets"]},cores=#{hash["cores"]},threads=#{hash["threads"]}
+	set name=vcpus
+	set type=string
+	set value="sockets=#{hash["sockets"]},cores=#{hash["cores"]},threads=#{hash["threads"]"}
 end					}				
 					File.open("#{name}.zoneconfig", 'a') do |f|
 						f.puts cpu_attr
