@@ -657,7 +657,6 @@ end
 				
 				## Check if already setup and skip the following
 				if machine.config.ssh.insert_key
-					
 					ui.info(I18n.t("vagrant_zones.inserting_ssh_key"))
 					zlogin(machine, "echo #{config.vagrant_user_key} > \/home\/#{config.vagrant_user}\/.ssh\/authorized_keys")
 					zlogin(machine, "chown -R #{config.vagrant_user}:#{config.vagrant_user} \/home\/#{config.vagrant_user}\/.ssh")

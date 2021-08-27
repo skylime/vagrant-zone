@@ -16,7 +16,9 @@ module VagrantPlugins
 						m = env[:machine].state.id
 						ui = env[:ui]
 						
-
+						puts re
+						puts re
+						puts re
 						if !env[:result]
 							#b2.use BoxUpdate
 							b2.use Import
