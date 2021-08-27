@@ -522,20 +522,13 @@ end					}
 					end
 				elsif config.cpu_configuration == 'complex'
 					
-					h = config.complex_cpu_conf[0]
-					puts h["sockets"]
-					sockets=config.complex_cpu_conf["sockets"].to_i
-					puts config.complex_cpu_conf["sockets"].to_i
-					puts config.complex_cpu_conf.to_i
-					puts
-					puts 
-					puts
+					hash = config.complex_cpu_conf[0]
 					cores=config.complex_cpu_conf["cores"]
 					threads=config.complex_cpu_conf["threads"]
 					cpu_attr = %{add attr
 set name=vcpus
 set type=string
-set value=sockets=#{sockets},cores=#{cores},threads=#{threads}
+set value=sockets=#{hash["sockets"]},cores=#{hash["cores"]},threads=#{hash["threads"]}
 end					}				
 					File.open("#{name}.zoneconfig", 'a') do |f|
 						f.puts cpu_attr
