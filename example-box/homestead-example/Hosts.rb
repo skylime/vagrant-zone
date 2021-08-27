@@ -102,7 +102,7 @@ class Hosts
           # Run the Ansible Provisioner
           if host.has_key?('ansible_provision') && host['ansible_provision']
               server.vm.provision :ansible do |ansible|
-                ansible.playbook =  '../example-provisioner-scripts/ansible/conf/Setup.yml'
+                ansible.playbook =  host['ansible_provision_path']
                 ansible.compatibility_mode = "2.0"
                 #ansible.install_mode = "pip"
                 ansible.extra_vars = {ip:host['ip']}
