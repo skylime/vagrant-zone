@@ -778,10 +778,6 @@ end
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 				
 				## If state is seen, uninstall from zoneadm and destroy from zonecfg
-				puts vm_state
-				puts vm_state
-				puts vm_state
-				puts vm_state
 				if vm_state == 'incomplete' || vm_state == 'configured' || vm_state ==  'installed'
 					id.info(I18n.t("vagrant_zones.bhyve_zone_config_uninstall"))
 					execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
