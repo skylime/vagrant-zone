@@ -368,7 +368,7 @@ end								}
 					raise Errors::NotYetImplemented
 					disk1path = config.disk1.delete_prefix("/").to_s
 					disk1size = config.disk1_size.to_s
-					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume") + cdisk1size + ", " + disk1path))
+					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume") + cdisk1size + ", " + disk1path)
 					execute(true, "#{@pfexec} zfs create -V #{disk1size} #{disk1path}")
 				end
 			end
