@@ -41,7 +41,7 @@ en:
     vnic_setup: |-
        Setting up the VNIC ==> 
     removing_vnic: |-
-      Deleting VNIC: 
+      Deleting VNIC ==>
     delete_disks: |-
       Removing associated disks
     installing_zone: |-
