@@ -522,8 +522,7 @@ end					}
 					end
 				elsif config.cpu_configuration == 'complex'
 					puts config.complex_cpu_conf
-					puts config.complex_cpu_conf["sockets"].to_i
-					puts config.complex_cpu_conf.to_i
+					puts config.complex_cpu_conf["sockets"]
 					sockets=config.complex_cpu_conf["sockets"].to_i
 					puts config.complex_cpu_conf["sockets"].to_i
 					puts config.complex_cpu_conf.to_i
