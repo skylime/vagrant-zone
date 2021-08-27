@@ -55,12 +55,13 @@ module VagrantPlugins
 							## Code to try to convert existing box
 							raise Errors::WrongBoxFormatSet
 						end
-						box_image_file = env[:machine].box.directory.join('box.zss').to_s
-						#FileUtils.cp(env[:machine].box.directory.join('box.zss').to_s, datadir.to_s + '/box.zss')# + image)
+						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected"))
 
+						box_image_file = env[:machine].box.directory.join('box.zss').to_s
 						@driver.execute(false, "#{@pfexec} pv #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} ")
 
-						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected"))
+						
+
 					end
 					@app.call(env)
 				end
