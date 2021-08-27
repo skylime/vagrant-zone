@@ -83,7 +83,7 @@ en:
     lx_check: |-
       No checks performed on the host OS, please use with caution!
     bhyve_check: |-
-      Checking OmniOS release against version ==>  
+      Checking OmniOS release against version ==> 
     bhyve_compat_check: |-
       Checking bhyve installation environment
     wait_for_boot: |-
@@ -97,11 +97,11 @@ en:
     detecting_box: |-
       Detecting Box and Importing
     zfs_snapshot_stream_detected: |-
-      ZFS Snapshot Stream detected ==>  
+      ZFS Snapshot Stream detected ==> 
     joyent_image_uuid_detected: |-
-      Joyent UUID detected ==>  
+      Joyent UUID detected ==> 
     vagrant_cloud_box_detected: |-
-      Vagrant Cloud Box detected ==>  
+      Vagrant Cloud Box detected ==> 
     ssh_ready: |-
       SSH appears to be ready
     boot_ready: |-
