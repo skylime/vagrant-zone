@@ -47,10 +47,13 @@ module VagrantPlugins
 						p box_format
 						if box_format.nil?
 							raise Errors::NoBoxFormatSet
-						elsif box_format != 'zss'
+						elsif box_format == 'ovf'
+							## Code to try to convert existing box
+							ui.info("Detected OVF, This is a placeholder to use the other format")
+							raise Errors::WrongBoxFormatSet
+						elsif box_format != 'zss' || box_format != 'ovf' 
 							## Code to try to convert existing box
 							raise Errors::WrongBoxFormatSet
-						
 						end
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
 						FileUtils.cp(env[:machine].box.directory.join('box.zss').to_s, datadir.to_s + '/box.zss')# + image)
