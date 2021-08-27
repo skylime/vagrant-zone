@@ -100,13 +100,15 @@ class Hosts
           end
   
           # Run the Ansible Provisioner
-          if host.has_key?('ansible_provision') && host['ansible_provision']
+          if host.has_key?('ansible_provision_scripts') && host['ansible_provision']
+            host['ansible_provision_scripts'].each do |script|
               server.vm.provision :ansible do |ansible|
-                ansible.playbook =  host['ansible_provision_scripts']
+                ansible.playbook =  script
                 ansible.compatibility_mode = "2.0"
                 #ansible.install_mode = "pip"
                 ansible.extra_vars = {ip:host['ip']}
               end
+            end
           end
         end
       end
