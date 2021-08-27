@@ -106,7 +106,7 @@ module VagrantPlugins
 						netmask 	= IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count("1")
 						ip        	= opts[:ip].to_s
 						defrouter 	= opts[:gateway].to_s
-						
+						cloud_init_enabled = false
 
 						allowed_address = ip.to_s + "/" + netmask.to_s
 						if ip.length == 0
@@ -163,13 +163,18 @@ module VagrantPlugins
 								execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
 							end
 						elsif state == "config"
-#set allowed-address=#{allowed_address}
-							nic_attr = %{add net
+							if cloud_init_enabled
+								nic_attr = %{add net
 	set physical=#{vnic_name}
-
-end							}
-							File.open('zone_config', 'a') do |f|
-								f.puts nic_attr
+	set allowed-address=#{allowed_address}
+end							}			
+							else
+								nic_attr = %{add net
+	set physical=#{vnic_name}
+end								}
+								File.open('zone_config', 'a') do |f|
+									f.puts nic_attr
+								end
 							end
 						elsif state == "setup"
 							## Remove old installer netplan config
