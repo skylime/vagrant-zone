@@ -27,6 +27,7 @@ module VagrantPlugins
 							b2.use WaitTillUp
 							#b2.use SyncedFolderCleanup
 							b2.use SyncedFolders
+							sleep 1
 							b2.use Provision
 						else
 							env[:halt_on_error] = true
