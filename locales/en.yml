@@ -95,7 +95,7 @@ en:
       Vagrant Cloud Box detected
     ssh_ready: |-
       SSH appears to be ready
-    ssh_ready: |-
+    boot_ready: |-
       The zone has booted
     dataset_nil: |-
       No dataset to remove
