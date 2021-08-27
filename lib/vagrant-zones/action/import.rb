@@ -51,7 +51,7 @@ module VagrantPlugins
 							## Code to try to convert existing box
 							ui.info("Detected OVF, This is a placeholder to use the other format")
 							raise Errors::WrongBoxFormatSet
-						elsif box_format != 'zss' || box_format != 'ovf' 
+						elsif box_format != 'zss'  
 							## Code to try to convert existing box
 							raise Errors::WrongBoxFormatSet
 						end
