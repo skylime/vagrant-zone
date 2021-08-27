@@ -388,20 +388,21 @@ end							}
 			def delete_dataset(machine, ui)
 				name = @machine.name
 				config = machine.provider_config
-				ui.info(I18n.t("vagrant_zones.destroy_dataset") )
-				ui.info(" -- #{config.zonepath.delete_prefix("/")}")
+
 
 				dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")}/boot |  awk '{ print $1 }' || true")
 
 				puts dataset_exists
 
 				if dataset_exists == "#{config.zonepath.delete_prefix("/")}/boot"
+					ui.info(I18n.t("vagrant_zones.destroy_dataset") )
+					ui.info(" -- #{config.zonepath.delete_prefix("/")}")
 					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
-					ui.info("Data set removed")
+					ui.info(" -- Data set removed")
 					
+				else
+					ui.info("No Dataset to be removed")
 				end
-				ui.info("No Dataset to be removed")
-
 				
 			end
 
