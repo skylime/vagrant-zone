@@ -78,21 +78,17 @@ class Hosts
           if host.has_key?('folders')
             host['folders'].each do |folder|
               mount_opts = folder['type'] == 'rsync' ? ['actimeo=1'] : []
-              server.vm.synced_folder folder['map'], folder ['to'],
-                type: folder['type'],
-                owner: folder['owner'] ||= host['vagrant_user'],
-                group: folder['group'] ||= host['vagrant_user'],
-                mount_options: mount_opts
+              server.vm.synced_folder folder['map'], folder ['to'], type: folder['type'], owner: folder['owner'] ||= host['vagrant_user'], group: folder['group'] ||= host['vagrant_user'], mount_options: mount_opts
               end
           end
   
           # Add Branch Files to Vagrant Share on VM
-            if host.has_key?('branch') && host['shell_provision']
-                server.vm.provision 'shell' do |s|
-                  s.path = scriptsPath + '/add-branch.sh'
-                  s.args = [host['branch'], host['git_url'] ]
-                end
-            end
+          if host.has_key?('branch') && host['shell_provision']
+              server.vm.provision 'shell' do |s|
+                s.path = scriptsPath + '/add-branch.sh'
+                s.args = [host['branch'], host['git_url'] ]
+              end
+          end
   
           # Run the Shell Provisioner
           if host.has_key?('provision')  && host['shell_provision']

@@ -456,11 +456,6 @@ add attr
 	set value=#{config.acpi}
 end
 add attr
-	set name=vcpus
-	set type=string
-	set value=#{config.cpus}
-end
-add attr
 	set name=ram
 	set type=string
 	set value=#{config.memory}
@@ -539,7 +534,7 @@ end					}
 						f.puts cpu_disk_attr
 					end
 				end
-				
+
 				## CDROM Configurations
 				if config.cdrom_path != 'none'
 					puts config.cdrom_path
