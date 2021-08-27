@@ -180,7 +180,10 @@ end								}
 							## Remove old installer netplan config
 							ui.info(I18n.t("vagrant_zones.configure_interface_using_vnic") + vnic_name)
 							ui.info(I18n.t("vagrant_zones.netplan_remove"))
-							zlogin(machine, "[ -e '/etc/netplan/00-installer-config.yaml' ] && echo 1 || echo 0 ; if $? == 0; then rm -rf /etc/netplan/00-installer-config.yaml; fi;")
+
+							
+
+							zlogin(machine, "find /etc/netplan/ -maxdepth 1 -type f ! -name 'vnic*.yaml' -exec rm {} \;")
 							responses=[]
 							vmnic=[]
 							
