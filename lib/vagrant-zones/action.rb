@@ -56,7 +56,7 @@ module VagrantPlugins
 
 						b1.use Start
 						b1.use WaitTillBoot
-						b1.use WaitTillUp
+						#b1.use WaitTillUp
 					end
 				end
 			end
