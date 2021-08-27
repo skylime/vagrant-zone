@@ -667,7 +667,7 @@ end
 				end
 				
 				### Nic Configurations
-
+				
 				state = "setup"
 				vnic(@machine, ui, state)
 				
