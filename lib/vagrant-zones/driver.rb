@@ -293,7 +293,7 @@ end								}
 											ui.info(I18n.t("vagrant_zones.netplan_set"))
 											break
 										elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
-											raise "==> #{name}: \nCommand: \n ==>  \nFailed with: \n responses[-1]"
+											raise "==> #{name}: \nCommand: \n ==>  \nFailed with: \n #{responses[-1]}"
 										end									
 									end
 								end
