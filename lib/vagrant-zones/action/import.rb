@@ -55,7 +55,10 @@ module VagrantPlugins
 							raise Errors::WrongBoxFormatSet
 						end
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
+						puts env[:machine].box.directory.join('box.zss').to_s
+						puts datadir.to_s + '/box.zss'
 						FileUtils.cp(env[:machine].box.directory.join('box.zss').to_s, datadir.to_s + '/box.zss')# + image)
+
 						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected"))
 					end
 					@app.call(env)
