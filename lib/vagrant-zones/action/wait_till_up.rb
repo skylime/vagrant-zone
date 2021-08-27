@@ -31,9 +31,8 @@ module VagrantPlugins
 					end
 					# if interrupted above, just terminate immediately
 					return terminate(env) if env[:interrupted]
-					thing = I18n.t("vagrant_zones.ssh_ready")
-					thing += " -- #{env[:metrics]['instance_ssh_time']} Seconds"
-					ui.info(thing)
+					sshinfo = I18n.t("vagrant_zones.ssh_ready") + " -- #{env[:metrics]['instance_ssh_time']} Seconds"
+					ui.info(sshinfo)
 					
 					@app.call(env)
 				end
