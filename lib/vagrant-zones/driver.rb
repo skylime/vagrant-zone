@@ -352,8 +352,7 @@ end								}
 
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot") + config.zonepathsize + ", " + dataset)
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
-
-					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume"))	
+					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume") + "#{dataset}" )	
 					execute(false, "#{@pfexec} pv #{datadir.to_s}/box.zss   | #{@pfexec} zfs recv -u -v -F #{dataset}")
 
 				elsif config.brand == 'illumos'
@@ -519,7 +518,7 @@ set type=string
 set value=#{config.cpus}
 end					}				
 					File.open("#{name}.zoneconfig", 'a') do |f|
-						f.puts cpu_disk_attr
+						f.puts cpu_attr
 					end
 				elsif config.cpu_configuration == 'complex'
 					sockets=config.complex_cpu_conf.sockets
