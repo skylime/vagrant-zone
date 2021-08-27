@@ -35,23 +35,25 @@ en:
     graceful_shutdown: |-
       Attempting a graceful shutdown
     creating_vnic: |-
-      Creating VNIC.
+      Creating VNIC: 
+    configure_interface_using_vnic: |-
+      Configuring the Interface on the VM for VNIC: 
     removing_vnic: |-
-      Deleting associated VNICs
+      Deleting VNIC: 
     delete_disks: |-
       Deleting associated disks
     installing_zone: |-
       Installing zone
     netplan_remove: |-
-      Removing stale netplan configurations
+      - Removing stale netplan configurations
     netplan_set: |-
-      Generate fresh netplan configurations
+      - Generate fresh netplan configurations
     netplan_applied: |-
-      New Netplan configurations Applied
+      - New Netplan configurations Applied
     netplan_applied_dhcp: |-
-      Set DHCP Netplan configurations
+      - Set DHCP Netplan configurations
     netplan_applied_static: |-
-      Set Static Netplan configurations
+      - Set Static Netplan configurations
     lx_zone_dataset: |-
       Creating zoned ZFS dataset for LX zone
     bhyve_zone_dataset_root: |-

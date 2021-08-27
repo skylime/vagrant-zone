@@ -150,19 +150,20 @@ module VagrantPlugins
 						if state == "create"
 							if !opts[:vlan].nil?
 								vlan =  opts[:vlan]
-								ui.info(I18n.t("#{vnic_name}"))
+								ui.info(I18n.t("vagrant_zones.creating_vnic") + vnic_name)
 								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
 							else
 								execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
 							end		
 						elsif state == "delete"
-							ui.info(I18n.t("vagrant_zones.removing_vnic"))
+							ui.info(I18n.t("vagrant_zones.removing_vnic") + vnic_name)
 							vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
 							if vnic_configured == "#{vnic_name}"
 								ui.info(" - VNIC: #{vnic_name}")
 								execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
 							end
 						elsif state == "config"
+							ui.info(I18n.t("vagrant_zones.configure_interface_using_vnic") + vnic_name)
 							if cloud_init_enabled
 								nic_attr = %{add net
 	set physical=#{vnic_name}
