@@ -523,8 +523,6 @@ end					}
 				elsif config.cpu_configuration == 'complex'
 					
 					hash = config.complex_cpu_conf[0]
-					cores=config.complex_cpu_conf["cores"]
-					threads=config.complex_cpu_conf["threads"]
 					cpu_attr = %{add attr
 set name=vcpus
 set type=string
