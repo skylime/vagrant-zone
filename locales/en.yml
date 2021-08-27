@@ -76,7 +76,7 @@ en:
     bhyve_compat_check: |-
       Checking bhyve installation environment.
     wait_for_boot: |-
-      Waiting for the Zone to boot
+      Waiting for the zone to boot
     inserting_ssh_key: |-
       Inserting SSH Key
     booted_check_terminal_access: |-
