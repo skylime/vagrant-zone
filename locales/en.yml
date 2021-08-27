@@ -108,5 +108,7 @@ en:
       The zone has booted
     dataset_nil: |-
       No dataset to remove
+    starting_zone: |-
+      Starting the zone
 
       
