@@ -772,7 +772,7 @@ end
 			def destroy(machine, id)
 				name = @machine.name
 				
-				ui.info(I18n.t("vagrant_zones.leaving"))
+				id.info(I18n.t("vagrant_zones.leaving"))
 				id.info(I18n.t("vagrant_zones.destroy_zone"))
 
 				## Check if it has a presence in zoneadm and if no presence in zoneadm destroy zonecfg
