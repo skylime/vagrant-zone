@@ -54,6 +54,7 @@ module VagrantPlugins
 						end
 
 						b1.use Start
+						b2.use WaitTillBoot
 						b1.use WaitTillUp
 					end
 				end
@@ -144,6 +145,7 @@ module VagrantPlugins
 			autoload :NotCreated, action_root.join('not_created')
 			autoload :Halt, action_root.join('halt')
 			autoload :Destroy, action_root.join('destroy')
+			autoload :WaitTillBoot, action_root.join('wait_till_boot')
 			autoload :WaitTillUp, action_root.join('wait_till_up')
 			autoload :PrepareNFSValidIds, action_root.join('prepare_nfs_valid_ids.rb')
 			autoload :Package, action_root.join('package.rb')
