@@ -392,7 +392,7 @@ end							}
 			def delete_dataset(machine, ui)
 				name = @machine.name
 				config = machine.provider_config
-				id.info(I18n.t("vagrant_zones.delete_disks"))
+				ui.info(I18n.t("vagrant_zones.delete_disks"))
 				## Check if Boot Dataset exists
 				dataset_boot_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")}/boot |  awk '{ print $1 }' || true")
 
