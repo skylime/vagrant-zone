@@ -17,6 +17,7 @@ module VagrantPlugins
 					@machine = env[:machine]
 					@driver  = @machine.provider.driver
 					ui = env[:ui]
+					@driver.waitforboot(@machine, env[:ui])
 					# Initialize metrics if they haven't been
 					env[:metrics] ||= {}
 					env[:metrics]['instance_ssh_time'] = Util::Timer.time do
