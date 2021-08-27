@@ -397,7 +397,7 @@ end							}
 				if dataset_exists == "#{config.zonepath.delete_prefix("/")}/boot"
 					ui.info(I18n.t("vagrant_zones.destroy_dataset") )
 					ui.info(" -- #{config.zonepath.delete_prefix("/")}boot")
-					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}/boot")
+					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
 					ui.info(" -- Data set removed")
 					
 				else
