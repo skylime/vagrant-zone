@@ -18,7 +18,6 @@ module VagrantPlugins
 					@driver  = @machine.provider.driver
 					ui = env[:ui]
 					@driver.waitforboot(@machine, ui)
-					ui.info(I18n.t("vagrant_zones.ssh_ready") + " in #{env[:metrics]['instance_ssh_time']} Seconds")
 					
 					@app.call(env)
 				end
