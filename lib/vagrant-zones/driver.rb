@@ -389,14 +389,14 @@ end							}
 				name = @machine.name
 				config = machine.provider_config
 
+				## Check if Boot Dataset exists
+				dataset_boot_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")}/boot |  awk '{ print $1 }' || true")
 
-				dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")} |  awk '{ print $1 }' || true")
-
-				puts dataset_exists
-
-				if dataset_exists == "#{config.zonepath.delete_prefix("/")}"
+				## If boot Dataset exists, delete it
+				if dataset_boot_exists == "#{config.zonepath.delete_prefix("/")}/boot"
 					ui.info(I18n.t("vagrant_zones.destroy_dataset") )
 					ui.info(" -- #{config.zonepath.delete_prefix("/")}")
+					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}/boot")
 					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
 					ui.info(" -- Data set removed")
 					
