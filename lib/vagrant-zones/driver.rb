@@ -159,7 +159,6 @@ module VagrantPlugins
 							ui.info(I18n.t("vagrant_zones.removing_vnic") + vnic_name)
 							vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
 							if vnic_configured == "#{vnic_name}"
-								ui.info(" - VNIC: #{vnic_name}")
 								execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
 							end
 						elsif state == "config"
@@ -345,20 +344,16 @@ end								}
 				datasetroot = config.zonepath.delete_prefix("/").to_s
 				## Create Boot Volume
 				if config.brand == 'lx'	
-					ui.info(I18n.t("vagrant_zones.lx_zone_dataset"))	
+					ui.info(I18n.t("vagrant_zones.lx_zone_dataset:") + dataset)	
 					execute(false, "#{@pfexec} zfs create -o zoned=on -p #{dataset}")
 				elsif config.brand == 'bhyve'
-					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_root"))
+					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_root") + datasetroot)
 					execute(false, "#{@pfexec} zfs create #{datasetroot}")
 
-					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot"))					
-					ui.info(" - Dataset: #{dataset}")
-					ui.info(" - Size: #{config.zonepathsize}")
+					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot") + config.zonepathsize + ", " + dataset)
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
 
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume"))	
-					
-
 					execute(false, "#{@pfexec} pv #{datadir.to_s}/box.zss   | #{@pfexec} zfs recv -u -v -F #{dataset}")
 
 				elsif config.brand == 'illumos'
@@ -373,7 +368,7 @@ end								}
 					raise Errors::NotYetImplemented
 					disk1path = config.disk1.delete_prefix("/").to_s
 					disk1size = config.disk1_size.to_s
-					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume"))
+					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume") + cdisk1size + ", " + disk1path))
 					execute(true, "#{@pfexec} zfs create -V #{disk1size} #{disk1path}")
 				end
 			end

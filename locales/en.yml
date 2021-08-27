@@ -61,7 +61,7 @@ en:
     bhyve_zone_dataset_root: |-
       Creating ZFS root dataset for bhyve zone
     bhyve_zone_dataset_boot: |-
-      Creating ZFS boot volume dataset for bhyve zone
+      Creating ZFS boot volume, 
     bhyve_zone_dataset_boot_volume: |-
       Importing template to ZFS boot volume for bhyve zone
     bhyve_zone_dataset_additional_volume: |-
