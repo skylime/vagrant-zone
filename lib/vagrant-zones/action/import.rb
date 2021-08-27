@@ -21,6 +21,7 @@ module VagrantPlugins
 					curdir   = Dir.pwd
 					datadir  = @machine.data_dir
 					name = @machine.name
+					@driver  = @machine.provider.driver
 					ui = env[:ui]
 					@logger.info("DATADIR #{datadir}")
 					# If image ends on '.zss' it's a local ZFS snapshot which
@@ -55,9 +56,9 @@ module VagrantPlugins
 							raise Errors::WrongBoxFormatSet
 						end
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
-						puts env[:machine].box.directory.join('box.zss').to_s
-						puts datadir.to_s + '/box.zss'
-						FileUtils.cp(env[:machine].box.directory.join('box.zss').to_s, datadir.to_s + '/box.zss')# + image)
+						#FileUtils.cp(env[:machine].box.directory.join('box.zss').to_s, datadir.to_s + '/box.zss')# + image)
+
+						@driver.execute(false, "#{@pfexec} pv #{datadir.to_s}/box.zss  | #{@pfexec} zfs recv -u -v -F #{dataset}")
 
 						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected"))
 					end
