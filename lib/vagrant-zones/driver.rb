@@ -627,8 +627,7 @@ end
 					
 					cutoff_release = "1510380"
 					cutoff_release = cutoff_release[0..-2].to_i 
-					ui.info(I18n.t("vagrant_zones.bhyve_check"))					
-					ui.info(" - Cutoff Release: #{cutoff_release}")
+					ui.info(I18n.t("vagrant_zones.bhyve_check") + "#{cutoff_release}")		
 					release = File.open('/etc/release', &:readline)
 					release = release.scan(/\w+/).values_at( -1)
 					release = release[0][1..-2].to_i 

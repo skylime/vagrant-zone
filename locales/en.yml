@@ -13,7 +13,7 @@ en:
       execute_error: |-
         Failed when execute commands
       timeout_error: |-
-        Timeout exceeded.
+        Timeout exceeded
       system_version_too_low: |-
         Please update to OmniOS r38 or higher
       missing_compatability_check_tool: |-    
@@ -21,7 +21,7 @@ en:
       missing_bhyve: |-    
         Your system appears to be missing bhyve
       virtual_box_running_conflict_detected: |-    
-        Virtualbox Box appears to be running VMs, to continue, please shut these down.
+        Virtualbox Box appears to be running virtual machines, to continue, please shut these down!
     meeting: |-
       Helllooooo World! Nice to Meet you!
     leaving: |-
@@ -31,13 +31,13 @@ en:
     destroy_zone: |-
       Destroying the zone
     graceful_shutdown_failed: |-
-      VM failed to shutdown in alloted time:
+      Zone failed to shutdown in alloted time:
     graceful_shutdown: |-
       Attempting a graceful shutdown
     creating_vnic: |-
       Creating VNIC: 
     configure_interface_using_vnic: |-
-      Configuring the Interface on the VM for VNIC: 
+      Configuring the interface on the zone for VNIC: 
     vnic_setup: |-
        Setting up the VNIC: 
     removing_vnic: |-
@@ -45,7 +45,7 @@ en:
     delete_disks: |-
       Deleting associated disks
     installing_zone: |-
-      Installing zone
+      Installing zone,
     netplan_remove: |-
       - Removing stale netplan configurations
     netplan_set: |-
@@ -83,7 +83,7 @@ en:
     lx_check: |-
       No checks performed on the host OS, please use with caution!
     bhyve_check: |-
-      Checking OmniOS release
+      Checking OmniOS release against version: 
     bhyve_compat_check: |-
       Checking bhyve installation environment.
     wait_for_boot: |-
