@@ -392,7 +392,13 @@ end							}
 				config = machine.provider_config
 				ui.info(I18n.t("vagrant_zones.destroy_dataset") )
 				ui.info(" -- #{config.zonepath.delete_prefix("/")}")
-				execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
+
+				dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")} |  awk '{ print $1 }' || true")
+				if dataset_exists == config.zonepath.delete_prefix("/")
+					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
+				end
+
+				
 			end
 
 			def zonecfg(machine, ui)
