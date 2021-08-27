@@ -21,9 +21,9 @@ module VagrantPlugins
 							b2.use Import
 							b2.use Create
 							b2.use Network
-							b2.use Start
-							b2.use Setup
+							b2.use Start							
 							b2.use WaitTillBoot
+							b2.use Setup
 							b2.use WaitTillUp
 							
 							## Counter intuitive, but Provision must go before SyncFolders for some reason  . .
