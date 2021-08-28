@@ -1,3 +1,4 @@
+# encoding: utf-8
 require "log4r"
 require "fileutils"
 require "digest/md5"

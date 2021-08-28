@@ -1,4 +1,4 @@
-
+# encoding: utf-8
 module VagrantPlugins
   module ProviderZone
     module Util

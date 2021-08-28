@@ -1,3 +1,4 @@
+# encoding: utf-8
 require "vagrant"
 ## Do not Modify this File! Modify the Hosts.yml, Hosts.rb, or Vagrantfile!
 module VagrantPlugins
