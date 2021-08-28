@@ -70,9 +70,9 @@ module VagrantPlugins
 						
 						total = 100
 						progress = 0
-						100.times { ui.report_progress(progress, total); sleep 0.1 ; progress +=1 }
+						100.times { ui.report_progress(progress, total); sleep 0.1 ; progress +=1 ; ui.clear_line }
 						
-						ui.clear_line
+						
 
 
 
