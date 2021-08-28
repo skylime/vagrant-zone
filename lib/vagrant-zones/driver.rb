@@ -361,7 +361,7 @@ end								}
 					Util::Subprocess.new command do |stdout, stderr, thread|
 						ui.rewriting do |ui|
 							ui.clear_line()
-							ui.info("\t Import ", new_line: false)
+							ui.info("==> #{name} ==> Import ", new_line: false)
 							ui.report_progress(stderr, 100, false)
 						end
 					  end
@@ -708,7 +708,7 @@ end
 							if responses[-1].to_s.match(/Error Code: 0/)
 						        	break
 							elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
-						        	raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n #{responses[-1]}"
+						        	raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
 							end
 						end
 					end
