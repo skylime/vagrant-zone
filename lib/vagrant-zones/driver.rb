@@ -681,7 +681,7 @@ end
 						ui.info(I18n.t("vagrant_zones.booted_check_terminal_access"))
 						Timeout.timeout(config.setup_wait) do
 							loop do
-				        		zlogin_read.encode("UTF-8").expect(/\n/) { |line|  responses.push line}
+				        		zlogin_read.expect(/\n/) { |line|  responses.push line}
 								if responses[-1].to_s.match(/:~#/)
 									break
 								elsif responses[-1].to_s.match(/login: /)
