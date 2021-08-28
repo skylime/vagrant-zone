@@ -67,7 +67,7 @@ module VagrantPlugins
 						Util::Subprocess.new command do |stdout, stderr, thread|
 							ui.rewriting do |ui|
 								ui.clear_line()
-								info("\t Import ", new_line: false)
+								ui.info("\t Import ", new_line: false)
 								ui.report_progress(stderr, 100, false)
 							end
 						  end
