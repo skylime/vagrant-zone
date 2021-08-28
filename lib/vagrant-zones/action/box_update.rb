@@ -1,3 +1,4 @@
+# coding: utf-8
 require "log4r"
 require 'vagrant-zones/util/timer'
 require 'vagrant/util/retryable'

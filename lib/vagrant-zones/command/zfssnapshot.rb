@@ -1,3 +1,4 @@
+# coding: utf-8
 module VagrantPlugins
 	module ProviderZone
       module Command

@@ -1,3 +1,4 @@
+# coding: utf-8
 require "vagrant/action/builder"
 require 'log4r'
 

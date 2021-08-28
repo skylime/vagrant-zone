@@ -1,3 +1,4 @@
+# coding: utf-8
 class Hosts
     def Hosts.configure(config, settings)
   

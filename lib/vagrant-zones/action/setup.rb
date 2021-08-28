@@ -1,3 +1,4 @@
+# coding: utf-8
 require "log4r"
 require "securerandom"
 require "digest/md5"

@@ -1,3 +1,4 @@
+# coding: utf-8
 require "vagrant"
 require "log4r"
 
