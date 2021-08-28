@@ -6,7 +6,7 @@ module VagrantPlugins
         def initialize(cmd, &block)
           Open3.popen3(cmd) do |_stdin, stdout, stderr, thread|
             # read each stream from a new thread
-            { :out => stdout, :err => stderr }.each do |key, stream|
+            { out: => stdout, :err => stderr }.each do |key, stream|
               Thread.new do
                 until (line = stream.gets).nil? do
                   # yield the block depending on the stream
