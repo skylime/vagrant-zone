@@ -241,6 +241,16 @@ end								}
 											end												
 											devid = devid.gsub /f/, ''
 											if !devid.nil? 
+												puts
+												puts
+												puts
+
+												puts
+												puts devid
+
+												puts
+												puts
+												puts
 												if nic_number == devid
 													if config.dhcp
 														vnic=vmnic[devid.to_i]
