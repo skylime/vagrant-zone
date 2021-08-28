@@ -68,6 +68,10 @@ module VagrantPlugins
 
 							ui.rewriting do |ui|
 								ui.clear_line
+								puts 
+								puts stdout
+								puts stderr
+								puts
 								ui.report_progress(stderr, 100, false)
 							end
 				
