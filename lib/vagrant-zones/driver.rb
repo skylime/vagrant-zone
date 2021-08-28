@@ -356,7 +356,14 @@ end								}
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot") + config.zonepathsize + ", " + dataset)
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume") + "#{dataset}" )	
-					execute(false, "#{@pfexec} pv #{datadir.to_s}/box.zss   | #{@pfexec} zfs recv -u -v -F #{dataset}")
+					command = "#{@pfexec} pv #{datadir.to_s}/box.zss   | #{@pfexec} zfs recv -u -v -F #{dataset}"
+					Util::Subprocess.new command do |stdout, stderr, thread|
+						ui.rewriting do |ui|
+							ui.clear_line()
+							ui.report_progress(stderr, 100, false)
+						end
+					  end
+					  ui.clear_line()
 
 				elsif config.brand == 'illumos'
 					raise Errors::NotYetImplemented
