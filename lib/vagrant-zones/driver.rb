@@ -37,7 +37,6 @@ module VagrantPlugins
 				uuid = machine.id
 				name = machine.name
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
-				
 				if vm_state == 'running'
 					:running
 				elsif vm_state == 'configured'
@@ -736,6 +735,12 @@ end
 			end
 			
 			def vagrantuserpass(machine)
+				config = machine.provider_config
+				vagrantuserpass = config.vagrant_user_pass.to_s
+				return vagrantuserpass
+			end
+
+			def get_ip(machine, state)
 				config = machine.provider_config
 				vagrantuserpass = config.vagrant_user_pass.to_s
 				return vagrantuserpass

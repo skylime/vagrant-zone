@@ -7,7 +7,7 @@ module VagrantPlugins
 		autoload :Driver, 'vagrant-zones/driver'
 
 		class Provider < Vagrant.plugin('2', :provider)
-			def initialize(machine)
+			def initialize(machine, env)
 				@logger = Log4r::Logger.new("vagrant::provider::zone")
 				@machine = machine
 			end
@@ -22,7 +22,7 @@ module VagrantPlugins
 				# let Vagrant core deal with it like docker provider does
 				return nil if state.id != :running
 				state = "get_ip"
-				ip = driver.vnic(@machine, env[:ui], state)
+				ip = driver.get_ip(@machine, state)
 				user = driver.user(@machine)
 				userkey = driver.userprivatekeypath(@machine).to_s
 				vagrantuserpassword = driver.vagrantuserpass(@machine).to_s
