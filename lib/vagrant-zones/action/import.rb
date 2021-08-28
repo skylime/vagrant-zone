@@ -70,8 +70,6 @@ module VagrantPlugins
 						end
 						  ui.clear_line
 
-
-
 					end
 					@app.call(env)
 				end
