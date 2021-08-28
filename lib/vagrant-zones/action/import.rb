@@ -68,9 +68,7 @@ module VagrantPlugins
 						total = 100
 						progress = 0
 						Util::Subprocess.new "#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} " do |stdout, stderr, thread|
-
-							ui.report_progress(progress, total)
-							progress +=1 
+							ui.report_progress(stderr, total)
 							ui.clear_line
 						  end
 				
