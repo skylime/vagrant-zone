@@ -7,7 +7,7 @@ module VagrantPlugins
 		autoload :Driver, 'vagrant-zones/driver'
 
 		class Provider < Vagrant.plugin('2', :provider)
-			def initialize(machine, env)
+			def initialize(machine)
 				@logger = Log4r::Logger.new("vagrant::provider::zone")
 				@machine = machine
 			end
