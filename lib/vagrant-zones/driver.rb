@@ -182,8 +182,8 @@ end								}
 							ui.info(I18n.t("vagrant_zones.netplan_remove"))
 
 							
-
-							zlogin(machine, "find /etc/netplan/ -maxdepth 1 -type f ! -name 'vnic*.yaml' -exec rm {} \;")
+							
+							zlogin(machine, "rm -rf $(find  /etc/netplan/ -name \"*.yaml\" ! -name \"vnic\*.yaml")")
 							responses=[]
 							vmnic=[]
 							
