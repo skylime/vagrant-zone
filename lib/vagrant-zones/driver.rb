@@ -758,7 +758,7 @@ end
 						execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
 					 }
 					rescue Timeout::Error
-						ui.info(I18n.t("vagrant_zones.graceful_shutdown_failed") + config.clean_shutdown_time)
+						ui.info(I18n.t("vagrant_zones.graceful_shutdown_failed") + config.clean_shutdown_time.to_i)
 						begin 
 							halt_status = Timeout::timeout(60) {
 							execute(false, "#{@pfexec} zoneadm -z #{name} halt")
