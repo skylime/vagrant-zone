@@ -241,16 +241,6 @@ end								}
 											end												
 											devid = devid.gsub /f/, ''
 											if !devid.nil? 
-												puts
-												puts
-												puts
-
-												puts
-												puts devid
-
-												puts
-												puts
-												puts
 												if nic_number == devid
 													if config.dhcp
 														vnic=vmnic[devid.to_i]
@@ -324,7 +314,7 @@ end								}
 												ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
 												return nil if ip.length == 0
 												return ip.gsub /\t/, ''
-										        	break
+										        break
 											elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
 										        	raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
 											end
