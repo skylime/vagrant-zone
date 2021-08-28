@@ -668,12 +668,12 @@ end
 				name = @machine.name
 				config = machine.provider_config
 				responses = []
-				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read.encode('UTF-8'),zlogin_write,pid|
+				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 				    if zlogin_read.expect(/Last login: /)
 						ui.info(I18n.t("vagrant_zones.booted_check_terminal_access"))
 						Timeout.timeout(config.setup_wait) do
 							loop do
-				        		       	zlogin_read.expect(/\n/) { |line|  responses.push line}
+				        		       	zlogin_read.encode('UTF-8').expect(/\n/) { |line|  responses.push line}
 								if responses[-1].to_s.match(/:~#/)
 									break
 								elsif responses[-1].to_s.match(/login: /)
