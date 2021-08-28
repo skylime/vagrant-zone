@@ -67,12 +67,12 @@ module VagrantPlugins
 						Util::Subprocess.new command do |stdout, stderr, thread|
 
 							ui.rewriting do |ui|
-								ui.clear_line
+								ui.clear_line()
 								ui.report_progress(stderr, 100, false)
 							end
-				
+							
 						  end
-						
+						  ui.clear_line()
 
 
 
