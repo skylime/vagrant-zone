@@ -1,5 +1,6 @@
 require "log4r"
 require 'open3'
+require 'util/subprocess'
 
 module VagrantPlugins
 	module ProviderZone
@@ -68,9 +69,7 @@ module VagrantPlugins
 						total = 100
 						progress = 0
 						Util::Subprocess.new "#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} " do |stdout, stderr, thread|
-							puts "stdout: #{stdout}" # => "simple output"
-							puts "stderr: #{stderr}" # => "error: an error happened"
-							puts "pid: #{thread.pid}" # => 12345
+
 							ui.report_progress(progress, total)
 							progress +=1 
 							ui.clear_line
