@@ -1,5 +1,5 @@
 require "log4r"
-require 'ruby-progressbar'
+require "ruby-progressbar"
 
 module VagrantPlugins
 	module ProviderZone
