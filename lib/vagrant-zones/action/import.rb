@@ -64,18 +64,18 @@ module VagrantPlugins
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
 
 
+						@driver.execute(false, "#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} ")
 						total = 100
 						progress = 0
 						Util::Subprocess.new "#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} " do |stdout, stderr, thread|
 							puts "stdout: #{stdout}" # => "simple output"
 							puts "stderr: #{stderr}" # => "error: an error happened"
 							puts "pid: #{thread.pid}" # => 12345
-							ui.report_progress(stderr, total)
+							ui.report_progress(progress, total)
+							progress +=1 
 							ui.clear_line
 						  end
-
-
-						
+				
 						
 
 
