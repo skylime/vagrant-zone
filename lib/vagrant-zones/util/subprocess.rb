@@ -16,6 +16,8 @@ module VagrantPlugins
               end
             end
             thread.join # don't exit until the external process is done
+
+            thread.value
           end
         end
       end
