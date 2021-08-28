@@ -64,7 +64,7 @@ module VagrantPlugins
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
 						@driver.execute(false, "#{@pfexec} pv #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} ")
 						ProgressBar.create
-						100.times { progressbar.increment }
+						100.times { ProgressBar.increment }
 
 
 
