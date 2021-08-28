@@ -181,10 +181,7 @@ end								}
 						elsif state == "setup"
 							## Remove old installer netplan config
 							ui.info(I18n.t("vagrant_zones.configure_interface_using_vnic") + vnic_name)
-							ui.info(I18n.t("vagrant_zones.netplan_remove"))
-
-							
-							
+							ui.info(I18n.t("vagrant_zones.netplan_remove"))							
 							zlogin(machine, "rm -rf $(find  /etc/netplan/ -name \"*.yaml\" ! -name \"vnic*.yaml\")")
 							responses=[]
 							vmnic=[]
@@ -221,9 +218,7 @@ end								}
 											            elsif interface_desc[0] == "s" || interface_desc[0] == "o"
 											                nicbus = interface_desc[1]
 											            end
-											            
 											            devid = nicbus
-											            
 											        else
 											            nic = interface[/#{regex}/, 1]
 											            nicbus = interface[/#{regex}/, 2]
@@ -251,13 +246,13 @@ end								}
 														vnic=vmnic[devid.to_i]
 														netplan = %{network:
   version: 2
-  ethernets:
+  ethernets:  
     #{vnic}:
       dhcp-identifier: mac
       dhcp4: yes
-      dhcp6: yes
+      dhcp6: no
       nameservers:
-        addresses: [#{nameserver1} , #{nameserver2}]								}if
+        addresses: [#{nameserver1} , #{nameserver2}]	}
 														if run == 0
 															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"Subprocess Error Code: $?\"\n")
 															run+=1
@@ -265,7 +260,7 @@ end								}
 														if responses[-1].to_s.match(/Subprocess Error Code: 0/)
 															ui.info(I18n.t("vagrant_zones.netplan_applied_dhcp") + "/etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml")														
 														elsif responses[-1].to_s.match(/Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
-															raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"														        
+															raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
 														end
 													else	
 														vnic=vmnic[devid.to_i]
@@ -279,7 +274,7 @@ end								}
       addresses: [#{ip}/#{netmask}]
       gateway4: #{defrouter}
       nameservers:
-        addresses: [#{nameserver1} , #{nameserver2}]								}
+        addresses: [#{nameserver1} , #{nameserver2}]	}
 														if run == 0
 															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"Subprocess Error Code: $?\"\n")
 															run+=1
@@ -364,7 +359,7 @@ end								}
 							ui.report_progress(stderr, 100, false)
 						end
 					  end
-					  ui.info("", new_line: true)
+					  ui.info(" ")
 					  #ui.clear_line()
 
 				elsif config.brand == 'illumos'
