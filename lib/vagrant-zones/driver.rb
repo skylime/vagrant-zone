@@ -248,6 +248,7 @@ end								}
 											if !devid.nil? 
 												if nic_number == devid
 													if config.dhcp
+														vnic=vmnic[devid.to_i]
 														netplan = %{network:
   version: 2
   ethernets:
@@ -363,6 +364,7 @@ end								}
 							ui.report_progress(stderr, 100, false)
 						end
 					  end
+					  ui.info("", new_line: true)
 					  #ui.clear_line()
 
 				elsif config.brand == 'illumos'
