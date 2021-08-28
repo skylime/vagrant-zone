@@ -65,10 +65,8 @@ module VagrantPlugins
 
 
 						@driver.execute(false, "#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} ")
-						output = `#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} `
-						data = {:out => [], :err => []}
 
-						Util::Subprocess.new '#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} ' do |stdout, stderr, thread|
+						Util::Subprocess.new "#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} " do |stdout, stderr, thread|
 							puts "stdout: #{stdout}" # => "simple output"
 							puts "stderr: #{stderr}" # => "error: an error happened"
 							puts "pid: #{thread.pid}" # => 12345
