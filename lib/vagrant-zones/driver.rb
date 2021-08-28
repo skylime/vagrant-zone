@@ -183,7 +183,7 @@ end								}
 
 							
 							
-							zlogin(machine, "rm -rf $(find  /etc/netplan/ -name \"*.yaml\" ! -name \"vnic\*.yaml")")
+							zlogin(machine, "rm -rf $(find  /etc/netplan/ -name \"*.yaml\" ! -name \"vnic*.yaml\")")
 							responses=[]
 							vmnic=[]
 							
