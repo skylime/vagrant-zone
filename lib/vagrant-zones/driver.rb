@@ -10,6 +10,7 @@ require 'pty'
 require 'expect'
 require "vagrant"
 require 'vagrant-zones/util/timer'
+require 'vagrant-zones/util/subprocess'
 
 module VagrantPlugins
 	module ProviderZone

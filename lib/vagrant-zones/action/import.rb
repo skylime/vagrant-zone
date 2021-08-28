@@ -1,6 +1,6 @@
 require "log4r"
 require 'open3'
-require 'util/subprocess'
+require 'vagrant-zones/util/subprocess'
 
 module VagrantPlugins
 	module ProviderZone
