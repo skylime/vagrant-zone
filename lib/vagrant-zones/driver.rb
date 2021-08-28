@@ -297,7 +297,7 @@ end								}
 											ui.info(I18n.t("vagrant_zones.netplan_set"))
 											break
 										elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
-											raise "==> #{name}: \nCommand: \n ==>  \nFailed with: \n #{responses[-1]}"
+											raise "==> #{name} ==> Command: ==>  \nFailed with: #{responses[-1]}"
 										end									
 									end
 								end
@@ -320,9 +320,7 @@ end								}
 												return ip.gsub /\t/, ''
 										        	break
 											elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
-										        	raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
-											elsif responses[-1].nil?
-										                break
+										        	raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
 											end
 										end
 									end
