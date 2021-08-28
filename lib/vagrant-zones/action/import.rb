@@ -1,5 +1,4 @@
 require "log4r"
-require 'open3'
 require 'vagrant-zones/util/subprocess'
 
 module VagrantPlugins
@@ -68,7 +67,7 @@ module VagrantPlugins
 						@driver.execute(false, "#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} ")
 						total = 100
 						progress = 0
-						Util::Subprocess.new "#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} " do |stdout, stderr, thread|
+						Subprocess.new "#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} " do |stdout, stderr, thread|
 
 							ui.report_progress(progress, total)
 							progress +=1 

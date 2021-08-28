@@ -1,3 +1,4 @@
+
 module VagrantPlugins
   module ProviderZone
     module Util

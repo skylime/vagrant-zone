@@ -1,8 +1,7 @@
 require 'open3'
-
 module VagrantPlugins
   module ProviderZone
-    module Utils
+    module Util
       class Subprocess
         def initialize(cmd, &block)
           Open3.popen3(cmd) do |stdin, stdout, stderr, thread|
