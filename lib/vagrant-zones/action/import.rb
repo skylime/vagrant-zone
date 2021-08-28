@@ -65,9 +65,12 @@ module VagrantPlugins
 
 						command = "#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} "
 						Util::Subprocess.new command do |stdout, stderr, thread|
-							ui.clear_line
-							ui.report_progress(stderr, 100, show_parts=false)
-							
+
+							ui.rewriting do |ui|
+								ui.clear_line
+								ui.report_progress(stderr, 100, false)
+							end
+				
 						  end
 						
 
