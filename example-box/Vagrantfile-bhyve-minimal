@@ -1,0 +1,9 @@
+Vagrant.configure("2") do |config|
+  config.vm.define :ubuntu do |settings|
+          settings.vm.box = 'Makr44/ubuntu2104-server'
+          settings.vm.network "public_network", ip: "192.168.2.238", bridge: "igb0", auto_config: false, :netmask => "255.255.255.0", gateway: "192.168.2.1", type: "external", nic_number: "0", managed: true # vlan: "11"
+          settings.vm.provider :zone do |vm|
+                  vm.autoboot                             = true
+                  vm.zonepath                             = "/Array-0/ubuntu"
+          end
+  end

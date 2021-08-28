@@ -698,7 +698,7 @@ end
 							if responses[-1].to_s.match(/Error Code: 0/)
 						        	break
 							elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
-						        	raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n responses[-1]"
+						        	raise "==> #{name}: \nCommand: \n ==> #{cmd} \nFailed with: \n #{responses[-1]}"
 							elsif responses[-1].nil?
 						                break
 							end
@@ -744,14 +744,15 @@ end
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
 				if vm_state == "running"
-					begin
-						ui.info(I18n.t("vagrant_zones.graceful_shutdown"))
+					ui.info(I18n.t("vagrant_zones.graceful_shutdown"))
+					begin						
 						status = Timeout::timeout(config.clean_shutdown_time) {
 						execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
 					 }
 					rescue Timeout::Error
 						ui.info(I18n.t("vagrant_zones.graceful_shutdown_failed"))
-						begin halt_status = Timeout::timeout(60) {
+						begin 
+							halt_status = Timeout::timeout(60) {
 							execute(false, "#{@pfexec} zoneadm -z #{name} halt")
 						}
 						rescue Timeout::Error
