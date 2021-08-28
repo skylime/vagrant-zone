@@ -65,8 +65,9 @@ module VagrantPlugins
 						@driver.execute(false, "#{@pfexec} pv #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} ")
 
 						progressbar = ProgressBar.create( :format => "%a %b\u{15E7}%i %p%% %t", :progress_mark => ' ', :remainder_mark => "\u{FF65}", :starting_at => 10,:length => 100)
-						100.times { progressbar.increment; sleep 0.1 ; ui.info(reset, new_line: false)}
-						
+						100.times { progressbar.increment; sleep 0.1 ;}
+						reset = "\r\033[K"
+						ui.info(reset, new_line: false)
 
 
 
