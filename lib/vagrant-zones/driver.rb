@@ -902,7 +902,7 @@ end						}
 					zfssnapshotavailable = attributes[2]
 					zfssnapshotrefer = attributes[3]
 					zfssnapshotmountpoint = attributes[4]
-					if !zfssnapshotmountpoint.nil?
+					if !zfssnapshotmountpoint.nil? || zfssnapshotmountpoint != "-"
 						puts "Drive Mounted at: " + zfssnapshotmountpoint
 					end
 					data = "##{snapshotrun}\t\t#{zfssnapshotused}\t#{zfssnapshotavailable}\t\t#{zfssnapshotrefer}\t#{zfssnapshotname}\t\t#{zfssnapshotmountpoint}"
