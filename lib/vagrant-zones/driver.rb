@@ -334,7 +334,7 @@ end								}
 													if opts[:dhcp] == true
 														netplan = %{network:
   version: 2
-  ethernets:  
+  ethernets:
     vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}:
       match:
         macaddress: #{mac}
@@ -356,12 +356,12 @@ end								}
 													else	
 														netplan = %{network:
   version: 2
-  ethernets:  
+  ethernets:
     vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
-	  match:
+      match:
         macaddress: #{mac}
       dhcp-identifier: mac
-      dhcp4: no
+      dhcp4: yes
       dhcp6: no
       set-name: vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
       addresses: [#{ip}/#{netmask}]
