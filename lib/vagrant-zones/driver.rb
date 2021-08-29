@@ -893,6 +893,8 @@ end						}
 				puts
 				zfssnapshots = zfs_snapshots.split(/\n/)
 				snapshotrun = 0
+				header = "Snapshot\tUsed\tAvailable\tRefer\tName\t\tMount Point"
+				puts header
 				zfssnapshots.each do |snapshot|
 					attributes = snapshot.gsub(/\s+/m, ' ').strip.split(" ")
 					zfssnapshotname = attributes[0]
@@ -901,9 +903,9 @@ end						}
 					zfssnapshotrefer = attributes[3]
 					zfssnapshotmountpoint = attributes[4]
 
-					header = "Snapshot\tUsed\tAvailable\tRefer\tName\t\tMount Point"
-					data = "##{snapshotrun}\t#{zfssnapshotused}\t#{zfssnapshotavailable}\t#{zfssnapshotrefer}\t\t#{zfssnapshotname}\t\t#{zfssnapshotmountpoint}"
-					puts header
+					
+					data = "##{snapshotrun}\t\t#{zfssnapshotused}\t#{zfssnapshotavailable}\t#{zfssnapshotrefer}\t\t#{zfssnapshotname}\t\t#{zfssnapshotmountpoint}"
+					
 					puts data
 					snapshotrun += 1
 				end
