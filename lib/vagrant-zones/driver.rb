@@ -146,7 +146,7 @@ module VagrantPlugins
 												puts responses[-1]
 												p responses[-1]
 												puts "This is a Static address"
-												if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
+												if responses[-1].to_s.match(/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/)
 													ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
 													puts responses[-1]
 													puts ip
