@@ -116,6 +116,7 @@ module VagrantPlugins
 				end
 			end
 			
+			
 			## Manage Network Interfaces
 			def vnic(machine, ui, state)
 				config = machine.provider_config
