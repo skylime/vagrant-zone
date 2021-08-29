@@ -82,7 +82,7 @@ module VagrantPlugins
 				execute(false, "#{@pfexec} zoneadm -z #{name} boot")
 			end
 			
-			def get_ip_address(machine)
+			def get_ip_address(machine, ui)
 				config = machine.provider_config
 				machine.config.vm.networks.each do |_type, opts|
 					if _type.to_s == "public_network"
@@ -115,7 +115,7 @@ module VagrantPlugins
 					end
 				end
 			end
-			
+
 			
 			## Manage Network Interfaces
 			def vnic(machine, ui, state)
