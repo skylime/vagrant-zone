@@ -887,6 +887,8 @@ end						}
 				config = machine.provider_config
 				name = @machine.name
 				puts snapshot
+				puts snapshot
+				puts snapshot
 				if job == 'list'
 					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
 					zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{name}")
