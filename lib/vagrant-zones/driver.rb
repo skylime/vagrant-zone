@@ -618,7 +618,6 @@ end					}
 				
 				if config.cdroms != 'none'
 					cdroms = config.cdroms
-					puts cdroms["path"]
 					cdroms.each do |cdrom|
 						ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + cdrom["path"])
 						puts cdrom["path"]
