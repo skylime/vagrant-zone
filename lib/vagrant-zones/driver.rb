@@ -212,7 +212,7 @@ module VagrantPlugins
 						dns=["1.1.1.1","1.0.0.1"]
 
 
-						unless  config.dns.nil? ||  config.dns != 'none'
+						unless  !config.dns.nil? 
 							dns = config.dns
 							p dns
 							puts dns[0]
