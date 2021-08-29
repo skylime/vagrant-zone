@@ -618,11 +618,17 @@ end					}
 				
 				if config.cdroms != 'none'
 					cdroms = config.cdroms
+					cdrun=0
 					cdroms.each do |cdrom|
+					    cdname = "cdrom"
 						ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + cdrom["path"])
 						puts cdrom["path"]
+						if cdrun > 0
+							cdname = cdname + cdrun
+							cdrun+=1 
+						end
 						cdrom_attr = %{add attr
-    set name=cdrom
+    set name=#{cdname}
     set type=string
     set value=#{cdrom["path"]}
 end
