@@ -110,9 +110,11 @@ module VagrantPlugins
 						elsif opts[:dhcp] == false
 							if opts[:managed]
 								puts
-								puts 
+								puts
 								puts 
 								puts opts[:ip].to_s
+								puts
+								puts
 								ip = opts[:ip].to_s
 								return nil if ip.length == 0
 								return ip.gsub /\t/, ''
@@ -325,9 +327,10 @@ end								}
 								end
 								Process.kill("HUP",pid)
 							end
-						## Apply the Configuration
-						ui.info(I18n.t("vagrant_zones.netplan_applied"))
-						zlogin(machine, 'netplan apply')
+							## Apply the Configuration
+							ui.info(I18n.t("vagrant_zones.netplan_applied"))
+							zlogin(machine, 'netplan apply')
+						end
 					end
 				end
 			end
@@ -734,12 +737,6 @@ end
 			end
 			
 			def vagrantuserpass(machine)
-				config = machine.provider_config
-				vagrantuserpass = config.vagrant_user_pass.to_s
-				return vagrantuserpass
-			end
-
-			def get_ip(machine, state)
 				config = machine.provider_config
 				vagrantuserpass = config.vagrant_user_pass.to_s
 				return vagrantuserpass
