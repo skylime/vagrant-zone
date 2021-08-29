@@ -702,7 +702,7 @@ end						}
 	set match=/dev/zvol/rdsk#{disk["path"]}
 end
 add attr
-	set name=disk
+	set name=#{diskname}
 	set type=string
 	set value=#{disk["path"]}
 end						}
@@ -882,7 +882,7 @@ end						}
 				name = @machine.name
 				config = machine.provider_config
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
-				vm_configured = execute(false, "#{@pfexec} zoneadm list -ic | grep  #{name} || true")
+				vm_configured = execute(false, "#{@pfexec} zoneadm list -icn | grep  #{name} || true")
 				if vm_state == "running"
 					ui.info(I18n.t("vagrant_zones.graceful_shutdown"))
 					begin						
