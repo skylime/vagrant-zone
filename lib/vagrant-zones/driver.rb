@@ -180,6 +180,13 @@ module VagrantPlugins
 			def vnic(machine, ui, state)
 				config = machine.provider_config
 				name = @machine.name
+
+				if state == "setup"
+					## Remove old installer netplan config
+					ui.info(I18n.t("vagrant_zones.configure_interface_using_vnic") + vnic_name)
+					ui.info(I18n.t("vagrant_zones.netplan_remove"))							
+					zlogin(machine, "rm -rf  /etc/netplan/*.yaml")
+				end
 				machine.config.vm.networks.each do |_type, opts|
 					if _type.to_s == "public_network"
 						link 		= opts[:bridge]
@@ -258,10 +265,6 @@ end								}
 								end
 							end
 						elsif state == "setup"
-							## Remove old installer netplan config
-							ui.info(I18n.t("vagrant_zones.configure_interface_using_vnic") + vnic_name)
-							ui.info(I18n.t("vagrant_zones.netplan_remove"))							
-							zlogin(machine, "rm -rf $(find  /etc/netplan/ -name \"*.yaml\" ! -name \"vnic*.yaml\")")
 							responses=[]
 							vmnic=[]
 							
