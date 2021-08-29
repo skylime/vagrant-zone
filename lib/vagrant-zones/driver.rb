@@ -458,7 +458,7 @@ end								}
 						execute(true, "#{@pfexec} zfs create -V #{disk["size"]} #{disk["path"]}")
 					end
 				end
-
+			end
 			def delete_dataset(machine, ui)
 				name = @machine.name
 				config = machine.provider_config
