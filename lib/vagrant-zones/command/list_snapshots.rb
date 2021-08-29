@@ -1,5 +1,5 @@
 module VagrantPlugins
-    module ProviderZone
+  module ProviderZone
       module Command
         class ListSnapshots < Vagrant.plugin('2', :command)
           def execute
@@ -17,5 +17,5 @@ module VagrantPlugins
           end
         end
       end
-    end
-  end
+   end
+end

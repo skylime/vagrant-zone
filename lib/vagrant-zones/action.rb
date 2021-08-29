@@ -136,6 +136,14 @@ module VagrantPlugins
 				end
 			end
 
+			def self.action_list_zfs_snapshots
+				Vagrant::Action::Builder.new.tap do |b|
+				  # b.use ConfigValidate # is this per machine?
+				  b.use IsCreated
+				  b.use ListSnapshots
+				end
+			end
+
 			action_root = Pathname.new(File.expand_path('../action', __FILE__))
 			##autoload :BoxUpdate, action_root.join('box_update')
 			autoload :Import, action_root.join('import')
@@ -145,6 +153,7 @@ module VagrantPlugins
 			autoload :Start, action_root.join('start')
 			autoload :IsCreated, action_root.join('is_created')
 			autoload :NotCreated, action_root.join('not_created')
+			autoload :ListSnapshots, action_root.join('list_zfs_snapshots')
 			autoload :Halt, action_root.join('halt')
 			autoload :Destroy, action_root.join('destroy')
 			autoload :WaitTillBoot, action_root.join('wait_till_boot')
