@@ -29,7 +29,7 @@ module VagrantPlugins
             
             with_target_vms(argv, provider: :zone) do |machine|
               if !options[:snapshot].nil? && options[:snapshot] != 'none'
-                machine.action('list_zfs_snapshots', options[:snapshot] ) 
+                machine.action('list_zfs_snapshots', ui ,options[:snapshot] ) 
               end
             end
           end
