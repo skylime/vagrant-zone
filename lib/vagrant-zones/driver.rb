@@ -116,31 +116,49 @@ module VagrantPlugins
 						if opts[:dhcp] == true
 							if opts[:managed]
 								if mac == 'auto'
-						
-								else
-
-
-								end
-								PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-									zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n") }
-									Timeout.timeout(30) do
-										loop do
-											zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-											puts responses[-1]
-											if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
-												ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
+									PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
+										zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n") }
+										Timeout.timeout(30) do
+											loop do
+												zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 												puts responses[-1]
-												puts ip
-												return nil if ip.length == 0
-												return ip.gsub /\t/, ''
-												break
-											elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
-													raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+												if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
+													ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
+													puts responses[-1]
+													puts ip
+													return nil if ip.length == 0
+													return ip.gsub /\t/, ''
+													break
+												elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+														raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+												end
 											end
 										end
+										Process.kill("HUP",pid)
 									end
-									Process.kill("HUP",pid)
+								else
+									PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
+										zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n") }
+										Timeout.timeout(30) do
+											loop do
+												zlogin_read.expect(/\r\n/) { |line|  responses.push line}
+												puts responses[-1]
+												if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
+													ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
+													puts responses[-1]
+													puts ip
+													return nil if ip.length == 0
+													return ip.gsub /\t/, ''
+													break
+												elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+													raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+												end
+											end
+										end
+										Process.kill("HUP",pid)
+									end
 								end
+
 							end
 							puts "==> #{machine.name} ==> DHCP is not yet Configured for use"
 						elsif opts[:dhcp] == false
