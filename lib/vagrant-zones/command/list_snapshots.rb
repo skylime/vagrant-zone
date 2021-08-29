@@ -7,10 +7,8 @@ module VagrantPlugins
             opts = OptionParser.new do |o|
               o.banner = 'Usage: vagrant zone zfssnapshot list [options]'
             end
-  
             argv = parse_options(opts)
             return unless argv
-  
             with_target_vms(argv, provider: :zone) do |machine|
               machine.action('list_zfs_snapshots')
             end
