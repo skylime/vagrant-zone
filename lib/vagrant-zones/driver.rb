@@ -475,7 +475,7 @@ end								}
 							adddataset = "#{disk["array"]}#{disk["path"]}"
 							diskname = "disk"
 							ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume_destroy") + disk["size"] + ", " + adddataset)
-							dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{adddataset]} |  awk '{ print $1 }' || true")
+							dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{adddataset} |  awk '{ print $1 }' || true")
 							if dataset_exists == adddataset
 								if diskrun > 0
 									diskname = diskname + diskrun.to_s
