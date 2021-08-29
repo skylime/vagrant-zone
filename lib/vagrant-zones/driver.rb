@@ -88,7 +88,7 @@ module VagrantPlugins
 				machine.config.vm.networks.each do |_type, opts|
 					responses=[]
 					nic_number	= opts[:nic_number].to_s
-					if !opts[:type].nil?
+					if !opts[:nictype].nil?
 						nictype  = opts[:nictype]
 					else 
 						nictype = "external"
@@ -206,7 +206,7 @@ module VagrantPlugins
 						if !opts[:mac].nil? || !opts[:mac].expect(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)
 							mac  = opts[:mac]
 						end
-						if !opts[:type].nil?
+						if !opts[:nictype].nil?
 							nictype  = opts[:nictype]
 						end
 						if !opts[:nameserver1].nil?
