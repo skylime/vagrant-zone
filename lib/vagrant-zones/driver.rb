@@ -222,7 +222,6 @@ module VagrantPlugins
 							ui.info(I18n.t("vagrant_zones.setting_dns_server") + server["nameserver"])
 							servers.append(server)
 						end
-						p servers[0]["nameserver"]
 						case nictype
 						when /external/
 						  nic_type = "e"
@@ -351,7 +350,7 @@ end								}
       dhcp6: #{opts[:dhcp6]}
       set-name: vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
       nameservers:
-        addresses: [#{servers[0]} , #{servers[1]}]	}
+        addresses: [#{servers[0]["nameserver"]} , #{servers[1]["nameserver"]}]	}
 														if dhcprun == 0
 															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n")
 															dhcprun+=1
@@ -376,7 +375,7 @@ end								}
       addresses: [#{ip}/#{netmask}]
       gateway4: #{defrouter}
       nameservers:
-        addresses: [#{servers[0]} , #{servers[1]}]	}
+        addresses: [#{servers[0]["nameserver"]} , #{servers[1]["nameserver"]}]	}
 														if staticrun == 0
 															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"Static Subprocess Error Code: $?\"\n")
 															staticrun+=1
