@@ -39,7 +39,7 @@ en:
     configure_interface_using_vnic: |-
       Configuring the interface on the zone for VNIC ==> 
     vnic_setup: |-
-       Setting up the VNIC ==> 
+       Setting up VNIC ==> 
     removing_vnic: |-
       Deleting VNIC ==> 
     delete_disks: |-

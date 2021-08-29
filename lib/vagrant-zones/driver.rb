@@ -91,6 +91,11 @@ module VagrantPlugins
 					if !opts[:type].nil?
 						nictype  = opts[:nictype]
 					end
+					mac  		= 'auto'
+					if !opts[:mac].nil?
+						mac  = opts[:mac]
+					end
+
 					case nictype
 					when /external/
 					  nic_type = "e"
@@ -108,6 +113,12 @@ module VagrantPlugins
 					if _type.to_s == "public_network"
 						if opts[:dhcp] == true
 							if opts[:managed]
+								if mac == 'auto'
+						
+								else
+
+
+								end
 								PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 									zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev vnic#{nic_type}#{machine.config.vm_type}_#{machine.partition_id}_#{nic_number} | head -n -1 | tail -1  | awk '{ print $2 }'\n") }
 									Timeout.timeout(30) do
@@ -283,18 +294,29 @@ end								}
 											    end
 											end												
 											devid = devid.gsub /f/, ''
+
+											## Get Device Mac Address for when Mac is not specified
+											if mac == 'auto'
+												zlogin_write.printf("\nip link show dev vnice3_0000_0 | grep ether | awk '{ print $2 }'\n")
+												if responses[-1].to_s.match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)	
+													mac = responses[-1][0][/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/]
+												end
+											end
 											if !devid.nil? 
 												if nic_number == devid
+
 													if opts[:dhcp] == true
 														vnic=vmnic[devid.to_i]
 														netplan = %{network:
   version: 2
   ethernets:  
     #{vnic}:
+      match:
+        macaddress: #{mac}
       dhcp-identifier: mac
       dhcp4: yes
       dhcp6: no
-	  set-name: vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
+      set-name: vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]	}
 														if run == 0
@@ -312,10 +334,12 @@ end								}
   version: 2
   ethernets:  
     #{vnic}:
+	  match:
+	    macaddress: #{mac}
       dhcp-identifier: mac
       dhcp4: no
       dhcp6: no
-	  set-name: vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
+      set-name: vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
       addresses: [#{ip}/#{netmask}]
       gateway4: #{defrouter}
       nameservers:
