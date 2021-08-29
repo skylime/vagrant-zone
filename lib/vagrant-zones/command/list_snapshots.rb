@@ -23,7 +23,7 @@ module VagrantPlugins
             end
             path = options[:snapshot]
 
-            with_target_vms(argv, paht, provider: :zone ) do |machine|
+            with_target_vms(argv, path, provider: :zone ) do |machine|
                 machine.action('list_zfs_snapshots' ) 
               end
 
