@@ -107,8 +107,12 @@ module VagrantPlugins
 								Process.kill("HUP",pid)
 							end
 							puts "==> #{machine.name} ==> DHCP is not yet Configured for use"
-						else
+						elsif opts[:dhcp] == false
 							if opts[:managed]
+								puts
+								puts 
+								puts 
+								puts opts[:ip].to_s
 								ip = opts[:ip].to_s
 								return nil if ip.length == 0
 								return ip.gsub /\t/, ''
@@ -321,13 +325,9 @@ end								}
 								end
 								Process.kill("HUP",pid)
 							end
-							## Apply the Configuration
-							ui.info(I18n.t("vagrant_zones.netplan_applied"))
-							zlogin(machine, 'netplan apply')
-							
-						elsif state == "get_ip"
-						
-						end
+						## Apply the Configuration
+						ui.info(I18n.t("vagrant_zones.netplan_applied"))
+						zlogin(machine, 'netplan apply')
 					end
 				end
 			end
