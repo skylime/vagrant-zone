@@ -893,7 +893,7 @@ end						}
 				puts
 				zfssnapshots = zfs_snapshots.split(/\n/)
 				zfssnapshots.each do |snapshot|
-					attributes = snapshot.split(/\t/)
+					attributes = snapshot.gsub(/\s+/m, ' ').strip.split(" ")
 					zfssnapshotname = attributes[0]
 					zfssnapshotused = attributes[1]
 					zfssnapshotavailable = attributes[2]
