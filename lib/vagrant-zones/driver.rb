@@ -625,8 +625,8 @@ end					}
 						puts cdrom["path"]
 						if cdrun > 0
 							cdname = cdname + cdrun
-							cdrun+=1 
 						end
+						cdrun+=1 
 						cdrom_attr = %{add attr
     set name=#{cdname}
     set type=string
