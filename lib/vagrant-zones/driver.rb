@@ -221,9 +221,8 @@ module VagrantPlugins
 						dns.each do |server|
 							ui.info(I18n.t("vagrant_zones.setting_dns_server") + server["nameserver"])
 							servers.append(server)
-							puts server["nameserver"]
 						end
-						
+						servers[1]
 						case nictype
 						when /external/
 						  nic_type = "e"
