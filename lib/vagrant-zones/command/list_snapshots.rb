@@ -17,13 +17,13 @@ module VagrantPlugins
             argv = parse_options(opts)
             return unless argv
 
-            unless argv.length <= 1
+            unless argv.length <= 2
               @env.ui.info(opts.help)
               return
             end
             path = options[:snapshot]
 
-            with_target_vms(argv, path, provider: :zone ) do |machine|
+            with_target_vms(argv, provider: :zone ) do |machine|
                 machine.action('list_zfs_snapshots') 
               end
 
