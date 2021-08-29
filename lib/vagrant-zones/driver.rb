@@ -122,7 +122,7 @@ module VagrantPlugins
 
 								end
 								PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-									zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev vnic#{nic_type}#{machine.config.vm_type}_#{machine.config.partition_id}_#{nic_number} | head -n -1 | tail -1  | awk '{ print $2 }'\n") }
+									zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number} | head -n -1 | tail -1  | awk '{ print $2 }'\n") }
 									Timeout.timeout(30) do
 										loop do
 											zlogin_read.expect(/\r\n/) { |line|  responses.push line}
@@ -371,8 +371,8 @@ end								}
 								Process.kill("HUP",pid)
 							end
 							## Apply the Configuration
-							ui.info(I18n.t("vagrant_zones.netplan_applied"))
 							zlogin(machine, 'netplan apply')
+							ui.info(I18n.t("vagrant_zones.netplan_applied"))
 						end
 					end
 				end
