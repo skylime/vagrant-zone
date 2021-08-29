@@ -658,7 +658,8 @@ end					}
 				#end
 
 				## CDROM Configurations
-				if config.cdroms != 'none'
+
+				unless config.cdroms.nil? || config.cdroms != 'none'
 					cdroms = config.cdroms
 					cdrun=0
 					cdroms.each do |cdrom|
@@ -687,7 +688,7 @@ end						}
 				end
 
 				## Additional Disk Configurations
-				if config.additional_disks != 'none'
+				unless  config.additional_disks.nil? ||  config.additional_disks != 'none'
 					disks = config.additional_disks
 					diskrun=0
 					disks.each do |disk|
