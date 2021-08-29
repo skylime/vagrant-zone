@@ -612,9 +612,10 @@ end					}
 
 				## CDROM Configurations
 				if config.cdroms != 'none'
-					puts config.cdrom_path
-					config.cdrom_path do |_type, opts|
-
+					puts config.cdroms
+					config.cdroms do |size, path|
+						puts size
+						puts path
 
 					end
 					cdrom_attr = %{add attr
