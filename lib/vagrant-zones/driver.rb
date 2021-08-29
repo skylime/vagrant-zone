@@ -120,7 +120,7 @@ module VagrantPlugins
 
 								end
 								PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-									zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev vnic#{nic_type}#{machine.config.vm_type}_#{machine.partition_id}_#{nic_number} | head -n -1 | tail -1  | awk '{ print $2 }'\n") }
+									zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev vnic#{nic_type}#{machine.config.vm_type}_#{machine.config.partition_id}_#{nic_number} | head -n -1 | tail -1  | awk '{ print $2 }'\n") }
 									Timeout.timeout(30) do
 										loop do
 											zlogin_read.expect(/\r\n/) { |line|  responses.push line}
@@ -296,17 +296,18 @@ end								}
 											devid = devid.gsub /f/, ''
 
 											## Get Device Mac Address for when Mac is not specified
-											if mac == 'auto'
-												zlogin_write.printf("\nip link show dev vnice3_0000_0 | grep ether | awk '{ print $2 }'\n")
-												if responses[-1].to_s.match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)	
-													mac = responses[-1][0][/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/]
-												end
-											end
+
 											if !devid.nil? 
 												if nic_number == devid
+													vnic=vmnic[devid.to_i]
+													if mac == 'auto'
+														zlogin_write.printf("\nip link show dev #{vnic} | grep ether | awk '{ print $2 }'\n")
+														if responses[-1].to_s.match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)	
+															mac = responses[-1][0][/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/]
+														end
+													end
 
 													if opts[:dhcp] == true
-														vnic=vmnic[devid.to_i]
 														netplan = %{network:
   version: 2
   ethernets:  
@@ -329,7 +330,6 @@ end								}
 															raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
 														end
 													else	
-														vnic=vmnic[devid.to_i]
 														netplan = %{network:
   version: 2
   ethernets:  
