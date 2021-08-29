@@ -617,7 +617,7 @@ end					}
 				if config.cdroms != 'none'
 					puts config.cdroms
 					config.cdroms do |path|
-						puts path
+						puts path.path
 						cdrom_attr = %{add attr
     set name=cdrom
     set type=string
