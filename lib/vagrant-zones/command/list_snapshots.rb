@@ -9,14 +9,13 @@ module VagrantPlugins
          
             opts = OptionParser.new do |o|
               o.banner = 'Usage: vagrant zone zfssnapshot list [options]'
-              o.separator ""
               o.on('--snapshot SNAPSHOTPATH', 'Specify snapshot path') do |p|
                 options[:snapshot] = p
               end
             end
 
             argv = parse_options(opts)
-            return if !argv
+            return unless argv
 
             unless argv.length <= 1
               @env.ui.info(opts.help)
@@ -29,8 +28,8 @@ module VagrantPlugins
             puts argv[0]
             puts argv[0]
 
-            with_target_vms(argv) do |machine|
-
+            with_target_vms(argv, provider: :zone) do |machine|
+                puts machine
                 machine.action('list_zfs_snapshots' ) 
               end
 
