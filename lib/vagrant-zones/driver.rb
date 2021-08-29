@@ -350,7 +350,7 @@ end								}
       dhcp6: #{opts[:dhcp6]}
       set-name: vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
       nameservers:
-        addresses: [#{nameserver[0]} , #{nameserver[1]}]	}
+        addresses: [#{nameservers[0]} , #{nameservers[1]}]	}
 														if dhcprun == 0
 															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n")
 															dhcprun+=1
@@ -375,7 +375,7 @@ end								}
       addresses: [#{ip}/#{netmask}]
       gateway4: #{defrouter}
       nameservers:
-        addresses: [#{nameserver[0]} , #{nameserver[1]}]	}
+        addresses: [#{nameservers[0]} , #{nameservers[1]}]	}
 														if staticrun == 0
 															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"Static Subprocess Error Code: $?\"\n")
 															staticrun+=1
