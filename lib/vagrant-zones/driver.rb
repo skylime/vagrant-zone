@@ -865,7 +865,10 @@ end
 				## Check if it has a presence in zoneadm and if no presence in zoneadm destroy zonecfg
 				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
 				vmcfg_set = execute(false, "#{@pfexec} zonecfg -z #{name} export -f #{name}.zoneconfig && test #{name}.zoneconfig && echo #{name} || true")
+				## Check state in zoneadm
+				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 
+				
 				if vm_configured != name
 					id.info(I18n.t("vagrant_zones.bhyve_zone_config_remove"))
 					if vmcfg_set  == name
@@ -873,13 +876,15 @@ end
 					end
 				end
 				
-				## Check state in zoneadm
-				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
-				
 				## If state is seen, uninstall from zoneadm and destroy from zonecfg
-				if vm_state == 'incomplete' || vm_state == 'configured' || vm_state ==  'installed'
+				if  vm_state ==  'installed'
 					id.info(I18n.t("vagrant_zones.bhyve_zone_config_uninstall"))
 					execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
+					id.info(I18n.t("vagrant_zones.bhyve_zone_config_remove"))
+					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
+				end
+				## If state is seen, uninstall from zoneadm and destroy from zonecfg
+				if vm_state == 'incomplete' || vm_state == 'configured' 
 					id.info(I18n.t("vagrant_zones.bhyve_zone_config_remove"))
 					execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
 				end
