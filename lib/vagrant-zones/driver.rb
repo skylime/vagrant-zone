@@ -449,7 +449,7 @@ end								}
 					diskrun=0
 					disks.each do |disk|
 						diskname = "disk"
-						ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume") + disk["size"] + ", " + disk["path"])
+						ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume") + disk["size"].to_s + ", " + disk["path"])
 						puts disk["path"]
 						if diskrun > 0
 							diskname = diskname + diskrun.to_s
