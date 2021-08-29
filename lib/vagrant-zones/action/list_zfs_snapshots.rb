@@ -3,16 +3,13 @@ module VagrantPlugins
 	module ProviderZone
     module Action
       class ListSnapshots
-        def initialize( argv,  _env)
-          super
-          @argv
-          @env = env
+        def initialize(app, _env)
+          @app = app
         end
         def call(env)
-          puts env
           @machine = env[:machine]
           @driver  = @machine.provider.driver
-          @driver.zfs(@machine, env[:ui], 'list', @argv)
+          @driver.zfs(@machine, env[:ui], 'list',@app)
           @app.call(env)
         end
       end
