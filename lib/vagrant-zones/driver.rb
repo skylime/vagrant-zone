@@ -449,12 +449,12 @@ end								}
 					diskrun=0
 					disks.each do |disk|
 						diskname = "disk"
-						ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume") + disk["size"].to_s + ", " + disk["array"] + "/" + disk["path"])
+						ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume") + disk["size"].to_s + ", " + disk["array"]  + disk["path"])
 						if diskrun > 0
 							diskname = diskname + diskrun.to_s
 						end
 						diskrun+=1 
-						execute(true, "#{@pfexec} zfs create -V #{disk["size"].to_s} #{disk["array"]}/#{disk["path"]}")
+						execute(true, "#{@pfexec} zfs create -V #{disk["size"].to_s} #{disk["array"]}#{disk["path"]}")
 					end
 				end
 			end
@@ -490,12 +490,12 @@ end								}
 					diskrun=0
 					disks.each do |disk|
 						diskname = "disk"
-						ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume_delete") + disk["size"].to_s + ", " + disk["array"] + "/" + disk["path"])
+						ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume_delete") + disk["size"].to_s + ", " + disk["array"] +  disk["path"])
 						if diskrun > 0
 							diskname = diskname + diskrun.to_s
 						end
 						diskrun+=1 
-						execute(true, "#{@pfexec} zfs destroy -r #{disk["array"]}/#{disk["path"]}")
+						execute(false, "#{@pfexec} zfs destroy -r #{disk["array"]}#{disk["path"]}")
 					end
 				end
 			end
