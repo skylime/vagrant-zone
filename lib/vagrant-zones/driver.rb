@@ -339,15 +339,15 @@ end								}
       match:
         macaddress: #{mac}
       dhcp-identifier: mac
-      dhcp4: yes
-      dhcp6: no
+      dhcp4: #{opts[:dhcp]}
+      dhcp6: #{opts[:dhcp6]}
       set-name: vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]	}
-														if run == 0
-															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n")
-															run+=1
-														end
+														
+														zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n")
+														
+														
 														if responses[-1].to_s.match(/DHCP Subprocess Error Code: 0/)
 															ui.info(I18n.t("vagrant_zones.netplan_applied_dhcp") + "/etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml")														
 														elsif responses[-1].to_s.match(/DHCP Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
@@ -361,17 +361,16 @@ end								}
       match:
         macaddress: #{mac}
       dhcp-identifier: mac
-      dhcp4: yes
-      dhcp6: no
+      dhcp4: #{opts[:dhcp]}
+      dhcp6: #{opts[:dhcp6]}
       set-name: vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
       addresses: [#{ip}/#{netmask}]
       gateway4: #{defrouter}
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]	}
-														if run == 0
+														
 															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"Static Subprocess Error Code: $?\"\n")
-															run+=1
-														end
+														
 														if responses[-1].to_s.match(/Static Subprocess Error Code: 0/)
 															ui.info(I18n.t("vagrant_zones.netplan_applied_static") + "/etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml")															
 														elsif responses[-1].to_s.match(/Static Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
