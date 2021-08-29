@@ -444,14 +444,20 @@ end								}
 					raise Errors::InvalidBrand
 				end
 				## Create Additional Disks
-				unless config.disk1.to_s
-					raise Errors::NotYetImplemented
-					disk1path = config.disk1.delete_prefix("/").to_s
-					disk1size = config.disk1_size.to_s
-					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume") + cdisk1size + ", " + disk1path)
-					execute(true, "#{@pfexec} zfs create -V #{disk1size} #{disk1path}")
+				if config.additional_disks != 'none'
+					disks = config.additional_disks
+					diskrun=0
+					disks.each do |disk|
+						diskname = "disk"
+						ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume") + disk["size"] + ", " + disk["path"])
+						puts disk["path"]
+						if diskrun > 0
+							diskname = diskname + diskrun.to_s
+						end
+						diskrun+=1 
+						execute(true, "#{@pfexec} zfs create -V #{disk["size"]} #{disk["path"]}")
+					end
 				end
-			end
 
 			def delete_dataset(machine, ui)
 				name = @machine.name
