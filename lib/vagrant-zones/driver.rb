@@ -357,7 +357,7 @@ end								}
 														netplan = %{network:
   version: 2
   ethernets:
-    vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
+    vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}:
       match:
         macaddress: #{mac}
       dhcp-identifier: mac
@@ -381,7 +381,7 @@ end								}
 												end
 											end
 										}
-										## Check if last command ran successfully
+										## Check if last command ran successfully and break from the loop
 										zlogin_write.printf("echo \"Final Network Check Error Code: $?\"\n")
 										if responses[-1].to_s.match(/Final Network Check Error Code: 0/)
 											ui.info(I18n.t("vagrant_zones.netplan_set"))
