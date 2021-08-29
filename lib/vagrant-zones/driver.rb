@@ -84,13 +84,61 @@ module VagrantPlugins
 			
 			## Moving to Below Function as Subfunction
 			def get_ip_address(machine)
-				
+				config = machine.provider_config
+				machine.config.vm.networks.each do |_type, opts|
+					
+
+				end
 			end
+
+
+
+			def get_ip_address(machine)
+				config = machine.provider_config
+				machine.config.vm.networks.each do |_type, opts|
+					if _type.to_s == "public_network"
+						if opts[:dhcp] == true
+							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
+								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("hostname -I\n") }
+								Timeout.timeout(30) do
+									loop do
+										zlogin_read.expect(/\r\n/) { |line|  responses.push line}
+										if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
+											ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
+											return nil if ip.length == 0
+											return ip.gsub /\t/, ''
+											break
+										elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+												raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+										end
+									end
+								end
+								Process.kill("HUP",pid)
+							end
+							puts "==> #{machine.name} ==> DHCP is not yet Configured for use"
+						else
+							if opts[:managed]
+								ip = opts[:ip].to_s
+								return nil if ip.length == 0
+								return ip.gsub /\t/, ''
+							end
+						end
+					end
+				end
+			end
+			
+
+
+
+
+
+
+
+
 
 			## Manage Network Interfaces
 			def vnic(machine, ui, state)
 				config = machine.provider_config
-				dhcpenabled = config.dhcp
 				name = @machine.name
 				machine.config.vm.networks.each do |_type, opts|
 					if _type.to_s == "public_network"
@@ -233,7 +281,7 @@ end								}
 											devid = devid.gsub /f/, ''
 											if !devid.nil? 
 												if nic_number == devid
-													if config.dhcp
+													if opts[:dhcp] == true
 														vnic=vmnic[devid.to_i]
 														netplan = %{network:
   version: 2
@@ -295,33 +343,7 @@ end								}
 							zlogin(machine, 'netplan apply')
 							
 						elsif state == "get_ip"
-							if config.dhcp
-								PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-									zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("hostname -I\n") }
-									Timeout.timeout(30) do
-										loop do
-											zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-											if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
-												ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
-												return nil if ip.length == 0
-												return ip.gsub /\t/, ''
-										        break
-											elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
-										        	raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-											end
-										end
-									end
-									Process.kill("HUP",pid)
-								end
-								puts "==> #{machine.name} ==> DHCP is not yet Configured for use"
-							else
-								
-								if opts[:managed]
-									return nil if ip.length == 0
-									ip        = opts[:ip].to_s
-									return ip.gsub /\t/, ''
-								end
-							end
+						
 						end
 					end
 				end

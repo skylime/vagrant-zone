@@ -63,7 +63,6 @@ module VagrantPlugins
 				@acpi 							= 'on'
 				@firmware_type 					= "compatability"
 				@firmware 						= UNSET_VALUE
-				@dhcp   						= false
 				@setup_wait  					= 30
 				@clean_shutdown_time  			= 300
 				@vmtype   						= 'production'

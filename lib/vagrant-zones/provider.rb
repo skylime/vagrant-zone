@@ -21,8 +21,7 @@ module VagrantPlugins
 				# We just return nil if were not able to identify the VM's IP and
 				# let Vagrant core deal with it like docker provider does
 				return nil if state.id != :running
-				state = "get_ip"
-				ip = driver.get_ip(@machine, state)
+				ip = driver.get_ip_address(@machine)
 				user = driver.user(@machine)
 				userkey = driver.userprivatekeypath(@machine).to_s
 				vagrantuserpassword = driver.vagrantuserpass(@machine).to_s

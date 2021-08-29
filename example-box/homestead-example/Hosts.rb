@@ -30,8 +30,8 @@ class Hosts
             end
           end
   
-          server.vm.network "public_network", ip: host['ip1'], bridge: host['bridge1'], auto_config: false, :netmask => host['netmask1'], :mac => host['mac1'], gateway: host['gateway1'], type: host['type1'], nic_number: "0", managed: host['managed1']#, vlan: host[''vlan2']
-          server.vm.network "public_network", ip: host['ip2'], bridge: host['bridge2'], auto_config: false, :netmask => host['netmask2'], :mac => host['mac2'], gateway: host['gateway2'], type: host['type2'], nic_number: "1", managed: host['managed2']#, vlan: host[''vlan2']
+          server.vm.network "public_network", ip: host['ip1'], dhcp: host['dhcp1'], bridge: host['bridge1'], auto_config: false, :netmask => host['netmask1'], :mac => host['mac1'], gateway: host['gateway1'], type: host['type1'], nic_number: "0", managed: host['managed1']#, vlan: host[''vlan2']
+          server.vm.network "public_network", ip: host['ip2'], dhcp: host['dhcp2'],bridge: host['bridge2'], auto_config: false, :netmask => host['netmask2'], :mac => host['mac2'], gateway: host['gateway2'], type: host['type2'], nic_number: "1", managed: host['managed2']#, vlan: host[''vlan2']
           # Vagrant-Zone machine configuration
           server.vm.provider :zone do |vm|
                   vm.brand                                = host['brand']
@@ -51,7 +51,6 @@ class Hosts
                   vm.override                             = host['override']
                   vm.firmware_type                        = host['firmware_type']
                   vm.acpi                                 = host['acpi']
-                  vm.dhcp                                 = host['dhcp']
   #               vm.shared_disk_enabled                  = host['shared_lofs_disk_enabled']
   #               vm.shared_dir                           = host['shared_lofs_dir']
                   vm.os_type                              = host['os_type']
