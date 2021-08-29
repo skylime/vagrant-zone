@@ -40,6 +40,7 @@ module VagrantPlugins
 			attr_accessor :override
 			attr_accessor :additional_disks
 			attr_accessor :cloud_init_enabled
+			attr_accessor :dns
 			
 			def initialize
 				# pkgsrc, lx, bhyve, kvm, illumos
