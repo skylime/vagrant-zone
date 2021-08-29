@@ -19,7 +19,10 @@ module VagrantPlugins
               require File.expand_path('../delete_snapshots', __FILE__)
               DeleteSnapshots
             end
-  
+            @subcommands.register(:configure) do
+              require File.expand_path('../configure_snapshots', __FILE__)
+              ConfigureSnapshots
+            end
             super(argv, env)
           end
 
