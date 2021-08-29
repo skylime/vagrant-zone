@@ -614,10 +614,11 @@ end					}
 				end
 
 				## CDROM Configurations
-				puts config.cdroms
+				
 				if config.cdroms != 'none'
-					puts config.cdroms
+					
 					config.cdroms do |path|
+						ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + path.path)
 						puts path.path
 						cdrom_attr = %{add attr
     set name=cdrom
