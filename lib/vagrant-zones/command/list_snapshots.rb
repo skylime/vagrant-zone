@@ -17,10 +17,15 @@ module VagrantPlugins
             argv = parse_options(opts)
             return unless argv
 
- 
-            puts argv
-            with_target_vms(provider: :zone) do |machine|
-                machine.action('list_zfs_snapshots', argv) 
+            puts argv[0]
+            puts argv[0]
+            puts argv[0]
+            puts argv[0]
+            puts argv[0]
+            
+            with_target_vms(argv, provider: :zone) do |machine|
+
+                machine.action('list_zfs_snapshots'  ) 
               end
 
           end
