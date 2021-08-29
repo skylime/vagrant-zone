@@ -449,13 +449,12 @@ end								}
 					diskrun=0
 					disks.each do |disk|
 						diskname = "disk"
-						ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume") + disk["size"].to_s + ", " + disk["path"])
-						puts disk["path"]
+						ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume") + disk["size"].to_s + ", " + disk["array"] + "/" + disk["path"])
 						if diskrun > 0
 							diskname = diskname + diskrun.to_s
 						end
 						diskrun+=1 
-						execute(true, "#{@pfexec} zfs create -V #{disk["size"]} #{disk["path"]}")
+						execute(true, "#{@pfexec} zfs create -V #{disk["size"].to_s} #{disk["array"]}/#{disk["path"]}")
 					end
 				end
 			end
