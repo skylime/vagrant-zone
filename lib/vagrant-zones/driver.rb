@@ -888,9 +888,6 @@ end						}
 				name = @machine.name
 				ui.info (name)
 				zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{name}")
-				puts
-				puts
-				puts
 				zfssnapshots = zfs_snapshots.split(/\n/)
 				snapshotrun = 0
 				header = "Snapshot\tUsed\tAvailable\tRefer\tName"
@@ -910,9 +907,6 @@ end						}
 					puts data
 					snapshotrun += 1
 				end
-				puts
-				puts
-				puts
 				#name
 				#used
 				#available
