@@ -613,26 +613,25 @@ end					}
 				## CDROM Configurations
 				if config.cdroms != 'none'
 					puts config.cdroms
-					config.cdroms do |size, path|
-						puts size
+					config.cdroms do |path|
 						puts path
-
-					end
-					cdrom_attr = %{add attr
+						cdrom_attr = %{add attr
     set name=cdrom
     set type=string
-    set value=#{config.cdrom_path}
+    set value=#{path}
 end
 add fs
-    set dir=#{config.cdrom_path}
-    set special=#{config.cdrom_path}
+    set dir=#{path}
+    set special=#{path}
     set type=lofs
     add options ro
     add options nodevices
-end					}
-					File.open("#{name}.zoneconfig", 'a') do |f|
-						f.puts cdrom_attr
+end						}
+						File.open("#{name}.zoneconfig", 'a') do |f|
+							f.puts cdrom_attr
+						end
 					end
+
 				end
 
 				
