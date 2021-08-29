@@ -6,7 +6,7 @@ module VagrantPlugins
         def initialize(app, _env)
           @app = app
         end
-        def call(env)
+        def call(env, snapshot)
           puts env
           @machine = env[:machine]
           @driver  = @machine.provider.driver
