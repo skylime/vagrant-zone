@@ -144,6 +144,30 @@ module VagrantPlugins
 				end
 			end
 
+			def self.action_create_zfs_snapshots
+				Vagrant::Action::Builder.new.tap do |b|
+				  # b.use ConfigValidate # is this per machine?
+				  b.use IsCreated
+				  b.use CreateSnapshots
+				end
+			end
+
+			def self.action_delete_zfs_snapshots
+				Vagrant::Action::Builder.new.tap do |b|
+				  # b.use ConfigValidate # is this per machine?
+				  b.use IsCreated
+				  b.use deleteSnapshots
+				end
+			end
+
+			def self.action_configure_zfs_snapshots
+				Vagrant::Action::Builder.new.tap do |b|
+				  # b.use ConfigValidate # is this per machine?
+				  b.use IsCreated
+				  b.use ConfigureSnapshots
+				end
+			end
+
 			action_root = Pathname.new(File.expand_path('../action', __FILE__))
 			##autoload :BoxUpdate, action_root.join('box_update')
 			autoload :Import, action_root.join('import')
