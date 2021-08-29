@@ -893,7 +893,7 @@ end						}
 				puts
 				zfssnapshots = zfs_snapshots.split(/\n/)
 				snapshotrun = 0
-				header = "Snapshot\tUsed\tAvailable\tRefer\tName\t\t\t\t\tMount Point"
+				header = "Snapshot\tUsed\tAvailable\tRefer\tName"
 				puts header
 				zfssnapshots.each do |snapshot|
 					attributes = snapshot.gsub(/\s+/m, ' ').strip.split(" ")
@@ -902,8 +902,9 @@ end						}
 					zfssnapshotavailable = attributes[2]
 					zfssnapshotrefer = attributes[3]
 					zfssnapshotmountpoint = attributes[4]
-
-					
+					if !zfssnapshotmountpoint.nil?
+						puts "Drive Mounted at: " + zfssnapshotmountpoint
+					end
 					data = "##{snapshotrun}\t\t#{zfssnapshotused}\t#{zfssnapshotavailable}\t\t#{zfssnapshotrefer}\t#{zfssnapshotname}\t\t#{zfssnapshotmountpoint}"
 					
 					puts data
