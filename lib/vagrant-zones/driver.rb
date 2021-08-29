@@ -883,29 +883,41 @@ end						}
 				return vagrantuserpass
 			end
 
-			def zfs(machine, ui)
+			def zfs(machine, ui, job)
 				config = machine.provider_config
 				name = @machine.name
-				ui.info (name)
-				zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{name}")
-				zfssnapshots = zfs_snapshots.split(/\n/)
-				snapshotrun = 0
-				header = "Snapshot\tUsed\tAvailable\tRefer\tName"
-				puts header
-				zfssnapshots.each do |snapshot|
-					attributes = snapshot.gsub(/\s+/m, ' ').strip.split(" ")
-					zfssnapshotname = attributes[0]
-					zfssnapshotused = attributes[1]
-					zfssnapshotavailable = attributes[2]
-					zfssnapshotrefer = attributes[3]
-					zfssnapshotmountpoint = attributes[4]
-					if !zfssnapshotmountpoint.nil? && zfssnapshotmountpoint != "-"
-						puts "Drive Mounted at: " + zfssnapshotmountpoint
-					end
-					data = "##{snapshotrun}\t\t#{zfssnapshotused}\t#{zfssnapshotavailable}\t\t#{zfssnapshotrefer}\t#{zfssnapshotname}"
-					
-					puts data
-					snapshotrun += 1
+				
+				if job == 'list'
+					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
+					zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{name}")
+					zfssnapshots = zfs_snapshots.split(/\n/)
+					snapshotrun = 0
+					header = "Snapshot\tUsed\tAvailable\tRefer\tName"
+					puts header
+					zfssnapshots.each do |snapshot|
+						attributes = snapshot.gsub(/\s+/m, ' ').strip.split(" ")
+						zfssnapshotname = attributes[0]
+						zfssnapshotused = attributes[1]
+						zfssnapshotavailable = attributes[2]
+						zfssnapshotrefer = attributes[3]
+						zfssnapshotmountpoint = attributes[4]
+						if !zfssnapshotmountpoint.nil? && zfssnapshotmountpoint != "-"
+							puts "Drive Mounted at: " + zfssnapshotmountpoint
+						end
+						data = "##{snapshotrun}\t\t#{zfssnapshotused}\t#{zfssnapshotavailable}\t\t#{zfssnapshotrefer}\t#{zfssnapshotname}"
+						puts data
+						snapshotrun += 1
+				end
+				if job == 'create'
+
+				end
+				if job == 'destroy'
+
+				end
+				if job == 'configure'
+
+				end												
+				
 				end
 				#name
 				#used
