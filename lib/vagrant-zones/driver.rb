@@ -888,9 +888,16 @@ end						}
 				name = @machine.name
 				ui.info (name)
 				zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{name}")
+				zfs_snapshots.each do |snapshot|
+					puts snapshot
+				end
+				#name
+				#used
+				#available
+				#refer
+				#mountpoint
 				puts
 				puts
-				ui.info (zfs_snapshots)
 				puts zfs_snapshots
 				
 			end
