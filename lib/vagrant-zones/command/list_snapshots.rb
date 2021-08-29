@@ -21,9 +21,9 @@ module VagrantPlugins
               @env.ui.info(opts.help)
               return
             end
-            puts options[:snapshot]
+            path = options[:snapshot]
 
-            with_target_vms(argv, provider: :zone, options[:snapshot]) do |machine|
+            with_target_vms(argv, provider: :zone, path ) do |machine|
                 machine.action('list_zfs_snapshots') 
               end
 
