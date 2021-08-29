@@ -258,6 +258,7 @@ end							}
 							else
 								nic_attr = %{add net
 	set physical=#{vnic_name}
+	set allowed-address=#{allowed_address}
 end								}
 								File.open("#{name}.zoneconfig", 'a') do |f|
 									f.puts nic_attr
