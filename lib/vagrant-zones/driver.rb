@@ -387,7 +387,7 @@ end								}
 											ui.info(I18n.t("vagrant_zones.netplan_set"))
 											break
 										elsif responses[-1].to_s.match(/Final Network Check Error Code: \b(?![0]\b)\d{1,4}\b/)
-											raise "==> #{name} ==> Command: ==>  \nFailed with: #{responses[-1]}"
+											raise "==> #{name} ==> Final Network Check \nFailed with: #{responses[-1]}"
 										end									
 									end
 								end
