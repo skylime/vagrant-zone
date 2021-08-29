@@ -17,6 +17,10 @@ module VagrantPlugins
             argv = parse_options(opts)
             return unless argv
 
+            unless argv.length == 1
+              @env.ui.info(opts.help)
+              return
+            end
 
             with_target_vms(argv, provider: :zone) do |machine|
 
