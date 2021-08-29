@@ -617,7 +617,7 @@ end					}
 				## CDROM Configurations
 				
 				if config.cdroms != 'none'
-					puts config.cdroms[0]
+					puts config.cdroms[0]["path"]
 					config.cdroms[0] do |cdrom|
 						ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + cdrom["path"])
 						puts cdrom["path"]
