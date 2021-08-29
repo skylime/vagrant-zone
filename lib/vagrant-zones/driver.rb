@@ -213,10 +213,11 @@ module VagrantPlugins
 
 						p config.dns
 						p dns
-						puts config.dns[0]["nameserver"]
-						puts config.dns[1]["nameserver"]
-						unless  !config.dns.nil? 
+
+						if  !config.dns.nil? 
 							dns = config.dns
+							puts config.dns[0]["nameserver"]
+							puts config.dns[1]["nameserver"]
 							p dns
 							puts dns[0]
 							puts dns[1]
