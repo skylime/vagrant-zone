@@ -675,6 +675,10 @@ end						}
 						diskname = "disk"
 						ui.info(I18n.t("vagrant_zones.setting_additional_disks_configurations") + disk["size"] + ", " + disk["path"])
 						puts disk["path"]
+						if diskrun > 0
+							diskname = diskname + diskrun.to_s
+						end
+						diskrun+=1 
 						additional_disk_attr = %{add device
 	set match=/dev/zvol/rdsk#{config.zonepath}/disk1
 end
