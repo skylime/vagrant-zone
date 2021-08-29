@@ -21,12 +21,7 @@ module VagrantPlugins
               @env.ui.info(opts.help)
               return
             end
-            puts argv
-            puts argv[0]
-            puts argv[0]
-            puts argv[0]
-            puts argv[0]
-            puts argv[0]
+            puts options[:snapshot]
 
             with_target_vms(argv, provider: :zone) do |machine|
                 puts machine
