@@ -84,15 +84,7 @@ module VagrantPlugins
 			
 			## Moving to Below Function as Subfunction
 			def get_ip_address(machine)
-				config = machine.provider_config
-				machine.config.vm.networks.each do |_type, opts|
-					if _type.to_s == "public_network"
-						ip        = opts[:ip].to_s
-						defrouter = opts[:gateway]
-						return nil if ip.length == 0
-						return ip.gsub /\t/, ''
-					end
-				end
+				
 			end
 
 			## Manage Network Interfaces
@@ -323,8 +315,10 @@ end								}
 								end
 								puts "==> #{machine.name} ==> DHCP is not yet Configured for use"
 							else
+								
 								if opts[:managed]
 									return nil if ip.length == 0
+									ip        = opts[:ip].to_s
 									return ip.gsub /\t/, ''
 								end
 							end
