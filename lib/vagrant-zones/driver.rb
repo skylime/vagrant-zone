@@ -398,6 +398,7 @@ end								}
 							end
 							## Apply the Configuration
 							zlogin(machine, 'netplan apply')
+							zlogin(machine, 'netplan apply')
 							ui.info(I18n.t("vagrant_zones.netplan_applied"))
 						end
 					end
