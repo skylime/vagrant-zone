@@ -6,10 +6,10 @@ module VagrantPlugins
         def initialize(app, _env)
           @app = app
         end
-        def call(env)
+        def call(env, snapshot)
           @machine = env[:machine]
           @driver  = @machine.provider.driver
-          @driver.zfs(@machine, env[:ui], 'list')
+          @driver.zfs(@machine, env[:ui], 'list', snapshot)
           @app.call(env)
         end
       end

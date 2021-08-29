@@ -883,7 +883,7 @@ end						}
 				return vagrantuserpass
 			end
 
-			def zfs(machine, ui, job)
+			def zfs(machine, ui, job, snapshot)
 				config = machine.provider_config
 				name = @machine.name
 				
@@ -909,7 +909,9 @@ end						}
 						snapshotrun += 1
 				end
 				if job == 'create'
-
+					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
+					zfs_snapshots = execute(false, "#{@pfexec} zfs snapshot #{snapshot}")
+					zfssnapshots = zfs_snapshots.split(/\n/)
 				end
 				if job == 'destroy'
 

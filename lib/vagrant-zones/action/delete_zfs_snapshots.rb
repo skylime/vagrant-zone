@@ -9,7 +9,7 @@ module VagrantPlugins
         def call(env)
           @machine = env[:machine]
           @driver  = @machine.provider.driver
-          @driver.zfs(@machine, env[:ui])
+          @driver.zfs(@machine, env[:ui]), 'destroy')
           @app.call(env)
         end
       end

@@ -4,6 +4,9 @@ module VagrantPlugins
         class CreateSnapshots < Vagrant.plugin('2', :command)
           def execute
             options = {}
+            options[:input_provider] = nil
+            options[:version] = nil
+            options[:force_virtio] = false
             opts = OptionParser.new do |o|
               o.banner = 'Usage: vagrant zone zfssnapshot create [options]'
             end
