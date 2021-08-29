@@ -470,7 +470,24 @@ end								}
 					## Remove extra Disks first
 					ui.info(I18n.t("vagrant_zones.destroy_dataset") + "#{config.zonepath.delete_prefix("/")}/NotYetImplemented")
 					#execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}/boot")
-
+					## delete Additional Disks
+					if config.additional_disks != 'none'
+						disks = config.additional_disks
+						diskrun=0
+						disks.each do |disk|
+							adddataset = "#{disk["array"]}#{disk["path"]}"
+							diskname = "disk"
+							ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume_delete") + disk["size"] + ", " + adddataset)
+							dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{disk["array"]}#{disk["path"]} |  awk '{ print $1 }' || true")
+							if dataset_exists == adddataset
+								if diskrun > 0
+									diskname = diskname + diskrun.to_s
+								end
+								diskrun+=1 
+								execute(false, "#{@pfexec} zfs destroy -r #{adddataset}")
+							end
+						end
+					end
 					## Delete Boot dataset
 					ui.info(I18n.t("vagrant_zones.destroy_dataset") + "#{config.zonepath.delete_prefix("/")}/boot" )
 					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}/boot")
@@ -484,20 +501,7 @@ end								}
 				else
 					ui.info(I18n.t("vagrant_zones.dataset_nil") )
 				end
-				## delete Additional Disks
-				if config.additional_disks != 'none'
-					disks = config.additional_disks
-					diskrun=0
-					disks.each do |disk|
-						diskname = "disk"
-						ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume_delete") + disk["size"].to_s + ", " + disk["array"] +  disk["path"])
-						if diskrun > 0
-							diskname = diskname + diskrun.to_s
-						end
-						diskrun+=1 
-						execute(false, "#{@pfexec} zfs destroy -r #{disk["array"]}#{disk["path"]}")
-					end
-				end
+
 			end
 
 			def zonecfg(machine, ui)
