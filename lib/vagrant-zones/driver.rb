@@ -210,17 +210,24 @@ module VagrantPlugins
 							nictype  = opts[:nictype]
 						end
 						dns=["1.1.1.1","1.0.0.1"]
-						if !config.dns.nil?
+						unless !config.dns.nil?
 							dns = config.dns
+							puts "Setting DNS"
 						end
+						p dns
+						puts dns[1]
+						puts dns[0]
 						unless  config.dns.nil? ||  config.dns != 'none'
+							puts dns[0]
+							puts dns[1]
+
 							dnsrun=0
-							nameservers=[]
+							servers=[]
 							dns.each do |server|
 								ui.info(I18n.t("vagrant_zones.setting_dns_server") + server)
-								nameservers.append(server)
+								servers.append(server)
 							end
-							puts nameservers
+							puts servers
 						end
 
 						case nictype
