@@ -899,11 +899,11 @@ end						}
 					zfssnapshotavailable = attributes[2]
 					zfssnapshotrefer = attributes[3]
 					zfssnapshotmountpoint = attributes[4]
-					puts "Name:" + zfssnapshotname
-					puts "Used:" + zfssnapshotused
-					puts "Available:" + zfssnapshotavailable
-					puts "Refer:" + zfssnapshotrefer
-					puts "Mount Point:" + zfssnapshotmountpoint
+					puts "Name:\t\t" + zfssnapshotname
+					puts "Used:\t\t" + zfssnapshotused
+					puts "Available:\t\t" + zfssnapshotavailable
+					puts "Refer:\t\t" + zfssnapshotrefer
+					puts "Mount Point:\t\t" + zfssnapshotmountpoint
 				end
 				puts
 				puts
