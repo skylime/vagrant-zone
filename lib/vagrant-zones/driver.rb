@@ -618,9 +618,9 @@ end					}
 				
 				if config.cdroms != 'none'
 					puts config.cdroms
-					config.cdroms do |cdroms|
-						ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + cdroms.path)
-						puts cdroms.path
+					config.cdroms do |cdrom|
+						ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + cdroms["path"])
+						puts cdroms["path"]
 						cdrom_attr = %{add attr
     set name=cdrom
     set type=string
