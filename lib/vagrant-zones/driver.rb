@@ -624,7 +624,7 @@ end					}
 						ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + cdrom["path"])
 						puts cdrom["path"]
 						if cdrun > 0
-							cdname = cdname + cdrun
+							cdname = cdname + cdrun.to_s
 						end
 						cdrun+=1 
 						cdrom_attr = %{add attr
