@@ -222,7 +222,7 @@ module VagrantPlugins
 							ui.info(I18n.t("vagrant_zones.setting_dns_server") + server["nameserver"])
 							servers.append(server)
 						end
-						servers[1]
+						p servers
 						case nictype
 						when /external/
 						  nic_type = "e"
