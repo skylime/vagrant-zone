@@ -10,7 +10,7 @@ module VagrantPlugins
           @machine = env[:machine]
           @driver  = @machine.provider.driver
           @driver.zfs(@machine, env[:ui], 'list', snapshot)
-          @app.call(env)
+          @app.call(env, snapshot)
         end
       end
     end
