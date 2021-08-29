@@ -3,10 +3,7 @@ module VagrantPlugins
       module Command
         class ListSnapshots < Vagrant.plugin('2', :command)
           def execute
-            options = {}
-            
-
-         
+            options = {}       
             opts = OptionParser.new do |o|
               o.banner = 'Usage: vagrant zone zfssnapshot list [options]'
               o.on('--snapshot SNAPSHOTPATH', 'Specify snapshot path') do |p|
@@ -22,7 +19,7 @@ module VagrantPlugins
               return
             end
 
-            with_target_vms(argv, provider: :zone ) do |machine|
+            with_target_vms(argv, provider: :zone , options[:snapshot]) do |machine|
                 machine.action('list_zfs_snapshots' ) 
               end
 
