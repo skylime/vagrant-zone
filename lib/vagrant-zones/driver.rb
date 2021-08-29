@@ -210,8 +210,9 @@ module VagrantPlugins
 							nictype  = opts[:nictype]
 						end
 						dns=["1.1.1.1","1.0.0.1"]
-						puts config.dns[0]
-						puts config.dns[1]
+						dns = config.dns
+						puts dns[0]
+						puts dns[1]
 						unless  config.dns.nil? ||  config.dns != 'none'
 							dns = config.dns
 							puts dns
