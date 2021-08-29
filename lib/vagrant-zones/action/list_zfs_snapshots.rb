@@ -7,9 +7,6 @@ module VagrantPlugins
           @app = app
         end
         def call(env)
-          if snapshot == 'none'
-            puts "Success"
-          end
           @machine = env[:machine]
           @driver  = @machine.provider.driver
           @driver.zfs(@machine, env[:ui], 'list')
