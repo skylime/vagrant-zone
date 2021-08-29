@@ -579,6 +579,7 @@ end					}
 				
 				## Shared Disk Configurations
 				unless config.shared_disk_enabled
+					ui.info(I18n.t("vagrant_zones.setting_alt_shared_disk_configurations") + path.path)
 					shared_disk_attr = %{add fs
 	set dir=/vagrant
 	set special=#{config.shared_dir}
@@ -616,18 +617,18 @@ end					}
 				## CDROM Configurations
 				
 				if config.cdroms != 'none'
-					
-					config.cdroms do |path|
-						ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + path.path)
-						puts path.path
+					puts config.cdroms
+					config.cdroms do |cdroms|
+						ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + cdroms.path)
+						puts cdroms.path
 						cdrom_attr = %{add attr
     set name=cdrom
     set type=string
-    set value=#{path}
+    set value=#{cdroms.path}
 end
 add fs
-    set dir=#{path}
-    set special=#{path}
+    set dir=#{cdroms.path}
+    set special=#{cdroms.path}
     set type=lofs
     add options ro
     add options nodevices
@@ -642,6 +643,7 @@ end						}
 				
 				### Passthrough PCI Devices
 				#if config.ppt_devices == 'none'
+				#   ui.info(I18n.t("vagrant_zones.setting_pci_configurations") + path.path)
 				#	puts config.ppt
 				#	puts config.config.ppt
 				#	ppt_attr = %{
@@ -667,6 +669,7 @@ end						}
 				## Additional Disk Configurations
 				
 				unless config.additional_disks
+					ui.info(I18n.t("vagrant_zones.setting_additional_disks_configurations") + path.path)
 					puts config.config.additional_disks
 					config.additional_disks do |size, path|
 						puts size
