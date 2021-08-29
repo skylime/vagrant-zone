@@ -90,6 +90,8 @@ module VagrantPlugins
 					nic_number	= opts[:nic_number].to_s
 					if !opts[:type].nil?
 						nictype  = opts[:nictype]
+					else 
+						nictype = "external"
 					end
 					mac  		= 'auto'
 					if !opts[:mac].nil?
