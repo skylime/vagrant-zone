@@ -217,6 +217,14 @@ module VagrantPlugins
 							dns.each do |server|
 								ui.info(I18n.t("vagrant_zones.setting_dns_server") + server)
 								puts server
+								puts
+								puts server
+								puts server
+								puts
+								puts
+								puts
+								puts
+								puts
 								nameservers.append(server)
 							end
 							puts nameservers
