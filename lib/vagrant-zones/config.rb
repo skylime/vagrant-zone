@@ -39,6 +39,7 @@ module VagrantPlugins
 			attr_accessor :rdpport
 			attr_accessor :override
 			attr_accessor :additional_disks
+			attr_accessor :cloud_init_enabled
 			
 			def initialize
 				# pkgsrc, lx, bhyve, kvm, illumos
@@ -66,6 +67,7 @@ module VagrantPlugins
 				@firmware 						= UNSET_VALUE
 				@setup_wait  					= 30
 				@clean_shutdown_time  			= 300
+				@dns				  			= '["1.0.0.1","1.1.1.1"]'
 				@vmtype   						= 'production'
 				@vm_type   						= UNSET_VALUE
 				@partition_id	  				= '0000'
@@ -73,8 +75,9 @@ module VagrantPlugins
 				@rdpport  						= '3389'
 				@vagrant_user   				= 'vagrant'
 				@vagrant_user_pass  			= 'vagrant'
-				@vagrant_user_private_key_path  =  './id_rsa'
-				@override						  =  false
+				@vagrant_user_private_key_path  = './id_rsa'
+				@override						= false
+				@cloud_init_enabled				= false
 				
 				case @firmware_type
 					when "compatability"  

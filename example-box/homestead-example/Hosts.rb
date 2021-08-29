@@ -34,6 +34,7 @@ class Hosts
           server.vm.network "public_network", ip: host['ip2'], dhcp: host['dhcp4-2'], dhcp6: host['dhcp6-2'], bridge: host['bridge2'], auto_config: false, :netmask => host['netmask2'], :mac => host['mac2'], gateway: host['gateway2'], nictype: host['type2'], nic_number: "1", managed: host['managed2']#, vlan: host[''vlan2']
           # Vagrant-Zone machine configuration
           server.vm.provider :zone do |vm|
+                  vm.cloud_init_enabled                   = host['cloud_init_enabled']
                   vm.brand                                = host['brand']
                   vm.autoboot                             = host['autostart']
                   vm.parition_id                          = host['parition_id']
@@ -48,6 +49,7 @@ class Hosts
                   vm.complex_cpu_conf                     = host['complex_cpu_conf']
                   vm.vnc                                  = host['vnc']
                   vm.console                              = host['console']
+                  vm.dns                                  = host['dns']
                   vm.override                             = host['override']
                   vm.firmware_type                        = host['firmware_type']
                   vm.acpi                                 = host['acpi']
