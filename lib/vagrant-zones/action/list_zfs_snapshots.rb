@@ -3,10 +3,11 @@ module VagrantPlugins
 	module ProviderZone
     module Action
       class ListSnapshots
-        def initialize(app, _env)
+        def initialize(app, _env, snapshot)
           @app = app
+          @snapshot = snapshot
         end
-        def call(env, snapshot)
+        def call(env)
           if snapshot == 'none'
             puts "Success"
           end
