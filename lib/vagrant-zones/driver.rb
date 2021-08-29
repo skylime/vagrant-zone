@@ -221,7 +221,6 @@ module VagrantPlugins
 								servers.append(server)
 								puts server["nameserver"]
 							end
-							puts servers
 						end
 
 						case nictype
