@@ -7,6 +7,9 @@ module VagrantPlugins
             options = {}
             opts = OptionParser.new do |o|
               o.banner = "Usage: vagrant zone zfs-snapshot [options]"
+              o.separator ""
+              o.on("-f", "--force", "Destroy without confirmation.") do |f|
+                options[:force] = f
             end
   
             argv = parse_options(opts)
