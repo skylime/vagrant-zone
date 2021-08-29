@@ -6,7 +6,7 @@ module VagrantPlugins
         def initialize(app, _env)
           @app = app
         end
-        def call(env, snapshot)
+        def call(env)
           if snapshot == 'none'
             puts "Success"
           end
