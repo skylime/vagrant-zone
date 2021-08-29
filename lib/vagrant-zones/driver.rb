@@ -212,6 +212,9 @@ module VagrantPlugins
 						dns=[]
 						unless  config.dns.nil? ||  config.dns != 'none'
 							dns = config.dns
+							puts dns
+							puts dns
+							puts dns
 							dnsrun=0
 							nameservers=[]
 							dns.each do |server|

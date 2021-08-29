@@ -2,11 +2,11 @@
 module VagrantPlugins
 	module ProviderZone
       module Action
-        class ListzfsSnapshots
+        class zfsSnapshots
           def initialize(app, env)
             @app = app
           end
-  
+          
 
         end
       end

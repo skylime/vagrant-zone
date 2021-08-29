@@ -13,7 +13,7 @@ module VagrantPlugins
             return if !argv
   
             with_target_vms(argv, :provider => :vagrant_zones) do |machine|
-              machine.action('list_zfs_snapshot')
+              machine.action('zfs_snapshot')
             end
           end
         end
