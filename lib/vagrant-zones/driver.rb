@@ -614,7 +614,8 @@ end					}
 				end
 
 				## CDROM Configurations
-				if config.cdroms != 'none'
+				puts config.cdroms
+				unless config.cdroms || config.cdroms != 'none'
 					puts config.cdroms
 					config.cdroms do |path|
 						puts path.path
