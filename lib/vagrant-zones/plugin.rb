@@ -10,8 +10,8 @@ module VagrantPlugins
 		class Plugin < Vagrant.plugin('2')
 			name "zone"
 			description <<-DESC
-			This plugin allows vagrant to manage bhyve, lx-branded zones or native zones on
-			OmniOSce or any other illumos based distribution
+				This plugin allows vagrant to manage bhyve, lx-branded zones or native zones on
+				OmniOSce or any other illumos based distribution
 			DESC
 
 			config(:zone, :provider) do
@@ -21,7 +21,6 @@ module VagrantPlugins
 			
 			## Experimental Parallel Execucution
 			## provider(:zone, parallel: true) do
-
 			provider(:zone) do
 				require_relative "provider"
 				Provider
@@ -44,7 +43,7 @@ module VagrantPlugins
 					# This means that the logging constant wasn't found,
 					# which is fine. We just keep `level` as `nil`. But
 					# we tell the user.
-					level = nil
+					level = nil 
 				end
 
 				# Some constants, such as "true" resolve to booleans, so the
@@ -67,6 +66,8 @@ module VagrantPlugins
 			# from the parent logger.
 			setup_logging
 			setup_i18n
+
+			## This setups the zone commands master
 			command('zone') do
 				require_relative "command/zone"
 				Command::Zone
