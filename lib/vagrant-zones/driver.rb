@@ -183,7 +183,6 @@ module VagrantPlugins
 
 				if state == "setup"
 					## Remove old installer netplan config
-					ui.info(I18n.t("vagrant_zones.configure_interface_using_vnic") + vnic_name)
 					ui.info(I18n.t("vagrant_zones.netplan_remove"))							
 					zlogin(machine, "rm -rf  /etc/netplan/*.yaml")
 				end
@@ -267,7 +266,7 @@ end								}
 						elsif state == "setup"
 							responses=[]
 							vmnic=[]
-							
+							ui.info(I18n.t("vagrant_zones.configure_interface_using_vnic") + vnic_name)	
 							regex=/(en|eth)(\d|o\d|s\d|x[0-9A-Fa-f]{2}{6}|(p\d)(s\d)(f?\d?))/
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n") }
@@ -320,7 +319,7 @@ end								}
 											    	nicfunction = nicbus
 											    	devid = nicfunction
 											    end
-											end												
+											end																
 											devid = devid.gsub /f/, ''
 											if !devid.nil? 
 												if nic_number == devid
