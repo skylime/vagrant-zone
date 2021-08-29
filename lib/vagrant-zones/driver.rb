@@ -506,7 +506,7 @@ end								}
 				end
 				## Check if root dataset exists
 				ui.info(I18n.t("vagrant_zones.destroy_dataset") + "#{config.zonepath.delete_prefix("/")}")
-				dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")} |  awk '{ print $1 }' | grep -v "path"  || true")
+				dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")} |  awk '{ print $1 }' | grep -v path  || true")
 				if dataset_root_exists  =~ "#{config.zonepath.delete_prefix("/")}"
 					execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
 				end
