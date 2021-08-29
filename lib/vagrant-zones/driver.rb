@@ -122,6 +122,7 @@ module VagrantPlugins
 											loop do
 												zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 												puts responses[-1]
+												puts "This is a DHCP address"
 												if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
 													ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
 													puts responses[-1]
@@ -143,6 +144,7 @@ module VagrantPlugins
 											loop do
 												zlogin_read.expect(/\r\n/) { |line|  responses.push line}
 												puts responses[-1]
+												puts "This is a Static address"
 												if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
 													ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
 													puts responses[-1]
