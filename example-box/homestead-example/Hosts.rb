@@ -64,11 +64,12 @@ class Hosts
                   vm.vagrant_user_pass                    = host['vagrant_user_pass']
                   vm.hostname                             = host['name']
                   vm.name                                 = "#{host['parition_id']}-#{host['name']}"
+                  vm.cdroms                               = host['cdroms']
   #               vm.customize                            ['modifyvm', :id, '--ostype', 'RedHat_64']
   #               vm.customize                            ["modifyvm", :id, "--vrde", "on"]
   #               vm.customize                            ["modifyvm", :id, "--vrdeport", "3941"]
   #               vm.customize                            ["modifyvm", :id, "--vrdeaddress", "0.0.0.0"]
-  #          if host.has_key?('provider')
+  #          if host.has_key?('cdroms')
   #            host['provider'].each do |param|
   #              vm.customize                             ['modifyvm', :id, "--#{param['directive']}", param['value']]
   #            end

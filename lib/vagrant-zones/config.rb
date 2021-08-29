@@ -11,7 +11,7 @@ module VagrantPlugins
 			attr_accessor :zonepathsize
 			attr_accessor :diskif
 			attr_accessor :netif
-			attr_accessor :cdrom_path
+			attr_accessor :cdroms
 			attr_accessor :disk1path
 			attr_accessor :disk1size
 			attr_accessor :cpus
@@ -49,7 +49,7 @@ module VagrantPlugins
 				@zonepath 						= '/rpool/myvm'
 				@zonepathsize 					= '20G'
 				@disk1pathsize 					= UNSET_VALUE
-				@cdrom_path						= "none"
+				@cdroms							= "none"
 				@disk1path 						= "none"
 				@shared_dir						= nil
 				@os_type						= 'generic'
