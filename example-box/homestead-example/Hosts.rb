@@ -40,8 +40,6 @@ class Hosts
                   vm.parition_id                          = host['parition_id']
                   vm.zonepath                             = "#{host['zonepath']}/#{host['parition_id']}-#{host['name']}"
                   vm.zonepathsize                         = host['rootdisksize']
-  #               vm.disk1                                = "rpool/#{vm.parition_id}-ubuntu2/disk1"
-  #               vm.disk1_size                           = '50G'
                   vm.setup_wait                           = host['setup_wait']
                   vm.memory                               = host['memory']
                   vm.cpus                                 = host['simple_vcpu_conf']
@@ -68,15 +66,6 @@ class Hosts
                   vm.name                                 = "#{host['parition_id']}-#{host['name']}"
                   vm.cdroms                               = host['cdroms']
                   vm.additional_disks                     = host['additional_disks']
-  #               vm.customize                            ['modifyvm', :id, '--ostype', 'RedHat_64']
-  #               vm.customize                            ["modifyvm", :id, "--vrde", "on"]
-  #               vm.customize                            ["modifyvm", :id, "--vrdeport", "3941"]
-  #               vm.customize                            ["modifyvm", :id, "--vrdeaddress", "0.0.0.0"]
-  #          if host.has_key?('cdroms')
-  #            host['provider'].each do |param|
-  #              vm.customize                             ['modifyvm', :id, "--#{param['directive']}", param['value']]
-  #            end
-  #          end
           end
   
           # Register shared folders
