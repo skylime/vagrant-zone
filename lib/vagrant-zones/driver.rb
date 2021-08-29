@@ -358,7 +358,7 @@ end								}
 							ui.report_progress(stderr, 100, false)
 						end
 					  end
-					  ui.info(" ")
+					  ui.info("test")
 					  #ui.clear_line()
 
 				elsif config.brand == 'illumos'
