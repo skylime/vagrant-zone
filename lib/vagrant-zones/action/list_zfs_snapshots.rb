@@ -8,7 +8,7 @@ module VagrantPlugins
         end
         def call(env)
           if env[:machine].id
-            env[:ui].info (env[:machine].id)
+            env[:ui].info (env[:machine].name)
             env[:ui].info ("test")
           end
         @app.call(env)
