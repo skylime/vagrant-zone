@@ -210,14 +210,11 @@ module VagrantPlugins
 							nictype  = opts[:nictype]
 						end
 						dns=["1.1.1.1","1.0.0.1"]
-						unless !config.dns.nil?
-							dns = config.dns
-							puts "Setting DNS"
-						end
-						p dns
-						puts dns[1]
-						puts dns[0]
+
+
 						unless  config.dns.nil? ||  config.dns != 'none'
+							dns = config.dns
+							p dns
 							puts dns[0]
 							puts dns[1]
 
@@ -226,6 +223,7 @@ module VagrantPlugins
 							dns.each do |server|
 								ui.info(I18n.t("vagrant_zones.setting_dns_server") + server)
 								servers.append(server)
+								puts server
 							end
 							puts servers
 						end
@@ -358,7 +356,7 @@ end								}
       dhcp6: #{opts[:dhcp6]}
       set-name: vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
       nameservers:
-        addresses: [#{nameservers[0]} , #{nameservers[1]}]	}
+        addresses: [#{servers[0]} , #{servers[1]}]	}
 														if dhcprun == 0
 															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n")
 															dhcprun+=1
@@ -383,7 +381,7 @@ end								}
       addresses: [#{ip}/#{netmask}]
       gateway4: #{defrouter}
       nameservers:
-        addresses: [#{nameservers[0]} , #{nameservers[1]}]	}
+        addresses: [#{servers[0]} , #{servers[1]}]	}
 														if staticrun == 0
 															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"Static Subprocess Error Code: $?\"\n")
 															staticrun+=1
