@@ -613,39 +613,6 @@ end					}
 						f.puts cpu_attr
 					end
 				end
-
-				## CDROM Configurations
-				
-				if config.cdroms != 'none'
-					cdroms = config.cdroms
-					cdrun=0
-					cdroms.each do |cdrom|
-					    cdname = "cdrom"
-						ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + cdrom["path"])
-						puts cdrom["path"]
-						if cdrun > 0
-							cdname = cdname + cdrun.to_s
-						end
-						cdrun+=1 
-						cdrom_attr = %{add attr
-    set name=#{cdname}
-    set type=string
-    set value=#{cdrom["path"]}
-end
-add fs
-    set dir=#{cdrom["path"]}
-    set special=#{cdrom["path"]}
-    set type=lofs
-    add options ro
-    add options nodevices
-end						}
-						File.open("#{name}.zoneconfig", 'a') do |f|
-							f.puts cdrom_attr
-						end
-					end
-				end
-
-				
 				### Passthrough PCI Devices
 				#if config.ppt_devices == 'none'
 				#   ui.info(I18n.t("vagrant_zones.setting_pci_configurations") + path.path)
@@ -670,33 +637,57 @@ end						}
 				#	end
 				#end
 
-				
-				## Additional Disk Configurations
-				
-				unless config.additional_disks
-					ui.info(I18n.t("vagrant_zones.setting_additional_disks_configurations") + path.path)
-					puts config.config.additional_disks
-					config.additional_disks do |size, path|
-						puts size
-						puts path
-				
+				## CDROM Configurations
+				if config.cdroms != 'none'
+					cdroms = config.cdroms
+					cdrun=0
+					cdroms.each do |cdrom|
+					    cdname = "cdrom"
+						ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + cdrom["path"])
+						if cdrun > 0
+							cdname = cdname + cdrun.to_s
+						end
+						cdrun+=1 
+						cdrom_attr = %{add attr
+    set name=#{cdname}
+    set type=string
+    set value=#{cdrom["path"]}
+end
+add fs
+    set dir=#{cdrom["path"]}
+    set special=#{cdrom["path"]}
+    set type=lofs
+    add options ro
+    add options nodevices
+end						}
+						File.open("#{name}.zoneconfig", 'a') do |f|
+							f.puts cdrom_attr
+						end
 					end
 				end
-				unless config.disk1path != 'none' || config.disk1path
-					additional_disk_attr = %{add device
+
+				## Additional Disk Configurations
+				if config.additional_disks != 'none'
+					disks = config.additional_disks
+					diskrun=0
+					disks.each do |disk|
+						diskname = "disk"
+						ui.info(I18n.t("vagrant_zones.setting_additional_disks_configurations") + disk["size"] + ", " + disk["path"])
+						puts disk["path"]
+						additional_disk_attr = %{add device
 	set match=/dev/zvol/rdsk#{config.zonepath}/disk1
 end
 add attr
 	set name=disk
 	set type=string
 	set value=#{config.zonepath.delete_prefix("/")}/disk1
-end
-					}
-					File.open("#{name}.zoneconfig", 'a') do |f|
-						f.puts additional_disk_attr
+end						}
+						File.open("#{name}.zoneconfig", 'a') do |f|
+							f.puts additional_disk_attr
+						end
 					end
 				end
-				
+
 				## Nic Configurations
 				state = "config"
 				vnic(@machine, ui, state)
@@ -722,12 +713,38 @@ end
 				ui.info(I18n.t("vagrant_zones.vbox_run_check"))
 				result = execute(false, "#{@pfexec} VBoxManage list runningvms  ; echo $?")
 				raise Errors::VirtualBoxRunningConflictDetected if result == 0
-				
+				## https://man.omnios.org/man5/brands
 				if config.brand == 'lx'
 					ui.info(I18n.t("vagrant_zones.lx_check"))
 					return
 				end
-				if config.brand == 'bhyve'			
+				if config.brand == 'ipkg'
+					ui.info(I18n.t("vagrant_zones.ipkg_check"))
+					return
+				end
+				if config.brand == 'lipkg'
+					ui.info(I18n.t("vagrant_zones.lipkg_check"))
+					return
+				end
+				if config.brand == 'pkgsrc'
+					ui.info(I18n.t("vagrant_zones.pkgsrc_check"))
+					return
+				end
+				if config.brand == 'sparse'
+					ui.info(I18n.t("vagrant_zones.sparse_check"))
+					return
+				end
+				if config.brand == 'kvm'
+					## https://man.omnios.org/man5/kvm
+					ui.info(I18n.t("vagrant_zones.kvm_check"))
+					return
+				end
+				if config.brand == 'illumos'
+					ui.info(I18n.t("vagrant_zones.illumos_check"))
+					return
+				end
+				if config.brand == 'bhyve'
+					## https://man.omnios.org/man5/bhyve	
 					## Check for  bhhwcompat
 					result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
 					if result == 1
