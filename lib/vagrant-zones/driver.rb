@@ -278,6 +278,8 @@ end								}
 										if responses[-1][0] =~ regex											
 											if !vmnic.include? responses[-1][0][/#{regex}/]
 												vmnic.append(responses[-1][0][/#{regex}/])
+											else
+												raise "We are testing something"
 											end
 										end
 										vmnic.each { |interface|
