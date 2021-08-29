@@ -23,7 +23,7 @@ module VagrantPlugins
             end
 
             options[:snapshot] = argv[0]
-            
+            puts options[:snapshot]
             options[:snapshot] = "none" if options[:snapshot].nil?
             puts options[:snapshot]
             
