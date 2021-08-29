@@ -84,8 +84,9 @@ module VagrantPlugins
 			
 			def get_ip_address(machine)
 				config = machine.provider_config
-				machine.config.vm.networks.each do |_type, opts|
 				name = @machine.name
+				machine.config.vm.networks.each do |_type, opts|
+					responses=[]
 					if _type.to_s == "public_network"
 						if opts[:dhcp] == true
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
