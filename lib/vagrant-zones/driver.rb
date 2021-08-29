@@ -122,7 +122,7 @@ module VagrantPlugins
 
 								end
 								PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-									zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number} | head -n -1 | tail -1  | awk '{ print $2 }'\n") }
+									zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number} | head -n -1 | tail -1  | awk '{ print $2 }  | cut -f1 -d\"/\" '\n") }
 									Timeout.timeout(30) do
 										loop do
 											zlogin_read.expect(/\r\n/) { |line|  responses.push line}
@@ -174,7 +174,7 @@ module VagrantPlugins
 						end
 						mac  		= 'auto'
 						vlan 		= 1
-						if !opts[:mac].nil?
+						if !opts[:mac].nil? || !opts[:mac].expect(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)
 							mac  = opts[:mac]
 						end
 						if !opts[:type].nil?
