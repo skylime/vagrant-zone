@@ -65,7 +65,7 @@ class Hosts
                   vm.hostname                             = host['name']
                   vm.name                                 = "#{host['parition_id']}-#{host['name']}"
                   vm.cdroms                               = host['cdroms']
-                  vm.additional_disks                               = host['additional_disks']
+                  vm.additional_disks                     = host['additional_disks']
   #               vm.customize                            ['modifyvm', :id, '--ostype', 'RedHat_64']
   #               vm.customize                            ["modifyvm", :id, "--vrde", "on"]
   #               vm.customize                            ["modifyvm", :id, "--vrdeport", "3941"]
