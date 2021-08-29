@@ -359,7 +359,7 @@ end								}
   ethernets:  
     vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
 	  match:
-	    macaddress: #{mac}
+        macaddress: #{mac}
       dhcp-identifier: mac
       dhcp4: no
       dhcp6: no
