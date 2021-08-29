@@ -619,16 +619,16 @@ end					}
 				if config.cdroms != 'none'
 					puts config.cdroms
 					config.cdroms do |cdrom|
-						ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + cdroms["path"])
-						puts cdroms["path"]
+						ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + cdrom["path"])
+						puts cdrom["path"]
 						cdrom_attr = %{add attr
     set name=cdrom
     set type=string
-    set value=#{cdroms.path}
+    set value=#{cdrom["path"]}
 end
 add fs
-    set dir=#{cdroms.path}
-    set special=#{cdroms.path}
+    set dir=#{cdrom["path"]}
+    set special=#{cdrom["path"]}
     set type=lofs
     add options ro
     add options nodevices
