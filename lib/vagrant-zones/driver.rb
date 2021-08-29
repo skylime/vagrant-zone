@@ -890,7 +890,7 @@ end						}
 				zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{name}")
 				puts
 				zfssnapshots = zfs_snapshots.split(/\n/)
-				zfs_snapshots.each do |snapshot|
+				zfssnapshots.each do |snapshot|
 					puts snapshot
 				end
 				#name
