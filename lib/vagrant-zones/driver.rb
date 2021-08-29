@@ -889,19 +889,20 @@ end						}
 				ui.info (name)
 				zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{name}")
 				puts
+				puts
+				puts
 				zfssnapshots = zfs_snapshots.split(/\n/)
 				zfssnapshots.each do |snapshot|
 					puts snapshot
 				end
+				puts
+				puts
+				puts
 				#name
 				#used
 				#available
 				#refer
 				#mountpoint
-				puts
-				puts
-				puts zfs_snapshots
-				
 			end
 
 			def halt(machine, ui)
