@@ -6,39 +6,25 @@ module VagrantPlugins
       module Command
       class Zone < Vagrant.plugin("2", :command)
         def self.synopsis
-          "query Zones for available images or flavors"
+          "Manage zones and query zone information"
         end
 
         def initialize(argv, env)
           @main_args, @sub_command, @sub_args = split_main_and_subcommand(argv)
+
           @subcommands = Vagrant::Registry.new
-          #@subcommands.register(:images) do
-          #  require File.expand_path("../images", __FILE__)
-          #  Images
-          #end
-          #@subcommands.register(:flavors) do
-          #  require File.expand_path("../flavors", __FILE__)
-          #  Flavors
-          #end
+
           @subcommands.register(:zfssnapshot) do
             require File.expand_path("../zfssnapshot", __FILE__)
             ZFSSnapshot
           end
-          #@subcommands.register(:networks) do
-          #  require File.expand_path("../networks", __FILE__)
-          #  Networks
-          #end
-          #@subcommands.register(:servers) do
-          #  require File.expand_path("../servers", __FILE__)
-          #  Servers
-          #end
 
           super(argv, env)
         end
 
         def execute
           if @main_args.include?("-h") || @main_args.include?("--help")
-            # Print the help for all the rackspace commands.
+            # Print the help for all the vagrant-zones commands.
             return help
           end
 
