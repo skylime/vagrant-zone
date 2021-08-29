@@ -82,17 +82,6 @@ module VagrantPlugins
 				execute(false, "#{@pfexec} zoneadm -z #{name} boot")
 			end
 			
-			## Moving to Below Function as Subfunction
-			def get_ip_address(machine)
-				config = machine.provider_config
-				machine.config.vm.networks.each do |_type, opts|
-					
-
-				end
-			end
-
-
-
 			def get_ip_address(machine)
 				config = machine.provider_config
 				machine.config.vm.networks.each do |_type, opts|
@@ -127,15 +116,6 @@ module VagrantPlugins
 				end
 			end
 			
-
-
-
-
-
-
-
-
-
 			## Manage Network Interfaces
 			def vnic(machine, ui, state)
 				config = machine.provider_config
