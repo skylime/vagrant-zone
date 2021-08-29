@@ -345,12 +345,12 @@ end								}
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]	}
 														if run == 0
-															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"Subprocess Error Code: $?\"\n")
+															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n")
 															run+=1
 														end
-														if responses[-1].to_s.match(/Subprocess Error Code: 0/)
+														if responses[-1].to_s.match(/DHCP Subprocess Error Code: 0/)
 															ui.info(I18n.t("vagrant_zones.netplan_applied_dhcp") + "/etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml")														
-														elsif responses[-1].to_s.match(/Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
+														elsif responses[-1].to_s.match(/DHCP Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
 															raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
 														end
 													else	
@@ -369,12 +369,12 @@ end								}
       nameservers:
         addresses: [#{nameserver1} , #{nameserver2}]	}
 														if run == 0
-															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"Subprocess Error Code: $?\"\n")
+															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"Static Subprocess Error Code: $?\"\n")
 															run+=1
 														end
-														if responses[-1].to_s.match(/Subprocess Error Code: 0/)
+														if responses[-1].to_s.match(/Static Subprocess Error Code: 0/)
 															ui.info(I18n.t("vagrant_zones.netplan_applied_static") + "/etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml")															
-														elsif responses[-1].to_s.match(/Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
+														elsif responses[-1].to_s.match(/Static Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
 															raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
 														end
 													end
