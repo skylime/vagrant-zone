@@ -901,8 +901,8 @@ end						}
 					zfssnapshotrefer = attributes[3]
 					zfssnapshotmountpoint = attributes[4]
 
-					header = "Snapshot\t\tUsed\t\tAvailable\t\tRefer\t\tName\t\tMount Point"
-					data = "\#snapshotrun\t\t#{zfssnapshotused}\t\t#{zfssnapshotavailable}\t\t#{zfssnapshotrefer}\t\t#{zfssnapshotname}\t\t#{zfssnapshotmountpoint}"
+					header = "Snapshot\tUsed\tAvailable\tRefer\tName\t\tMount Point"
+					data = "##{snapshotrun}\t#{zfssnapshotused}\t#{zfssnapshotavailable}\t#{zfssnapshotrefer}\t\t#{zfssnapshotname}\t\t#{zfssnapshotmountpoint}"
 					puts header
 					puts data
 					snapshotrun += 1
