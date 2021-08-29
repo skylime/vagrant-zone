@@ -349,6 +349,7 @@ end								}
 															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n")
 															dhcprun+=1
 														end
+														puts responses[-1]
 														if responses[-1].to_s.match(/DHCP Subprocess Error Code: 0/)
 															ui.info(I18n.t("vagrant_zones.netplan_applied_dhcp") + "/etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml")														
 														elsif responses[-1].to_s.match(/DHCP Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
@@ -373,6 +374,7 @@ end								}
 															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"Static Subprocess Error Code: $?\"\n")
 															staticrun+=1
 														end
+														puts responses[-1]
 														if responses[-1].to_s.match(/Static Subprocess Error Code: 0/)
 															ui.info(I18n.t("vagrant_zones.netplan_applied_static") + "/etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml")															
 														elsif responses[-1].to_s.match(/Static Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
@@ -609,8 +611,12 @@ end					}
 				end
 
 				## CDROM Configurations
-				if config.cdrom_path != 'none'
+				if config.cdrompath != 'none'
 					puts config.cdrom_path
+					config.cdrom_path do |_type, opts|
+
+
+					end
 					cdrom_attr = %{add attr
     set name=cdrom
     set type=string
@@ -654,6 +660,15 @@ end					}
 
 				
 				## Additional Disk Configurations
+				
+				unless config.additional_disks
+					puts config.config.additional_disks
+					config.additional_disks do |size, path|
+						puts size
+						puts path
+				
+					end
+				end
 				unless config.disk1path != 'none' || config.disk1path
 					additional_disk_attr = %{add device
 	set match=/dev/zvol/rdsk#{config.zonepath}/disk1

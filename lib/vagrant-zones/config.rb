@@ -38,9 +38,12 @@ module VagrantPlugins
 			attr_accessor :sshport
 			attr_accessor :rdpport
 			attr_accessor :override
+			attr_accessor :additional_disks
+			
 			def initialize
 				# pkgsrc, lx, bhyve, kvm, illumos
 				@brand    						= 'bhyve'
+				@additional_disks				= UNSET_VALUE
 				@autoboot 						= true
 				@kernel   						= UNSET_VALUE
 				@zonepath 						= '/rpool/myvm'
