@@ -8,15 +8,15 @@ module VagrantPlugins
   
             @subcommands = Vagrant::Registry.new
             @subcommands.register(:list) do
-              require File.expand_path('../list_images', __FILE__)
+              require File.expand_path('../list_snapshots', __FILE__)
               ListSnapshots
             end
             @subcommands.register(:create) do
-              require File.expand_path('../create_image', __FILE__)
+              require File.expand_path('../create_snapshots', __FILE__)
               CreateSnapshots
             end
             @subcommands.register(:delete) do
-              require File.expand_path('../delete_image', __FILE__)
+              require File.expand_path('../delete_snapshots', __FILE__)
               DeleteSnapshots
             end
   
@@ -37,18 +37,22 @@ module VagrantPlugins
             command_class.new(@sub_args, @env).execute
           end
 
-          def execute
-            options = {}
-            opts = OptionParser.new do |o|
-              o.banner = "Usage: vagrant zone zfs-snapshot [options]"
+          def help
+            opts = OptionParser.new do |opts|
+              opts.banner = "Usage: vagrant zone zfssnapshot <subcommand> [<args>]"
+              opts.separator ""
+              opts.separator "Available subcommands:"
+              # Add the available subcommands as separators in order to print them
+              # out as well.
+              keys = []
+              @subcommands.each { |key, value| keys << key.to_s }
+              keys.sort.each do |key|
+                opts.separator "     #{key}"
+              end
+              opts.separator ""
+              opts.separator "For help on any individual subcommand run `vagrant zone zfssnapshot <subcommand> -h`"
             end
-  
-            argv = parse_options(opts)
-            return if !argv
-  
-            with_target_vms(argv, :provider => :vagrant_zones) do |machine|
-              machine.action('zfs_snapshot')
-            end
+            @env.ui.info(opts.help, :prefix => false)
           end
         end
       end

@@ -2,15 +2,15 @@
 module VagrantPlugins
 	module ProviderZone
       module Action
-        class zfsSnapshots
+        class ListSnapshots
           def initialize(app, env)
             @app = app
-            @logger = Log4r::Logger.new("vagrant_zones::action::zfs_snapshots")
           end
 
           def call(env)
             if env[:machine].id
               env[:ui].info (env[:machine].id)
+              env[:ui].info ("test")
             end
             @app.call(env)
         end
