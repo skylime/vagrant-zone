@@ -382,13 +382,11 @@ end								}
 											end
 										}
 										## Check if last command ran successfully
-										puts responses[-1]
-										zlogin_write.printf("echo \"Subprocess Error Code: $?\"\n")
-										puts responses[-1]
-										if responses[-1].to_s.match(/Subprocess Error Code: 0/)
+										zlogin_write.printf("echo \"Final Network Check Error Code: $?\"\n")
+										if responses[-1].to_s.match(/Final Network Check Error Code: 0/)
 											ui.info(I18n.t("vagrant_zones.netplan_set"))
 											break
-										elsif responses[-1].to_s.match(/Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
+										elsif responses[-1].to_s.match(/Final Network Check Error Code: \b(?![0]\b)\d{1,4}\b/)
 											raise "==> #{name} ==> Command: ==>  \nFailed with: #{responses[-1]}"
 										end									
 									end
