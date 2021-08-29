@@ -213,14 +213,7 @@ module VagrantPlugins
 
 						if  !config.dns.nil? 
 							dns = config.dns
-							puts dns[0]["nameserver"]
-							puts dns[1]["nameserver"]
-							p dns
-							puts dns[0]
-							puts dns[1]
 
-							dnsrun=0
-							servers=[]
 							dns.each do |server|
 								ui.info(I18n.t("vagrant_zones.setting_dns_server") + server["nameserver"])
 								servers.append(server)
