@@ -699,12 +699,12 @@ end						}
 						end
 						diskrun+=1 
 						additional_disk_attr = %{add device
-	set match=/dev/zvol/rdsk#{config.zonepath}/disk1
+	set match=/dev/zvol/rdsk#{disk["path"]}
 end
 add attr
 	set name=disk
 	set type=string
-	set value=#{config.zonepath.delete_prefix("/")}/disk1
+	set value=#{disk["path"]}
 end						}
 						File.open("#{name}.zoneconfig", 'a') do |f|
 							f.puts additional_disk_attr
@@ -882,7 +882,7 @@ end						}
 				name = @machine.name
 				config = machine.provider_config
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
-				vm_configured = execute(false, "#{@pfexec} zoneadm list -i | grep  #{name} || true")
+				vm_configured = execute(false, "#{@pfexec} zoneadm list -ic | grep  #{name} || true")
 				if vm_state == "running"
 					ui.info(I18n.t("vagrant_zones.graceful_shutdown"))
 					begin						
