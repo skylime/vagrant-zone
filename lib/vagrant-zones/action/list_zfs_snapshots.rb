@@ -7,11 +7,10 @@ module VagrantPlugins
           @app = app
         end
         def call(env)
-          if env[:machine].id
-            env[:ui].info (env[:machine].name)
-            env[:ui].info ("test")
-          end
-        @app.call(env)
+          @machine = env[:machine]
+          @driver  = @machine.provider.driver
+          @driver.setup(@machine, env[:ui])
+          @app.call(env)
         end
       end
     end
