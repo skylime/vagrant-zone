@@ -209,8 +209,8 @@ module VagrantPlugins
 						if !opts[:nictype].nil?
 							nictype  = opts[:nictype]
 						end
-						dns=
-						if config.dns != 'none'
+						dns=[]
+						unless  config.dns.nil? ||  config.dns != 'none'
 							dns = config.dns
 							dnsrun=0
 							nameservers=[]
