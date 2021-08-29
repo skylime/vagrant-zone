@@ -28,9 +28,9 @@ module VagrantPlugins
             puts argv[0]
             puts argv[0]
 
-            with_target_vms(argv, provider: :zone) do |machine|
+            with_target_vms(provider: :zone) do |machine|
 
-                machine.action('list_zfs_snapshots' , argv[0] ) 
+                machine.action('list_zfs_snapshots' ) 
               end
 
           end
