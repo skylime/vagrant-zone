@@ -12,7 +12,10 @@ module VagrantPlugins
             env[:ui].info ("test")
           end
         @app.call(env)
+        end
       end
     end
   end
 end
+
+
