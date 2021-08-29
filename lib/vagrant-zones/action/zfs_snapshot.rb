@@ -5,7 +5,7 @@ module VagrantPlugins
         class zfsSnapshots
           def initialize(app, env)
             @app = app
-            @logger = Log4r::Logger.new("vagrant_zones::action::delete_server")
+            @logger = Log4r::Logger.new("vagrant_zones::action::zfs_snapshots")
           end
 
           def call(env)
