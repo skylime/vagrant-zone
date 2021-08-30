@@ -883,7 +883,7 @@ end						}
 				return vagrantuserpass
 			end
 
-			def zfs(machine, ui, job, dataset)
+			def zfs(machine, ui, job, dataset, snapshot_name)
 				config = machine.provider_config
 				name = machine.name
 				puts dataset
@@ -910,7 +910,6 @@ end						}
 						snapshotrun += 1
 					end	
 				elsif job == "create"
-					
 					time = Time.new
 					dash = "-"
 					colon = ":"
@@ -918,6 +917,16 @@ end						}
 					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
 					p datetime
 					zfs_snapshots = execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{datetime}")
+					p dataset
+					zfssnapshots = zfs_snapshots.split(/\n/)
+				elsif job == "destroy"
+					time = Time.new
+					dash = "-"
+					colon = ":"
+					datetime = time.year.to_s + dash.to_s + time.month.to_s + dash.to_s + time.day.to_s + dash.to_s + time.hour.to_s + colon.to_s + time.min.to_s + colon.to_s + time.sec.to_s
+					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
+					p datetime
+					zfs_snapshots = execute(false, "#{@pfexec} zfs destroy snapshot #{dataset}@#{snapshotname}")
 					p dataset
 					zfssnapshots = zfs_snapshots.split(/\n/)
 				end
