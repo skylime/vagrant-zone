@@ -60,6 +60,7 @@ module VagrantPlugins
 									io.write chunk
 									amount_downloaded += chunk.size
 									puts "%.2f%%" % (amount_downloaded.to_f / file_size * 100)
+									ui.clear_line()
 								  end
 								end
 							  end
