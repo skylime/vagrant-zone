@@ -42,20 +42,26 @@ module VagrantPlugins
 					## Joyent images server
 					elsif validate_uuid_format(image)
 						raise Vagrant::Errors::BoxNotFound if not check(image)
+						
+						
+						
 						uri = URI("https://#{@joyent_images_url}/#{image}/file")
-						http = Net::HTTP.new(uri.host, uri.port)
-						http.use_ssl = true
-						Net::HTTP.start(http.host, http.port) do |http|
-							request = Net::HTTP::Get.new uri
+
+
+						Net::HTTP.start(uri.host, uri.port,	:use_ssl => uri.scheme == 'https') do |http|
+  							request = Net::HTTP::Get.new uri
+							  request = Net::HTTP::Get.new uri
 						  
-							http.request request do |response|
-							  open 'large_file', 'w' do |io|
-								response.read_body do |chunk|
-								  io.write chunk
+							  http.request request do |response|
+								open 'large_file', 'w' do |io|
+								  response.read_body do |chunk|
+									io.write chunk
+								  end
 								end
 							  end
-							end
-						  end
+						end
+
+				
 						  
 			
 						ui.info(I18n.t("vagrant_zones.joyent_image_uuid_detected") + image)
