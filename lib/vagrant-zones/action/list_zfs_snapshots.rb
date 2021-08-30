@@ -3,9 +3,9 @@ module VagrantPlugins
 	module ProviderZone
     module Action
       class ListSnapshots
-        def initialize(app, snapshot, _env)
+        def initialize(app, _env)
           @app = app
-          @snapshot = snapshot
+          puts app
         end
         def call(env)
           @machine = env[:machine]
