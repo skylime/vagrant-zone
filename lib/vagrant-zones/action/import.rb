@@ -106,7 +106,7 @@ module VagrantPlugins
 				
 				def check(uuid,ui)
 					`curl --output /dev/null --silent  -r 0-0 --fail #{@joyent_images_url}/#{uuid}`
-					ui.info(I18n.t("vagrant_zones.joyent_image_uuid_verified") + image)
+					ui.info(I18n.t("vagrant_zones.joyent_image_uuid_verified") + "#{@joyent_images_url}/#{uuid}")
 					return $?.success?
 				end
 
