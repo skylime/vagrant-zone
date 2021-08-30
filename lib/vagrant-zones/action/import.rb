@@ -89,6 +89,7 @@ module VagrantPlugins
 							ui.clear_line()
 							ui.info("==> #{name}: Import ", new_line: false)
 							ui.report_progress(stdout, 100, false)
+							puts stdout
 					  end
 					  ui.clear_line()
 					return $?.success?
