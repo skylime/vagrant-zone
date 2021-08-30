@@ -28,7 +28,7 @@ module VagrantPlugins
               colon = ":"
               datetime = time.year.to_s + dash.to_s + time.month.to_s + dash.to_s + time.day.to_s + dash.to_s + time.hour.to_s + colon.to_s + time.min.to_s + colon.to_s + time.sec.to_s
               
-              poptions[:snapshot_name] = datetime
+              options[:snapshot_name] = datetime
             end
 
             with_target_vms(argv, provider: :zone ) do |machine|
