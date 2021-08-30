@@ -43,27 +43,25 @@ module VagrantPlugins
 					elsif validate_uuid_format(image)
 						raise Vagrant::Errors::BoxNotFound if not check(image)
 						
-						url = "http://ipv4.download.thinkbroadband.com/5MB.zip"
+						
+						
+						uri = URI("https://#{@joyent_images_url}/#{image}/file")
 
-						url_base = url.split('/')[2]
-						url_path = '/'+url.split('/')[3..-1].join('/')
-						@counter = 0
-						
-						Net::HTTP.start(url_base) do |http|
-						  response = http.request_head(URI.escape(url_path))
-						  ProgressBar
-						  pbar = ProgressBar.new("file name:", response['content-length'].to_i)
-						  File.open("test.file", 'w') {|f|
-							http.get(URI.escape(url_path)) do |str|
-							  f.write str
-						  @counter += str.length 
-						  pbar.set(@counter)
+
+						Net::HTTP.start(uri.host, uri.port,	:use_ssl => uri.scheme == 'https') do |http|
+							request = Net::HTTP::Get.new uri
+
+							http.request request do |response|
+								open 'large_file', 'w' do |io|
+								  response.read_body do |chunk|
+									io.write chunk
+								  end
+								end
+							  end
 							end
-						   }
-						  pbar.finish
-						end
-						
-						puts "Done."
+
+				
+						  
 			
 						ui.info(I18n.t("vagrant_zones.joyent_image_uuid_detected") + image)
 
