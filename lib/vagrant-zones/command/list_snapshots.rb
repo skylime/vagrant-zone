@@ -20,11 +20,7 @@ module VagrantPlugins
             end
 
             with_target_vms(argv, provider: :zone ) do |machine|
-                machine.action('list_zfs_snapshots' ) 
                 driver  = machine.provider.driver
-                puts machine
-                puts
-                puts
                 
                 driver.zfs(machine, @env.ui, 'list' )
               end
