@@ -83,7 +83,15 @@ module VagrantPlugins
 					return $?.success?
 				end
 				def download(uuid, dest)
-					`curl --output #{dest} --silent #{@joyent_images_url}/#{uuid}/file`
+					command = "#{@pfexec} curl --output #{dest} --silent #{@joyent_images_url}/#{uuid}/file"
+					Util::Subprocess.new command do |stdout, stderr, thread|
+						ui.rewriting do |ui|
+							ui.clear_line()
+							ui.info("==> #{name}: Import ", new_line: false)
+							ui.report_progress(stderr, 100, false)
+						end
+					  end
+					  ui.clear_line()
 					return $?.success?
 				end
 			end
