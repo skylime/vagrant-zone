@@ -918,7 +918,7 @@ end						}
 					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
 					p datetime
 					zfs_snapshots = execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{datetime}")
-					p zfs_snapshots
+					p dataset
 					zfssnapshots = zfs_snapshots.split(/\n/)
 				end
 										
