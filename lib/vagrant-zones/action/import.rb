@@ -59,7 +59,7 @@ module VagrantPlugins
 								  response.read_body do |chunk|
 									io.write chunk
 									amount_downloaded += chunk.size
-									puts "%" % (amount_downloaded.to_f / file_size * 100)
+									puts "%.2f%%" % (amount_downloaded.to_f / file_size * 100)
 								  end
 								end
 							  end
