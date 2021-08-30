@@ -6,8 +6,8 @@ module VagrantPlugins
             options = {}       
             opts = OptionParser.new do |o|
               o.banner = 'Usage: vagrant zone zfssnapshot list [options]'
-              o.on('--snapshot SNAPSHOTPATH', 'Specify snapshot path') do |p|
-                options[:snapshot] = p
+              o.on('--dataset SNAPSHOTPATH', 'Specify snapshot path') do |p|
+                options[:dataset] = p
               end
             end
 
@@ -21,7 +21,7 @@ module VagrantPlugins
 
             with_target_vms(argv, provider: :zone ) do |machine|
                 driver  = machine.provider.driver
-                driver.zfs(machine, @env.ui, 'list', options[:snapshot] )
+                driver.zfs(machine, @env.ui, 'list', options[:dataset] )
               end
 
           end
