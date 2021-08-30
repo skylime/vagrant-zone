@@ -59,7 +59,11 @@ module VagrantPlugins
 								  response.read_body do |chunk|
 									io.write chunk
 									amount_downloaded += chunk.size
-									ui.info("==> #{name}: Import %.2f%%" % (amount_downloaded.to_f / file_size * 100), new_line: false)
+									ui.rewriting do |ui|
+										ui.clear_line()
+										ui.info("==> #{name}: Import %.2f%%" % (amount_downloaded.to_f / file_size * 100), new_line: false)
+										ui.report_progress(stderr, 100, false)
+									end
 									ui.clear_line()
 								  end
 								end
