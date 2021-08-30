@@ -692,7 +692,7 @@ end						}
 				end
 
 				## Additional Disk Configurations
-				unless  config.additional_disks.nil? ||  config.additional_disks != 'none'
+				unless  !config.additional_disks.nil? ||  config.additional_disks == 'none'
 					disks = config.additional_disks
 					diskrun=0
 					disks.each do |disk|
