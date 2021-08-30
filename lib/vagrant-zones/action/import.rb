@@ -45,7 +45,7 @@ module VagrantPlugins
 						
 						
 						
-						uri = URI("https://#{@joyent_images_url}/#{image}/file")
+						uri = URI("#{@joyent_images_url}/#{image}/file")
 						puts uri
 
 						Net::HTTP.start(uri.host, uri.port,	:use_ssl => uri.scheme == 'https') do |http|
