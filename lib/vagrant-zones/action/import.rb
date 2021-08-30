@@ -54,7 +54,7 @@ module VagrantPlugins
 							http.request request do |response|
 								file_size = response['content-length'].to_i
 								amount_downloaded = 0
-								ratelimit = 100
+								ratelimit = 0
 								open 'large_file', 'wb' do |io| # 'b' opens the file in binary mode 
 								  
 								  response.read_body do |chunk|
@@ -64,7 +64,7 @@ module VagrantPlugins
 									ui.rewriting do |ui|
 										ratelimit += 1
 										puts ratelimit
-										if ratelimit == 100
+										if ratelimit >= 100
 											status = "%.2f%%" % (amount_downloaded.to_f / file_size * 100)
 											ui.info("==> #{name}: Import "+  status, new_line: true)
 											ui.report_progress(status, 100, false)
