@@ -26,7 +26,7 @@ module VagrantPlugins
                 puts
                 puts
                 
-                driver.zfs(machine, @env[:ui], 'list' )
+                driver.zfs(machine, @env.ui, 'list' )
               end
 
           end
