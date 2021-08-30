@@ -12,6 +12,7 @@ module VagrantPlugins
                 until (line = stream.gets).nil? do
                   # yield the block depending on the stream
                   if key == :out
+                    puts line
                     yield line, nil, thread if block_given?
                   else
                     yield nil, line, thread if block_given?
