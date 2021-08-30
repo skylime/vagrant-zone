@@ -63,6 +63,7 @@ module VagrantPlugins
 									
 									ui.rewriting do |ui|
 										ratelimit += 1
+										puts ratelimit
 										if ratelimit == 100
 											status = "%.2f%%" % (amount_downloaded.to_f / file_size * 100)
 											ui.info("==> #{name}: Import "+  status, new_line: true)
