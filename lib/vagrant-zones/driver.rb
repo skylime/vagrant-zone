@@ -908,8 +908,8 @@ end						}
 						data = "##{snapshotrun}\t\t#{zfssnapshotused}\t#{zfssnapshotavailable}\t\t#{zfssnapshotrefer}\t#{zfssnapshotname}"
 						puts data
 						snapshotrun += 1
-				end
-				if job == "create"
+					end	
+				elsif job == "create"
 					put Time.new
 					time1 = Time.new
 					dash = "-"
@@ -921,12 +921,7 @@ end						}
 					p zfs_snapshots
 					zfssnapshots = zfs_snapshots.split(/\n/)
 				end
-				if job == 'destroy'
-
-				end
-				if job == 'configure'
-
-				end												
+										
 				
 				#name
 				#used
