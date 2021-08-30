@@ -46,11 +46,8 @@ module VagrantPlugins
 						
 						
 						uri = URI("#{@joyent_images_url}#{image}/file")
-						puts uri
-
 						Net::HTTP.start(uri.host, uri.port,	:use_ssl => uri.scheme == 'https') do |http|
 							request = Net::HTTP::Get.new uri
-
 							http.request request do |response|
 								file_size = response['content-length'].to_i
 								amount_downloaded = 0
@@ -58,17 +55,15 @@ module VagrantPlugins
 								rate = 500
 								large_file = datadir.to_s + '/' + image
 								open large_file, 'wb' do |io| # 'b' opens the file in binary mode 
-								  
 								  response.read_body do |chunk|
 									io.write chunk
 									amount_downloaded += chunk.size
-									
 									ui.rewriting do |ui|
 										ratelimit += 1
 										if ratelimit >= rate
 											ui.clear_line()
 											status = "%.2f%%" % (amount_downloaded.to_f / file_size * 100)
-											ui.info("==> #{name}: Import ", new_line: false)
+											ui.info("==> #{name}: Import Joyent image ==> #{uri} ==> ", new_line: false)
 											ui.report_progress(status, 100, false)
 											ratelimit = 0
 										end
