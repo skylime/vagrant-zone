@@ -45,6 +45,7 @@ module VagrantPlugins
 						raise Vagrant::Errors::BoxNotFound if not check(image)
 
 						command = "#{@pfexec} curl --output #{datadir.to_s + '/' + image}  #{@joyent_images_url}/#{image}/file --progress-bar 2>&1 | tr $'\\r' $'\\n' | sed -r 's/[# ]+|%|=|-|O|.[0-9]//g;'"
+						puts "test"
 						Util::Subprocess.new command do |stdout, stderr, thread|
 							ui.rewriting do |ui|
 								ui.clear_line()
