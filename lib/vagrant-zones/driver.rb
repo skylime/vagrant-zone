@@ -883,10 +883,10 @@ end						}
 				return vagrantuserpass
 			end
 
-			def zfs(machine, ui, job, snapshot)
+			def zfs(machine, ui, job)
 				config = machine.provider_config
 				name = @machine.name
-				puts snapshot
+				puts @machine.snapshot
 				puts snapshot
 				puts snapshot
 				if job == 'list'
