@@ -910,7 +910,7 @@ end						}
 						snapshotrun += 1
 					end	
 				elsif job == "create"
-					put Time.new
+					puts Time.new
 					time1 = Time.new
 					dash = "-"
 					colon = ":"
