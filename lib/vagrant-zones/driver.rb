@@ -913,20 +913,9 @@ end						}
 					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
 					zfs_snapshots = execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
 				elsif job == "destroy"
-					time = Time.new
-					dash = "-"
-					colon = ":"
-					datetime = time.year.to_s + dash.to_s + time.month.to_s + dash.to_s + time.day.to_s + dash.to_s + time.hour.to_s + colon.to_s + time.min.to_s + colon.to_s + time.sec.to_s
 					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
 					zfs_snapshots = execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}")
 				end
-										
-				
-				#name
-				#used
-				#available
-				#refer
-				#mountpoint
 			end
 
 			def halt(machine, ui)
