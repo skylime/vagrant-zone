@@ -42,8 +42,7 @@ module VagrantPlugins
 					## Joyent images server
 					elsif validate_uuid_format(image)
 						raise Vagrant::Errors::BoxNotFound if not check(image)
-						
-						uri = URI("#{@joyent_images_url}/#{image}/file")
+						uri = URI("https://#{@joyent_images_url}/#{image}/file")
 						http = Net::HTTP.new(uri.host, uri.port)
 						http.use_ssl = true
 						Net::HTTP.start(http.host, http.port) do |http|
