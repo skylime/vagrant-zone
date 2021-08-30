@@ -217,7 +217,7 @@ module VagrantPlugins
 						if  !config.dns.nil? 
 							dns = config.dns
 						else
-							dns=["1.1.1.1","1.0.0.1"]
+							dns=["nameserver"=>"1.1.1.1","nameserver"=>"1.0.0.1"]
 						end
 						dnsrun=0
 						servers=[]
