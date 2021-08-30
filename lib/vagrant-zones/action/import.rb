@@ -50,8 +50,10 @@ module VagrantPlugins
 							ui.info("==> #{name}: Import ", new_line: false)
 							ui.rewriting do |ui|
 								ui.clear_line()
-								
-								ui.report_progress(stdout, 100, false)
+								puts stdout
+								puts stderr
+								puts thread
+								ui.report_progress(stderr, 100, false)
 							end
 						  end
 						  ui.clear_line()
