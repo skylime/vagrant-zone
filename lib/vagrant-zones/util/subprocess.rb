@@ -15,13 +15,10 @@ module VagrantPlugins
                   # yield the block depending on the stream
                   
                   if key == :out
-                    puts "test"
                     yield line, nil, thread if block_given?
                   else
-                    puts "test2"
                     yield nil, line, thread if block_given?
                   end
-                  puts "test"
                 end
               end
             end
