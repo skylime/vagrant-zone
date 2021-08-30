@@ -61,7 +61,7 @@ module VagrantPlugins
 								  response.read_body do |chunk|
 									io.write chunk
 									amount_downloaded += chunk.size
-									
+									ui.clear_line()
 									ui.rewriting do |ui|
 										ratelimit += 1
 										if ratelimit >= rate
@@ -72,9 +72,9 @@ module VagrantPlugins
 										end
 										
 									end
-									ui.clear_line()
+									
 								  end
-								  
+								  ui.clear_line()
 								end
 							  end
 							end
