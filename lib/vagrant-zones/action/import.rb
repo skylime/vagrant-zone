@@ -54,9 +54,9 @@ module VagrantPlugins
 							http.request request do |response|
 								file_size = response['content-length'].to_i
 								amount_downloaded = 0
-							
+								ratelimit = 100
 								open 'large_file', 'wb' do |io| # 'b' opens the file in binary mode 
-								  ratelimit = 100
+								  
 								  response.read_body do |chunk|
 									io.write chunk
 									amount_downloaded += chunk.size
