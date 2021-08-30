@@ -221,9 +221,11 @@ module VagrantPlugins
 						end
 						dnsrun=0
 						servers=[]
-						dns.each do |server|
-							ui.info(I18n.t("vagrant_zones.setting_dns_server") + server["nameserver"])
-							servers.append(server)
+						if !dns.nil?
+							dns.each do |server|
+								ui.info(I18n.t("vagrant_zones.setting_dns_server") + server["nameserver"])
+								servers.append(server)
+							end
 						end
 						case nictype
 						when /external/
