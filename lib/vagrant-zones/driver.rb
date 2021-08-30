@@ -663,7 +663,7 @@ end					}
 
 				## CDROM Configurations
 
-				unless config.cdroms.nil? || config.cdroms != 'none'
+				unless !config.cdroms.nil? || config.cdroms == 'none'
 					cdroms = config.cdroms
 					cdrun=0
 					cdroms.each do |cdrom|
