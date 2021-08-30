@@ -914,6 +914,7 @@ end						}
 					colon = ":"
 					datetime = time.year + dash + time.month + dash + time.day + dash + time.hour + colon + time.min + colon + time.sec
 					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
+					p datetime
 					zfs_snapshots = execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{datetime}")
 					p zfs_snapshots
 					zfssnapshots = zfs_snapshots.split(/\n/)
