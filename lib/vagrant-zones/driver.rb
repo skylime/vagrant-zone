@@ -909,7 +909,7 @@ end						}
 						puts data
 						snapshotrun += 1
 				end
-				if job == "create"
+				if job ~= /create/
 					put Time.new
 					time1 = Time.new
 					dash = "-"
