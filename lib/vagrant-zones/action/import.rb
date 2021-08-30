@@ -43,6 +43,7 @@ module VagrantPlugins
 					## Joyent images server
 					elsif validate_uuid_format(image)
 						raise Vagrant::Errors::BoxNotFound if not check(image)
+						puts test
 						download(image, datadir.to_s + '/' + image)
 						ui.info(I18n.t("vagrant_zones.joyent_image_uuid_detected") + image)
 
