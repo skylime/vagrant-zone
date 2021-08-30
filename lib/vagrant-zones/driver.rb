@@ -910,25 +910,15 @@ end						}
 						snapshotrun += 1
 					end	
 				elsif job == "create"
-					time = Time.new
-					dash = "-"
-					colon = ":"
-					datetime = time.year.to_s + dash.to_s + time.month.to_s + dash.to_s + time.day.to_s + dash.to_s + time.hour.to_s + colon.to_s + time.min.to_s + colon.to_s + time.sec.to_s
 					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
-					p datetime
-					zfs_snapshots = execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{datetime}")
-					p dataset
-					zfssnapshots = zfs_snapshots.split(/\n/)
+					zfs_snapshots = execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
 				elsif job == "destroy"
 					time = Time.new
 					dash = "-"
 					colon = ":"
 					datetime = time.year.to_s + dash.to_s + time.month.to_s + dash.to_s + time.day.to_s + dash.to_s + time.hour.to_s + colon.to_s + time.min.to_s + colon.to_s + time.sec.to_s
 					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
-					p datetime
 					zfs_snapshots = execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}")
-					p dataset
-					zfssnapshots = zfs_snapshots.split(/\n/)
 				end
 										
 				
