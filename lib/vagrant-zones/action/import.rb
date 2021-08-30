@@ -66,7 +66,6 @@ module VagrantPlugins
 										ratelimit += 1
 										if ratelimit >= rate
 											status = "%.2f%%" % (amount_downloaded.to_f / file_size * 100)
-											ui.info("==> #{name}: Import "+  status, new_line: true)
 											ui.report_progress(status, 100, false)
 											ratelimit = 0
 										end
