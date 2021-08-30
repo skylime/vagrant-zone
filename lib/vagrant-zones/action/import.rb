@@ -87,7 +87,7 @@ module VagrantPlugins
 					ui = env[:ui]
 					puts uuid
 					puts dest
-					cmd = "curl --output #{dest}  #{@joyent_images_url}/#{uuid}/file --progress-bar 2>&1 | tr $'\r' $'\n' | sed -r 's/[# ]+|%|=|-|O//g;'"
+					cmd = "curl --output #{dest}  #{@joyent_images_url}/#{uuid}/file --progress-bar 2>&1 | tr $'\r' $'\n' "
 				    puts
 					puts	cmd
 					Util::Subprocess.new cmd do |stdout, stderr, thread|
