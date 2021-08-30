@@ -44,22 +44,18 @@ module VagrantPlugins
 						raise Vagrant::Errors::BoxNotFound if not check(image)
 						
 						uri = URI("#{@joyent_images_url}/#{image}/file")
+
 						Net::HTTP.start(uri.host, uri.port) do |http|
-						  request = Net::HTTP::Get.new uri
-						
-						  http.request request do |response|
-							file_size = response['content-length'].to_i
-							amount_downloaded = 0
-							path == datadir.to_s + '/' + image
-							open path, 'wb' do |io| # 'b' opens the file in binary mode 
-							  response.read_body do |chunk|
-								io.write chunk
-								amount_downloaded += chunk.size
-								puts "%.2f%" % (amount_downloaded.to_f / file_size * 100)
+							request = Net::HTTP::Get.new uri
+						  
+							http.request request do |response|
+							  open 'large_file', 'w' do |io|
+								response.read_body do |chunk|
+								  io.write chunk
+								end
 							  end
 							end
 						  end
-						end
 						  
 			
 						ui.info(I18n.t("vagrant_zones.joyent_image_uuid_detected") + image)
