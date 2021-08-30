@@ -88,7 +88,8 @@ module VagrantPlugins
 					puts uuid
 					puts dest
 					cmd = "pfexec curl --output #{dest}  #{@joyent_images_url}/#{uuid}/file --progress-bar 2>&1 | tr $'\r' $'\n' | sed -r 's/[# ]+|%|=|-|O//g;'"
-				    puts	cmd
+				    puts
+					puts	cmd
 					Util::Subprocess.new cmd do |stdout, stderr, thread|
 
 							ui.info("==> #{name}: Import ", new_line: false)
