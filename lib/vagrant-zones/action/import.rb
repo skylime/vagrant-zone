@@ -1,7 +1,9 @@
 # coding: utf-8
 
-require "log4r"
+require 'net/http'
+require 'uri'
 require 'vagrant-zones/util/subprocess'
+require 'progressbar'
 
 module VagrantPlugins
 	module ProviderZone
@@ -43,21 +45,26 @@ module VagrantPlugins
 					## Joyent images server
 					elsif validate_uuid_format(image)
 						raise Vagrant::Errors::BoxNotFound if not check(image)
-
-						command = "#{@pfexec} curl --output #{datadir.to_s + '/' + image}  #{@joyent_images_url}/#{image}/file  --progress-bar 2>&1 |  perl -015 -n -e 'print \"$1\\n\" if (/[#]* ([\\d]+)/);'"
 						
-						Util::Subprocess.new command do |stdout, stderr, thread|
-							ui.info("==> #{name}: Import ", new_line: false)
-							ui.rewriting do |ui|
-								ui.clear_line()
-								puts stdout
-								puts stderr
-								puts thread
-								ui.report_progress(stderr, 100, false)
-							end
+						url = "#{@joyent_images_url}/#{image}/file"
+						url_base = url.split('/')[2]
+						url_path = '/'+url.split('/')[3..-1].join('/')
+						@counter = 0
+						Net::HTTP.start(url_base) do |http|
+							response = http.request_head(URI.escape(url_path))
+							ProgressBar
+							pbar = ProgressBar.new("file name:", response['content-length'].to_i)
+							File.open(datadir.to_s + '/' + image, 'w') {|f|
+							  http.get(URI.escape(url_path)) do |str|
+								f.write str
+							@counter += str.length 
+							pbar.set(@counter)
+							  end
+							 }
+							pbar.finish
 						  end
-						  ui.clear_line()
-						
+						  
+			
 						ui.info(I18n.t("vagrant_zones.joyent_image_uuid_detected") + image)
 
 					## If it's a regular name (everything else), try to find it
