@@ -9,6 +9,9 @@ module VagrantPlugins
               o.on('--dataset SNAPSHOTPATH', 'Specify snapshot path') do |p|
                 options[:dataset] = p
               end
+              o.on('--snapshot_name @SNAPSHOTNAME', 'Specify snapshot name') do |p|
+                options[:snapshot_name] = p
+              end
             end
 
             argv = parse_options(opts)
@@ -19,9 +22,13 @@ module VagrantPlugins
               return
             end
 
+            if options[:snapshot_name].nil?
+              puts "name nil"
+            end
+
             with_target_vms(argv, provider: :zone ) do |machine|
                 driver  = machine.provider.driver
-                driver.zfs(machine, @env.ui, 'create', options[:dataset] )
+                driver.zfs(machine, @env.ui, 'create', options[:dataset],  options[:snapshot_name] )
               end
 
           end
