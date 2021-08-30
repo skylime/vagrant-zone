@@ -44,7 +44,7 @@ module VagrantPlugins
 					elsif validate_uuid_format(image)
 						raise Vagrant::Errors::BoxNotFound if not check(image)
 						puts "test"
-						download(ui, image, datadir.to_s + '/' + image)
+						download(image, datadir.to_s + '/' + image)
 						ui.info(I18n.t("vagrant_zones.joyent_image_uuid_detected") + image)
 
 					## If it's a regular name (everything else), try to find it
@@ -83,10 +83,11 @@ module VagrantPlugins
 					`curl --output /dev/null --silent  -r 0-0 --fail #{@joyent_images_url}/#{uuid}`
 					return $?.success?
 				end
-				def download(ui, uuid, dest)
+				def download(uuid, dest)
+					ui = env[:ui]
 					cmd = "#{@pfexec} curl --output #{dest}  #{@joyent_images_url}/#{uuid}/file --progress-bar 2>&1 | tr $'\r' $'\n' | sed -r 's/[# ]+|%|=|-|O//g;'"
 					Util::Subprocess.new cmd do |stdout, stderr, thread|
-							
+
 							ui.info("==> #{name}: Import ", new_line: false)
 							ui.report_progress(stdout, 100, false)
 							puts stdout
