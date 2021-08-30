@@ -926,7 +926,7 @@ end						}
 					datetime = time.year.to_s + dash.to_s + time.month.to_s + dash.to_s + time.day.to_s + dash.to_s + time.hour.to_s + colon.to_s + time.min.to_s + colon.to_s + time.sec.to_s
 					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
 					p datetime
-					zfs_snapshots = execute(false, "#{@pfexec} zfs destroy snapshot #{dataset}@#{snapshotname}")
+					zfs_snapshots = execute(false, "#{@pfexec} zfs destroy snapshot #{dataset}@#{snapshot_name}")
 					p dataset
 					zfssnapshots = zfs_snapshots.split(/\n/)
 				end
