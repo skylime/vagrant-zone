@@ -5,7 +5,6 @@ module VagrantPlugins
       class ListSnapshots
         def initialize(app, _env)
           @app = app
-          puts app
         end
         def call(env)
           puts env
