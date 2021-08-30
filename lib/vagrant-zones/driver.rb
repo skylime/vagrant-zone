@@ -886,8 +886,6 @@ end						}
 			def zfs(machine, ui, job, dataset, snapshot_name)
 				config = machine.provider_config
 				name = machine.name
-				puts dataset
-				puts job
 				if job == "list"
 					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
 					zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{name}")
@@ -897,23 +895,18 @@ end						}
 					puts header
 					zfssnapshots.each do |snapshot|
 						attributes = snapshot.gsub(/\s+/m, ' ').strip.split(" ")
-						zfssnapshotname = attributes[0]
-						zfssnapshotused = attributes[1]
-						zfssnapshotavailable = attributes[2]
-						zfssnapshotrefer = attributes[3]
-						zfssnapshotmountpoint = attributes[4]
 						if !zfssnapshotmountpoint.nil? && zfssnapshotmountpoint != "-"
-							puts "Drive Mounted at: " + zfssnapshotmountpoint
+							puts "Drive Mounted at: " + attributes[4]
 						end
-						data = "##{snapshotrun}\t\t#{zfssnapshotused}\t#{zfssnapshotavailable}\t\t#{zfssnapshotrefer}\t#{zfssnapshotname}"
+						data = "##{snapshotrun}\t\t#{attributes[1]}\t#{attributes[2]}\t\t#{attributes[3]}\t#{attributes[0]}"
 						puts data
 						snapshotrun += 1
 					end	
 				elsif job == "create"
-					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
+					ui.info (I18n.t("vagrant_zones.zfs_snapshot_create"))
 					zfs_snapshots = execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
 				elsif job == "destroy"
-					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
+					ui.info (I18n.t("vagrant_zones.zfs_snapshot_destroy"))
 					zfs_snapshots = execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}")
 				end
 			end

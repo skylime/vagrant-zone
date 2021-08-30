@@ -35,7 +35,6 @@ module VagrantPlugins
                 driver  = machine.provider.driver
                 driver.zfs(machine, @env.ui, 'list', options[:dataset], options[:snapshot_name] )
               end
-
           end
         end
       end
