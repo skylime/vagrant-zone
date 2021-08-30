@@ -52,7 +52,7 @@ module VagrantPlugins
 							request = Net::HTTP::Get.new uri
 
 							http.request request do |response|
-								open 'large_file', 'w' do |io|
+								open 'large_file', 'wb' do |io|
 								  response.read_body do |chunk|
 									io.write chunk
 								  end
