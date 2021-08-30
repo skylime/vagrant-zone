@@ -1,6 +1,5 @@
 # coding: utf-8
 require 'net/http'
-require "down"
 require 'vagrant-zones/util/subprocess'
 
 module VagrantPlugins
