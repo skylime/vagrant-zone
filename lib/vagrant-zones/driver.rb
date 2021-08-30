@@ -886,7 +886,7 @@ end						}
 			def zfs(machine, ui, job)
 				config = machine.provider_config
 				name = @machine.name
-				puts @machine.snapshot
+				puts @machine.options.snapshot
 				puts snapshot
 				puts snapshot
 				if job == 'list'
