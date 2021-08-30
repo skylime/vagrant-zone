@@ -61,8 +61,8 @@ module VagrantPlugins
 									amount_downloaded += chunk.size
 									ui.rewriting do |ui|
 										ui.clear_line()
-										status = "%.2f%%" % (amount_downloaded.to_f / file_size * 100)
-										ui.info("==> #{name}: Import "+  status.chomp, new_line: true)
+										status = "%.2f%%" % (amount_downloaded.to_f / file_size * 10)
+										ui.info("==> #{name}: Import "+  status, new_line: true)
 										ui.report_progress(status, 100, false)
 										ui.clear_line()
 									end
