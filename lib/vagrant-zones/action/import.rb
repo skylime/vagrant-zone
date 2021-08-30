@@ -44,7 +44,7 @@ module VagrantPlugins
 					elsif validate_uuid_format(image)
 						raise Vagrant::Errors::BoxNotFound if not check(image)
 
-						command = `#{@pfexec} curl --output #{datadir.to_s + '/' + image}  #{@joyent_images_url}/#{image}/file --progress-bar --progress-bar 2>&1 |  perl -015 -n -e 'print "$1\n" if (/[#]* ([\d]+)/);'`
+						command = `#{@pfexec} curl --output #{datadir.to_s + '/' + image}  #{@joyent_images_url}/#{image}/file --progress-bar --progress-bar |  perl -015 -n -e 'print "$1\n" if (/[#]* ([\d]+)/);'`
 						
 						Util::Subprocess.new command do |stdout, stderr, thread|
 							ui.info("==> #{name}: Import ", new_line: false)
