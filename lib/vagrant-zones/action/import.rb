@@ -68,6 +68,7 @@ module VagrantPlugins
 											status = "%.2f%%" % (amount_downloaded.to_f / file_size * 100)
 											ui.report_progress(status, 100, false)
 											ratelimit = 0
+											ui.clear_line()
 										end
 									end
 								  end
