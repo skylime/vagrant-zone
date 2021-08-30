@@ -10,12 +10,14 @@ module VagrantPlugins
             # read each stream from a new thread
             { :out => stdout, :err => stderr }.each do |key, stream|
               Thread.new do
-                puts "test"
+                
                 until (line = stream.gets).nil? do
                   # yield the block depending on the stream
                   if key == :out
+                    puts "test"
                     yield line, nil, thread if block_given?
                   else
+                    puts "test2"
                     yield nil, line, thread if block_given?
                   end
                 end
