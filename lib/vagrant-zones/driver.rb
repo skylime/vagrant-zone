@@ -895,7 +895,7 @@ end						}
 					puts header
 					zfssnapshots.each do |snapshot|
 						attributes = snapshot.gsub(/\s+/m, ' ').strip.split(" ")
-						if !zfssnapshotmountpoint.nil? && zfssnapshotmountpoint != "-"
+						if !attributes[4].nil? && attributes[4] != "-"
 							puts "Drive Mounted at: " + attributes[4]
 						end
 						data = "##{snapshotrun}\t\t#{attributes[1]}\t#{attributes[2]}\t\t#{attributes[3]}\t#{attributes[0]}"
