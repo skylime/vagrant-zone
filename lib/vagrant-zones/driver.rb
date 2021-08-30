@@ -911,7 +911,7 @@ end						}
 					end	
 				elsif job == "create"
 					
-					time1 = Time.new
+					time = Time.new
 					dash = "-"
 					colon = ":"
 					datetime = time.year + dash + time.month + dash + time.day + dash + time.hour + colon + time.min + colon + time.sec
