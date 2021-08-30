@@ -71,9 +71,9 @@ module VagrantPlugins
 											ratelimit = 0
 										end
 										
-										ui.clear_line()
 									end
 								  end
+								  ui.clear_line()
 								end
 							  end
 							end
