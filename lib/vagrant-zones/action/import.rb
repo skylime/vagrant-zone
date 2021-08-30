@@ -43,7 +43,7 @@ module VagrantPlugins
 					## Joyent images server
 					elsif validate_uuid_format(image)
 						raise Vagrant::Errors::BoxNotFound if not check(image)
-						download(ui, image, datadir.to_s + '/' + image)
+						#download(ui, image, datadir.to_s + '/' + image)
 
 						command = "#{@pfexec} curl --output #{dest}  #{@joyent_images_url}/#{uuid}/file --progress-bar 2>&1 | tr $'\\r' $'\\n' | sed -r 's/[# ]+|%|=|-|O//g;'"
 						Util::Subprocess.new command do |stdout, stderr, thread|
