@@ -42,9 +42,6 @@ module VagrantPlugins
 					## Joyent images server
 					elsif validate_uuid_format(image)
 						raise Vagrant::Errors::BoxNotFound if not check(image)
-						
-						
-						
 						uri = URI("#{@joyent_images_url}#{image}/file")
 						Net::HTTP.start(uri.host, uri.port,	:use_ssl => uri.scheme == 'https') do |http|
 							request = Net::HTTP::Get.new uri
@@ -67,18 +64,12 @@ module VagrantPlugins
 											ui.report_progress(status, 100, false)
 											ratelimit = 0
 										end
-										
 									end
-									
 								  end
 								  ui.clear_line()
 								end
 							  end
 							end
-
-				
-						  
-			
 						ui.info(I18n.t("vagrant_zones.joyent_image_uuid_detected") + image)
 
 					## If it's a regular name (everything else), try to find it
@@ -115,7 +106,7 @@ module VagrantPlugins
 				
 				def check(uuid)
 					`curl --output /dev/null --silent  -r 0-0 --fail #{@joyent_images_url}/#{uuid}`
-					puts "done checking"
+					ui.info(I18n.t("vagrant_zones.joyent_image_uuid_verified") + image)
 					return $?.success?
 				end
 
