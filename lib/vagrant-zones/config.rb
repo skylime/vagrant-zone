@@ -68,7 +68,7 @@ module VagrantPlugins
 				@firmware 						= UNSET_VALUE
 				@setup_wait  					= 30
 				@clean_shutdown_time  			= 300
-				@dns				  			= UNSET_VALUE
+				@dns				  			= nil
 				@vmtype   						= 'production'
 				@vm_type   						= UNSET_VALUE
 				@partition_id	  				= '0000'
