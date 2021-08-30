@@ -84,6 +84,7 @@ module VagrantPlugins
 					return $?.success?
 				end
 				def download(uuid, dest)
+					ui = env[:ui]
 					command = "#{@pfexec} curl --output #{dest}  #{@joyent_images_url}/#{uuid}/file --progress-bar 2>&1 | tr $'\r' $'\n' | sed -r 's/[# ]+|%|=|-|O//g;'"
 					Util::Subprocess.new command do |stdout, stderr, thread|
 						ui.rewriting do |ui|
