@@ -44,7 +44,8 @@ module VagrantPlugins
 						raise Vagrant::Errors::BoxNotFound if not check(image)
 						
 						uri = URI("#{@joyent_images_url}/#{image}/file")
-
+						http = Net::HTTP.new(uri.host, uri.port)
+						http.use_ssl = true
 						Net::HTTP.start(uri.host, uri.port) do |http|
 							request = Net::HTTP::Get.new uri
 						  
