@@ -89,7 +89,7 @@ module VagrantPlugins
 				    puts
 					puts	cmd
 					Util::Subprocess.new cmd do |stdout, stderr, thread|
-
+							puts "test"
 							ui.info("==> #{name}: Import ", new_line: false)
 							ui.report_progress(stdout, 100, false)
 					  end
