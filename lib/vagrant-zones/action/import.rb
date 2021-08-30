@@ -66,11 +66,12 @@ module VagrantPlugins
 										ratelimit += 1
 										if ratelimit >= rate
 											
-											ui.clear_line()
 											status = "%.2f%%" % (amount_downloaded.to_f / file_size * 100)
 											ui.report_progress(status, 100, false)
 											ratelimit = 0
 										end
+										
+										ui.clear_line()
 									end
 								  end
 								end
