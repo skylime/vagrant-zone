@@ -3,7 +3,6 @@
 require 'net/http'
 require 'uri'
 require 'vagrant-zones/util/subprocess'
-require 'progressbar'
 
 module VagrantPlugins
 	module ProviderZone
