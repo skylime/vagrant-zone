@@ -203,8 +203,11 @@ module VagrantPlugins
 						end
 						mac  		= 'auto'
 						vlan 		= 1
-						if !opts[:mac].nil? || !opts[:mac].expect(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)
-							mac  = opts[:mac]
+
+						if !opts[:mac].nil?
+							if !opts[:mac].expect(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)
+								mac  = opts[:mac]
+							end
 						end
 						if !opts[:nictype].nil?
 							nictype  = opts[:nictype]
