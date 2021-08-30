@@ -888,8 +888,7 @@ end						}
 				name = machine.name
 				puts dataset
 				puts job
-				puts Time.new
-				if job == 'list'
+				if job ~= /list/
 					ui.info (I18n.t("vagrant_zones.zfs_snapshot_list"))
 					zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{name}")
 					zfssnapshots = zfs_snapshots.split(/\n/)
