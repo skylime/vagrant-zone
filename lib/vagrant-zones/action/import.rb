@@ -44,6 +44,17 @@ module VagrantPlugins
 					elsif validate_uuid_format(image)
 						raise Vagrant::Errors::BoxNotFound if not check(image)
 						download(ui, image, datadir.to_s + '/' + image)
+
+						command = "#{@pfexec} curl --output #{dest}  #{@joyent_images_url}/#{uuid}/file --progress-bar 2>&1 | tr $'\\r' $'\\n' | sed -r 's/[# ]+|%|=|-|O//g;'"
+						Util::Subprocess.new command do |stdout, stderr, thread|
+							ui.rewriting do |ui|
+								ui.clear_line()
+								ui.info("==> #{name}: Import ", new_line: false)
+								ui.report_progress(stderr, 100, false)
+							end
+						  end
+						  ui.clear_line()
+						
 						ui.info(I18n.t("vagrant_zones.joyent_image_uuid_detected") + image)
 
 					## If it's a regular name (everything else), try to find it
@@ -80,11 +91,7 @@ module VagrantPlugins
 				
 				def check(uuid)
 					`curl --output /dev/null --silent  -r 0-0 --fail #{@joyent_images_url}/#{uuid}`
-					return $?.success?
-				end
-				def download(ui, uuid, dest)
-					`pfexec curl --output #{dest}  #{@joyent_images_url}/#{uuid}/file --progress-bar 2>&1 | tr $'\\r' $'\\n' | sed -r 's/[# ]+|%|=|-|O//g;'`
-
+					puts "done checking"
 					return $?.success?
 				end
 			end
