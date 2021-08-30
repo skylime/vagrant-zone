@@ -8,7 +8,6 @@ module VagrantPlugins
         end
         def call(env)
           @machine = env[:machine]
-          puts env
           puts
           puts
           @driver  = @machine.provider.driver
