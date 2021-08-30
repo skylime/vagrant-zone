@@ -85,10 +85,9 @@ module VagrantPlugins
 				end
 				def download(env, uuid, dest)
 					ui = env[:ui]
-					cmd = "      pfexec curl --output #{dest}  #{@joyent_images_url}/#{uuid}/file --progress-bar 2>&1 | tr $'\\r' $'\\n' | sed -r 's/[# ]+|%|=|-|O//g;'"
 				    puts
 					puts	cmd
-					Util::Subprocess.new cmd do |stdout, stderr, thread|
+					Util::Subprocess.new "pfexec curl --output #{dest}  #{@joyent_images_url}/#{uuid}/file --progress-bar 2>&1 | tr $'\\r' $'\\n' | sed -r 's/[# ]+|%|=|-|O//g;'" do |stdout, stderr, thread|
 							puts "test"
 							ui.info("==> #{name}: Import ", new_line: false)
 							ui.report_progress(stdout, 100, false)
