@@ -80,10 +80,11 @@ module VagrantPlugins
 				end
 				
 				def check(uuid)
-					`curl --output /dev/null --silent -r 0-0 --fail #{@joyent_images_url}/#{uuid}`
+					`curl --output /dev/null --silent  -r 0-0 --fail #{@joyent_images_url}/#{uuid}`
 					return $?.success?
 				end
 				def download(uuid, dest)
+					puts "#{@pfexec} curl --output #{dest} -# #{@joyent_images_url}/#{uuid}/file"
 					command = "#{@pfexec} curl --output #{dest} --silent #{@joyent_images_url}/#{uuid}/file"
 					Util::Subprocess.new command do |stdout, stderr, thread|
 						ui.rewriting do |ui|
