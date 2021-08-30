@@ -89,7 +89,7 @@ module VagrantPlugins
 						ui.rewriting do |ui|
 							ui.clear_line()
 							ui.info("==> #{name}: Import ", new_line: false)
-							ui.report_progress(stderr, 100, false)
+							ui.report_progress(stdout, 100, false)
 						end
 					  end
 					  ui.clear_line()
