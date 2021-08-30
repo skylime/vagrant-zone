@@ -56,10 +56,11 @@ module VagrantPlugins
 								amount_downloaded = 0
 							
 								open 'large_file', 'wb' do |io| # 'b' opens the file in binary mode 
+								  ratelimit = 100
 								  response.read_body do |chunk|
 									io.write chunk
 									amount_downloaded += chunk.size
-									ratelimit = 0
+									
 									ui.rewriting do |ui|
 										ratelimit += 1
 										if ratelimit == 100
