@@ -72,8 +72,9 @@ module VagrantPlugins
 										end
 										
 									end
+									ui.clear_line()
 								  end
-								  ui.clear_line()
+								  
 								end
 							  end
 							end
