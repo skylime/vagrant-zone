@@ -1,5 +1,6 @@
 # encoding: utf-8
 require 'open3'
+require "log4r"
 module VagrantPlugins
   module ProviderZone
     module Util
