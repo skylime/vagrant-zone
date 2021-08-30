@@ -59,7 +59,8 @@ module VagrantPlugins
 								  response.read_body do |chunk|
 									io.write chunk
 									amount_downloaded += chunk.size
-									puts "%.2f%%" % (amount_downloaded.to_f / file_size * 100)
+									ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected") + image)
+									ui.info("==> #{name}: Import %.2f%%" % (amount_downloaded.to_f / file_size * 100), new_line: false)
 									ui.clear_line()
 								  end
 								end
