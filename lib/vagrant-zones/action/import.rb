@@ -1,7 +1,6 @@
 # coding: utf-8
-
 require 'net/http'
-require 'uri'
+require "down"
 require 'vagrant-zones/util/subprocess'
 
 module VagrantPlugins
@@ -45,23 +44,23 @@ module VagrantPlugins
 					elsif validate_uuid_format(image)
 						raise Vagrant::Errors::BoxNotFound if not check(image)
 						
-						url = "#{@joyent_images_url}/#{image}/file"
-						url_base = url.split('/')[2]
-						url_path = '/'+url.split('/')[3..-1].join('/')
-						@counter = 0
-						Net::HTTP.start(url_base) do |http|
-							response = http.request_head(URI.escape(url_path))
-							ProgressBar
-							pbar = ProgressBar.new("file name:", response['content-length'].to_i)
-							File.open(datadir.to_s + '/' + image, 'w') {|f|
-							  http.get(URI.escape(url_path)) do |str|
-								f.write str
-							@counter += str.length 
-							pbar.set(@counter)
+						uri = URI("#{@joyent_images_url}/#{image}/file")
+						Net::HTTP.start(uri.host, uri.port) do |http|
+						  request = Net::HTTP::Get.new uri
+						
+						  http.request request do |response|
+							file_size = response['content-length'].to_i
+							amount_downloaded = 0
+							path == datadir.to_s + '/' + image
+							open path, 'wb' do |io| # 'b' opens the file in binary mode 
+							  response.read_body do |chunk|
+								io.write chunk
+								amount_downloaded += chunk.size
+								puts "%.2f%" % (amount_downloaded.to_f / file_size * 100)
 							  end
-							 }
-							pbar.finish
+							end
 						  end
+						end
 						  
 			
 						ui.info(I18n.t("vagrant_zones.joyent_image_uuid_detected") + image)
