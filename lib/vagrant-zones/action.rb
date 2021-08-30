@@ -136,12 +136,6 @@ module VagrantPlugins
 				end
 			end
 
-			def self.action_list_zfs_snapshots
-				Vagrant::Action::Builder.new.tap do |b|
-				  # b.use ConfigValidate # is this per machine?
-				  b.use ListSnapshots
-				end
-			end
 
 			def self.action_create_zfs_snapshots
 				Vagrant::Action::Builder.new.tap do |b|
@@ -173,7 +167,6 @@ module VagrantPlugins
 			autoload :Start, action_root.join('start')
 			autoload :IsCreated, action_root.join('is_created')
 			autoload :NotCreated, action_root.join('not_created')
-			autoload :ListSnapshots, action_root.join('list_zfs_snapshots')
 			autoload :CreateSnapshots, action_root.join('create_zfs_snapshots')
 			autoload :DeleteSnapshots, action_root.join('delete_zfs_snapshots')
 			autoload :ConfigureSnapshots, action_root.join('configure_zfs_snapshots')
