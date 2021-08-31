@@ -167,7 +167,7 @@ module VagrantPlugins
 
 							end
 							puts "==> #{machine.name} ==> DHCP is not yet Configured for use"
-						elsif opts[:dhcp] == false
+						elsif opts[:dhcp] == false || opts[:dhcp].nil?
 							if opts[:managed]
 								ip = opts[:ip].to_s
 								puts ip
