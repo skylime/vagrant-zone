@@ -265,7 +265,7 @@ module VagrantPlugins
 							ui.info(I18n.t("vagrant_zones.vnic_setup") + vnic_name)
 
 							if config.brand == 'lx'
-								nic_attr = %{add net
+								nic_attr = %{
 add net
 	set physical=#{vnic_name}
 	set global-nic=auto
@@ -292,6 +292,7 @@ end									}
 							responses=[]
 							vmnic=[]
 							ui.info(I18n.t("vagrant_zones.configure_interface_using_vnic") + vnic_name)	
+							## regex to grab standard Device interface names in ifconfig
 							regex=/(en|eth)(\d|o\d|s\d|x[0-9A-Fa-f]{2}{6}|(p\d)(s\d)(f?\d?))/
 							PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 								zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n") }
