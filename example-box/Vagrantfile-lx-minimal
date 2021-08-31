@@ -5,7 +5,7 @@ Vagrant.configure("2") do |config|
 
     centos.vm.provider :zone do |vm|
       vm.brand        = 'lx'
-      vm.parition_id  = 0001
+      vm.partition_id  = 0001
       vm.kernel       = '3.10.0'
       vm.zonepath     = '/rpool/centos'
       vm.memory       = '512M'
