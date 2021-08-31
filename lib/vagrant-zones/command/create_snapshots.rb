@@ -23,6 +23,7 @@ module VagrantPlugins
             end
 
             if options[:dataset].nil?
+              @env.ui.info(opts.help)
               return
             end
             if options[:snapshot_name].nil?
