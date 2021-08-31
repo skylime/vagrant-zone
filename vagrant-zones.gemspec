@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'i18n', '>= 1.0'
   spec.add_runtime_dependency 'log4r', '>= 1.1'
   spec.add_runtime_dependency "iniparse", '>= 1.0'
-  spec.add_runtime_dependency 'nokogiri', '>= 1.11.0'
+  spec.add_runtime_dependency 'nokogiri'
   
   spec.add_development_dependency "ruby-progressbar", ">= 1.11.0"  
   spec.add_development_dependency "bundler", ">= 2.2.25"
@@ -40,7 +40,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec-expectations', '>= 3.10.0'
   spec.add_development_dependency 'rubocop-rake', '>= 0.6.0'
   spec.add_development_dependency 'rubocop-rspec', '>= 2.4.0'
-  
+
   Encoding.default_external = Encoding::UTF_8
   Encoding.default_internal = Encoding::UTF_8
 
