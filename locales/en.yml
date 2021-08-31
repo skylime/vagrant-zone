@@ -113,12 +113,12 @@ en:
     joyent_image_uuid_verified: |-
       Joyent Image UUID has been verified ==> 
     lx_zone_dataset: |-
-      LX zone Dataset ==>
+      LX zone Dataset ==> 
     setting_dns_server: |-
       Setting nameserver ==> 
     detected_ovf_format: |-
       Detected OVF
     importing_box_image: |-
-      Importing Box ==>
+      Importing Box ==> 
     importing_joyent_image: |-
-      Importing Joyent Image ==>
+      Importing Joyent Image ==> 
