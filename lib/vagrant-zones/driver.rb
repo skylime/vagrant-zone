@@ -441,7 +441,7 @@ end									}
 				datasetroot = config.zonepath.delete_prefix("/").to_s
 				## Create Boot Volume
 				if config.brand == 'lx'	
-					ui.info(I18n.t("vagrant_zones.lx_zone_dataset:") + dataset)	
+					ui.info(I18n.t("vagrant_zones.lx_zone_dataset") + dataset)	
 					execute(false, "#{@pfexec} zfs create -o zoned=on -p #{dataset}")
 				elsif config.brand == 'bhyve'
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_root") + datasetroot)

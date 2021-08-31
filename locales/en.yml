@@ -119,6 +119,6 @@ en:
     detected_ovf_format: |-
       Detected OVF
     importing_box_image: |-
-      Importing Box
+      Importing Box ==>
     importing_joyent_image: |-
-      Importing Joyent Image
+      Importing Joyent Image ==>
