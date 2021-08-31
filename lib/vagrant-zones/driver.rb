@@ -196,7 +196,7 @@ module VagrantPlugins
 						netmask 	= IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count("1")
 						ip        	= opts[:ip].to_s
 						defrouter 	= opts[:gateway].to_s
-						cloud_init_enabled = false
+						cloud_init_enabled = config.cloud_init_enabled
 
 						allowed_address = ip.to_s + "/" + netmask.to_s
 						if ip.length == 0
@@ -261,21 +261,33 @@ module VagrantPlugins
 								execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
 							end
 						elsif state == "config"
+
 							ui.info(I18n.t("vagrant_zones.vnic_setup") + vnic_name)
-							if cloud_init_enabled
+
+							if config.brand == 'lx'
 								nic_attr = %{add net
+add net
 	set physical=#{vnic_name}
-	set allowed-address=#{allowed_address}
-end							}			
-							else
-								nic_attr = %{add net
-	set physical=#{vnic_name}
-	set allowed-address=#{allowed_address}
-end								}
+	set global-nic=auto
+	add property (name=gateway,value="#{@defrouter.to_s}")
+	add property (name=ips,value="#{allowed_address}")
+	add property (name=primary,value="true")
+end							}
 								File.open("#{name}.zoneconfig", 'a') do |f|
 									f.puts nic_attr
 								end
+							elsif config.brand == 'bhyve'
+								if config.cloud_init_enabled
+									nic_attr = %{add net
+	set physical=#{vnic_name}
+	set allowed-address=#{allowed_address}
+end									}
+									File.open("#{name}.zoneconfig", 'a') do |f|
+										f.puts nic_attr
+									end
+								end
 							end
+
 						elsif state == "setup"
 							responses=[]
 							vmnic=[]
@@ -522,12 +534,15 @@ end								}
 				if config.brand == 'lx'
 					ui.info(I18n.t("vagrant_zones.lx_zone_config_gen"))
 					machine.config.vm.networks.each do |_type, opts|
+						
 						index = 1
 						if _type.to_s == "public_network"
 							@ip        = opts[:ip].to_s
 							@network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
 							@defrouter = opts[:gateway]
 						end
+
+						
 					end
 					allowed_address  = @ip + @network.netmask.to_s
 					attr = %{create
@@ -539,13 +554,6 @@ add attr
 	set type=string
 	set value=#{config.kernel}
 end
-add net
-	set physical=#{vnic_name}
-	set global-nic=auto
-	add property (name=gateway,value="#{@defrouter.to_s}")
-	add property (name=ips,value="#{allowed_address}")
-	add property (name=primary,value="true")
-end
 add capped-memory
 	set physical=#{config.memory}
 	set swap=#{config.memory}
@@ -556,8 +564,7 @@ add dataset
 end
 set max-lwps=2000
 					}
-				end
-				if config.brand == 'bhyve'
+				elsif config.brand == 'bhyve'
 					## General Configuration
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_config_gen"))
 					attr = %{create
