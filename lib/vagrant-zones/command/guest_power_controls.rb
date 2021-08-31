@@ -7,11 +7,11 @@ module VagrantPlugins
             @main_args, @sub_command, @sub_args = split_main_and_subcommand(argv)
   
             @subcommands = Vagrant::Registry.new
-            @subcommands.register(:list) do
+            @subcommands.register(:restart) do
               require File.expand_path('../restart_guest', __FILE__)
               RestartGuest
             end
-            @subcommands.register(:create) do
+            @subcommands.register(:shutdown) do
               require File.expand_path('../shutdown_guest', __FILE__)
               ShutdownGuest
             end
