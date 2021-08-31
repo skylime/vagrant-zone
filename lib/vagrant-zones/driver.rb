@@ -221,7 +221,7 @@ module VagrantPlugins
 							dns = config.dns
 							puts dns
 						else
-							dns=["nameserver"=>"1.1.1.1","nameserver"=>"1.0.0.1"]
+							dns={"nameserver"=>"1.1.1.1","nameserver"=>"1.0.0.1"}
 							puts dns
 						end
 						dnsrun=0
