@@ -1,4 +1,6 @@
 # coding: utf-8
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
 require File.expand_path('../lib/vagrant-zones/version', __FILE__)
 
 Gem::Specification.new do |spec|
@@ -40,10 +42,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec-expectations', '>= 3.10.0'
   spec.add_development_dependency 'rubocop-rake', '>= 0.6.0'
   spec.add_development_dependency 'rubocop-rspec', '>= 2.4.0'
-
-  Encoding.default_external = Encoding::UTF_8
-  Encoding.default_internal = Encoding::UTF_8
-
   spec.add_development_dependency 'rspec-mocks', '>= 3.10.0'
   spec.add_development_dependency 'rubocop', '>= 1.0'
   spec.add_development_dependency 'code-scanning-rubocop', '>= 0.5.0'
