@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = ">= 2.5.0"
+  spec.required_ruby_version = ">= 2.4.0"
   spec.required_rubygems_version = ">= 1.3.6"
 
   spec.add_runtime_dependency "ruby_expect"
@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'i18n', '>= 1.0'
   spec.add_runtime_dependency 'log4r', '>= 1.1'
   spec.add_runtime_dependency "iniparse", '>= 1.0'
-  spec.add_runtime_dependency 'nokogiri', '1.12.4'
+  spec.add_runtime_dependency 'nokogiri', '>= 1.11.0'
   
   spec.add_development_dependency "ruby-progressbar", ">= 1.11.0"  
   spec.add_development_dependency "bundler", ">= 2.2.25"
