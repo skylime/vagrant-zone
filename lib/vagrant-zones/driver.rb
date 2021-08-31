@@ -527,7 +527,10 @@ end								}
 						end
 					end
 					allowed_address  = @ip + @network.netmask.to_s
-					attr = %{
+					attr = %{create
+set zonepath=#{config.zonepath}/path
+set brand=#{config.brand}
+set autoboot=#{config.autoboot}
 add attr
 	set name=kernel-version
 	set type=string
