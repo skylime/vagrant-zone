@@ -17,6 +17,7 @@ module VagrantPlugins
 
             ## Wait for VM up
             with_target_vms(argv, provider: :zone ) do |machine|
+              
                 machine.action('shutdown')
               end
           end

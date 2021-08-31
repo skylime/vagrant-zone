@@ -16,6 +16,7 @@ module VagrantPlugins
 				def call(env)
 					@machine = env[:machine]
 					@driver  = @machine.provider.driver
+					puts  env[:machine].state.id 
 					ui = env[:ui]
 					env[:metrics] ||= {}
 					env[:metrics]['instance_ssh_time'] = Util::Timer.time do
