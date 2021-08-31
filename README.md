@@ -68,7 +68,7 @@ Collecting status of boxes from [Vagrant Cloud](https://app.vagrantup.com/)
 
 ## Development Installation Instructions
 
-### Setup OS for Development
+### Setup OS for Development and installation
 
   * ooce/library/libarchive
   * system/bhyve
