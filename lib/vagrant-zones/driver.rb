@@ -81,7 +81,7 @@ module VagrantPlugins
 			
 
 			## Control the Machine from inside the machine
-			def control(machine, ui, control)
+			def control(@machine, ui, control)
 				name = @machine.name
 				ui.info(I18n.t(control))
 
