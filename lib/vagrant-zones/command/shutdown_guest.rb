@@ -20,7 +20,7 @@ module VagrantPlugins
                 driver  = machine.provider.driver
 
 
-              WaitTillUp
+                VagrantPlugins::ProviderZone::Action::WaitTillUp
 
 
 
