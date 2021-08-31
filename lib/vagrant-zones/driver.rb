@@ -76,7 +76,7 @@ module VagrantPlugins
 				if config.brand == 'illumos'
 					execute(false, "#{@pfexec} zoneadm -z #{name} install")
 				end
-				ui.info(I18n.t("vagrant_zones.installing_zone")+" brand: #{config.brand}")
+				ui.info(I18n.t("vagrant_zones.installing_zone") + " brand: #{config.brand}")
 			end
 			
 
@@ -84,7 +84,27 @@ module VagrantPlugins
 			def control(machine, ui, control)
 				name = @machine.name
 				ui.info(I18n.t(control))
-				execute(false, "#{@pfexec} zoneadm -z #{name} boot")
+
+				if control == "restart"
+					command = "reboot"
+					ssh_run_command(machine, ui, command)
+				elsif control == "shutdown"
+					command = "shutdown"
+					ssh_run_command(machine, ui, command)
+				end
+			end
+
+
+			def ssh_run_command(machine, ui , command)
+				ip = get_ip_address(machine)
+				user = user(machine)
+				key = userprivatekeypath(machine).to_s
+				password = vagrantuserpass(machine).to_s
+				port = sshport(machine).to_s 
+				if port.to_s.nil?
+					port = 22
+				end
+				execute(false, "#{@pfexec} ssh -p #{port} -i #{key} #{user}@#{ip}  '#{command}' ")
 			end
 
 			## Boot the Machine
