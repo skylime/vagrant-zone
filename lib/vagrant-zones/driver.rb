@@ -79,6 +79,14 @@ module VagrantPlugins
 				ui.info(I18n.t("vagrant_zones.installing_zone")+" brand: #{config.brand}")
 			end
 			
+
+			## Control the Machine from inside the machine
+			def control(machine, ui, control = 'restart')
+				name = @machine.name
+				ui.info(I18n.t("vagrant_zones.starting_zone"))
+				execute(false, "#{@pfexec} zoneadm -z #{name} boot")
+			end
+
 			## Boot the Machine
 			def boot(machine, ui)
 				name = @machine.name
@@ -478,6 +486,7 @@ end									}
 					end
 				end
 			end
+
 			def delete_dataset(machine, ui)
 				name = @machine.name
 				config = machine.provider_config

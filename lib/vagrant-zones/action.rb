@@ -62,6 +62,47 @@ module VagrantPlugins
 				end
 			end
 
+
+			def self.action_restart
+				Vagrant::Action::Builder.new.tap do |b|
+					b.use Call, IsState, :running do |env, b1|
+						if env[:result]
+							b1.use Message, I18n.t('vagrant_zones.states.is_running')
+							next
+						end
+						b1.use Call, IsState, :uncleaned do |env1, b2|
+							if env1[:result]
+								b2.use Cleanup
+							end
+						end
+
+						b1.use WaitTillUp
+						b1.use Restart
+					end
+				end
+			end
+
+
+			def self.action_shutdown
+				Vagrant::Action::Builder.new.tap do |b|
+					b.use Call, IsState, :running do |env, b1|
+						if env[:result]
+							b1.use Message, I18n.t('vagrant_zones.states.is_running')
+							next
+						end
+						b1.use Call, IsState, :uncleaned do |env1, b2|
+							if env1[:result]
+								b2.use Cleanup
+							end
+						end
+
+						b1.use WaitTillUp
+						b1.use Shutdown
+					end
+				end
+			end
+
+
 			# This is the action that is primarily responsible for halting the
 			# virtual machine.
 			def self.action_halt
@@ -165,6 +206,8 @@ module VagrantPlugins
 			autoload :Network, action_root.join('network')
 			autoload :Setup, action_root.join('setup')
 			autoload :Start, action_root.join('start')
+			autoload :Retart, action_root.join('restart')
+			autoload :Shutdown, action_root.join('shutdown')
 			autoload :IsCreated, action_root.join('is_created')
 			autoload :NotCreated, action_root.join('not_created')
 			autoload :CreateSnapshots, action_root.join('create_zfs_snapshots')
