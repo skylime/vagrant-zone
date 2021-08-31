@@ -18,6 +18,8 @@ module VagrantPlugins
 					@driver  = @machine.provider.driver
 					ui = env[:ui]			
 					@driver.control(@machine, env[:ui], "shutdown")
+					sleep 60
+					@driver.control(@machine, env[:ui])
 					@app.call(env)
 				end
 			end

@@ -54,36 +54,24 @@ module VagrantPlugins
 								b2.use Cleanup
 							end
 						end
-
 						b1.use Start
 						b1.use WaitTillBoot
-						#b1.use WaitTillUp
 					end
 				end
 			end
-
 
 			def self.action_restart
 				Vagrant::Action::Builder.new.tap do |b|
-					b.use Call, IsState, :running do |env, b1|
-						if env[:result]
-							b1.use Message, I18n.t('vagrant_zones.states.is_running')
-							next
-						end
-						b1.use Call, IsState, :uncleaned do |env1, b2|
-							if env1[:result]
-								b2.use Cleanup
+					b.use Call, IsCreated do |env, b2|
+						b2.use Call, IsState, :stopped do |env, b3|
+							unless env[:result]
+								b3.use WaitTillUp
+								b3.use Restart
 							end
 						end
-
-						b1.use WaitTillUp
-						b1.use Restart
 					end
 				end
 			end
-
-
-
 
 			
 			def self.action_shutdown
@@ -93,8 +81,8 @@ module VagrantPlugins
 							unless env[:result]
 								b3.use WaitTillUp
 								b3.use Shutdown
+								
 							end
-
 						end
 					end
 				end
