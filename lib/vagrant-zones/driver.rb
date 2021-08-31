@@ -859,9 +859,9 @@ end						}
 						Process.kill("HUP",pid)
 					end
 				elsif config.brand == 'lx'
-					zlogincommand(machine, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
-					zlogincommand(machine, %('echo nameserver 1.0.0.1 >> /etc/resolv.conf'))
 					if not user_exists?(machine, config.vagrant_user)
+						zlogincommand(machine, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
+						zlogincommand(machine, %('echo nameserver 1.0.0.1 >> /etc/resolv.conf'))
 						zlogincommand(machine, "useradd -m -s /bin/bash -U vagrant")
 						zlogincommand(machine, "echo \"vagrant ALL=(ALL:ALL) NOPASSWD:ALL\" \\> /etc/sudoers.d/vagrant")
 						zlogincommand(machine, "mkdir -p /home/vagrant/.ssh")
