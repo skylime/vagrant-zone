@@ -17,7 +17,7 @@ module VagrantPlugins
             argv = parse_options(opts)
             return unless argv
             puts argv.count
-            unless argv.length <= 4
+            unless argv.length <= 2
               @env.ui.info(opts.help)
               return
             end
