@@ -90,7 +90,7 @@ module VagrantPlugins
 					ssh_run_command(machine, ui, command)
 				elsif control == "shutdown"
 					command = "sudo shutdown"
-					#ssh_run_command(machine, ui, command)
+					ssh_run_command(machine, ui, command)
 				end
 			end
 
