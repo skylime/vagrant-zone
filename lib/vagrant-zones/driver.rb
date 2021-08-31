@@ -216,7 +216,7 @@ module VagrantPlugins
 							nictype  = opts[:nictype]
 						end
 						dns=[{nameserver: "1.1.1.1",nameserver: "1.0.0.1"}]
-						puts dns[nameserver:]
+						puts dns["nameserver"]
 						puts dns[1]
 						if  !config.dns.nil? 
 							dns = config.dns
