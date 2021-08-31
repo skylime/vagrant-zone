@@ -50,7 +50,7 @@ module VagrantPlugins
 				@kernel   						= UNSET_VALUE
 				@zonepath 						= '/rpool/myvm'
 				@zonepathsize 					= '20G'
-				@cdroms							= "none"
+				@cdroms							= nil
 				@shared_dir						= nil
 				@os_type						= 'generic'
 				@shared_disk_enabled			= true
