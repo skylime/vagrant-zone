@@ -86,17 +86,7 @@ module VagrantPlugins
 
 
 			
-			def self.action_shutdown
-				Vagrant::Action::Builder.new.tap do |b|
-					b.use Call, IsCreated do |env, b2|
-						b2.use Call, IsState, :running do |env, b3|
-
-						end
-					end
-				end
-			end
-
-
+		
 
 			def self.action_shutdown
 				Vagrant::Action::Builder.new.tap do |b|
