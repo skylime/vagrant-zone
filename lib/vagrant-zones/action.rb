@@ -86,6 +86,7 @@ module VagrantPlugins
 			def self.action_shutdown
 				Vagrant::Action::Builder.new.tap do |b|
 					b.use Call, IsState, :running do |env, b1|
+						puts "are we getting somwhere?"
 						if env[:result]
 							b1.use Message, I18n.t('vagrant_zones.states.is_running')
 							next
