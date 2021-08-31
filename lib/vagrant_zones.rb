@@ -1,5 +1,4 @@
-# coding: utf-8
-require "pathname"
+require 'pathname'
 
 module VagrantPlugins
 	module ProviderZone
