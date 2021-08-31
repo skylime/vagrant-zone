@@ -33,7 +33,7 @@ en:
     graceful_shutdown_failed: |-
       Zone failed to shutdown in alloted time:
     graceful_shutdown: |-
-      Attempting a graceful shutdown
+      Attempting a graceful shutdown from the hypervisor
     creating_vnic: |-
       Creating VNIC ==> 
     configure_interface_using_vnic: |-
