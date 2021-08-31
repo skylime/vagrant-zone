@@ -5,7 +5,7 @@ module VagrantPlugins
           def execute
             options = {}       
             opts = OptionParser.new do |o|
-              o.banner = 'Usage: vagrant zone control restart [options]'
+              o.banner = 'Usage: vagrant zone control shutdown [options]'
             end
 
             argv = parse_options(opts)
@@ -17,9 +17,8 @@ module VagrantPlugins
 
             ## Wait for VM up
             with_target_vms(argv, provider: :zone ) do |machine|
-              
                 machine.action('shutdown')
-              end
+            end
           end
         end
       end
