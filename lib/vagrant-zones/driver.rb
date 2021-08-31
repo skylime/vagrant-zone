@@ -835,7 +835,7 @@ end						}
 				name = @machine.name
 				config = machine.provider_config
 				responses = []
-				if config.brand = 'bhyve'
+				if config.brand == 'bhyve'
 					PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
 					    if zlogin_read.expect(/Last login: /)
 							ui.info(I18n.t("vagrant_zones.booted_check_terminal_access"))
