@@ -41,11 +41,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop-rake', '>= 0.6.0'
   spec.add_development_dependency 'rubocop-rspec', '>= 2.4.0'
   
-  if RUBY_VERSION =~ /1.9/ # assuming you're running Ruby ~1.9
-    Encoding.default_external = Encoding::UTF_8
-    Encoding.default_internal = Encoding::UTF_8
-  end
-
+  Encoding.default_external = Encoding::UTF_8
+  Encoding.default_internal = Encoding::UTF_8
 
   spec.add_development_dependency 'rspec-mocks', '>= 3.10.0'
   spec.add_development_dependency 'rubocop', '>= 1.0'
