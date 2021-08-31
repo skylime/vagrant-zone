@@ -2,7 +2,7 @@ require 'pathname'
 
 module VagrantPlugins
 	module ProviderZone
-		lib_path = Pathname.new(File.expand_path("../vagrant-zones", __FILE__))
+		lib_path = Pathname.new(File.expand_path("../vagrant_zones", __FILE__))
 
 		autoload :Action, lib_path.join('action')
 		autoload :Executor, lib_path.join('executor')
