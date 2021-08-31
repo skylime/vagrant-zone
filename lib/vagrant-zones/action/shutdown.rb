@@ -9,7 +9,7 @@ module VagrantPlugins
 			class Shutdown
 				include Vagrant::Util::Retryable
 				def initialize(app, env)
-					@logger = Log4r::Logger.new("vagrant_zones::action::import")
+					@logger = Log4r::Logger.new("vagrant_zones::action::shutdown")
 					@app = app
 				end
 
