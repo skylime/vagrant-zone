@@ -823,9 +823,7 @@ end						}
 				
 				
 
-				if config.brand == 'lx'
-					zlogincommand(machine, "chmod 600 /home/vagrant/.ssh/authorized_keys")
-				elsif config.brand == 'bhyve'
+				if config.brand == 'bhyve'
 					network(@machine, ui, "setup")
 				end
 				
