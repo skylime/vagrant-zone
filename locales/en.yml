@@ -81,7 +81,7 @@ en:
     vbox_run_check: |-
       Checking if VirtualBox is loaded as it may conflict with bhyve
     lx_check: |-
-      No checks performed on the host OS, please use with caution!
+      Minimal checks performed for LX Branded zones on the host OS, please use with caution!
     bhyve_check: |-
       Checking OmniOS release against version ==> 
     bhyve_compat_check: |-
@@ -110,5 +110,10 @@ en:
       No dataset to remove
     starting_zone: |-
       Starting the zone
-
+    joyent_image_uuid_verified: |-
+      Joyent Image UUID has been verified ==> 
+    lx_zone_dataset: |-
+      LX zone Dataset ==>
+    setting_dns_server: |-
+      Setting nameserver ==> 
       
