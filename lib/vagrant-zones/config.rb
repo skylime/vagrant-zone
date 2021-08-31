@@ -45,7 +45,7 @@ module VagrantPlugins
 			def initialize
 				# pkgsrc, lx, bhyve, kvm, illumos
 				@brand    						= 'bhyve'
-				@additional_disks				= "none"
+				@additional_disks				= nil
 				@autoboot 						= true
 				@kernel   						= UNSET_VALUE
 				@zonepath 						= '/rpool/myvm'
