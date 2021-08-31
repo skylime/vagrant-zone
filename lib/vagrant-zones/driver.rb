@@ -170,6 +170,7 @@ module VagrantPlugins
 						elsif opts[:dhcp] == false
 							if opts[:managed]
 								ip = opts[:ip].to_s
+								puts ip
 								return nil if ip.length == 0
 								return ip.gsub /\t/, ''
 							end
