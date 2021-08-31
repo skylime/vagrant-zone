@@ -222,8 +222,6 @@ module VagrantPlugins
 							dns=[{"nameserver" => "1.1.1.1"},{"nameserver" => "1.0.0.1"}]
 							puts dns
 						end
-						puts dns
-						puts [{"nameserver" => "1.1.1.1"},{"nameserver" => "1.0.0.1"}]
 						dnsrun=0
 						servers=[]
 						if !dns.nil?
