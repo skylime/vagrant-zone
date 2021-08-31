@@ -94,6 +94,7 @@ module VagrantPlugins
 								ui.clear_line()
 								ui.info(I18n.t("vagrant_zones.importing_box_image") + "#{image} ==> ", new_line: false)
 								ui.report_progress(stderr, 100, false)
+								ui.clear_line()
 							end
 						  end
 						  ui.clear_line()
