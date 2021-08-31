@@ -86,10 +86,10 @@ module VagrantPlugins
 				ui.info(I18n.t(control))
 
 				if control == "restart"
-					command = "reboot"
+					command = "sudo reboot"
 					ssh_run_command(machine, ui, command)
 				elsif control == "shutdown"
-					command = "shutdown"
+					command = "sudo shutdown"
 					ssh_run_command(machine, ui, command)
 				end
 			end
@@ -104,6 +104,7 @@ module VagrantPlugins
 				if port.to_s.nil?
 					port = 22
 				end
+
 				execute(false, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  #{command} ")
 			end
 
