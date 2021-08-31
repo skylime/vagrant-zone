@@ -61,7 +61,9 @@ module VagrantPlugins
 				name = @machine.name
 				
 				if config.brand == 'lx'
-					execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
+					results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
+					if results.include? "unknown brand"
+						raise "You appear to not have LX Zones installed in this Machine"
 				end
 				if config.brand == 'bhyve'
 					execute(false, "#{@pfexec} zoneadm -z #{name} install")
