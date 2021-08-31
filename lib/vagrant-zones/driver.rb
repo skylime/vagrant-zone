@@ -86,10 +86,10 @@ module VagrantPlugins
 				ui.info(I18n.t(control))
 
 				if control == "restart"
-					command = "sudo reboot"
+					command = "sudo shutdown -r"
 					ssh_run_command(machine, ui, command)
 				elsif control == "shutdown"
-					command = "sudo shutdown"
+					command = "sudo shutdown -h now"
 					ssh_run_command(machine, ui, command)
 				end
 			end
