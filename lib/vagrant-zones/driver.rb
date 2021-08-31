@@ -211,7 +211,6 @@ module VagrantPlugins
 						if !opts[:mac].nil?
 							if opts[:mac].match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/) || !opts[:mac].match(/auto/)
 								mac  = opts[:mac]
-								puts mac
 							end
 						end
 						if !opts[:nictype].nil?
