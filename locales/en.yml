@@ -116,4 +116,9 @@ en:
       LX zone Dataset ==>
     setting_dns_server: |-
       Setting nameserver ==> 
-      
+    detected_ovf_format: |-
+      Detected OVF
+    importing_box_image: |-
+      Importing Box
+    importing_joyent_image: |-
+      Importing Joyent Image

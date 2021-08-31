@@ -60,7 +60,7 @@ module VagrantPlugins
 										if ratelimit >= rate
 											ui.clear_line()
 											status = "%.2f%%" % (amount_downloaded.to_f / file_size * 100)
-											ui.info("==> #{name}: Import Joyent image ==> #{image} ==> ", new_line: false)
+											ui.info(I18n.t("vagrant_zones.importing_joyent_image") + "#{image} ==> ", new_line: false)
 											ui.report_progress(status, 100, false)
 											ratelimit = 0
 										end
@@ -81,21 +81,18 @@ module VagrantPlugins
 							raise Errors::NoBoxFormatSet
 						elsif box_format == 'ovf'
 							## Code to try to convert existing box
-							ui.info("Detected OVF, This is a placeholder to use the other format")
-							
+							ui.info(I18n.t("vagrant_zones.detected_ovf_format"))
 						elsif box_format != 'zss'  
 							## Code to try to convert existing box
 							raise Errors::WrongBoxFormatSet
 						end
 						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected") + image)
-
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
-
 						command = "#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} "
 						Util::Subprocess.new command do |stdout, stderr, thread|
 							ui.rewriting do |ui|
 								ui.clear_line()
-								ui.info("==> #{name}: Import ", new_line: false)
+								ui.info(I18n.t("vagrant_zones.importing_box_image") + "#{image} ==> ", new_line: false)
 								ui.report_progress(stderr, 100, false)
 							end
 						  end
