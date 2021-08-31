@@ -95,7 +95,7 @@ module VagrantPlugins
 								b2.use Cleanup
 							end
 						end
-
+						puts "are we getting somwhere?"
 						b1.use WaitTillUp
 						b1.use Shutdown
 					end
