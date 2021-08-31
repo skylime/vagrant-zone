@@ -18,14 +18,6 @@ module VagrantPlugins
             ## Wait for VM up
             with_target_vms(argv, provider: :zone ) do |machine|
                 driver  = machine.provider.driver
-
-
-                VagrantPlugins::ProviderZone::Action::WaitTillUp
-
-
-
-
-
                 driver.control(machine, @env.ui, 'shutdown')
               end
           end
