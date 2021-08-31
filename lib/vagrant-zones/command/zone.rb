@@ -18,7 +18,10 @@ module VagrantPlugins
             require File.expand_path("../zfssnapshot", __FILE__)
             ZFSSnapshot
           end
-
+          @subcommands.register(:configure) do
+            require File.expand_path('../configure_snapshots', __FILE__)
+            GuestPowerControls
+          end
           super(argv, env)
         end
 
