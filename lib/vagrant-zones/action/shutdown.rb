@@ -18,7 +18,20 @@ module VagrantPlugins
 					@driver  = @machine.provider.driver
 					ui = env[:ui]			
 					@driver.control(@machine, env[:ui], "shutdown")
-					sleep 90
+
+					env[:metrics] ||= {}
+					env[:metrics]['instance_ssh_time'] = Util::Timer.time do
+						retryable(on: Errors::TimeoutError, tries: 300) do
+							# If we're interrupted don't worry about waiting
+							next if env[:interrupted]
+							loop do
+								break if env[:interrupted]
+								break if !env[:machine].communicate.ready?
+							end
+						end
+					end
+
+
 					@driver.halt(@machine, env[:ui])
 					@app.call(env)
 				end
