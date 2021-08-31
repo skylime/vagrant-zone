@@ -67,7 +67,7 @@ en:
     bhyve_zone_dataset_additional_volume: |-
       Creating additional ZFS Volume for bhyve zone
     destroy_dataset: |-
-      Destroying dataset ==> 
+        Destroying dataset ==> 
     lx_zone_config_gen: |-
       Generating configuration for LX zone
     bhyve_zone_config_gen: |-
