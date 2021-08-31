@@ -269,6 +269,7 @@ module VagrantPlugins
 add net
 	set physical=#{vnic_name}
 	set global-nic=auto
+	set allowed-address=#{allowed_address}
 	add property (name=gateway,value="#{@defrouter.to_s}")
 	add property (name=ips,value="#{allowed_address}")
 	add property (name=primary,value="true")
@@ -636,7 +637,7 @@ end					}
 
 
 				## CPU Configurations
-				if config.cpu_configuration == 'simple' && config.cpu_configuration == 'bhyve'
+				if config.cpu_configuration == 'simple' && (config.cpu_configuration == 'bhyve' || config.cpu_configuration == 'kvm' )
 					cpu_attr = %{add attr
 	set name=vcpus
 	set type=string
@@ -645,7 +646,7 @@ end					}
 					File.open("#{name}.zoneconfig", 'a') do |f|
 						f.puts cpu_attr
 					end
-				elsif config.cpu_configuration == 'complex' && config.cpu_configuration == 'bhyve'
+				elsif config.cpu_configuration == 'complex' && (config.cpu_configuration == 'bhyve' || config.cpu_configuration == 'kvm' )
 					
 					hash = config.complex_cpu_conf[0]
 					cpu_attr = %{add attr
