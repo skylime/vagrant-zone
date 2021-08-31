@@ -39,9 +39,9 @@ en:
     configure_interface_using_vnic: |-
       Configuring the interface on the zone for VNIC ==> 
     vnic_setup: |-
-       Setting up VNIC ==> 
+      - Setting up VNIC ==> 
     removing_vnic: |-
-      Deleting VNIC ==> 
+      - Deleting VNIC ==> 
     delete_disks: |-
       Removing associated disks
     installing_zone: |-
@@ -67,7 +67,7 @@ en:
     bhyve_zone_dataset_additional_volume: |-
       Creating additional ZFS Volume for bhyve zone
     destroy_dataset: |-
-      Destroying dataset ==> 
+      - Destroying dataset ==> 
     lx_zone_config_gen: |-
       Generating configuration for LX zone
     bhyve_zone_config_gen: |-
