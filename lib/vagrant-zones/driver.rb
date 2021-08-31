@@ -358,7 +358,7 @@ end									}
 															mac = responses[-1][0][/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/]
 														end
 													end
-													if opts[:dhcp] == true
+													if opts[:dhcp] == true 
 														netplan = %{network:
   version: 2
   ethernets:
@@ -381,7 +381,7 @@ end									}
 														elsif responses[-1].to_s.match(/DHCP Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
 															raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
 														end
-													else	
+													elsif opts[:dhcp] == false ||  opts[:dhcp].nil?
 														netplan = %{network:
   version: 2
   ethernets:
@@ -736,8 +736,7 @@ end						}
 				end
 
 				## Nic Configurations
-				state = "config"
-				network(@machine, ui, state)
+				network(@machine, ui, "config")
 
 				## Write out Config
 				exit = %{exit}
