@@ -870,7 +870,7 @@ end						}
 						Util::Subprocess.new command do |stdout, stderr, thread|
 							ui.rewriting do |ui|
 								ui.clear_line()
-								ui.info(I18n.t("vagrant_zones.importing_box_image") + "#{image} ==> ", new_line: false)
+								ui.info(I18n.t("vagrant_zones.importing_vagrant_key") , new_line: false)
 								ui.report_progress(stderr, 100, false)
 							end
 						  end
