@@ -105,7 +105,7 @@ module VagrantPlugins
 					port = 22
 				end
 
-				execute(false, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  #{command} ")
+				execute(false, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  '#{command}' ")
 			end
 
 			## Boot the Machine
