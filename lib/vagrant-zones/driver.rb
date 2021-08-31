@@ -259,9 +259,7 @@ module VagrantPlugins
 								execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
 							end
 						elsif state == "config"
-
 							ui.info(I18n.t("vagrant_zones.vnic_setup") + vnic_name)
-
 							if config.brand == 'lx'
 								nic_attr = %{add net
 	set physical=#{vnic_name}
@@ -276,6 +274,14 @@ end							}
 								end
 							elsif config.brand == 'bhyve'
 								if config.cloud_init_enabled
+									nic_attr = %{add net
+	set physical=#{vnic_name}
+	set allowed-address=#{allowed_address}
+end									}
+									File.open("#{name}.zoneconfig", 'a') do |f|
+										f.puts nic_attr
+									end
+								else
 									nic_attr = %{add net
 	set physical=#{vnic_name}
 	set allowed-address=#{allowed_address}
