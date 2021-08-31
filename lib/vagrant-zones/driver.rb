@@ -358,7 +358,7 @@ end									}
 												if nic_number == devid
 													vnic=vmnic[devid.to_i]
 													## Get Device Mac Address for when Mac is not specified
-													if mac == 'auto'
+													if mac == "auto"
 														zlogin_write.printf("\nip link show dev #{vnic} | grep ether | awk '{ print $2 }'\n")
 														if responses[-1].to_s.match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)	
 															mac = responses[-1][0][/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/]
