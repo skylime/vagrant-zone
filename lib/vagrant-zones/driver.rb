@@ -215,12 +215,14 @@ module VagrantPlugins
 						if !opts[:nictype].nil?
 							nictype  = opts[:nictype]
 						end
-						
+						dns=
+
 						if  !config.dns.nil? 
 							dns = config.dns
+							#puts dns
 						else
-							dns=[{"nameserver" => "1.1.1.1"},{"nameserver" => "1.0.0.1"}]
-							puts dns
+							dns={nameserver=>"1.1.1.1",nameserver=>"1.0.0.1"}
+							#puts dns
 						end
 						dnsrun=0
 						servers=[]
