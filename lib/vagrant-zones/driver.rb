@@ -104,7 +104,7 @@ module VagrantPlugins
 				if port.to_s.nil?
 					port = 22
 				end
-				execute(false, '#{@pfexec} ssh -o "StrictHostKeyChecking=no" -p #{port} -i #{key} #{user}@#{ip}  "#{command}" ')
+				execute(false, %('#{@pfexec} ssh -o "StrictHostKeyChecking=no" -p #{port} -i #{key} #{user}@#{ip}  "#{command}"'))
 			end
 
 			## Boot the Machine
