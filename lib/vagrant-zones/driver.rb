@@ -477,7 +477,7 @@ end								}
 				## If boot Dataset exists, delete it
 				if dataset_boot_exists == "#{config.zonepath.delete_prefix("/")}/boot"
 					## Destroy Additional Disks
-					unless  config.additional_disks.nil? ||  config.additional_disks != 'none'
+					unless  !config.additional_disks.nil? ||  config.additional_disks != 'none'
 						disks = config.additional_disks
 						diskrun=0
 						disks.each do |disk|
