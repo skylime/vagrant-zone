@@ -835,25 +835,52 @@ end						}
 				name = @machine.name
 				config = machine.provider_config
 				responses = []
-				PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-				    if zlogin_read.expect(/Last login: /)
-						ui.info(I18n.t("vagrant_zones.booted_check_terminal_access"))
-						Timeout.timeout(config.setup_wait) do
-							loop do
-				        		zlogin_read.expect(/\n/) { |line|  responses.push line}
-								if responses[-1].to_s.match(/:~#/)
-									break
-								elsif responses[-1].to_s.match(/login: /)
-									## Code to try to login with username and password
-									ui.info(I18n.t("vagrant_zones.booted_check_terminal_access_auto_login"))
+				if config.brand = 'bhyve'
+					PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
+					    if zlogin_read.expect(/Last login: /)
+							ui.info(I18n.t("vagrant_zones.booted_check_terminal_access"))
+							Timeout.timeout(config.setup_wait) do
+								loop do
+				   	     		zlogin_read.expect(/\n/) { |line|  responses.push line}
+									if responses[-1].to_s.match(/:~#/)
+										break
+									elsif responses[-1].to_s.match(/login: /)
+										## Code to try to login with username and password
+										ui.info(I18n.t("vagrant_zones.booted_check_terminal_access_auto_login"))
+									end
 								end
 							end
 						end
+						Process.kill("HUP",pid)
 					end
-					Process.kill("HUP",pid)
+				elsif config.brand == 'lx'
+					zlogincommand(machine, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
+					zlogincommand(machine, %('echo nameserver 1.0.0.1 >> /etc/resolv.conf'))
+					if not user_exists?(machine)
+						zlogincommand(machine, "useradd -m -s /bin/bash -U vagrant")
+					end
+					zlogincommand(machine, %('echo "vagrant ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/vagrant'))
+					zlogincommand(machine, "mkdir -p /home/vagrant/.ssh")
+					zlogincommand(machine, %('echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key" > /home/vagrant/.ssh/authorized_keys'))
+					zlogincommand(machine, "chown -R vagrant:vagrant /home/vagrant/.ssh")
+					zlogincommand(machine, "chmod 600 /home/vagrant/.ssh/authorized_keys")
 				end
 			end	
 				
+			def user_exists?(machine, user = 'vagrant')
+				name = @machine.name
+				ret  = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
+				if ret == 0
+					return true
+				end
+				return false
+			end
+
+			def zlogincommand(machine, cmd)
+				name = @machine.name
+				execute(false, "#{@pfexec} zlogin #{name} #{cmd}")
+			end
+
 			def zlogin(machine, cmd)
 				name = @machine.name
 				config = machine.provider_config
