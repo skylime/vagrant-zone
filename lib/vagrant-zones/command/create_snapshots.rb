@@ -22,6 +22,9 @@ module VagrantPlugins
               return
             end
 
+            if options[:dataset].nil?
+              return
+            end
             if options[:snapshot_name].nil?
               time = Time.new
               dash = "-"
