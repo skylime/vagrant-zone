@@ -216,7 +216,7 @@ module VagrantPlugins
 			autoload :WaitTillBoot, action_root.join('wait_till_boot')
 			autoload :WaitTillUp, action_root.join('wait_till_up')
 			autoload :Start, action_root.join('start')
-			autoload :Retart, action_root.join('restart')
+			autoload :Restart, action_root.join('restart')
 			autoload :Shutdown, action_root.join('shutdown')
 			autoload :PrepareNFSValidIds, action_root.join('prepare_nfs_valid_ids.rb')
 			autoload :Package, action_root.join('package.rb')
