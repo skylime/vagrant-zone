@@ -147,13 +147,8 @@ module VagrantPlugins
 										Timeout.timeout(30) do
 											loop do
 												zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-												puts responses[-1]
-												p responses[-1]
-												puts "This is a Static address"
 												if responses[-1].to_s.match(/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/)
 													ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
-													puts responses[-1]
-													puts ip
 													return nil if ip.length == 0
 													return ip.gsub /\t/, ''
 													break
@@ -380,7 +375,6 @@ end									}
 															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n")
 															dhcprun+=1
 														end
-														puts responses[-1]
 														if responses[-1].to_s.match(/DHCP Subprocess Error Code: 0/)
 															ui.info(I18n.t("vagrant_zones.netplan_applied_dhcp") + "/etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml")														
 														elsif responses[-1].to_s.match(/DHCP Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
@@ -405,7 +399,6 @@ end									}
 															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"Static Subprocess Error Code: $?\"\n")
 															staticrun+=1
 														end
-														puts responses[-1]
 														if responses[-1].to_s.match(/Static Subprocess Error Code: 0/)
 															ui.info(I18n.t("vagrant_zones.netplan_applied_static") + "/etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml")															
 														elsif responses[-1].to_s.match(/Static Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
