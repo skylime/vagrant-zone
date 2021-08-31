@@ -205,7 +205,7 @@ module VagrantPlugins
 			autoload :Create, action_root.join('create')
 			autoload :Network, action_root.join('network')
 			autoload :Setup, action_root.join('setup')
-
+			autoload :Start, action_root.join('start')
 			autoload :IsCreated, action_root.join('is_created')
 			autoload :NotCreated, action_root.join('not_created')
 			autoload :CreateSnapshots, action_root.join('create_zfs_snapshots')
@@ -215,7 +215,6 @@ module VagrantPlugins
 			autoload :Destroy, action_root.join('destroy')
 			autoload :WaitTillBoot, action_root.join('wait_till_boot')
 			autoload :WaitTillUp, action_root.join('wait_till_up')
-			autoload :Start, action_root.join('start')
 			autoload :Restart, action_root.join('restart')
 			autoload :Shutdown, action_root.join('shutdown')
 			autoload :PrepareNFSValidIds, action_root.join('prepare_nfs_valid_ids.rb')
