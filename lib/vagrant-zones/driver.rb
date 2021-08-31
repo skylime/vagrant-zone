@@ -209,7 +209,7 @@ module VagrantPlugins
 						vlan 		= 1
 
 						if !opts[:mac].nil?
-							if !opts[:mac].match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)
+							if opts[:mac].match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)
 								mac  = opts[:mac]
 								puts mac
 							end
