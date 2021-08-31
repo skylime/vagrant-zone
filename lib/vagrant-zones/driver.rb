@@ -180,7 +180,7 @@ module VagrantPlugins
 
 			
 			## Manage Network Interfaces
-			def vnic(machine, ui, state)
+			def network(machine, ui, state)
 				config = machine.provider_config
 				name = @machine.name
 
@@ -265,8 +265,7 @@ module VagrantPlugins
 							ui.info(I18n.t("vagrant_zones.vnic_setup") + vnic_name)
 
 							if config.brand == 'lx'
-								nic_attr = %{
-add net
+								nic_attr = %{add net
 	set physical=#{vnic_name}
 	set global-nic=auto
 	set allowed-address=#{allowed_address}
@@ -740,7 +739,7 @@ end						}
 
 				## Nic Configurations
 				state = "config"
-				vnic(@machine, ui, state)
+				network(@machine, ui, state)
 
 				## Write out Config
 				exit = %{exit}
@@ -823,10 +822,9 @@ end						}
 			def setup(machine, ui)
 				config = machine.provider_config
 				name = machine.name
-				### Nic Configurations
+				### network Configurations
 				
-				state = "setup"
-				vnic(@machine, ui, state)
+				
 
 				if config.brand == 'lx'
 					zlogincommand(machine, %('echo "vagrant ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/vagrant'))
@@ -834,6 +832,8 @@ end						}
 					zlogincommand(machine, %('echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key" > /home/vagrant/.ssh/authorized_keys'))
 					zlogincommand(machine, "chown -R vagrant:vagrant /home/vagrant/.ssh")
 					zlogincommand(machine, "chmod 600 /home/vagrant/.ssh/authorized_keys")
+				elsif config.brand == 'bhyve'
+					network(@machine, ui, "setup")
 				end
 				
 			end
@@ -1012,7 +1012,7 @@ end						}
 
 				### Nic Configurations
 				state = "delete"
-				vnic(@machine, id, state)
+				network(@machine, id, state)
 				
 				### Check State of additional Disks
 				
