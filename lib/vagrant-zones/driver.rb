@@ -215,8 +215,6 @@ module VagrantPlugins
 						if !opts[:nictype].nil?
 							nictype  = opts[:nictype]
 						end
-						dns=
-
 						if  !config.dns.nil? 
 							dns = config.dns
 							#puts dns
