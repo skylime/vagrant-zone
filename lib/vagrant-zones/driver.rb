@@ -865,8 +865,8 @@ end						}
 
 						
 
-						box_image_file = "https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant"
-						command = "#{@pfexec} curl #{box_image_file}  -O id_rsa} "
+						id_rsa = "https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant"
+						command = "#{@pfexec} curl #{id_rsa}  -O id_rsa} "
 						Util::Subprocess.new command do |stdout, stderr, thread|
 							ui.rewriting do |ui|
 								ui.clear_line()
