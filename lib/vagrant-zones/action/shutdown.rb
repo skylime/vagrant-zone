@@ -16,7 +16,6 @@ module VagrantPlugins
 				def call(env)
 					@machine = env[:machine]
 					@driver  = @machine.provider.driver
-					puts  env[:machine].state.id 
 					ui = env[:ui]			
 					@driver.control(@machine, env[:ui], "shutdown")
 					@app.call(env)
