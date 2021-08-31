@@ -540,7 +540,7 @@ add attr
 	set value=#{config.kernel}
 end
 add net
-	set physical=#{machine.name}0
+	set physical=#{vnic_name}
 	set global-nic=auto
 	add property (name=gateway,value="#{@defrouter.to_s}")
 	add property (name=ips,value="#{allowed_address}")
@@ -628,7 +628,7 @@ end					}
 
 
 				## CPU Configurations
-				if config.cpu_configuration == 'simple'
+				if config.cpu_configuration == 'simple' && config.cpu_configuration == 'bhyve'
 					cpu_attr = %{add attr
 	set name=vcpus
 	set type=string
@@ -637,7 +637,7 @@ end					}
 					File.open("#{name}.zoneconfig", 'a') do |f|
 						f.puts cpu_attr
 					end
-				elsif config.cpu_configuration == 'complex'
+				elsif config.cpu_configuration == 'complex' && config.cpu_configuration == 'bhyve'
 					
 					hash = config.complex_cpu_conf[0]
 					cpu_attr = %{add attr
