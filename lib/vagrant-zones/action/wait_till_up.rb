@@ -6,7 +6,8 @@ require 'vagrant/util/retryable'
 module VagrantPlugins
 	module ProviderZone
 		module Action
-			# This is used wait till the zone is SSHable
+			# This is used wait till the zone is booted
+			class WaitTillUp
 				include Vagrant::Util::Retryable
 
 				def initialize(app, env)
@@ -35,7 +36,7 @@ module VagrantPlugins
 					ui.info(I18n.t("vagrant_zones.ssh_ready") + " in #{env[:metrics]['instance_ssh_time']} Seconds")
 					@app.call(env)
 				end
-			
+			end
 		end
 	end
 end
