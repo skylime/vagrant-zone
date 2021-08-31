@@ -211,6 +211,7 @@ module VagrantPlugins
 						if !opts[:mac].nil?
 							if !opts[:mac].include? "/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/"
 								mac  = opts[:mac]
+								puts mac
 							end
 						end
 						if !opts[:nictype].nil?
