@@ -5,6 +5,7 @@ require 'vagrant-zones/util/subprocess'
 module VagrantPlugins
 	module ProviderZone
 		module Action
+			# This will import the zone boot image from the cloud, cache or file
 			class Import
 				def initialize(app, env)
 					@logger = Log4r::Logger.new("vagrant_zones::action::import")

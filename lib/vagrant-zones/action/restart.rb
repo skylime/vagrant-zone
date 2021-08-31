@@ -6,6 +6,7 @@ require 'vagrant/util/retryable'
 module VagrantPlugins
 	module ProviderZone
 		module Action
+			# This is used to restart the zone
 			class Restart
 				include Vagrant::Util::Retryable
 				def initialize(app, env)

@@ -6,6 +6,7 @@ require "digest/md5"
 module VagrantPlugins
 	module ProviderZone
 		module Action
+			# This is use to define the network
 			class Network
 				def initialize(app, env)
 					@logger = Log4r::Logger.new("vagrant_zones::action::import")

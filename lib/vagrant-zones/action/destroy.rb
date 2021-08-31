@@ -6,6 +6,7 @@ require "digest/md5"
 module VagrantPlugins
 	module ProviderZone
 		module Action
+			# This will destroy the zone
 			class Destroy
 				def initialize(app, env)
 					@logger = Log4r::Logger.new("vagrant_zones::action::import")

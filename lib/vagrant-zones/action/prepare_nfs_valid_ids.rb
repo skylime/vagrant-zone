@@ -6,6 +6,7 @@ require "digest/md5"
 module VagrantPlugins
 	module ProviderZone
 		module Action
+			# This is used to prepare NFS ids for NFS Sharing
 			class PrepareNFSValidIds
 
 				def initialize(app, env)

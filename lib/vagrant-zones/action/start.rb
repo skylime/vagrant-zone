@@ -4,6 +4,7 @@ require "log4r"
 module VagrantPlugins
 	module ProviderZone
 		module Action
+			# This is used to start the zone
 			class Start
 				def initialize(app, env)
 					@logger = Log4r::Logger.new("vagrant_zones::action::import")

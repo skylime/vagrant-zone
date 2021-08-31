@@ -6,6 +6,7 @@ require "digest/md5"
 module VagrantPlugins
 	module ProviderZone
 		module Action
+			# This will create the zone
 			class Create
 				def initialize(app, env)
 					@logger = Log4r::Logger.new("vagrant_zones::action::import")

@@ -6,6 +6,7 @@ require 'vagrant/util/retryable'
 module VagrantPlugins
 	module ProviderZone
 		module Action
+			# This is used to shutdown the zone
 			class Shutdown
 				include Vagrant::Util::Retryable
 				def initialize(app, env)

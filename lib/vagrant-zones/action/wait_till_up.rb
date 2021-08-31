@@ -6,7 +6,7 @@ require 'vagrant/util/retryable'
 module VagrantPlugins
 	module ProviderZone
 		module Action
-			class WaitTillUp
+			# This is used wait till the zone is SSHable
 				include Vagrant::Util::Retryable
 
 				def initialize(app, env)

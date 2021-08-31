@@ -6,6 +6,7 @@ require 'vagrant/util/retryable'
 module VagrantPlugins
 	module ProviderZone
 		module Action
+			# This will check and ensure the latest box is cached on the local machine
 			class BoxUpdate
 				include Vagrant::Util::Retryable
 

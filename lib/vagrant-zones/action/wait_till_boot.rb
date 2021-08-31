@@ -6,6 +6,7 @@ require 'vagrant/util/retryable'
 module VagrantPlugins
 	module ProviderZone
 		module Action
+			# This is used wait till the zone is booted
 			class WaitTillBoot
 				include Vagrant::Util::Retryable
 

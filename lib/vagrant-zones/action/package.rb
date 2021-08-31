@@ -4,6 +4,7 @@ require "log4r"
 module VagrantPlugins
 	module ProviderZone
 		module Action
+			# This is used to package the VM into a box
 			class Package
 				def initialize(app, env)
 					@logger = Log4r::Logger.new("vagrant_zones::action::import")

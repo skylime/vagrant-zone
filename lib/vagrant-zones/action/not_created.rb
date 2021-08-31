@@ -4,6 +4,7 @@ require 'log4r'
 module VagrantPlugins
 	module ProviderZone
 		module Action
+			# This is used to determine if the VM is created
 			class NotCreated
 				def initialize(app, _env)
 					@app = app
