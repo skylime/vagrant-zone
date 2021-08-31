@@ -90,8 +90,11 @@ module VagrantPlugins
 				Vagrant::Action::Builder.new.tap do |b|
 					b.use Call, IsCreated do |env, b2|
 						b2.use Call, IsState, :stopped do |env, b3|
-							b3.use WaitTillUp
-							b3.use Shutdown
+							unless env[:result]
+								b3.use WaitTillUp
+								b3.use Shutdown
+							end
+
 						end
 					end
 				end
