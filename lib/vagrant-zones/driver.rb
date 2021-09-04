@@ -108,16 +108,25 @@ module VagrantPlugins
 				execute(false, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  '#{command}' ")
 			end
 
+
+
+
 			def console(machine, ui , command, ip, port)
 				name = @machine.name
-
-
-				netport = port
 				if !ip.nil?
 					netport = ip + ":" + port
 				end
-				
-				execute(false, "#{@pfexec} zadm  webvnc #{netport} #{name}")
+				netport = port
+				if command == 'webvnc'
+					execute(false, "#{@pfexec} zadm  webvnc #{netport} #{name}")
+				elsif command == 'vnc'
+					execute(false, "#{@pfexec} zadm  vnc #{netport} #{name}")
+				elsif command == 'zlogin'
+					execute(false, "#{@pfexec} zadm  console #{name}")
+				else
+					execute(false, "#{@pfexec} zadm  webvnc #{netport} #{name}")
+				end
+
 			end
 
 	
