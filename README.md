@@ -36,6 +36,7 @@ Publiched Package locations:
   * system/bhyve/firmware
   * ooce/application/vagrant
   * ruby-26
+  * zadm
 
 ### Setup vagrant-zones
 
@@ -55,7 +56,7 @@ This project is licensed under the AGPL v3 License - see the [LICENSE](LICENSE) 
 ## Built With
 * [Vagrant](https://www.vagrantup.com/) - Portable Development Environment Suite.
 * [VirtualBox](https://www.virtualbox.org/wiki/Downloads) - Hypervisor.
-* 
+* [zadm](https://github.com/omniosorg/zadm)
 
 ## Contributing Sources
 * [vagrant-bhyve](https://github.com/jesa7955/vagrant-bhyve) - A Vagrant plugin for FreeBSD to spin up Bhyve Guests.
