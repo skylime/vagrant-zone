@@ -126,8 +126,6 @@ en:
        - Importing Joyent Image ==> 
     graceful_restart: |-
        - Graceful Restart starting
-    graceful_shutdown: |-
-       - Graceful Shutdown starting
     zone_gracefully_stopped_waiting_for_boot: |-
        - Graceful shutdown complete
     zone_gracefully_restarted: |-
