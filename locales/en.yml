@@ -132,3 +132,5 @@ en:
       Graceful shutdown complete
     zone_gracefully_restarted: |-
       Graceful Restart complete
+    zone_gracefully_stopped_waiting_for_boot: |-
+      Zone gracefull shutdown, and now waiting for boot
