@@ -33,6 +33,7 @@ module VagrantPlugins
 							end
 						end
 					end
+					ui.info(I18n.t("vagrant_zones.graceful_shutdown_complete"))
 
 
 					@driver.halt(@machine, env[:ui])
