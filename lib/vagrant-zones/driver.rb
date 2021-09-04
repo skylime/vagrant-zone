@@ -114,9 +114,7 @@ module VagrantPlugins
 				key = userprivatekeypath(machine).to_s
 				password = vagrantuserpass(machine).to_s
 				port = sshport(machine).to_s 
-				if port.to_s.nil?
-					port = 22
-				end
+
 
 				netport = port
 				if !ip.nil?
