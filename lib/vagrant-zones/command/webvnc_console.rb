@@ -1,3 +1,4 @@
+require "resolv"
 module VagrantPlugins
   module ProviderZone
       module Command
@@ -7,29 +8,29 @@ module VagrantPlugins
             opts = OptionParser.new do |o|
               o.banner = 'Usage: vagrant zone console webvnc [options]'
               o.on('--ip <host_ip>', 'Specify host IP to listen on') do |p|
-                options[:dataset] = p
+                options[:ip] = p
               end
               o.on('--port <port>', 'Specify port to listen on') do |p|
-                options[:snapshot_name] = p
+                options[:port] = p
               end
             end
 
             argv = parse_options(opts)
             return unless argv
 
-            unless argv.length <= 2
+            unless argv.length <= 4
               @env.ui.info(opts.help)
               return
             end
 
-            if options[:snapshot_name].nil?
-              time = Time.new
-              dash = "-"
-              colon = ":"
-              datetime = time.year.to_s + dash.to_s + time.month.to_s + dash.to_s + time.day.to_s + dash.to_s + time.hour.to_s + colon.to_s + time.min.to_s + colon.to_s + time.sec.to_s
+            if options[:ip].nil?
+              options[:ip] = "127.0.0.1"
               
-              options[:snapshot_name] = datetime
             end
+            unless options[:ip]  =~ Resolv::IPv4::Regex ? true : false
+              options[:ip] = "127.0.0.1"
+            end
+
 
             with_target_vms(argv, provider: :zone ) do |machine|
                 driver  = machine.provider.driver
