@@ -116,11 +116,10 @@ module VagrantPlugins
 				
 				netport = port
 				if !ip.nil?
-					
 					if !port.nil!
 						netport = ip + ":" + port
 					else
-						ip = "127.0.0.1"
+						netport = "127.0.0.1"
 					end
 					
 				end
