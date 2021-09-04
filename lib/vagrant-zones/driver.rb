@@ -115,12 +115,12 @@ module VagrantPlugins
 				name = @machine.name
 				
 				
-				if !port.nil!
+				if !port.nil?
 				netport =  "127.0.0.1" + ":" + port
 				end
 				if !ip.nil?
 					
-					if !port.nil!
+					if !port.nil?
 						
 						netport = ip + ":" + port
 					else
