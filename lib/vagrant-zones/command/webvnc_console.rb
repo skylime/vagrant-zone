@@ -31,6 +31,7 @@ module VagrantPlugins
               options[:ip] = "127.0.0.1"
             end
 
+            puts options[:ip]
 
             with_target_vms(argv, provider: :zone ) do |machine|
                 driver  = machine.provider.driver
