@@ -116,7 +116,12 @@ module VagrantPlugins
 				
 				netport = port
 				if !ip.nil?
-					netport = ip + ":" + port
+					if !port.nil!
+						netport = ip + ":" + port
+					else
+						ip = "127.0.0.1"
+					end
+					
 				end
 				if command == 'webvnc'
 					execute(false, "#{@pfexec} zadm  webvnc #{netport} #{name}")
