@@ -19,7 +19,7 @@ module VagrantPlugins
 					@driver  = @machine.provider.driver
 					ui = env[:ui]		
 					
-					ui.info(I18n.t("vagrant_zones.graceful_shutdown"))
+					ui.info(I18n.t("vagrant_zones.graceful_shutdown_started"))
 					@driver.control(@machine, env[:ui], "shutdown")
 
 					env[:metrics] ||= {}
