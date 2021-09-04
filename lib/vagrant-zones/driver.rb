@@ -113,10 +113,11 @@ module VagrantPlugins
 
 			def console(machine, ui , command, ip, port)
 				name = @machine.name
+				
+				netport = port
 				if !ip.nil?
 					netport = ip + ":" + port
 				end
-				netport = port
 				if command == 'webvnc'
 					execute(false, "#{@pfexec} zadm  webvnc #{netport} #{name}")
 				elsif command == 'vnc'
