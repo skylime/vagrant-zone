@@ -22,7 +22,7 @@ module VagrantPlugins
             require File.expand_path('../guest_power_controls', __FILE__)
             GuestPowerControls
           end
-          @subcommands.register(:control) do
+          @subcommands.register(:console) do
             require File.expand_path('../console', __FILE__)
             Console
           end
