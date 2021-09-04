@@ -110,10 +110,6 @@ module VagrantPlugins
 
 			def console(machine, ui , command, ip, port)
 				name = @machine.name
-				user = user(machine)
-				key = userprivatekeypath(machine).to_s
-				password = vagrantuserpass(machine).to_s
-				port = sshport(machine).to_s 
 
 
 				netport = port
