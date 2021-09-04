@@ -84,7 +84,7 @@ module VagrantPlugins
 			def control(machine, ui, control)
 				name = @machine.name
 				ui.info(I18n.t(control))
-
+				config = machine.provider_config
 				if control == "restart"
 					command = "sudo shutdown -r"
 					ssh_run_command(machine, ui, command)
