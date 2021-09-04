@@ -123,7 +123,7 @@ module VagrantPlugins
 					netport = ip + ":" + port
 				end
 				
-				execute(false, "#{@pfexec} zadm  webvnc netport #{name}")
+				execute(false, "#{@pfexec} zadm  webvnc #{netport} #{name}")
 			end
 
 	
