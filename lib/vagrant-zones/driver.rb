@@ -114,9 +114,14 @@ module VagrantPlugins
 			def console(machine, ui , command, ip, port)
 				name = @machine.name
 				
+				
+				if !port.nil!
 				netport =  "127.0.0.1" + ":" + port
+				end
 				if !ip.nil?
+					
 					if !port.nil!
+						
 						netport = ip + ":" + port
 					else
 						netport = "127.0.0.1"
