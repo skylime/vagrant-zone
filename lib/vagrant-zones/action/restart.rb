@@ -13,13 +13,14 @@ module VagrantPlugins
 					@logger = Log4r::Logger.new("vagrant_zones::action::restart")
 					@app = app
 				end
-
+ 
 				def call(env)
 					@machine = env[:machine]
 					@driver  = @machine.provider.driver
-					puts  env[:machine].state.id 
-					ui = env[:ui]			
+					ui = env[:ui]	
+							
 					@driver.control(@machine, env[:ui], "restart")
+
 					env[:metrics] ||= {}
 					env[:metrics]['instance_ssh_time'] = Util::Timer.time do
 						retryable(on: Errors::TimeoutError, tries: 300) do
@@ -31,6 +32,7 @@ module VagrantPlugins
 							end
 						end
 					end
+
 					ui.info(I18n.t("vagrant_zones.zone_gracefully_stopped_waiting_for_boot"))
 					
 
