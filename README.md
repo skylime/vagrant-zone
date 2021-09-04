@@ -55,7 +55,7 @@ This project is licensed under the AGPL v3 License - see the [LICENSE](LICENSE) 
 ## Built With
 * [Vagrant](https://www.vagrantup.com/) - Portable Development Environment Suite.
 * [VirtualBox](https://www.virtualbox.org/wiki/Downloads) - Hypervisor.
-* [Ansible](https://www.ansible.com/) - Virtual Manchine Automation Management.
+* 
 
 ## Contributing Sources
 * [vagrant-bhyve](https://github.com/jesa7955/vagrant-bhyve) - A Vagrant plugin for FreeBSD to spin up Bhyve Guests.
