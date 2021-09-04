@@ -26,8 +26,8 @@ Vagrant Plugin which can be used to managed Bhyve, LX and native zones on illumo
 ## Installation
 
 Publiched Package locations:
-[rubygems.org](https://rubygems.org/gems/vagrant-zones).
-[github.com](https://github.com/Makr91/vagrant-zones/packages/963217)
+- [rubygems.org](https://rubygems.org/gems/vagrant-zones).
+- [github.com](https://github.com/Makr91/vagrant-zones/packages/963217)
 
 ### Setup OS Installation
 
