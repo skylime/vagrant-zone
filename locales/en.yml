@@ -124,3 +124,11 @@ en:
        - Importing Box image to disk ==> 
     importing_joyent_image: |-
        - Importing Joyent Image ==> 
+    restart: |-
+       - Graceful Restart starting
+    shutdown: |-
+       - Graceful Shutdown starting
+    zone_gracefully_stopped_waiting_for_boot: |-
+       - Graceful shutdown complete
+    zone_gracefully_restarted: |-
+       - Graceful Restart complete

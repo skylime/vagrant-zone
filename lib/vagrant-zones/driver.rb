@@ -89,8 +89,11 @@ module VagrantPlugins
 					command = "sudo shutdown -r"
 					ssh_run_command(machine, ui, command)
 				elsif control == "shutdown"
+
 					command = "sudo shutdown -h now"
 					ssh_run_command(machine, ui, command)
+					
+					sleep config.clean_shutdown_time
 				end
 			end
 
