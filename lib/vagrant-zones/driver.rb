@@ -86,11 +86,9 @@ module VagrantPlugins
 				
 				config = machine.provider_config
 				if control == "restart"
-					ui.info(I18n.t("graceful_restart"))
 					command = "sudo shutdown -r"
 					ssh_run_command(machine, ui, command)
 				elsif control == "shutdown"
-					ui.info(I18n.t("graceful_shutdown"))
 					command = "sudo shutdown -h now"
 					ssh_run_command(machine, ui, command)
 				end

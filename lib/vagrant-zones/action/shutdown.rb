@@ -18,7 +18,8 @@ module VagrantPlugins
 					@machine = env[:machine]
 					@driver  = @machine.provider.driver
 					ui = env[:ui]		
-						
+					
+					ui.info(I18n.t("vagrant_zones.graceful_shutdown"))
 					@driver.control(@machine, env[:ui], "shutdown")
 
 					env[:metrics] ||= {}
