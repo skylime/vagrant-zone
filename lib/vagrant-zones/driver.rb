@@ -500,8 +500,7 @@ end									}
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume") + "#{dataset}" )	
 					
 					commandtransfer = "#{@pfexec} pv -n #{datadir.to_s}/box.zss | #{@pfexec} zfs recv -u -v -F #{dataset}"
-					Util::Subprocess.new commandtransfer do |stdout, stderr, thread|
-					  puts commandtransfer
+					Util::Subprocess.new "#{@pfexec} pv -n #{datadir.to_s}/box.zss | #{@pfexec} zfs recv -u -v -F #{dataset}" do |stdout, stderr, thread|
 					  ui.rewriting do |uiprogress|
 						puts stderr
 						puts stdout

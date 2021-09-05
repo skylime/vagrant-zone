@@ -9,7 +9,6 @@ module VagrantPlugins
       class Subprocess
         def initialize(cmd, &_block)
           Open3.popen3(cmd) do |_stdin, stdout, stderr, thread|
-            puts cmd
             # read each stream from a new thread
             { :out => stdout, :err => stderr }.each do |key, stream|
               Thread.new do
