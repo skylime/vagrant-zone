@@ -705,6 +705,9 @@ end					}
 						f.puts cpu_attr
 					end
 				end
+
+
+
 				### Passthrough PCI Devices
 				#if config.ppt_devices == 'none'
 				#   ui.info(I18n.t("vagrant_zones.setting_pci_configurations") + path.path)
@@ -784,6 +787,38 @@ end						}
 						end
 					end
 				end
+
+				## Console access configuration
+				if  !config.console.nil?
+					console = config.console
+					if console != 'disabled'
+						
+						if console == 'webvnc' || console == 'vnc'
+							console = 'vnc'
+							value = 'on'
+						elsif console == 'console'
+							value = 'on'
+							if !config.consoleport.nil?
+								value = config.consoleport
+							end
+						end
+
+						if config.console_onboot
+							value = value + ",wait"
+						end
+
+						ui.info(I18n.t("vagrant_zones.setting_console_access") + console + ", " + config.consoleport + ", " + value)
+						console_attr = %{add attr
+    set name=#{console}
+    set type=string
+    set value=#{value}
+end						}
+						File.open("#{name}.zoneconfig", 'a') do |f|
+							f.puts console_attr
+						end
+					end
+				end
+
 
 				## Nic Configurations
 				network(@machine, ui, "config")

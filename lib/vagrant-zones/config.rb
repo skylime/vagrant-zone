@@ -33,8 +33,9 @@ module VagrantPlugins
 			attr_accessor :shared_dir
 			attr_accessor :acpi
 			attr_accessor :os_type
-			attr_accessor :vnc
 			attr_accessor :console
+			attr_accessor :consoleport
+			attr_accessor :console_onboot
 			attr_accessor :hostbridge
 			attr_accessor :sshport
 			attr_accessor :rdpport
@@ -55,8 +56,9 @@ module VagrantPlugins
 				@shared_dir						= nil
 				@os_type						= 'generic'
 				@shared_disk_enabled			= true
-				@vnc							= false
-				@console						= false
+				@consoleport					= nil
+				@console_onboot					= 'false'
+				@console						= 'webvnc'
 				@memory   						= '4G'
 				@diskif   						= 'virtio-blk'
 				@netif   						= 'virtio-net-viona'
