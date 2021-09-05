@@ -814,7 +814,7 @@ end						}
 				ui.info(I18n.t("vagrant_zones.vbox_run_check"))
 				result = execute(false, "#{@pfexec} VBoxManage list runningvms")
 				puts "test"
-				raise Errors::VirtualBoxRunningConflictDetected if result == ""
+				raise Errors::VirtualBoxRunningConflictDetected unless result == ""
 				## https://man.omnios.org/man5/brands
 				if config.brand == 'lx'
 					ui.info(I18n.t("vagrant_zones.lx_check"))
