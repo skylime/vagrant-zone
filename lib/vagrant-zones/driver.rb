@@ -500,12 +500,13 @@ end									}
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume") + "#{dataset}" )	
 					
 					commandtransfer = "#{@pfexec} pv -n #{datadir.to_s}/box.zss | #{@pfexec} zfs recv -u -v -F #{dataset}"
-					Util::Subprocess.new "#{@pfexec} pv -n #{datadir.to_s}/box.zss | #{@pfexec} zfs recv -u -v -F #{dataset}" do |stdout, stderr, thread|
-					  ui.rewriting do |uiprogress|
+					Util::Subprocess.new commandtransfer do |stdout, stderr, thread|
+						puts stderr
+					  ui.rewriting do |progress|
 						puts stderr
 						puts stdout
-						uiprogress.info(I18n.t("vagrant_zones.importing_box_image_to_disk") + "#{image} ==> ", new_line: false)
-						uiprogress.report_progress(stderr, 100, false)
+						progress.info(I18n.t("vagrant_zones.importing_box_image_to_disk") + "#{image} ==> ", new_line: false)
+						progress.report_progress(stderr, 100, false)
 					  end
 					end
 				elsif config.brand == 'illumos'
