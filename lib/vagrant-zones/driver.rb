@@ -682,7 +682,7 @@ end					}
 
 
 				## CPU Configurations
-				if config.cpu_configuration == 'simple' && (config.cpu_configuration == 'bhyve' || config.cpu_configuration == 'kvm' )
+				if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm' )
 					cpu_attr = %{add attr
 	set name=vcpus
 	set type=string
@@ -691,7 +691,7 @@ end					}
 					File.open("#{name}.zoneconfig", 'a') do |f|
 						f.puts cpu_attr
 					end
-				elsif config.cpu_configuration == 'complex' && (config.cpu_configuration == 'bhyve' || config.cpu_configuration == 'kvm' )
+				elsif config.cpu_configuration == 'complex' && (config.brand == 'bhyve' || config.brand == 'kvm' )
 					
 					hash = config.complex_cpu_conf[0]
 					cpu_attr = %{add attr
