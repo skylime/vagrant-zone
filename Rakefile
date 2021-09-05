@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 require 'rubygems'
+
 require 'bundler/setup'
+
 require 'rspec/core/rake_task'
+
 require 'rubocop/rake_task'
+
 require 'net/ssh'
 
 # Immediately sync all stdout so that tools like buildbot can
