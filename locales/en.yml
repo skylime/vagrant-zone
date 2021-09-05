@@ -63,7 +63,7 @@ en:
     bhyve_zone_dataset_boot: |-
       Creating ZFS boot volume ==> 
     bhyve_zone_dataset_boot_volume: |-
-      Importing template to: 
+      Importing template to ==> 
     bhyve_zone_dataset_additional_volume: |-
       Creating additional ZFS Volume for bhyve zone
     destroy_dataset: |-
