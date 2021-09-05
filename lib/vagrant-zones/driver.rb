@@ -813,8 +813,7 @@ end						}
 				### https://forums.virtualbox.org/viewtopic.php?f=11&t=64652
 				ui.info(I18n.t("vagrant_zones.vbox_run_check"))
 				result = execute(false, "#{@pfexec} VBoxManage list runningvms")
-				puts "test"
-				raise Errors::VirtualBoxRunningConflictDetected unless result == ""
+				raise Errors::VirtualBoxRunningConflictDetected unless !result.nil?
 				## https://man.omnios.org/man5/brands
 				if config.brand == 'lx'
 					ui.info(I18n.t("vagrant_zones.lx_check"))
