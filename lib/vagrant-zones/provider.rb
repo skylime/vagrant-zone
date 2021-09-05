@@ -29,7 +29,7 @@ module VagrantPlugins
 				passwordauth = "yes" 
 				return nil if !ip
 				portnumber = "22"
-				unless portnumber.to_s.nil? || portnumber.to_s == 0
+				unless portnumber.to_s.nil? || portnumber.to_i.zero?
 					portnumber = driver.sshport(@machine).to_s 
 				end
 				ssh_info = {
