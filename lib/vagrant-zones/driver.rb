@@ -805,7 +805,7 @@ end						}
 							value = value + ",wait"
 						end
 
-						ui.info(I18n.t("vagrant_zones.setting_console_access") + console + ", " + config.consoleport + ", " + value)
+						ui.info(I18n.t("vagrant_zones.setting_console_access") + console.to_s + ", " + config.consoleport.to_s + ", " + value.to_s)
 						console_attr = %{add attr
     set name=#{console}
     set type=string
