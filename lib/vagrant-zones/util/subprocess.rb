@@ -1,4 +1,5 @@
-# encoding: utf-8
+# frozen_string_literal: true
+
 require 'open3'
 require "log4r"
 module VagrantPlugins
@@ -8,18 +9,15 @@ module VagrantPlugins
       class Subprocess
         def initialize(cmd, &block)
           Open3.popen3(cmd) do |_stdin, stdout, stderr, thread|
-            
             # read each stream from a new thread
             { :out => stdout, :err => stderr }.each do |key, stream|
               Thread.new do
-                
                 until (line = stream.gets).nil? do
                   # yield the block depending on the stream
-                  
                   if key == :out
                     yield line, nil, thread if block_given?
-                  else
-                    yield nil, line, thread if block_given?
+                  elsif block_given?
+                    yield nil, line, thread
                   end
                 end
               end
@@ -28,6 +26,6 @@ module VagrantPlugins
           end
         end
       end
-    end    
+    end
   end
 end
