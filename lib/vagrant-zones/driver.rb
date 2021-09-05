@@ -500,15 +500,16 @@ end									}
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume") + "#{dataset}" )	
 					command = "#{@pfexec} pv -n #{datadir.to_s}/box.zss | #{@pfexec} zfs recv -u -v -F #{dataset}"
 					Util::Subprocess.new command do |stdout, stderr, thread|
+						puts command
 						ui.rewriting do |uiprogress|
 							uiprogress.clear_line()
 							puts stderr
+							puts stdout
 							uiprogress.info(I18n.t("vagrant_zones.importing_box_image_to_disk") + "#{image} ==> ", new_line: false)
 							uiprogress.report_progress(stderr, 100, false)
 						end
 					  end
 					  ui.clear_line()
-
 				elsif config.brand == 'illumos'
 					raise Errors::NotYetImplemented
 				elsif config.brand == 'kvm'
