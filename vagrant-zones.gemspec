@@ -28,11 +28,11 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 2.5.0"
   spec.required_rubygems_version = ">= 1.3.6"
 
-  spec.add_runtime_dependency "ruby_expect"  
-  spec.add_runtime_dependency "netaddr"
-  spec.add_runtime_dependency 'i18n'
-  spec.add_runtime_dependency 'log4r'
-  spec.add_runtime_dependency "iniparse"
+  spec.add_runtime_dependency "ruby_expect", '>= 1.7.5'  
+  spec.add_runtime_dependency "netaddr", '>= 2.0.4' 
+  spec.add_runtime_dependency 'i18n', '>= 1.0'
+  spec.add_runtime_dependency 'log4r', '>= 1.1'
+  spec.add_runtime_dependency "iniparse", '>= 1.0'
   spec.add_runtime_dependency 'nokogiri', '<=  1.11.7'
   
   spec.add_development_dependency "ruby-progressbar", ">= 1.11.0"  
