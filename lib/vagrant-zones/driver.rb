@@ -502,6 +502,7 @@ end									}
 					Util::Subprocess.new command do |stdout, stderr, thread|
 						ui.rewriting do |uiprogress|
 							uiprogress.clear_line()
+							puts stderr
 							uiprogress.info(I18n.t("vagrant_zones.importing_box_image_to_disk") + "#{image} ==> ", new_line: false)
 							uiprogress.report_progress(stderr, 100, false)
 						end
@@ -583,15 +584,12 @@ end									}
 				if config.brand == 'lx'
 					ui.info(I18n.t("vagrant_zones.lx_zone_config_gen"))
 					machine.config.vm.networks.each do |_type, opts|
-						
 						index = 1
 						if _type.to_s == "public_network"
 							@ip        = opts[:ip].to_s
 							@network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
 							@defrouter = opts[:gateway]
-						end
-
-						
+						end						
 					end
 					allowed_address  = @ip + @network.netmask.to_s
 					attr = %{create
