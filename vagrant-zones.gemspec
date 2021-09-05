@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.version       = VagrantPlugins::ProviderZone::VERSION
   spec.authors       = ['Mark Gilbert']
   spec.email         = ['mark.gilbert@prominic.net']
-  spec.summary       = %q{Vagrant provider plugin to support zones}
+  spec.summary       = 'Vagrant provider plugin to support zones'
   spec.description   = spec.summary
   spec.homepage      = 'https://github.com/makr91/vagrant-zones'
   spec.license       = 'AGPL-3.0'
