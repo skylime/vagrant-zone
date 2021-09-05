@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Encoding.default_external = Encoding::UTF_8
 
 Encoding.default_internal = Encoding::UTF_8
@@ -25,16 +27,15 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.required_ruby_version = ">= 2.5.0"
-  spec.required_rubygems_version = ">= 1.3.6"
+  spec.required_ruby_version = '>= 2.5.0'
+  spec.required_rubygems_version = '>= 1.3.6'
 
-  spec.add_runtime_dependency 'ruby_expect', '~> 1.7', '>= 1.7.5'  
-  spec.add_runtime_dependency 'netaddr', '~> 2.0', '>= 2.0.4' 
   spec.add_runtime_dependency 'i18n', '~> 1.0'
-  spec.add_runtime_dependency 'log4r', '~> 1.1'
   spec.add_runtime_dependency 'iniparse', '~> 1.0'
+  spec.add_runtime_dependency 'log4r', '~> 1.1'
+  spec.add_runtime_dependency 'netaddr', '~> 2.0', '>= 2.0.4'
   spec.add_runtime_dependency 'nokogiri', '<=  1.11.7'
-  
+  spec.add_runtime_dependency 'ruby_expect', '~> 1.7', '>= 1.7.5'
   
   spec.add_development_dependency 'bundler', '~> 2.2', '>= 2.2.25'
   spec.add_development_dependency 'code-scanning-rubocop', '~> 0.5', '>= 0.5.0'
@@ -42,7 +43,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.4'
   spec.add_development_dependency 'rspec-core', '~> 3.4'
   spec.add_development_dependency 'rspec-expectations', '~> 3.10', '>= 3.10.0'
-  spec.add_development_dependency 'rspec-mocks', '~> 3.10', '>= 3.10.0'  
+  spec.add_development_dependency 'rspec-mocks', '~> 3.10', '>= 3.10.0'
   spec.add_development_dependency 'rubocop', '~> 1.0'
   spec.add_development_dependency 'rubocop-rake', '~> 0.6', '>= 0.6.0'
   spec.add_development_dependency 'rubocop-rspec', '~> 2.4', '>= 2.4.0'
