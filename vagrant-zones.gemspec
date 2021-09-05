@@ -14,16 +14,16 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{Vagrant provider plugin to support zones}
   spec.description   = spec.summary
   spec.homepage      = 'https://github.com/makr91/vagrant-zones'
-  spec.license       = "AGPL-3.0"
+  spec.license       = 'AGPL-3.0'
   spec.metadata = {
-    "bug_tracker_uri" => "https://github.com/Makr91/issues",
-    "changelog_uri" => "https://github.com/Makr91/blob/main/CHANGELOG.md",
-    "documentation_uri" => "http://rubydoc.info/gems/vagrant-zones",
-    "source_code_uri" => "https://github.com/Makr91"
+    'bug_tracker_uri' => 'https://github.com/Makr91/issues',
+    'changelog_uri' => 'https://github.com/Makr91/blob/main/CHANGELOG.md',
+    'documentation_uri' => 'http://rubydoc.info/gems/vagrant-zones',
+    'source_code_uri' => 'https://github.com/Makr91'
   }
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  spec.bindir        = "exe"
+  spec.bindir        = 'bin'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
