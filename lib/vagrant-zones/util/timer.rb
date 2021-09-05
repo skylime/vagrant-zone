@@ -1,5 +1,6 @@
-module VagrantPlugins
+# frozen_string_literal: true
 
+module VagrantPlugins
   module ProviderZone
     module Util
       # This is a utlity to time commands and scripts
