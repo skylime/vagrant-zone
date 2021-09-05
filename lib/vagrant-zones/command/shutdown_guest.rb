@@ -1,9 +1,9 @@
 module VagrantPlugins
   module ProviderZone
       module Command
+        # This is used to shutdown the guest from inside the guest
         class ShutdownGuest < Vagrant.plugin('2', :command)
-          def execute
-            options = {}       
+          def execute    
             opts = OptionParser.new do |o|
               o.banner = 'Usage: vagrant zone control shutdown [options]'
             end

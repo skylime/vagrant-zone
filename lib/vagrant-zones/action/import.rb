@@ -23,7 +23,6 @@ module VagrantPlugins
 					image    = @machine.config.vm.box
 					curdir   = Dir.pwd
 					datadir  = @machine.data_dir
-					name = @machine.name
 					@driver  = @machine.provider.driver
 					ui = env[:ui]
 					ui.info(I18n.t("vagrant_zones.meeting"))
@@ -56,13 +55,13 @@ module VagrantPlugins
 								  response.read_body do |chunk|
 									io.write chunk
 									amount_downloaded += chunk.size
-									ui.rewriting do |ui|
+									ui.rewriting do |uiprogress|
 										ratelimit += 1
 										if ratelimit >= rate
-											ui.clear_line()
+											uiprogress.clear_line()
 											status = "%.2f%%" % (amount_downloaded.to_f / file_size * 100)
-											ui.info(I18n.t("vagrant_zones.importing_joyent_image") + "#{image} ==> ", new_line: false)
-											ui.report_progress(status, 100, false)
+											uiprogress.info(I18n.t("vagrant_zones.importing_joyent_image") + "#{image} ==> ", new_line: false)
+											uiprogress.report_progress(status, 100, false)
 											ratelimit = 0
 										end
 									end
@@ -89,12 +88,12 @@ module VagrantPlugins
 						end
 						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected") + image)
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
-						command = "#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s}  > #{datadir.to_s + '/box.zss'} "
+						command = "#{@pfexec} pv -n #{box_image_file}  > #{datadir.to_s + '/box.zss'} "
 						Util::Subprocess.new command do |stdout, stderr, thread|
-							ui.rewriting do |ui|
-								ui.clear_line()
-								ui.info(I18n.t("vagrant_zones.importing_box_image") + "#{image} ==> ", new_line: false)
-								ui.report_progress(stderr, 100, false)
+							ui.rewriting do |uiprogress|
+								uiprogress.clear_line()
+								uiprogress.info(I18n.t("vagrant_zones.importing_box_image") + "#{image} ==> ", new_line: false)
+								uiprogress.report_progress(stderr, 100, false)
 							end
 						  end
 						  ui.clear_line()
@@ -102,13 +101,11 @@ module VagrantPlugins
 					@app.call(env)
 				end
 				
-				def check(uuid,ui)
+				def check(uuid, env_ui)
 					`curl --output /dev/null --silent  -r 0-0 --fail #{@joyent_images_url}/#{uuid}`
-					ui.info(I18n.t("vagrant_zones.joyent_image_uuid_verified") + "#{@joyent_images_url}#{uuid}")
+					env_ui.info(I18n.t("vagrant_zones.joyent_image_uuid_verified") + "#{@joyent_images_url}#{uuid}")
 					return $?.success?
 				end
-
-
 			end
 		end
 	end

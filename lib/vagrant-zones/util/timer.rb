@@ -2,6 +2,7 @@
 module VagrantPlugins
   module ProviderZone
     module Util
+      # This is a utlity to time commands and scripts
       class Timer
         # A basic utility method that times the execution of the given
         # block and returns it.

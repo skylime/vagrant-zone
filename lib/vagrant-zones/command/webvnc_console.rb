@@ -2,6 +2,7 @@ require "resolv"
 module VagrantPlugins
   module ProviderZone
       module Command
+        # This is used to start a WebVNC console to the guest
         class WebVNCConsole < Vagrant.plugin('2', :command)
           def execute
             options = {}       

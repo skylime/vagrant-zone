@@ -4,6 +4,7 @@ require 'log4r'
 
 module VagrantPlugins
 	module ProviderZone
+		# Run actions against the machine
 		module Action
 			# Include the built-in modules so we can use them as top-level things.
 			include Vagrant::Action::Builtin
@@ -13,9 +14,9 @@ module VagrantPlugins
 			def self.action_up
 				Vagrant::Action::Builder.new.tap do |b|
 					b.use Call, IsCreated do |env, b2|
-						re = env[:result]
-						m = env[:machine].state.id
-						ui = env[:ui]
+						#re = env[:result]
+						#m = env[:machine].state.id
+						#ui = env[:ui]
 
 						if !env[:result]
 							#b2.use BoxUpdate

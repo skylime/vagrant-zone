@@ -2,6 +2,7 @@
 module VagrantPlugins
 	module ProviderZone
       module Command
+        # This is used to start a console to the zone via WebVNC, VNC or Serial/Telnet
         class Console < Vagrant.plugin("2", :command)
           def initialize(argv, env)
             @main_args, @sub_command, @sub_args = split_main_and_subcommand(argv)

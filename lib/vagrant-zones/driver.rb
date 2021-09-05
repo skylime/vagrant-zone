@@ -35,7 +35,6 @@ module VagrantPlugins
 			end
 
 			def state(machine)
-				uuid = machine.id
 				name = machine.name
 				vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 				if vm_state == 'running'
@@ -81,9 +80,7 @@ module VagrantPlugins
 			
 
 			## Control the Machine from inside the machine
-			def control(machine, ui, control)
-				name = @machine.name
-				
+			def control(machine, ui, control)				
 				config = machine.provider_config
 				if control == "restart"
 					command = "sudo shutdown -r"
@@ -107,9 +104,6 @@ module VagrantPlugins
 
 				execute(false, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  '#{command}' ")
 			end
-
-
-
 
 			def console(machine, ui , command, ip, port)
 				name = @machine.name

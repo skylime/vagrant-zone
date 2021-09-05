@@ -1,6 +1,7 @@
 module VagrantPlugins
   module ProviderZone
       module Command
+        # This is used to list snapshots for the zone
         class ListSnapshots < Vagrant.plugin('2', :command)
           def execute
             options = {}       
@@ -26,7 +27,7 @@ module VagrantPlugins
               time = Time.new
               dash = "-"
               colon = ":"
-              datetime = time.year.to_s + dash.to_s + time.month.to_s + dash.to_s + time.day.to_s + dash.to_s + time.hour.to_s + colon.to_s + time.min.to_s + colon.to_s + time.sec.to_s
+              datetime = time.year.to_s + dash + time.month.to_s + dash + time.day.to_s + dash + time.hour.to_s + colon + time.min.to_s + colon + time.sec.to_s
               
               options[:snapshot_name] = datetime
             end

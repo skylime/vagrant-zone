@@ -1,6 +1,7 @@
 require 'pathname'
 
 module VagrantPlugins
+	# This is used to configure, manage, create and destroy zones where vagrant by itself cannot
 	module ProviderZone
 		lib_path = Pathname.new(File.expand_path("../vagrant-zones", __FILE__))
 

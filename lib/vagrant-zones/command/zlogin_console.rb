@@ -1,6 +1,7 @@
 module VagrantPlugins
   module ProviderZone
       module Command
+        # This is used to acces the zone via console, zlogin
         class ZloginConsole < Vagrant.plugin('2', :command)
           def execute
             options = {}       

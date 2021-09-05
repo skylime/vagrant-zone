@@ -1,6 +1,7 @@
 module VagrantPlugins
   module ProviderZone
       module Command
+        # This is used to delete zfs snapshots the zone
         class DeleteSnapshots < Vagrant.plugin('2', :command)
           def execute
             options = {}       

@@ -7,6 +7,7 @@ end
 
 module VagrantPlugins
 	module ProviderZone
+		# This is a the plugin droping for the Vagrant-zones vagrant plugin
 		class Plugin < Vagrant.plugin('2')
 			name "zone"
 			description <<-DESC

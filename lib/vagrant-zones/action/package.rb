@@ -11,9 +11,7 @@ module VagrantPlugins
 					@app = app
 					env['package.output'] ||= 'package.box'
 				end
-
-
-
+				
 				def call(env)
 					@machine = env[:machine]
 					@driver  = @machine.provider.driver

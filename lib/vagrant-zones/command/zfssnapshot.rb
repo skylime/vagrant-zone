@@ -2,6 +2,7 @@
 module VagrantPlugins
 	module ProviderZone
       module Command
+        # This is used to manage ZFS snapshtos for the zone
         class ZFSSnapshot < Vagrant.plugin("2", :command)
           def initialize(argv, env)
             @main_args, @sub_command, @sub_args = split_main_and_subcommand(argv)

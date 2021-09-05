@@ -3,6 +3,7 @@ require "vagrant"
 require "log4r"
 
 module VagrantPlugins
+	# This is a module to assist in managing, creating bhyve, kvm, and lx zones
 	module ProviderZone
 		autoload :Driver, 'vagrant-zones/driver'
 
@@ -66,7 +67,6 @@ module VagrantPlugins
 			end
 
 			def state
-				id = @machine.id
 				state_id = nil
 				state_id = :not_created unless @machine.id
 				state_id = driver.state(@machine) if @machine.id && !state_id

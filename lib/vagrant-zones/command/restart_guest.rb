@@ -1,9 +1,9 @@
 module VagrantPlugins
   module ProviderZone
       module Command
+        # This is used to restart the guest from inside the guest
         class RestartGuest < Vagrant.plugin('2', :command)
-          def execute
-            options = {}       
+          def execute  
             opts = OptionParser.new do |o|
               o.banner = 'Usage: vagrant zone control restart [options]'
             end

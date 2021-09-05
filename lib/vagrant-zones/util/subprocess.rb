@@ -4,6 +4,7 @@ require "log4r"
 module VagrantPlugins
   module ProviderZone
     module Util
+      # This is a utlity to start a subprocess
       class Subprocess
         def initialize(cmd, &block)
           Open3.popen3(cmd) do |_stdin, stdout, stderr, thread|

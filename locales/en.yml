@@ -31,7 +31,7 @@ en:
     destroy_zone: |-
       Destroying the zone
     graceful_shutdown_failed: |-
-      Zone failed to shutdown in alloted time:
+      Zone failed to shutdown in alloted time ==> 
     graceful_shutdown: |-
       Ensuring the zone is shutdown at the hypervisor level
     creating_vnic: |-

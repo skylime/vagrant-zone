@@ -1,6 +1,7 @@
 module VagrantPlugins
   module ProviderZone
       module Command
+        # This is used to start a VNC console to the guest
         class VNCConsole < Vagrant.plugin('2', :command)
           def execute
             options = {}       

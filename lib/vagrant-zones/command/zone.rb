@@ -4,6 +4,7 @@ require 'vagrant-zones/action'
 module VagrantPlugins
 	module ProviderZone
       module Command
+      # This is used manage the zone where vagrant cannot
       class Zone < Vagrant.plugin("2", :command)
         def self.synopsis
           "Manage zones and query zone information"

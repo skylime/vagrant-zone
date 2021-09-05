@@ -3,6 +3,7 @@ require "vagrant"
 ## Do not Modify this File! Modify the Hosts.yml, Hosts.rb, or Vagrantfile!
 module VagrantPlugins
 	module ProviderZone
+		# This is used define the variables for the project
 		class Config < Vagrant.plugin('2', :config)
 			attr_accessor :brand
 			attr_accessor :autoboot
