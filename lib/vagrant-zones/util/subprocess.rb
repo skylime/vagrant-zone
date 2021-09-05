@@ -1,21 +1,16 @@
 # frozen_string_literal: true
 require 'open3'
-require "log4r"
 module VagrantPlugins
   module ProviderZone
     module Util
       class Subprocess
         def initialize(cmd, &block)
-          puts cmd
           Open3.popen3(cmd) do |_stdin, stdout, stderr, thread|
-            
             # read each stream from a new thread
             { :out => stdout, :err => stderr }.each do |key, stream|
               Thread.new do
-                
                 until (line = stream.gets).nil? do
                   # yield the block depending on the stream
-                  
                   if key == :out
                     yield line, nil, thread if block_given?
                   else
