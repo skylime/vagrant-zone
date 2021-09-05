@@ -95,8 +95,8 @@ module VagrantPlugins
 								uiprogress.info(I18n.t("vagrant_zones.importing_box_image") + "#{image} ==> ", new_line: false)
 								uiprogress.report_progress(stderr, 100, false)
 							end
-						  end
-						  ui.clear_line()
+						end
+						ui.clear_line()  
 					end
 					@app.call(env)
 				end
