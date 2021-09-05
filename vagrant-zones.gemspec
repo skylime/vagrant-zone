@@ -1,17 +1,18 @@
-# coding: utf-8
 Encoding.default_external = Encoding::UTF_8
+
 Encoding.default_internal = Encoding::UTF_8
-require File.expand_path('../lib/vagrant-zones/version', __FILE__)
+
+require File.expand_path('lib/vagrant-zones/version', __dir__)
 
 Gem::Specification.new do |spec|
-  spec.name          = "vagrant_zones"
+  spec.name          = 'vagrant_zones'
   spec.version       = VagrantPlugins::ProviderZone::VERSION
-  spec.authors       = ["Mark Gilbert"]
-  spec.email         = ["mark.gilbert@prominic.net"]
+  spec.authors       = ['Mark Gilbert']
+  spec.email         = ['mark.gilbert@prominic.net']
   spec.summary       = %q{Vagrant provider plugin to support zones}
   spec.description   = spec.summary
-  spec.homepage      = "https://github.com/makr91/vagrant-zones"
-  spec.license       = "AGPLv3"
+  spec.homepage      = 'https://github.com/makr91/vagrant-zones'
+  spec.license       = "AGPL-3.0"
   spec.metadata = {
     "bug_tracker_uri" => "https://github.com/Makr91/issues",
     "changelog_uri" => "https://github.com/Makr91/blob/main/CHANGELOG.md",
