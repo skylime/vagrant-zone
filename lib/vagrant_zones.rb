@@ -5,30 +5,28 @@ require 'pathname'
 module VagrantPlugins
 	# This is used to configure, manage, create and destroy zones where vagrant by itself cannot
 	module ProviderZone
-		lib_path = Pathname.new(File.expand_path("../vagrant-zones", __FILE__))
+		lib_path = Pathname.new(File.expand_path('../vagrant-zones', __FILE__))
 
 		autoload :Action, lib_path.join('action')
 		autoload :Executor, lib_path.join('executor')
 		autoload :Driver, lib_path.join('driver')
 		autoload :Errors, lib_path.join('errors')
-
 		# This function returns the path to the source of this plugin
-		#
 		# @return [Pathname]
 		def self.source_root
-			@source_root ||= Pathname.new(File.expand_path("../../", __FILE__))
+			@source_root ||= Pathname.new(File.expand_path('../../', __FILE__))
 		end
 	end
 end
 
 begin
-	require 'vagrant'
-  rescue LoadError
-	raise 'The Vagrant Libvirt plugin must be run within Vagrant.'
+  require 'vagrant'
+rescue LoadError
+  raise 'The Vagrant Libvirt plugin must be run within Vagrant.'
 end
 
 if Vagrant::VERSION < '2'
-	raise 'The Vagrant Libvirt plugin is only compatible with Vagrant 2+.'
+  raise 'The Vagrant Libvirt plugin is only compatible with Vagrant 2+.'
 end
 
-require "vagrant-zones/plugin"
+require 'vagrant-zones/plugin'
