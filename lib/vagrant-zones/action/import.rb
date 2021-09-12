@@ -92,10 +92,9 @@ module VagrantPlugins
 							command = "#{@pfexec} pv -n #{box_image_file} > #{datadir.to_s + '/box.zss'} "
 							Util::Subprocess.new command do |stdout, stderr, thread|
 								ui.rewriting do |uiprogress|
-									
-									uiprogress.info(I18n.t("vagrant_zones.importing_box_image") + "#{image} ==> ")
-									uiprogress.report_progress(stderr, 100, false)
 									uiprogress.clear_line()
+									uiprogress.info(I18n.t("vagrant_zones.importing_box_image") + "#{image} ==> ", new_line: false)
+									uiprogress.report_progress(stderr, 100, false)
 								end
 							end
 						else 
