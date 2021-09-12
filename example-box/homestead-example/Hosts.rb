@@ -31,7 +31,7 @@ class Hosts
           end
   
           server.vm.network :public_network do |vm|
-            puts ip
+            puts host['public_network']['ip1']
             puts
             puts
             puts
