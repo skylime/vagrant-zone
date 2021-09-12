@@ -479,7 +479,8 @@ end									}
 					end
 				end
 			end
-
+			
+  
 			def create_dataset(machine, ui)
 				name = @machine.name
 				config  = machine.provider_config				
