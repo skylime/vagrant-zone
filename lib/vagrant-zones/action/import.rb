@@ -97,19 +97,19 @@ module VagrantPlugins
 						end
 						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected") + image)
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
-						if(File.file?(box_image_file)) 
-
-							command = "#{@pfexec} pv -n #{box_image_file} > #{datadir.to_s + '/box.zss'} "
-							Util::Subprocess.new command do |stdout, stderr, thread|
-								ui.rewriting do |uiprogress|
-									uiprogress.clear_line()
-									uiprogress.info(I18n.t("vagrant_zones.importing_box_image") + "#{box_image_file} ==> #{image} ==> ", new_line: false)
-									uiprogress.report_progress(stderr, 100, false)
-								end
-							end
-						else 
-							puts 'file not found, need to import from cloud'
-						end
+						#if(File.file?(box_image_file)) 
+						#	## /home/mvcs/.vagrant.d/boxes/Makr44-VAGRANTSLASH-ubuntu2104-server/0.0.8/zone/box.zss  ==> /perm/vagrant-zones/example-box/homestead-example/.vagrant/machines/0000-session-observer-01.prominic.work/zone/box.zss
+						#	command = "#{@pfexec} pv -n #{box_image_file} > #{datadir.to_s + '/box.zss'} "
+						#	Util::Subprocess.new command do |stdout, stderr, thread|
+						#		ui.rewriting do |uiprogress|
+						#			uiprogress.clear_line()
+						#			uiprogress.info(I18n.t("vagrant_zones.importing_box_image") + "#{box_image_file} ==> #{image} ==> ", new_line: false)
+						#			uiprogress.report_progress(stderr, 100, false)
+						#		end
+						#	end
+						#else 
+						#	puts 'file not found, need to import from cloud'
+						#end
 						
 						ui.clear_line()  
 					end
