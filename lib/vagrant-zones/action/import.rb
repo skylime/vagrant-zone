@@ -1,6 +1,7 @@
 # coding: utf-8
 require 'net/http'
 require 'vagrant-zones/util/subprocess'
+require 'pp'
 
 module VagrantPlugins
 	module ProviderZone
@@ -27,7 +28,7 @@ module VagrantPlugins
 					ui = env[:ui]
 					ui.info(I18n.t("vagrant_zones.meeting"))
 					ui.info(I18n.t("vagrant_zones.detecting_box"))
-					printf(@machine[0])
+					pp(@machine)
 					print(@machine)
 					ui.info("DATADIR ==> #{datadir}")
 					# If image ends on '.zss' it's a local ZFS snapshot which
