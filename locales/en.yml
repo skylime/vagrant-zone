@@ -134,3 +134,5 @@ en:
       Graceful Restart complete
     zone_gracefully_stopped_waiting_for_boot: |-
       Zone gracefully shutdown, now waiting for boot
+    setting_console_accessvnc: |-
+      Setting VNC acces port ==> 
