@@ -498,7 +498,7 @@ end									}
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot") + config.zonepathsize + ", " + dataset)
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume") + dataset )	
-					commandtransfer = "#{@pfexec} pv -n #{env[:machine].box.directory.join('box.zss').to_s} | #{@pfexec} zfs recv -u -v -F #{dataset} "
+					commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss').to_s} | #{@pfexec} zfs recv -u -v -F #{dataset} "
 					Util::Subprocess.new commandtransfer do |stdout, stderr, thread|
 					  ui.rewriting do |uiprogress|
 						uiprogress.clear_line() 
