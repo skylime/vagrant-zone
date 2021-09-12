@@ -504,8 +504,9 @@ end									}
 
 						uiprogress.report_progress(stderr, 100, false)
 					  end
-					  ui.clear_line() 
+					  
 					end
+					ui.clear_line() 
 				elsif config.brand == 'illumos'
 					raise Errors::NotYetImplemented
 				elsif config.brand == 'kvm'
