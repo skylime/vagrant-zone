@@ -71,7 +71,7 @@ module VagrantPlugins
 				@firmware_type 					= "compatability"
 				@firmware 						= UNSET_VALUE
 				@setup_wait  					= 60
-				@box_image_file					= UNSET_VALUE
+				@box							= UNSET_VALUE
 				@clean_shutdown_time  			= 300
 				@dns				  			= [{"nameserver" => "1.1.1.1"},{"nameserver" => "1.0.0.1"}]
 				@vmtype   						= 'production'
