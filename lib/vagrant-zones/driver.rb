@@ -502,7 +502,10 @@ end									}
 					commandtransfer = "#{@pfexec} pv -n #{datadir.to_s}/box.zss | #{@pfexec} zfs recv -u -v -F #{dataset} "
 					Util::Subprocess.new commandtransfer do |stdout, stderr, thread|
 					  puts stderr
-
+					  ui.rewriting do |uiprogress|
+						puts(I18n.t("vagrant_zones.importing_box_image_to_disk") + "#{image} ==> ")
+						uiprogress.report_progress(stderr, 100, false)
+					  end
 					end
 				elsif config.brand == 'illumos'
 					raise Errors::NotYetImplemented
