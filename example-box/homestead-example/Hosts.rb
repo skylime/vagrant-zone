@@ -42,6 +42,7 @@ class Hosts
           server.vm.provider :zone do |vm|
                   vm.cloud_init_enabled                   = host['cloud_init_enabled']
                   vm.brand                                = host['brand']
+                  vm.vagrant_cloud_creator                = host['cloud_creator']
                   vm.autoboot                             = host['autostart']
                   vm.parition_id                          = host['parition_id']
                   vm.zonepath                             = "#{host['zonepath']}/#{host['parition_id']}-#{host['name']}"
