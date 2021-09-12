@@ -12,9 +12,7 @@ class Hosts
         autostart = host.has_key?('autostart') && host['autostart']
         config.vm.define "#{host['parition_id']}-#{host['name']}", autostart: autostart do |server|
           server.vm.box = host['box']
-          env['ui'].info('hello')
-          puts
-          puts
+
           
           server.vm.boot_timeout = 900
   
