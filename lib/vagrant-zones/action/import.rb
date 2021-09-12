@@ -88,7 +88,7 @@ module VagrantPlugins
 						end
 						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected") + image)
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
-						command = "#{@pfexec} pv -n #{box_image_file}  > #{datadir.to_s + '/box.zss'} "
+						command = "#{@pfexec} pv -n #{box_image_file} > #{datadir.to_s + '/box.zss'} "
 						Util::Subprocess.new command do |stdout, stderr, thread|
 							ui.rewriting do |uiprogress|
 								uiprogress.clear_line()
