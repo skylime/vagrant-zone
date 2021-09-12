@@ -28,6 +28,7 @@ module VagrantPlugins
 					zonepath = config.zonepath.delete_prefix("/").to_s
 					brand  = @machine.provider_config.brand
 					kernel = @machine.provider_config.kernel
+					vagrant_cloud_creator = @machine.provider_config.vagrant_cloud_creator
 					
 					puts "==> #{name}: Creating a Snapshot of the box."
 					snapshot_create(zonepath)
@@ -86,6 +87,7 @@ module VagrantPlugins
 						"provider": "zone",
 						"format": "zss",
 						"brand": "#{brand}"
+						"url": "https://app.vagrantup.com/#{vagrant_cloud_creator}/boxes/#{}",
 					}
 					EOF
 				end

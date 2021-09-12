@@ -44,6 +44,7 @@ module VagrantPlugins
 			attr_accessor :cloud_init_enabled
 			attr_accessor :dns
 			attr_accessor :box
+			attr_accessor :vagrant_cloud_creator
 			
 			def initialize
 				# pkgsrc, lx, bhyve, kvm, illumos
@@ -84,6 +85,7 @@ module VagrantPlugins
 				@vagrant_user_private_key_path  = './id_rsa'
 				@override						= false
 				@cloud_init_enabled				= false
+				@vagrant_cloud_creator			= UNSET_VALUE
 				
 				case @firmware_type
 					when "compatability"  
