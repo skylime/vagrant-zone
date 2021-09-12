@@ -501,11 +501,11 @@ end									}
 					
 					commandtransfer = "#{@pfexec} pv -n #{datadir.to_s}/box.zss | #{@pfexec} zfs recv -u -v -F #{dataset} "
 					Util::Subprocess.new commandtransfer do |stdout, stderr, thread|
-						puts stderr
+					  puts stderr
 					  ui.rewriting do |progress|
 						puts stderr
 						puts stdout
-						progress.info(I18n.t("vagrant_zones.importing_box_image_to_disk") + "#{image} ==> ", new_line: false)
+						puts (I18n.t("vagrant_zones.importing_box_image_to_disk") + "#{image} ==> ", new_line: false)
 						progress.report_progress(stderr, 100, false)
 					  end
 					end
