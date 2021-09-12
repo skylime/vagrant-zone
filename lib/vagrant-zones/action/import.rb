@@ -77,8 +77,10 @@ module VagrantPlugins
 					
 					else
 						# Support zss format only for now, use other images and convert later
-						puts image
-						box_format = env[:machine].box.metadata['format']
+						puts env[:machine]
+						if !env[:machine].box.metadata['format'].nil?
+						  box_format = env[:machine].box.metadata['format']
+						end
 						if box_format.nil?
 							raise Errors::NoBoxFormatSet
 						elsif box_format == 'ovf'
