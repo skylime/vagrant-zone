@@ -23,6 +23,7 @@ module VagrantPlugins
 					image    = @machine.config.vm.box
 					curdir   = Dir.pwd
 					datadir  = @machine.data_dir
+					puts data_dir
 					@driver  = @machine.provider.driver
 					ui = env[:ui]
 					ui.info(I18n.t("vagrant_zones.meeting"))
