@@ -843,7 +843,8 @@ end						}
 				result = execute(false, "#{@pfexec} VBoxManage list runningvms")
 				if result != nil 
 					if result != "VBoxManage: not found"
-					raise Errors::VirtualBoxRunningConflictDetected 
+						raise Errors::VirtualBoxRunningConflictDetected 
+					end
 				end
 				## https://man.omnios.org/man5/brands
 				if config.brand == 'lx'
