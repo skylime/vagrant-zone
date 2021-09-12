@@ -31,6 +31,7 @@ module VagrantPlugins
 					@logger.info("DATADIR #{datadir}")
 					# If image ends on '.zss' it's a local ZFS snapshot which
 					# should be used
+					ui.info(env[:machine].box.metadata)
 					if image[-4, 4] == '.zss'
 						if File.exist?(curdir + '/' + image)
 							FileUtils.cp(curdir + '/' + image, datadir.to_s + '/' + image)
@@ -74,8 +75,9 @@ module VagrantPlugins
 
 					## If it's a regular name (everything else), try to find it
 					## on Vagrant Cloud
-					puts env[:machine].box.metadata
+					
 					else
+					
 						# Support zss format only for now, use other images and convert later
 						ui.info(env[:machine].box.metadata)
 						box_format = env[:machine].box.metadata['format']
