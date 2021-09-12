@@ -498,8 +498,8 @@ end									}
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot") + config.zonepathsize + ", " + dataset)
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume") + "#{dataset}" )	
-					
-					commandtransfer = "#{@pfexec} pv -n #{datadir.to_s}/box.zss | #{@pfexec} zfs recv -u -v -F #{dataset} "
+					pfexec = @pfexec
+					commandtransfer = "#{pfexec} pv -n #{datadir.to_s}/box.zss | #{pfexec} zfs recv -u -v -F #{dataset} "
 					puts commandtransfer
 					Util::Subprocess.new commandtransfer do |stdout, stderr, thread|
 					  puts stderr
