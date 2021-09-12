@@ -88,14 +88,19 @@ module VagrantPlugins
 						end
 						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected") + image)
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
-						command = "#{@pfexec} pv -n #{box_image_file} > #{datadir.to_s + '/box.zss'} "
-						Util::Subprocess.new command do |stdout, stderr, thread|
-							ui.rewriting do |uiprogress|
-								uiprogress.clear_line()
-								uiprogress.info(I18n.t("vagrant_zones.importing_box_image") + "#{image} ==> ", new_line: false)
-								uiprogress.report_progress(stderr, 100, false)
+						if(File.file?(box_image_file)) 
+							command = "#{@pfexec} pv -n #{box_image_file} > #{datadir.to_s + '/box.zss'} "
+							Util::Subprocess.new command do |stdout, stderr, thread|
+								ui.rewriting do |uiprogress|
+									uiprogress.clear_line()
+									uiprogress.info(I18n.t("vagrant_zones.importing_box_image") + "#{image} ==> ", new_line: false)
+									uiprogress.report_progress(stderr, 100, false)
+								end
 							end
+						else 
+							puts 'file not found, need to import from cloud'
 						end
+						
 						ui.clear_line()  
 					end
 					@app.call(env)
