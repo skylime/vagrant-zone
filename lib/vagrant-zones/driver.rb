@@ -505,7 +505,7 @@ end									}
 					  ui.rewriting do |progress|
 						puts stderr
 						puts stdout
-						puts (I18n.t("vagrant_zones.importing_box_image_to_disk") + "#{image} ==> ", new_line: false)
+						puts(I18n.t("vagrant_zones.importing_box_image_to_disk") + "#{image} ==> ", new_line: false)
 						progress.report_progress(stderr, 100, false)
 					  end
 					end
