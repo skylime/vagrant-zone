@@ -503,7 +503,7 @@ end									}
 						puts stderr
 						uiprogress.info(I18n.t("vagrant_zones.importing_box_image_to_disk") + "#{dataset} ==> ", new_line: false)
 
-						#uiprogress.report_progress(stderr, 100, false)
+						uiprogress.report_progress(stderr, 100, false)
 					  end
 					end
 				elsif config.brand == 'illumos'
