@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'open3'
+require 'log4r'
 module VagrantPlugins
   module ProviderZone
     module Util
@@ -7,9 +8,6 @@ module VagrantPlugins
         def initialize(cmd, &block)
           Open3.popen3(cmd) do |_stdin, stdout, stderr, thread|
             # read each stream from a new thread
-            puts stderr
-            puts thread
-            puts stdout
             { :out => stdout, :err => stderr }.each do |key, stream|
               Thread.new do
                 until (line = stream.gets).nil? do

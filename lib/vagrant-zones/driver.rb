@@ -1,15 +1,14 @@
-# encoding: utf-8
-require "log4r"
-require "fileutils"
-require "digest/md5"
-require "io/console"
-require "ruby_expect"
+require 'log4r'
+require 'fileutils'
+require 'digest/md5'
+require 'io/console'
+require 'ruby_expect'
 require 'netaddr'
 require 'ipaddr'
-require "vagrant/util/numeric"
+require 'vagrant/util/numeric'
 require 'pty'
 require 'expect'
-require "vagrant"
+require 'vagrant'
 require 'vagrant-zones/util/timer'
 require 'vagrant-zones/util/subprocess'
 require 'vagrant/util/retryable'
@@ -19,7 +18,7 @@ module VagrantPlugins
 		class Driver
 			attr_accessor :executor
 			def initialize(machine)
-				@logger = Log4r::Logger.new("vagrant_zones::driver")
+				@logger = Log4r::Logger.new('vagrant_zones::driver')
 				@machine = machine
 				@executor = Executor::Exec.new
 				if Process.uid == 0
@@ -498,13 +497,12 @@ end									}
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot") + config.zonepathsize + ", " + dataset)
 					execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
 					ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume") + dataset )	
-					
 					commandtransfer = "#{@pfexec} pv -n #{datadir.to_s}/box.zss | #{@pfexec} zfs recv -u -v -F #{dataset} "
 					Util::Subprocess.new commandtransfer do |stdout, stderr, thread|
-					  puts stderr
 					  ui.rewriting do |uiprogress|
-						puts(I18n.t("vagrant_zones.importing_box_image_to_disk") + "#{image} ==> ")
-						uiprogress.report_progress(stderr, 100, false)
+						uiprogress.info(stderr)
+						#puts(I18n.t("vagrant_zones.importing_box_image_to_disk") + "#{image} ==> ", new_line: false)
+						#uiprogress.report_progress(stderr, 100, false)
 					  end
 					end
 				elsif config.brand == 'illumos'
