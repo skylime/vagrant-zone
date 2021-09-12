@@ -76,6 +76,7 @@ module VagrantPlugins
 					## on Vagrant Cloud
 					else
 						# Support zss format only for now, use other images and convert later
+						puts env[:machine].box.metadata
 						box_format = env[:machine].box.metadata['format']
 						if box_format.nil?
 							raise Errors::NoBoxFormatSet
@@ -89,6 +90,7 @@ module VagrantPlugins
 						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected") + image)
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s
 						if(File.file?(box_image_file)) 
+
 							command = "#{@pfexec} pv -n #{box_image_file} > #{datadir.to_s + '/box.zss'} "
 							Util::Subprocess.new command do |stdout, stderr, thread|
 								ui.rewriting do |uiprogress|
