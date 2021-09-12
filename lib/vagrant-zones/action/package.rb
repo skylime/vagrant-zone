@@ -86,8 +86,8 @@ module VagrantPlugins
 					{
 						"provider": "zone",
 						"format": "zss",
-						"brand": "#{brand}"
-						"url": "https://app.vagrantup.com/#{vagrant_cloud_creator}/boxes/#{boxname}",
+						"brand": "#{brand}",
+						"url": "https://app.vagrantup.com/#{vagrant_cloud_creator}/boxes/#{boxname}"
 					}
 					EOF
 				end
