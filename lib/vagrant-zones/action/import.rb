@@ -74,6 +74,7 @@ module VagrantPlugins
 
 					## If it's a regular name (everything else), try to find it
 					## on Vagrant Cloud
+					puts env[:machine].box.metadata
 					else
 						# Support zss format only for now, use other images and convert later
 						puts env[:machine].box.metadata
