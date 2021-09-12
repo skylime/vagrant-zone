@@ -840,11 +840,9 @@ end						}
 				## Kernel, KVM, and Bhyve cannot run conncurently with Virtualbox:
 				### https://forums.virtualbox.org/viewtopic.php?f=11&t=64652
 				ui.info(I18n.t("vagrant_zones.vbox_run_check"))
-				result = execute(false, "#{@pfexec} VBoxManage list runningvms")
-				if result != nil 
-					if result != "VBoxManage: not found"
+				result = execute(true, "#{@pfexec} VBoxManage list runningvms")
+				if result == 0
 						raise Errors::VirtualBoxRunningConflictDetected 
-					end
 				end
 				## https://man.omnios.org/man5/brands
 				if config.brand == 'lx'
