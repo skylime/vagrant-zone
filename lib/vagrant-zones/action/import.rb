@@ -33,8 +33,6 @@ module VagrantPlugins
 					ui = env[:ui]
 					ui.info(I18n.t("vagrant_zones.meeting"))
 					ui.info(I18n.t("vagrant_zones.detecting_box"))
-					p @machine.inspect
-					print(@machine)
 					ui.info("DATADIR ==> #{datadir}")
 					# If image ends on '.zss' it's a local ZFS snapshot which
 					# should be used
