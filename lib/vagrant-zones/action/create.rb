@@ -9,7 +9,7 @@ module VagrantPlugins
     module Action
       # This will create the zone
       class Create
-        def initialize(app)
+        def initialize(app, _env)
           @logger = Log4r::Logger.new('vagrant_zones::action::import')
           @app = app
         end

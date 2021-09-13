@@ -14,11 +14,11 @@ module VagrantPlugins
       # This action is called to bring the box up from nothing.
       def self.action_up
         Vagrant::Action::Builder.new.tap do |b|
-          b.use Call, IsCreated do |b2|
-            if env[:result]
-              env[:halt_on_error] = true
+          b.use Call, IsCreated do |env2, b2|
+            if env2[:result]
+              env2[:halt_on_error] = true
               b2.use action_start
-            elsif !env[:result]
+            elsif !env2[:result]
               # b2.use BoxUpdate
               b2.use Import
               b2.use Create
@@ -40,8 +40,8 @@ module VagrantPlugins
       # directly by any subcommand.
       def self.action_start
         Vagrant::Action::Builder.new.tap do |b|
-          b.use Call, IsState, :running do |env, b1|
-            if env[:result]
+          b.use Call, IsState, :running do |env1, b1|
+            if env1[:result]
               b1.use Message, I18n.t('vagrant_zones.states.is_running')
               next
             end
@@ -85,12 +85,12 @@ module VagrantPlugins
       def self.action_halt
         Vagrant::Action::Builder.new.tap do |b|
           b.use Call, IsCreated do |env2, b2|
-            unless env[:result]
+            unless env2[:result]
               b2.use NotCreated
               next
             end
 
-            if env[:result]
+            if env2[:result]
               # VM is running, halt it
               b2.use Halt
             end
@@ -123,7 +123,7 @@ module VagrantPlugins
       # freeing the resources of the underlying virtual machine.
       def self.action_destroy
         Vagrant::Action::Builder.new.tap do |b|
-          b.use Call, IsCreated do |env, b2|
+          b.use Call, IsCreated do | b2|
             b2.use Destroy
           end
         end
@@ -132,8 +132,8 @@ module VagrantPlugins
       # This action is called when `vagrant provision` is called.
       def self.action_provision
         Vagrant::Action::Builder.new.tap do |b|
-          b.use Call, IsCreated do |env, b2|
-            b2.use Call, IsState, :running do |env, b3|
+          b.use Call, IsCreated do | b2|
+            b2.use Call, IsState, :running do | b3|
               b3.use Provision
             end
           end
@@ -144,8 +144,8 @@ module VagrantPlugins
       # It uses the halt and start actions
       def self.action_reload
         Vagrant::Action::Builder.new.tap do |b|
-          b.use Call, IsCreated do |env, b2|
-            unless env[:result]
+          b.use Call, IsCreated do |env2, b2|
+            unless env2[:result]
               b2.use NotCreated
               next
             end
