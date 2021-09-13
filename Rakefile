@@ -25,7 +25,7 @@ RSpec::Core::RakeTask.new
 RuboCop::RakeTask.new
 
 RuboCop::RakeTask.new(:rubocoplayout) do |t|
-  t.options = ['-a --only Style/RedundantReturn,Style/SpecialGlobalVars,Style/RedundantInterpolation,Style/StringConcatenation,Style/StringConcatenation,Style/StringConcatenation,Style/StringConcatenation,Style/IfUnlessModifier,Style/IfUnlessModifier,Style/IfUnlessModifier']
+  t.options = ['--auto-correct --only Style/RedundantReturn,Style/SpecialGlobalVars,Style/RedundantInterpolation,Style/StringConcatenation,Style/StringConcatenation,Style/StringConcatenation,Style/StringConcatenation,Style/IfUnlessModifier,Style/IfUnlessModifier,Style/IfUnlessModifier']
 end
 
 # Default task is to run the unit tests
