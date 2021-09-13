@@ -5,6 +5,7 @@ bin
 *.lock
 id_rsa
 zone_config
+*.zoneconfig
 _tmp_package
 package.box
 Vagrantfile
