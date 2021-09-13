@@ -104,6 +104,7 @@ module VagrantPlugins
           b.use SSHExec
         end
       end
+
       def self.action_ssh_run
         Vagrant::Action::Builder.new.tap do |b|
           b.use SSHRun
@@ -175,8 +176,8 @@ module VagrantPlugins
         end
       end
 
-      action_root = Pathname.new(File.expand_path('../action', __FILE__))
-      ##autoload :BoxUpdate, action_root.join('box_update')
+      action_root = Pathname.new(File.xpand_path('action', __dir__))
+      # autoload :BoxUpdate, action_root.join('box_update')
       autoload :Import, action_root.join('import')
       autoload :Create, action_root.join('create')
       autoload :Network, action_root.join('network')
