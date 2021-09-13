@@ -234,7 +234,6 @@ module VagrantPlugins
           if _type.to_s == "public_network"
             link = opts[:bridge]
             nic_number = opts[:nic_number].to_s
-            
             netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count("1")
             ip          = opts[:ip].to_s
             defrouter   = opts[:gateway].to_s

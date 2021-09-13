@@ -25,17 +25,24 @@ module VagrantPlugins
         # We just return nil if were not able to identify the VM's IP and
         # let Vagrant core deal with it like docker provider does
         return nil if state.id != :running
-        
+
+        ip = driver.get_ip_address(@machine)
+        user = driver.user(@machine)
+        userkey = driver.userprivatekeypath(@machine).to_s
+        vagrantuserpassword = driver.vagrantuserpass(@machine).to_s
+        passwordauth = 'yes'
+        return nil unless ip
+
+        portnumber = '22'
+        portnumber = driver.sshport(@machine).to_s unless portnumber.to_s.nil? || portnumber.to_i.zero?
         ssh_info = {
-          host: driver.get_ip_address(@machine).to_s,
-          port: driver.sshport(@machine).to_s,
-          password: driver.vagrantuserpass(@machine).to_s,
-          username: driver.user(@machine).to_s,
-          private_key_path: driver.userprivatekeypath(@machine).to_s,
+          host: ip,
+          port: portnumber,
+          password: vagrantuserpassword,
+          username: user,
+          private_key_path: userkey,
           PasswordAuthentication: 'passwordauth'
         }
-        return nil if ssh_info[:ip].nil?
-        puts ssh_info
       end
 
       # This should return an action callable for the given name.
