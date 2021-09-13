@@ -10,6 +10,8 @@ package.box
 Vagrantfile
 exec
 .vagrant/*
+*/.vagrant/*
+example-box/homestead-example/.vagrant
 InstalledFiles
 _yardoc
 coverage
