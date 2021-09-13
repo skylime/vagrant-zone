@@ -14,7 +14,7 @@ module VagrantPlugins
     module Action
       # This will import the zone boot image from the cloud, cache or file
       class Import
-        def initialize(app, _env)
+        def initialize(app)
           @logger = Log4r::Logger.new('vagrant_zones::action::import')
           @joyent_images_url = 'https://images.joyent.com/images/'
           @app = app

@@ -45,8 +45,8 @@ module VagrantPlugins
               b1.use Message, I18n.t('vagrant_zones.states.is_running')
               next
             end
-            b1.use Call, IsState, :uncleaned do |env1, b2|
-              b2.use Cleanup if env1[:result]
+            b1.use Call, IsState, :uncleaned do |env2, b2|
+              b2.use Cleanup if env2[:result]
             end
             b1.use Start
             b1.use WaitTillUp
@@ -56,9 +56,9 @@ module VagrantPlugins
 
       def self.action_restart
         Vagrant::Action::Builder.new.tap do |b|
-          b.use Call, IsCreated do |env, b2|
-            b2.use Call, IsState, :stopped do |env, b3|
-              unless env[:result]
+          b.use Call, IsCreated do |env2, b2|
+            b2.use Call, IsState, :stopped do |env3, b3|
+              unless env3[:result]
                 b3.use WaitTillUp
                 b3.use Restart
               end
@@ -69,9 +69,9 @@ module VagrantPlugins
 
       def self.action_shutdown
         Vagrant::Action::Builder.new.tap do |b|
-          b.use Call, IsCreated do |env, b2|
-            b2.use Call, IsState, :stopped do |env, b3|
-              unless env[:result]
+          b.use Call, IsCreated do |env2, b2|
+            b2.use Call, IsState, :stopped do |env3, b3|
+              unless env3[:result]
                 b3.use WaitTillUp
                 b3.use Shutdown
               end
@@ -84,7 +84,7 @@ module VagrantPlugins
       # virtual machine.
       def self.action_halt
         Vagrant::Action::Builder.new.tap do |b|
-          b.use Call, IsCreated do |env, b2|
+          b.use Call, IsCreated do |env2, b2|
             unless env[:result]
               b2.use NotCreated
               next

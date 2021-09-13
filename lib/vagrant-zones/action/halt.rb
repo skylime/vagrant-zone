@@ -7,7 +7,7 @@ module VagrantPlugins
     module Action
       # This will halt the zone
       class Halt
-        def initialize(app, _env)
+        def initialize(app)
           @logger = Log4r::Logger.new('vagrant_zones::action::import')
           @app = app
         end
