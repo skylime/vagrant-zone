@@ -98,3 +98,15 @@ Style/IfUnlessModifier:
                  Used to check If/Unless should be used
   Enabled: true
   AutoCorrect: true
+
+Layout/EmptyLineAfterGuardClause:
+  Description: >-
+                 Empty line to show where clauses are
+  Enabled: true
+  AutoCorrect: true
+
+Style/CaseLikeIf:
+  Description: >-
+                 If if unles case styling
+  Enabled: true
+  AutoCorrect: true

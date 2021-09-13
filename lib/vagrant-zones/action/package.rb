@@ -36,7 +36,7 @@ module VagrantPlugins
           snapshot_delete(zonepath)
 
           extra = ''
-          @tmp_include = tmp_dir + '/_include'
+          @tmp_include = "#{tmp_dir}/_include"
           if env['package.include']
             extra = './_include'
             Dir.mkdir(@tmp_include)
@@ -49,16 +49,16 @@ module VagrantPlugins
             extra = './_include'
             Dir.mkdir(@tmp_include) unless File.directory?(@tmp_include)
             env[:ui].info('Including user Vagrantfile')
-            FileUtils.cp(env['package.vagrantfile'], @tmp_include + '/Vagrantfile')
+            FileUtils.cp(env['package.vagrantfile'], "#{@tmp_include}/Vagrantfile")
           end
 
-          File.write(tmp_dir + '/metadata.json', metadata_content(brand, kernel, vagrant_cloud_creator, url, boxname))
-          File.write(tmp_dir + '/Vagrantfile', vagrantfile_content(brand, kernel, zonepath))
+          File.write("#{@tmp_dir}/metadata.json", metadata_content(brand, kernel, vagrant_cloud_creator, url, boxname))
+          File.write("#{@tmp_dir}/Vagrantfile", vagrantfile_content(brand, kernel, zonepath))
 
           Dir.chdir(tmp_dir)
           assemble_box(boxname, extra)
 
-          FileUtils.mv(tmp_dir + '/' + boxname, '../' + boxname)
+          FileUtils.mv("#{tmp_dir}/boxname", "../#{boxname}")
           FileUtils.rm_rf(tmp_dir)
 
           env[:ui].info('Box created')
