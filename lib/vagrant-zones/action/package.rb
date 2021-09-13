@@ -30,11 +30,11 @@ module VagrantPlugins
           kernel = @machine.provider_config.kernel
           vagrant_cloud_creator = @machine.provider_config.vagrant_cloud_creator
           
-          puts "==> #{name}: Creating a Snapshot of the box."
+          env[:ui].info("==> #{name}: Creating a Snapshot of the box.")
           snapshot_create(zonepath)
-          puts "==> #{name}: Sending Snapshot to ZFS Send Sream image."
+          env[:ui].info("==> #{name}: Sending Snapshot to ZFS Send Sream image.")
           snapshot_send(zonepath, tmp_img)
-          puts "==> #{name}: Remove templated snapshot."
+          env[:ui].info("==> #{name}: Remove templated snapshot.")
           snapshot_delete(zonepath)
 
           extra = ''
@@ -72,7 +72,7 @@ module VagrantPlugins
 
         def snapshot_create(zonepath)
           `pfexec zfs snapshot -r #{zonepath}/boot@vagrant_boxing`
-          puts "pfexec zfs snapshot -r #{zonepath}/boot@vagrant_boxing"
+          env[:ui].info("pfexec zfs snapshot -r #{zonepath}/boot@vagrant_boxing")
         end
         def snapshot_delete(zonepath)
           `pfexec zfs destroy -r -F #{zonepath}/boot@vagrant_boxing`
