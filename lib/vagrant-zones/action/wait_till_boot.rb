@@ -27,9 +27,10 @@ module VagrantPlugins
             break if @driver.waitforboot(@machine, ui)
           end
 
-                    return terminate(env) if env[:interrupted]
-                    ui.info(I18n.t('vagrant_zones.boot_ready') + " in #{env[:metrics]['instance_boot_time']} Seconds")
-                    @app.call(env)
+          return terminate(env) if env[:interrupted]
+
+          ui.info(I18n.t('vagrant_zones.boot_ready') + " in #{env[:metrics]['instance_boot_time']} Seconds")
+          @app.call(env)
         end
       end
     end

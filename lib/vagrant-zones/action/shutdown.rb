@@ -18,8 +18,8 @@ module VagrantPlugins
         def call(env)
           @machine = env[:machine]
           @driver  = @machine.provider.driver
-          ui = env[:ui]    
-          
+          ui = env[:ui]
+
           ui.info(I18n.t('vagrant_zones.graceful_shutdown_started'))
           @driver.control(@machine, env[:ui], 'shutdown')
 
@@ -28,6 +28,7 @@ module VagrantPlugins
             retryable(on: Errors::TimeoutError, tries: 300) do
               # If we're interrupted don't worry about waiting
               next if env[:interrupted]
+
               loop do
                 break if env[:interrupted]
                 break if !env[:machine].communicate.ready?
@@ -35,7 +36,6 @@ module VagrantPlugins
             end
           end
           ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete'))
-
 
           @driver.halt(@machine, env[:ui])
           @app.call(env)

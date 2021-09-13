@@ -9,7 +9,6 @@ module VagrantPlugins
     module Action
       # This is used to prepare NFS ids for NFS Sharing
       class PrepareNFSValidIds
-
         def initialize(app, env)
           @logger = Log4r::Logger.new('vagrant_zones::action::prepare_nfs_valid_ids')
           @app = app

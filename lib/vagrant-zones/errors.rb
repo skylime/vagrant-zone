@@ -8,7 +8,7 @@ module VagrantPlugins
       class VagrantZonesError < Vagrant::Errors::VagrantError
         error_namespace('vagrant_zones.errors')
       end
-      
+
       class SystemVersionIsTooLow < VagrantZonesError
         error_key(:system_version_too_low)
       end
@@ -20,7 +20,7 @@ module VagrantPlugins
       class MissingBhyve < VagrantZonesError
         error_key(:missing_bhyve)
       end
-      
+
       class HasNoRootPrivilege < VagrantZonesError
         error_key(:has_no_root_privilege)
       end

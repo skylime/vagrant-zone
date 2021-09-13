@@ -19,6 +19,7 @@ module VagrantPlugins
   module ProviderZone
     class Driver
       attr_accessor :executor
+
       def initialize(machine)
         @logger = Log4r::Logger.new('vagrant_zones::driver')
         @machine = machine
@@ -56,10 +57,10 @@ module VagrantPlugins
       end
 
       def install(machine, ui)
-                config = machine.provider_config
+        config = machine.provider_config
         box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
         name = @machine.name
-        
+
         if config.brand == 'lx'
           results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
           if results.include? "unknown brand"
@@ -79,7 +80,7 @@ module VagrantPlugins
       end
 
       ## Control the Machine from inside the machine
-      def control(machine, ui, control)        
+      def control(machine, ui, control)
         config = machine.provider_config
         if control == "restart"
           command = "sudo shutdown -r"
@@ -90,12 +91,12 @@ module VagrantPlugins
         end
       end
 
-      def ssh_run_command(machine, ui , command)
+      def ssh_run_command(machine, ui, command)
         ip = get_ip_address(machine)
         user = user(machine)
         key = userprivatekeypath(machine).to_s
         password = vagrantuserpass(machine).to_s
-        port = sshport(machine).to_s 
+        port = sshport(machine).to_s
         if port.to_s.nil?
           port = 22
         end
@@ -103,9 +104,9 @@ module VagrantPlugins
         execute(false, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  '#{command}' ")
       end
 
-      def console(machine, ui , command, ip, port)
+      def console(machine, ui, command, ip, port)
         name = @machine.name
-        
+
         if !port.nil?
           if ip.nil?
             ip = "127.0.0.1"
@@ -132,21 +133,21 @@ module VagrantPlugins
         ui.info(I18n.t("vagrant_zones.starting_zone"))
         execute(false, "#{@pfexec} zoneadm -z #{name} boot")
       end
-      
+
       def get_ip_address(machine)
         config = machine.provider_config
         name = @machine.name
         machine.config.vm.networks.each do |_type, opts|
-          responses=[]
-          nic_number  = opts[:nic_number].to_s
+          responses = []
+          nic_number = opts[:nic_number].to_s
           if !opts[:nictype].nil?
-            nictype  = opts[:nictype]
-          else 
+            nictype = opts[:nictype]
+          else
             nictype = "external"
           end
-          mac      = 'auto'
+          mac = 'auto'
           if !opts[:mac].nil?
-            mac  = opts[:mac]
+            mac = opts[:mac]
           end
           case nictype
           when /external/
@@ -166,13 +167,13 @@ module VagrantPlugins
             if opts[:dhcp] == true
               if opts[:managed]
                 vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
-                if mac == 'auto'                  
-                  PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
+                if mac == 'auto'
+                  PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
                     command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
                     zlogin_read.expect(/\n/) { |msg| zlogin_write.printf(command) }
                     Timeout.timeout(30) do
                       loop do
-                        zlogin_read.expect(/\r\n/) { |line|  responses.push line}
+                        zlogin_read.expect(/\r\n/) { |line| responses.push line }
                         puts responses[-1]
                         puts "This is a DHCP address"
                         if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
@@ -180,25 +181,7 @@ module VagrantPlugins
                           puts responses[-1]
                           puts ip
                           return nil if ip.length == 0
-                          return ip.gsub /\t/, ''
-                          break
-                        elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
-                            raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-                        end
-                      end
-                    end
-                    Process.kill("HUP",pid)
-                  end
-                else
-                  PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-                    command = "ip -4 addr show dev  #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
-                    zlogin_read.expect(/\n/) { |msg| zlogin_write.printf(command) }
-                    Timeout.timeout(30) do
-                      loop do
-                        zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-                        if responses[-1].to_s.match(/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/)
-                          ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
-                          return nil if ip.length == 0
+
                           return ip.gsub /\t/, ''
                           break
                         elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
@@ -206,7 +189,27 @@ module VagrantPlugins
                         end
                       end
                     end
-                    Process.kill("HUP",pid)
+                    Process.kill("HUP", pid)
+                  end
+                else
+                  PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+                    command = "ip -4 addr show dev  #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
+                    zlogin_read.expect(/\n/) { |msg| zlogin_write.printf(command) }
+                    Timeout.timeout(30) do
+                      loop do
+                        zlogin_read.expect(/\r\n/) { |line| responses.push line }
+                        if responses[-1].to_s.match(/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/)
+                          ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
+                          return nil if ip.length == 0
+
+                          return ip.gsub /\t/, ''
+                          break
+                        elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+                          raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+                        end
+                      end
+                    end
+                    Process.kill("HUP", pid)
                   end
                 end
 
@@ -216,6 +219,7 @@ module VagrantPlugins
               if opts[:managed]
                 ip = opts[:ip].to_s
                 return nil if ip.length == 0
+
                 return ip.gsub /\t/, ''
               end
             end
@@ -229,14 +233,14 @@ module VagrantPlugins
         name = @machine.name
         if state == "setup"
           ## Remove old installer netplan config
-          ui.info(I18n.t("vagrant_zones.netplan_remove"))              
+          ui.info(I18n.t("vagrant_zones.netplan_remove"))
           zlogin(machine, "rm -rf  /etc/netplan/*.yaml")
         end
         machine.config.vm.networks.each do |_type, opts|
           if _type.to_s == "public_network"
-            link     = opts[:bridge]
-            nic_number  = opts[:nic_number].to_s
-            netmask   = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count("1")
+            link = opts[:bridge]
+            nic_number = opts[:nic_number].to_s
+            netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count("1")
             ip          = opts[:ip].to_s
             defrouter   = opts[:gateway].to_s
             cloud_init_enabled = config.cloud_init_enabled
@@ -250,19 +254,19 @@ module VagrantPlugins
             vlan     = 1
             if !opts[:mac].nil?
               if opts[:mac].match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/) || !opts[:mac].match(/auto/)
-                mac  = opts[:mac]
+                mac = opts[:mac]
               end
             end
             if !opts[:nictype].nil?
-              nictype  = opts[:nictype]
+              nictype = opts[:nictype]
             end
-            if  !config.dns.nil? 
+            if !config.dns.nil?
               dns = config.dns
             else
-              dns = [{"nameserver" => "1.1.1.1"},{"nameserver" => "1.0.0.1"}]
+              dns = [{ "nameserver" => "1.1.1.1" }, { "nameserver" => "1.0.0.1" }]
             end
-            dnsrun=0
-            servers=[]
+            dnsrun = 0
+            servers = []
             if !dns.nil?
               dns.each do |server|
                 servers.append(server)
@@ -285,12 +289,12 @@ module VagrantPlugins
             vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
             if state == "create"
               if !opts[:vlan].nil?
-                vlan =  opts[:vlan]
+                vlan = opts[:vlan]
                 ui.info(I18n.t("vagrant_zones.creating_vnic") + vnic_name)
                 execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
               else
                 execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
-              end    
+              end
             elsif state == "delete"
               ui.info(I18n.t("vagrant_zones.removing_vnic") + vnic_name)
               vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
@@ -331,19 +335,21 @@ end                  }
                 end
               end
             elsif state == "setup"
-              responses=[]
-              vmnic=[]
-              ui.info(I18n.t("vagrant_zones.configure_interface_using_vnic") + vnic_name)  
+              responses = []
+              vmnic = []
+              ui.info(I18n.t("vagrant_zones.configure_interface_using_vnic") + vnic_name)
               ## regex to grab standard Device interface names in ifconfig
-              regex=/(en|eth)(\d|o\d|s\d|x[0-9A-Fa-f]{2}{6}|(p\d)(s\d)(f?\d?))/
-              PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-                zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n") }
+              regex = /(en|eth)(\d|o\d|s\d|x[0-9A-Fa-f]{2}{6}|(p\d)(s\d)(f?\d?))/
+              PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+                zlogin_read.expect(/\n/) { |msg|
+                  zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n")
+                }
                 Timeout.timeout(30) do
                   staticrun = 0
                   dhcprun = 0
                   loop do
-                    zlogin_read.expect(/\r\n/) { |line|  responses.push line}
-                    if responses[-1][0] =~ regex                      
+                    zlogin_read.expect(/\r\n/) { |line| responses.push line }
+                    if responses[-1][0] =~ regex
                       if !vmnic.include? responses[-1][0][/#{regex}/]
                         vmnic.append(responses[-1][0][/#{regex}/])
                       else
@@ -354,55 +360,55 @@ end                  }
                       nicfunction = ""
                       devid = ""
                       if !interface[/#{regex}/, 1].nil?
-                          if !interface[/#{regex}/, 3].nil?
-                              nic = interface[/#{regex}/, 1]
-                              nicbus = interface[/#{regex}/, 3]
-                              devid = nicbus
-                          else
-                              if interface[/#{regex}/, 1] == "en"
-                                  interface_desc = interface[/#{regex}/, 2].split("")
-                                  nic = interface[/#{regex}/, 1] + interface_desc[0]
-                                  #puts nic
-                                  if interface_desc[0] == "x"
-                                      mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
-                                      mac_interface = mac_interface.split("enx",0)
-                                      nicbus = mac_interface[1]
-                                  elsif interface_desc[0] == "s" || interface_desc[0] == "o"
-                                      nicbus = interface_desc[1]
-                                  end
-                                  devid = nicbus
-                              else
-                                  nic = interface[/#{regex}/, 1]
-                                  nicbus = interface[/#{regex}/, 2]
-                                  devid = nicbus
-                              end
-                          end
-                          if !interface[/#{regex}/, 4].nil?
-                            nicdevice = interface[/#{regex}/, 4]
-                            if interface[/#{regex}/, 5][/f\d/].nil?
-                              nicfunction = "f0"
-                              devid = nicfunction
-                            else
-                              nicfunction = interface[/#{regex}/, 5]
-                              devid = nicfunction
+                        if !interface[/#{regex}/, 3].nil?
+                          nic = interface[/#{regex}/, 1]
+                          nicbus = interface[/#{regex}/, 3]
+                          devid = nicbus
+                        else
+                          if interface[/#{regex}/, 1] == "en"
+                            interface_desc = interface[/#{regex}/, 2].split("")
+                            nic = interface[/#{regex}/, 1] + interface_desc[0]
+                            # puts nic
+                            if interface_desc[0] == "x"
+                              mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
+                              mac_interface = mac_interface.split("enx", 0)
+                              nicbus = mac_interface[1]
+                            elsif interface_desc[0] == "s" || interface_desc[0] == "o"
+                              nicbus = interface_desc[1]
                             end
+                            devid = nicbus
                           else
-                            nicfunction = nicbus
+                            nic = interface[/#{regex}/, 1]
+                            nicbus = interface[/#{regex}/, 2]
+                            devid = nicbus
+                          end
+                        end
+                        if !interface[/#{regex}/, 4].nil?
+                          nicdevice = interface[/#{regex}/, 4]
+                          if interface[/#{regex}/, 5][/f\d/].nil?
+                            nicfunction = "f0"
+                            devid = nicfunction
+                          else
+                            nicfunction = interface[/#{regex}/, 5]
                             devid = nicfunction
                           end
-                      end                                
+                        else
+                          nicfunction = nicbus
+                          devid = nicfunction
+                        end
+                      end
                       devid = devid.gsub /f/, ''
-                      if !devid.nil? 
+                      if !devid.nil?
                         if nic_number == devid
-                          vnic=vmnic[devid.to_i]
+                          vnic = vmnic[devid.to_i]
                           ## Get Device Mac Address for when Mac is not specified
                           if mac == "auto"
                             zlogin_write.printf("\nip link show dev #{vnic} | grep ether | awk '{ print $2 }'\n")
-                            if responses[-1].to_s.match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)  
+                            if responses[-1].to_s.match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)
                               mac = responses[-1][0][/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/]
                             end
                           end
-                          if opts[:dhcp] == true ||  opts[:dhcp].nil?
+                          if opts[:dhcp] == true || opts[:dhcp].nil?
                             netplan = %{network:
   version: 2
   ethernets:
@@ -418,14 +424,14 @@ end                  }
                             if dhcprun == 0
                               command = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n"
                               zlogin_write.printf(command)
-                              dhcprun+=1
+                              dhcprun += 1
                             end
                             if responses[-1].to_s.match(/DHCP Subprocess Error Code: 0/)
-                              ui.info(I18n.t("vagrant_zones.netplan_applied_dhcp") + "/etc/netplan/#{vnic_name}.yaml")                            
+                              ui.info(I18n.t("vagrant_zones.netplan_applied_dhcp") + "/etc/netplan/#{vnic_name}.yaml")
                             elsif responses[-1].to_s.match(/DHCP Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
                               raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                             end
-                          elsif opts[:dhcp] == false 
+                          elsif opts[:dhcp] == false
                             netplan = %{network:
   version: 2
   ethernets:
@@ -442,10 +448,10 @@ end                  }
         addresses: [#{servers[0]["nameserver"]} , #{servers[1]["nameserver"]}]  }
                             if staticrun == 0
                               zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"SSprocess EC: $?\"\n")
-                              staticrun+=1
+                              staticrun += 1
                             end
                             if responses[-1].to_s.match(/SSprocess EC: 0/)
-                              ui.info(I18n.t("vagrant_zones.netplan_applied_static") + "/etc/netplan/#{vnic_name}.yaml")                              
+                              ui.info(I18n.t("vagrant_zones.netplan_applied_static") + "/etc/netplan/#{vnic_name}.yaml")
                             elsif responses[-1].to_s.match(/SSprocess EC: \b(?![0]\b)\d{1,4}\b/)
                               raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                             end
@@ -460,10 +466,10 @@ end                  }
                       break
                     elsif responses[-1].to_s.match(/Final Network Check Error Code: \b(?![0]\b)\d{1,4}\b/)
                       raise "==> #{name} ==> Final Network Check \nFailed with: #{responses[-1]}"
-                    end                  
+                    end
                   end
                 end
-                Process.kill("HUP",pid)
+                Process.kill("HUP", pid)
               end
               ## Apply the Configuration
               zlogin(machine, 'netplan apply')
@@ -473,32 +479,33 @@ end                  }
           end
         end
       end
-      
+
       def create_dataset(machine, ui)
         name = @machine.name
-        config  = machine.provider_config        
+        config  = machine.provider_config
         dataset = config.zonepath.delete_prefix("/").to_s + "/boot"
-        datadir  = machine.data_dir
+        datadir = machine.data_dir
         datasetroot = config.zonepath.delete_prefix("/").to_s
         ## Create Boot Volume
-        if config.brand == 'lx'  
-          ui.info(I18n.t("vagrant_zones.lx_zone_dataset") + dataset)  
+        if config.brand == 'lx'
+          ui.info(I18n.t("vagrant_zones.lx_zone_dataset") + dataset)
           execute(false, "#{@pfexec} zfs create -o zoned=on -p #{dataset}")
         elsif config.brand == 'bhyve'
           ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_root") + datasetroot)
           execute(false, "#{@pfexec} zfs create #{datasetroot}")
           ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot") + config.zonepathsize + ", " + dataset)
           execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
-          ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume") + dataset )  
+          ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume") + dataset)
           commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss').to_s} | #{@pfexec} zfs recv -u -v -F #{dataset} "
           Util::Subprocess.new commandtransfer do |stdout, stderr, thread|
             ui.rewriting do |uiprogress|
-            uiprogress.clear_line() 
-            uiprogress.info(I18n.t("vagrant_zones.importing_box_image_to_disk") + " #{datadir.to_s}/box.zss ==> #{dataset} ==> ", new_line: false)
-            uiprogress.report_progress(stderr, 100, false)
+              uiprogress.clear_line()
+              uiprogress.info(I18n.t("vagrant_zones.importing_box_image_to_disk") + " #{datadir.to_s}/box.zss ==> #{dataset} ==> ",
+                              new_line: false)
+              uiprogress.report_progress(stderr, 100, false)
             end
           end
-          ui.clear_line() 
+          ui.clear_line()
         elsif config.brand == 'illumos'
           raise Errors::NotYetImplemented
         elsif config.brand == 'kvm'
@@ -509,14 +516,14 @@ end                  }
         ## Create Additional Disks
         unless  !config.additional_disks.nil? || config.additional_disks != "none"
           disks = config.additional_disks
-          diskrun=0
+          diskrun = 0
           disks.each do |disk|
             diskname = "disk"
-            ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume") + disk["size"].to_s + ", " + disk["array"]  + disk["path"])
+            ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume") + disk["size"].to_s + ", " + disk["array"] + disk["path"])
             if diskrun > 0
               diskname = diskname + diskrun.to_s
             end
-            diskrun+=1 
+            diskrun += 1
             execute(true, "#{@pfexec} zfs create -V #{disk["size"].to_s} #{disk["array"]}#{disk["path"]}")
           end
         end
@@ -532,9 +539,9 @@ end                  }
         ## If boot Dataset exists, delete it
         if dataset_boot_exists == "#{zp}/boot"
           ## Destroy Additional Disks
-          unless  !config.additional_disks.nil? ||  config.additional_disks != 'none'
+          unless  !config.additional_disks.nil? || config.additional_disks != 'none'
             disks = config.additional_disks
-            diskrun=0
+            diskrun = 0
             disks.each do |disk|
               addataset = "#{disk["array"]}#{disk["path"]}"
               diskname = "disk"
@@ -544,22 +551,22 @@ end                  }
                 if diskrun > 0
                   diskname = diskname + diskrun.to_s
                 end
-                diskrun+=1 
+                diskrun += 1
                 execute(false, "#{@pfexec} zfs destroy -r #{addataset}")
               end
             end
           end
           ## Destroy Boot dataset
-          ui.info(I18n.t("vagrant_zones.destroy_dataset") + "#{zp}/boot" )
+          ui.info(I18n.t("vagrant_zones.destroy_dataset") + "#{zp}/boot")
           execute(false, "#{@pfexec} zfs destroy -r #{zp}/boot")
 
         else
-          ui.info(I18n.t("vagrant_zones.dataset_nil") )
+          ui.info(I18n.t("vagrant_zones.dataset_nil"))
         end
         ## Check if root dataset exists
         ui.info(I18n.t("vagrant_zones.destroy_dataset") + zp)
         dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep  #{zp} |  awk '{ print $1 }' | grep -v path  || true")
-        if dataset_root_exists  == "#{zp}"
+        if dataset_root_exists == "#{zp}"
           execute(false, "#{@pfexec} zfs destroy -r #{zp}")
         end
       end
@@ -577,9 +584,9 @@ end                  }
               @ip        = opts[:ip].to_s
               @network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
               @defrouter = opts[:gateway]
-            end            
+            end
           end
-          allowed_address  = @ip + @network.netmask.to_s
+          allowed_address = @ip + @network.netmask.to_s
           attr = %{create
 set zonepath=#{config.zonepath}/path
 set brand=#{config.brand}
@@ -654,7 +661,7 @@ end          }
         File.open("#{name}.zoneconfig", 'w') do |f|
           f.puts attr
         end
-        
+
         ## Shared Disk Configurations
         unless !config.shared_disk_enabled
           ui.info(I18n.t("vagrant_zones.setting_alt_shared_disk_configurations") + path.path)
@@ -662,74 +669,71 @@ end          }
   set dir=/vagrant
   set special=#{config.shared_dir}
   set type=lofs
-end          }        
+end          }
           File.open("#{name}.zoneconfig", 'a') do |f|
             f.puts shared_disk_attr
           end
         end
 
-
         ## CPU Configurations
-        if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm' )
+        if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm')
           cpu_attr = %{add attr
   set name=vcpus
   set type=string
   set value=#{config.cpus}
-end          }        
+end          }
           File.open("#{name}.zoneconfig", 'a') do |f|
             f.puts cpu_attr
           end
-        elsif config.cpu_configuration == 'complex' && (config.brand == 'bhyve' || config.brand == 'kvm' )
-          
+        elsif config.cpu_configuration == 'complex' && (config.brand == 'bhyve' || config.brand == 'kvm')
+
           hash = config.complex_cpu_conf[0]
           cpu_attr = %{add attr
   set name=vcpus
   set type=string
   set value="sockets=#{hash["sockets"]},cores=#{hash["cores"]},threads=#{hash["threads"]}"
-end          }        
+end          }
           File.open("#{name}.zoneconfig", 'a') do |f|
             f.puts cpu_attr
           end
         end
 
-
-
         ### Passthrough PCI Devices
-        #if config.ppt_devices == 'none'
+        # if config.ppt_devices == 'none'
         #   ui.info(I18n.t("vagrant_zones.setting_pci_configurations") + path.path)
         #  puts config.ppt
         #  puts config.config.ppt
         #  ppt_attr = %{
-#add device
-#  set match=/dev/ppt0
-#end
-#add attr
-#  set name=ppt0
-#  set type=string
-#  set value="slot0"
-#end
+        # add device
+        #  set match=/dev/ppt0
+        # end
+        # add attr
+        #  set name=ppt0
+        #  set type=string
+        #  set value="slot0"
+        # end
         #  }
         #  ppt_data_attr = %{
-#{ppt_data}
+        # {ppt_data}
         #  }
-        
+
         #  File.open("#{name}.zoneconfig", 'a') do |f|
         #    f.puts ppt_data_attr
         #  end
-        #end
+        # end
 
         ## CDROM Configurations
 
         if !config.cdroms.nil?
           cdroms = config.cdroms
-          cdrun=0
+          cdrun = 0
           cdroms.each do |cdrom|
-              cdname = "cdrom"
+            cdname = "cdrom"
             ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + cdrom["path"])
             if cdrun > 0
               cdname = cdname + cdrun.to_s
             end
-            cdrun+=1 
+            cdrun += 1
             cdrom_attr = %{add attr
     set name=#{cdname}
     set type=string
@@ -749,9 +753,9 @@ end            }
         end
 
         ## Additional Disk Configurations
-        if  !config.additional_disks.nil?
+        if !config.additional_disks.nil?
           disks = config.additional_disks
-          diskrun=0
+          diskrun = 0
           disks.each do |disk|
             diskname = "disk"
             ui.info(I18n.t("vagrant_zones.setting_additional_disks_configurations") + disk["size"] + ", " + disk["path"])
@@ -759,7 +763,7 @@ end            }
             if diskrun > 0
               diskname = diskname + diskrun.to_s
             end
-            diskrun+=1 
+            diskrun += 1
             additional_disk_attr = %{add device
   set match=/dev/zvol/rdsk#{disk["path"]}
 end
@@ -775,10 +779,10 @@ end            }
         end
 
         ## Console access configuration
-        if  !config.console.nil?
+        if !config.console.nil?
           console = config.console
           if console != 'disabled'
-            
+
             if console == 'webvnc' || console == 'vnc'
               console = 'vnc'
               value = 'on'
@@ -805,7 +809,6 @@ end            }
           end
         end
 
-
         ## Nic Configurations
         network(@machine, ui, "config")
 
@@ -830,8 +833,9 @@ end            }
         ui.info(I18n.t("vagrant_zones.vbox_run_check"))
         result = execute(true, "#{@pfexec} VBoxManage list runningvms")
         if result == 0
-            raise Errors::VirtualBoxRunningConflictDetected 
+          raise Errors::VirtualBoxRunningConflictDetected
         end
+
         ## https://man.omnios.org/man5/brands
         if config.brand == 'lx'
           ui.info(I18n.t("vagrant_zones.lx_check"))
@@ -863,7 +867,7 @@ end            }
           return
         end
         if config.brand == 'bhyve'
-          ## https://man.omnios.org/man5/bhyve  
+          ## https://man.omnios.org/man5/bhyve
           ## Check for  bhhwcompat
           result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
           if result == 1
@@ -872,49 +876,46 @@ end            }
             result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
             raise Errors::MissingCompatCheckTool if result == 0
           end
-          
+
           # Check whether OmniOS version is lower than r30
-          
+
           cutoff_release = "1510380"
-          cutoff_release = cutoff_release[0..-2].to_i 
-          ui.info(I18n.t("vagrant_zones.bhyve_check") + "#{cutoff_release}")    
+          cutoff_release = cutoff_release[0..-2].to_i
+          ui.info(I18n.t("vagrant_zones.bhyve_check") + "#{cutoff_release}")
           release = File.open('/etc/release', &:readline)
-          release = release.scan(/\w+/).values_at( -1)
-          release = release[0][1..-2].to_i 
-          raise Errors::SystemVersionIsTooLow if release  < cutoff_release
-  
+          release = release.scan(/\w+/).values_at(-1)
+          release = release[0][1..-2].to_i
+          raise Errors::SystemVersionIsTooLow if release < cutoff_release
+
           # Check Bhyve compatability
           ui.info(I18n.t("vagrant_zones.bhyve_compat_check"))
           result = execute(false, "#{@pfexec} bhhwcompat -s")
-          raise Errors::MissingBhyve if result.length == 1 
+          raise Errors::MissingBhyve if result.length == 1
         end
-           end
-      
+      end
+
       def setup(machine, ui)
         config = machine.provider_config
         name = machine.name
         ### network Configurations
-        
-        
 
         if config.brand == 'bhyve'
           network(@machine, ui, "setup")
         end
-        
       end
-      
+
       def waitforboot(machine, ui)
         ui.info(I18n.t("vagrant_zones.wait_for_boot"))
         name = @machine.name
         config = machine.provider_config
         responses = []
         if config.brand == 'bhyve'
-          PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-              if zlogin_read.expect(/Last login: /)
+          PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+            if zlogin_read.expect(/Last login: /)
               ui.info(I18n.t("vagrant_zones.booted_check_terminal_access"))
               Timeout.timeout(config.setup_wait) do
                 loop do
-                      zlogin_read.expect(/\n/) { |line|  responses.push line}
+                  zlogin_read.expect(/\n/) { |line| responses.push line }
                   puts responses[-1]
                   if responses[-1].to_s.match(/:~#/)
                     break
@@ -925,7 +926,7 @@ end            }
                 end
               end
             end
-            Process.kill("HUP",pid)
+            Process.kill("HUP", pid)
           end
         elsif config.brand == 'lx'
           if not user_exists?(machine, config.vagrant_user)
@@ -942,7 +943,7 @@ end            }
             Util::Subprocess.new command do |stdout, stderr, thread|
               ui.rewriting do |ui|
                 ui.clear_line()
-                ui.info(I18n.t("vagrant_zones.importing_vagrant_key") , new_line: false)
+                ui.info(I18n.t("vagrant_zones.importing_vagrant_key"), new_line: false)
                 ui.report_progress(stderr, 100, false)
               end
             end
@@ -951,14 +952,15 @@ end            }
             zlogincommand(machine, "chmod 600 /home/vagrant/.ssh/authorized_keys")
           end
         end
-      end  
-        
+      end
+
       def user_exists?(machine, user = 'vagrant')
         name = @machine.name
         ret  = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
         if ret == 0
           return true
         end
+
         return false
       end
 
@@ -971,19 +973,19 @@ end            }
         name = @machine.name
         config = machine.provider_config
         responses = []
-        PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
+        PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Error Code: $?\"\n") }
           Timeout.timeout(30) do
             loop do
-              zlogin_read.expect(/\r\n/) { |line|  responses.push line}
+              zlogin_read.expect(/\r\n/) { |line| responses.push line }
               if responses[-1].to_s.match(/Error Code: 0/)
-                      break
+                break
               elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
-                      raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+                raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
               end
             end
           end
-          Process.kill("HUP",pid)
+          Process.kill("HUP", pid)
         end
       end
 
@@ -992,7 +994,7 @@ end            }
         user = config.vagrant_user
         return user
       end
-      
+
       def userprivatekeypath(machine)
         config = machine.provider_config
         userkey = config.vagrant_user_private_key_path.to_s
@@ -1004,7 +1006,7 @@ end            }
         end
         return userkey
       end
-      
+
       def sshport(machine)
         config = machine.provider_config
         accessport = config.sshport.to_s
@@ -1016,7 +1018,7 @@ end            }
         accessport = config.rdpport.to_s
         return accessport
       end
-      
+
       def vagrantuserpass(machine)
         config = machine.provider_config
         vagrantuserpass = config.vagrant_user_pass.to_s
@@ -1041,7 +1043,7 @@ end            }
             data = "##{snapshotrun}\t\t#{attributes[1]}\t#{attributes[2]}\t\t#{attributes[3]}\t#{attributes[0]}"
             puts data
             snapshotrun += 1
-          end  
+          end
         elsif job == "create"
           ui.info (I18n.t("vagrant_zones.zfs_snapshot_create"))
           zfs_snapshots = execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
@@ -1058,43 +1060,41 @@ end            }
         vm_configured = execute(false, "#{@pfexec} zoneadm list -icn | grep  #{name} || true")
         if vm_state == "running"
           ui.info(I18n.t("vagrant_zones.graceful_shutdown"))
-          begin            
+          begin
             status = Timeout::timeout(config.clean_shutdown_time) {
-            execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
-           }
+              execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
+            }
           rescue Timeout::Error
             ui.info(I18n.t("vagrant_zones.graceful_shutdown_failed") + config.clean_shutdown_time.to_s)
-            begin 
+            begin
               halt_status = Timeout::timeout(60) {
-              execute(false, "#{@pfexec} zoneadm -z #{name} halt")
-            }
+                execute(false, "#{@pfexec} zoneadm -z #{name} halt")
+              }
             rescue Timeout::Error
               raise "==> #{name}: VM failed to halt in alloted time 60 after waiting to shutdown for #{config.clean_shutdown_time.to_i}"
             end
           end
         end
       end
-      
+
       def destroy(machine, id)
         name = @machine.name
-        
+
         id.info(I18n.t("vagrant_zones.leaving"))
         id.info(I18n.t("vagrant_zones.destroy_zone"))
-
 
         ## Check state in zoneadm
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 
-        
         ## If state is seen, uninstall from zoneadm and destroy from zonecfg
-        if  vm_state ==  'installed'
+        if vm_state == 'installed'
           id.info(I18n.t("vagrant_zones.bhyve_zone_config_uninstall"))
           execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
           id.info(I18n.t("vagrant_zones.bhyve_zone_config_remove"))
           execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
         end
         ## If state is seen, uninstall from zoneadm and destroy from zonecfg
-        if vm_state == 'incomplete' || vm_state == 'configured' 
+        if vm_state == 'incomplete' || vm_state == 'configured'
           id.info(I18n.t("vagrant_zones.bhyve_zone_config_remove"))
           execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
         end
@@ -1102,13 +1102,11 @@ end            }
         ### Nic Configurations
         state = "delete"
         network(@machine, id, state)
-        
-        ### Check State of additional Disks
-        
-        #disks_configured = execute(false, "#{@pfexec}  zfs list ")
 
+        ### Check State of additional Disks
+
+        # disks_configured = execute(false, "#{@pfexec}  zfs list ")
       end
-      
     end
   end
 end

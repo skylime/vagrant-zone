@@ -8,6 +8,7 @@ module VagrantPlugins
     class Config < Vagrant.plugin('2', :config)
       # rubocop:disable LineLength
       attr_accessor :brand, :autoboot, :kernel, :zonepath, :zonepathsize, :diskif, :netif, :cdroms, :disk1path, :disk1size, :cpus, :cpu_configuration, :complex_cpu_conf, :memory, :vagrant_user, :vagrant_user_private_key_path, :setup_wait, :clean_shutdown_time, :dhcp, :vagrant_user_pass, :firmware_type, :firmware, :vm_type, :partition_id, :shared_disk_enabled, :shared_dir, :acpi, :os_type, :console, :consoleport, :console_onboot, :hostbridge, :sshport, :rdpport, :override, :additional_disks, :cloud_init_enabled, :dns, :box, :vagrant_cloud_creator
+
       # rubocop:enable LineLength
       def initialize
         # pkgsrc, lx, bhyve, kvm, illumos
@@ -37,7 +38,7 @@ module VagrantPlugins
         @setup_wait = 60
         @box = UNSET_VALUE
         @clean_shutdown_time = 300
-        @dns = [{ 'nameserver' => '1.1.1.1' },{ 'nameserver' => '1.0.0.1' }]
+        @dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '1.0.0.1' }]
         @vmtype = 'production'
         @vm_type = UNSET_VALUE
         @partition_id = '0000'
@@ -64,14 +65,14 @@ module VagrantPlugins
           else
             @firmware = 'BHYVE_RELEASE_CSM'
           end
-          case @vmtype
-          when 'template' then @vm_type = '1'
-          when 'development' then @vm_type = '2'
-          when 'production' then  @vm_type = '3'
-          when 'firewall' then @vm_type = '4'
-          when 'other' then @vm_type = '5'
-          else @vm_type = '3'
-          end
+        case @vmtype
+        when 'template' then @vm_type = '1'
+        when 'development' then @vm_type = '2'
+        when 'production' then  @vm_type = '3'
+        when 'firewall' then @vm_type = '4'
+        when 'other' then @vm_type = '5'
+        else @vm_type = '3'
+        end
       end
     end
   end

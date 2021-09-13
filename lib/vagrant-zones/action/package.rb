@@ -11,11 +11,11 @@ module VagrantPlugins
           @app = app
           env['package.output'] ||= 'package.box'
         end
-        
+
         def call(env)
           @machine = env[:machine]
           @driver  = @machine.provider.driver
-          
+
           config  = @machine.provider_config
 
           boxname = env['package.output']
@@ -29,7 +29,7 @@ module VagrantPlugins
           brand  = @machine.provider_config.brand
           kernel = @machine.provider_config.kernel
           vagrant_cloud_creator = @machine.provider_config.vagrant_cloud_creator
-          
+
           env[:ui].info("==> #{name}: Creating a Snapshot of the box.")
           snapshot_create(zonepath)
           env[:ui].info("==> #{name}: Sending Snapshot to ZFS Send Sream image.")
@@ -74,9 +74,11 @@ module VagrantPlugins
           `pfexec zfs snapshot -r #{zonepath}/boot@vagrant_boxing`
           env[:ui].info("pfexec zfs snapshot -r #{zonepath}/boot@vagrant_boxing")
         end
+
         def snapshot_delete(zonepath)
           `pfexec zfs destroy -r -F #{zonepath}/boot@vagrant_boxing`
         end
+
         def snapshot_send(zonepath, destination)
           `pfexec zfs send #{zonepath}/boot@vagrant_boxing > #{destination}`
         end

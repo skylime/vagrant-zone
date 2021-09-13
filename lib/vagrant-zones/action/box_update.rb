@@ -26,6 +26,7 @@ module VagrantPlugins
             retryable(on: Errors::TimeoutError, tries: 60) do
               # If we're interrupted don't worry about waiting
               next if env[:interrupted]
+
               loop do
                 break if env[:interrupted]
                 break if env[:machine].communicate.ready?
@@ -34,6 +35,7 @@ module VagrantPlugins
           end
           # if interrupted above, just terminate immediately
           return terminate(env) if env[:interrupted]
+
           ui.info(I18n.t('vagrant_zones.ssh_ready'))
           ui.info('vagrant_zones.ssh_ready')
           @app.call(env)
