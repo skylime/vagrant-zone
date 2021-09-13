@@ -119,7 +119,6 @@ module VagrantPlugins
         execute(false, "pfexec zadm  webvnc #{netport} #{name}") if command == 'webvnc'
         execute(false, "pfexec zadm  vnc #{netport} #{name}") if command == 'vnc'
         execute(false, "pfexec zadm  console #{name}")if command == 'zlogin'
-        end
       end
 
       ## Boot the Machine
