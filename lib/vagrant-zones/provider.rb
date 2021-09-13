@@ -60,7 +60,8 @@ module VagrantPlugins
           # become `nil`). No parameters are given, since the underlying machine
           # is simply the machine instance given to this object. And no
           # return value is necessary.
-          def machine_id_changed  end
+          def machine_id_changed
+          end
 
           def state
             state_id = nil
