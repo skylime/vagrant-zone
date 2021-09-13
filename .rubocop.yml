@@ -67,3 +67,19 @@ Metrics/PerceivedComplexity:
   Enabled: true
   VersionAdded: '0.25'
   Max: 20
+
+
+Style/RedundantReturn:
+  AutoCorrect: true
+
+Style/SpecialGlobalVars:
+  AutoCorrect: true
+
+Style/RedundantInterpolation:
+  AutoCorrect: true
+
+Style/StringConcatenation:
+  AutoCorrect: true
+
+Style/IfUnlessModifier:
+  AutoCorrect: true
