@@ -50,7 +50,8 @@ module VagrantPlugins
         @vagrant_cloud_creator = UNSET_VALUE
         @firmware_type = 'compatability'
         @firmware = 'BHYVE_RELEASE_CSM'
-        case @firmware_type
+        ft = @firmware_type
+        case ft
         when :compatability
           @firmware = 'BHYVE_RELEASE_CSM'
         when :UEFI
