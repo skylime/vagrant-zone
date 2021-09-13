@@ -17,6 +17,7 @@ require 'vagrant/util/retryable'
 
 module VagrantPlugins
   module ProviderZone
+    # This class does the heavy lifting of the zone
     class Driver
       attr_accessor :executor
 
@@ -24,7 +25,7 @@ module VagrantPlugins
         @logger = Log4r::Logger.new('vagrant_zones::driver')
         @machine = machine
         @executor = Executor::Exec.new
-        if Process.uid == 0
+        if Process.uid.zero?
           @pfexec = ''
         else
           sudo = system('sudo -v')
@@ -56,7 +57,7 @@ module VagrantPlugins
         @executor.execute(*cmd, **opts, &block)
       end
 
-      def install(machine, ui)
+      def install(machine, uiinfo)
         config = machine.provider_config
         box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
         name = @machine.name
@@ -76,22 +77,22 @@ module VagrantPlugins
         if config.brand == 'illumos'
           execute(false, "#{@pfexec} zoneadm -z #{name} install")
         end
-        ui.info(I18n.t('vagrant_zones.installing_zone') + " brand: #{config.brand}")
+        uiinfo.info(I18n.t('vagrant_zones.installing_zone') + " brand: #{config.brand}")
       end
 
       ## Control the Machine from inside the machine
-      def control(machine, ui, control)
+      def control(machine, uiinfo, control)
         config = machine.provider_config
         if control == 'restart'
           command = 'sudo shutdown -r'
-          ssh_run_command(machine, ui, command)
+          ssh_run_command(machine, uiinfo, command)
         elsif control == 'shutdown'
           command = 'sudo shutdown -h now'
-          ssh_run_command(machine, ui, command)
+          ssh_run_command(machine, uiinfo, command)
         end
       end
 
-      def ssh_run_command(machine, ui, command)
+      def ssh_run_command(machine, uiinfo, command)
         ip = get_ip_address(machine)
         user = user(machine)
         key = userprivatekeypath(machine).to_s
@@ -104,7 +105,7 @@ module VagrantPlugins
         execute(false, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  '#{command}' ")
       end
 
-      def console(machine, ui, command, ip, port)
+      def console(machine, uiinfo, command, ip, port)
         name = @machine.name
 
         if !port.nil?
@@ -128,9 +129,9 @@ module VagrantPlugins
       end
 
       ## Boot the Machine
-      def boot(machine, ui)
+      def boot(machine, uiinfo)
         name = @machine.name
-        ui.info(I18n.t('vagrant_zones.starting_zone'))
+        uiinfo.info(I18n.t('vagrant_zones.starting_zone'))
         execute(false, "#{@pfexec} zoneadm -z #{name} boot")
       end
 
@@ -222,12 +223,12 @@ module VagrantPlugins
       end
 
       ## Manage Network Interfaces
-      def network(machine, ui, state)
+      def network(machine, uiinfo, state)
         config = machine.provider_config
         name = @machine.name
         if state == 'setup'
           ## Remove old installer netplan config
-          ui.info(I18n.t('vagrant_zones.netplan_remove'))
+          uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
           zlogin(machine, 'rm -rf  /etc/netplan/*.yaml')
         end
         machine.config.vm.networks.each do |_type, opts|
@@ -284,19 +285,19 @@ module VagrantPlugins
             if state == 'create'
               if !opts[:vlan].nil?
                 vlan = opts[:vlan]
-                ui.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
+                uiinfo.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
                 execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
               else
                 execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
               end
             elsif state == 'delete'
-              ui.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name)
+              uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name)
               vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
               if vnic_configured == "#{vnic_name}"
                 execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
               end
             elsif state == 'config'
-              ui.info(I18n.t('vagrant_zones.vnic_setup') + vnic_name)
+              uiinfo.info(I18n.t('vagrant_zones.vnic_setup') + vnic_name)
               if config.brand == 'lx'
                 nic_attr = %{add net
   set physical=#{vnic_name}
@@ -331,7 +332,7 @@ end                  }
             elsif state == 'setup'
               responses = []
               vmnic = []
-              ui.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
+              uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
               ## regex to grab standard Device interface names in ifconfig
               regex = /(en|eth)(\d|o\d|s\d|x[0-9A-Fa-f]{2}{6}|(p\d)(s\d)(f?\d?))/
               PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
@@ -420,7 +421,7 @@ end                  }
                               dhcprun += 1
                             end
                             if responses[-1].to_s.match(/DHCP Subprocess Error Code: 0/)
-                              ui.info(I18n.t('vagrant_zones.netplan_applied_dhcp') + "/etc/netplan/#{vnic_name}.yaml")
+                              uiinfo.info(I18n.t('vagrant_zones.netplan_applied_dhcp') + "/etc/netplan/#{vnic_name}.yaml")
                             elsif responses[-1].to_s.match(/DHCP Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
                               raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                             end
@@ -444,7 +445,7 @@ end                  }
                               staticrun += 1
                             end
                             if responses[-1].to_s.match(/Static Error Code: 0/)
-                              ui.info(I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml")
+                              uiinfo.info(I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml")
                             elsif responses[-1].to_s.match(/Static Error Code: \b(?![0]\b)\d{1,4}\b/)
                               raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                             end
@@ -455,7 +456,7 @@ end                  }
                     ## Check if last command ran successfully and break from the loop
                     zlogin_write.printf("echo \"Final Network Check Error Code: $?\"\n")
                     if responses[-1].to_s.match(/Final Network Check Error Code: 0/)
-                      ui.info(I18n.t('vagrant_zones.netplan_set'))
+                      uiinfo.info(I18n.t('vagrant_zones.netplan_set'))
                       break
                     elsif responses[-1].to_s.match(/Final Network Check Error Code: \b(?![0]\b)\d{1,4}\b/)
                       raise "==> #{name} ==> Final Network Check \nFailed with: #{responses[-1]}"
@@ -467,13 +468,13 @@ end                  }
               ## Apply the Configuration
               zlogin(machine, 'netplan apply')
               zlogin(machine, 'netplan apply')
-              ui.info(I18n.t('vagrant_zones.netplan_applied'))
+              uiinfo.info(I18n.t('vagrant_zones.netplan_applied'))
             end
           end
         end
       end
 
-      def create_dataset(machine, ui)
+      def create_dataset(machine, uiinfo)
         name = @machine.name
         config  = machine.provider_config
         dataset = config.zonepath.delete_prefix('/').to_s + '/boot'
@@ -481,23 +482,23 @@ end                  }
         datasetroot = config.zonepath.delete_prefix('/').to_s
         ## Create Boot Volume
         if config.brand == 'lx'
-          ui.info(I18n.t('vagrant_zones.lx_zone_dataset') + dataset)
+          uiinfo.info(I18n.t('vagrant_zones.lx_zone_dataset') + dataset)
           execute(false, "#{@pfexec} zfs create -o zoned=on -p #{dataset}")
         elsif config.brand == 'bhyve'
-          ui.info(I18n.t('vagrant_zones.bhyve_zone_dataset_root') + datasetroot)
+          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_root') + datasetroot)
           execute(false, "#{@pfexec} zfs create #{datasetroot}")
-          ui.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot') + config.zonepathsize + ', ' + dataset)
+          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot') + config.zonepathsize + ', ' + dataset)
           execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
-          ui.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + dataset)
+          uiinfoui.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + dataset)
           commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss').to_s} | #{@pfexec} zfs recv -u -v -F #{dataset} "
           Util::Subprocess.new commandtransfer do |stdout, stderr, thread|
-            ui.rewriting do |uiprogress|
+            uiinfo.rewriting do |uiprogress|
               uiprogress.clear_line
               uiprogress.info(I18n.t('vagrant_zones.importing_box_image_to_disk') + " #{datadir.to_s}/box.zss ==> #{dataset} ==> ", new_line: false)
               uiprogress.report_progress(stderr, 100, false)
             end
           end
-          ui.clear_line
+          uiinfo.clear_line
         elsif config.brand == 'illumos'
           raise Errors::NotYetImplemented
         elsif config.brand == 'kvm'
@@ -511,7 +512,7 @@ end                  }
           diskrun = 0
           disks.each do |disk|
             diskname = 'disk'
-            ui.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + disk['size'].to_s + ', ' + disk['array'] + disk['path'])
+            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + disk['size'].to_s + ', ' + disk['array'] + disk['path'])
             if diskrun > 0
               diskname = diskname + diskrun.to_s
             end
@@ -521,10 +522,10 @@ end                  }
         end
       end
 
-      def delete_dataset(machine, ui)
+      def delete_dataset(machine, uiinfo)
         name = @machine.name
         config = machine.provider_config
-        ui.info(I18n.t('vagrant_zones.delete_disks'))
+        uiinfo.info(I18n.t('vagrant_zones.delete_disks'))
         ## Check if Boot Dataset exists
         zp = "#{config.zonepath.delete_prefix('/')}"
         dataset_boot_exists = execute(false, "#{@pfexec} zfs list | grep  #{zp}/boot |  awk '{ print $1 }' || true")
@@ -537,7 +538,7 @@ end                  }
             disks.each do |disk|
               addataset = "#{disk["array"]}#{disk["path"]}"
               diskname = 'disk'
-              ui.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + disk["size"] + ", " + addataset)
+              uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + disk["size"] + ", " + addataset)
               dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{addataset} |  awk '{ print $1 }' || true")
               if dataset_exists == addataset
                 if diskrun > 0
@@ -549,27 +550,27 @@ end                  }
             end
           end
           ## Destroy Boot dataset
-          ui.info(I18n.t("vagrant_zones.destroy_dataset") + "#{zp}/boot")
+          uiinfo.info(I18n.t("vagrant_zones.destroy_dataset") + "#{zp}/boot")
           execute(false, "#{@pfexec} zfs destroy -r #{zp}/boot")
 
         else
-          ui.info(I18n.t("vagrant_zones.dataset_nil"))
+          uiinfo.info(I18n.t("vagrant_zones.dataset_nil"))
         end
         ## Check if root dataset exists
-        ui.info(I18n.t("vagrant_zones.destroy_dataset") + zp)
+        uiinfo.info(I18n.t("vagrant_zones.destroy_dataset") + zp)
         dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep  #{zp} |  awk '{ print $1 }' | grep -v path  || true")
         if dataset_root_exists == "#{zp}"
           execute(false, "#{@pfexec} zfs destroy -r #{zp}")
         end
       end
 
-      def zonecfg(machine, ui)
+      def zonecfg(machine, uiinfo)
         name = @machine.name
         ## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console
         config = machine.provider_config
         attr = ''
         if config.brand == 'lx'
-          ui.info(I18n.t("vagrant_zones.lx_zone_config_gen"))
+          uiinfo.info(I18n.t("vagrant_zones.lx_zone_config_gen"))
           machine.config.vm.networks.each do |_type, opts|
             index = 1
             if _type.to_s == "public_network"
@@ -600,7 +601,7 @@ set max-lwps=2000
           }
         elsif config.brand == 'bhyve'
           ## General Configuration
-          ui.info(I18n.t("vagrant_zones.bhyve_zone_config_gen"))
+          uiinfo.info(I18n.t("vagrant_zones.bhyve_zone_config_gen"))
           attr = %{create
 set zonepath=#{config.zonepath}/path
 set brand=#{config.brand}
@@ -656,7 +657,7 @@ end          }
 
         ## Shared Disk Configurations
         unless !config.shared_disk_enabled
-          ui.info(I18n.t("vagrant_zones.setting_alt_shared_disk_configurations") + path.path)
+          uiinfo.info(I18n.t("vagrant_zones.setting_alt_shared_disk_configurations") + path.path)
           shared_disk_attr = %{add fs
   set dir=/vagrant
   set special=#{config.shared_dir}
@@ -721,7 +722,7 @@ end          }
           cdrun = 0
           cdroms.each do |cdrom|
             cdname = "cdrom"
-            ui.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + cdrom["path"])
+            uiinfo.info(I18n.t("vagrant_zones.setting_cd_rom_configurations") + cdrom["path"])
             if cdrun > 0
               cdname = cdname + cdrun.to_s
             end
@@ -750,7 +751,7 @@ end            }
           diskrun = 0
           disks.each do |disk|
             diskname = "disk"
-            ui.info(I18n.t("vagrant_zones.setting_additional_disks_configurations") + disk["size"] + ", " + disk["path"])
+            uiinfo.info(I18n.t("vagrant_zones.setting_additional_disks_configurations") + disk["size"] + ", " + disk["path"])
             if diskrun > 0
               diskname = diskname + diskrun.to_s
             end
@@ -788,7 +789,7 @@ end            }
               value = value + ",wait"
             end
 
-            ui.info(I18n.t("vagrant_zones.setting_console_access") + console.to_s + ", " + config.consoleport.to_s + ", " + value.to_s)
+            uiinfo.info(I18n.t("vagrant_zones.setting_console_access") + console.to_s + ", " + config.consoleport.to_s + ", " + value.to_s)
             console_attr = %{add attr
     set name=#{console}
     set type=string
@@ -808,7 +809,7 @@ end            }
         File.open("#{name}.zoneconfig", 'a') do |f|
           f.puts exit
         end
-        ui.info(I18n.t("vagrant_zones.exporting_bhyve_zone_config_gen"))
+        uiinfo.info(I18n.t("vagrant_zones.exporting_bhyve_zone_config_gen"))
         ## Export config to zonecfg
         execute(false, "cat #{name}.zoneconfig | #{@pfexec} zonecfg -z #{machine.name}")
       end
@@ -829,32 +830,32 @@ end            }
 
         ## https://man.omnios.org/man5/brands
         if config.brand == 'lx'
-          ui.info(I18n.t("vagrant_zones.lx_check"))
+          uiinfo.info(I18n.t("vagrant_zones.lx_check"))
           return
         end
         if config.brand == 'ipkg'
-          ui.info(I18n.t("vagrant_zones.ipkg_check"))
+          uiinfo.info(I18n.t("vagrant_zones.ipkg_check"))
           return
         end
         if config.brand == 'lipkg'
-          ui.info(I18n.t("vagrant_zones.lipkg_check"))
+          uiinfo.info(I18n.t("vagrant_zones.lipkg_check"))
           return
         end
         if config.brand == 'pkgsrc'
-          ui.info(I18n.t("vagrant_zones.pkgsrc_check"))
+          uiinfo.info(I18n.t("vagrant_zones.pkgsrc_check"))
           return
         end
         if config.brand == 'sparse'
-          ui.info(I18n.t("vagrant_zones.sparse_check"))
+          uiinfo.info(I18n.t("vagrant_zones.sparse_check"))
           return
         end
         if config.brand == 'kvm'
           ## https://man.omnios.org/man5/kvm
-          ui.info(I18n.t("vagrant_zones.kvm_check"))
+          uiinfo.info(I18n.t("vagrant_zones.kvm_check"))
           return
         end
         if config.brand == 'illumos'
-          ui.info(I18n.t("vagrant_zones.illumos_check"))
+          uiinfo.info(I18n.t("vagrant_zones.illumos_check"))
           return
         end
         if config.brand == 'bhyve'
@@ -872,38 +873,38 @@ end            }
 
           cutoff_release = "1510380"
           cutoff_release = cutoff_release[0..-2].to_i
-          ui.info(I18n.t("vagrant_zones.bhyve_check") + "#{cutoff_release}")
+          uiinfo.info(I18n.t("vagrant_zones.bhyve_check") + "#{cutoff_release}")
           release = File.open('/etc/release', &:readline)
           release = release.scan(/\w+/).values_at(-1)
           release = release[0][1..-2].to_i
           raise Errors::SystemVersionIsTooLow if release < cutoff_release
 
           # Check Bhyve compatability
-          ui.info(I18n.t("vagrant_zones.bhyve_compat_check"))
+          uiinfo.info(I18n.t("vagrant_zones.bhyve_compat_check"))
           result = execute(false, "#{@pfexec} bhhwcompat -s")
           raise Errors::MissingBhyve if result.length == 1
         end
       end
 
-      def setup(machine, ui)
+      def setup(machine, uiinfo)
         config = machine.provider_config
         name = machine.name
         ### network Configurations
 
         if config.brand == 'bhyve'
-          network(@machine, ui, 'setup')
+          network(@machine, uiinfo, 'setup')
         end
       end
 
-      def waitforboot(machine, ui)
-        ui.info(I18n.t('vagrant_zones.wait_for_boot'))
+      def waitforboot(machine, uiinfo)
+        uiinfo.info(I18n.t('vagrant_zones.wait_for_boot'))
         name = @machine.name
         config = machine.provider_config
         responses = []
         if config.brand == 'bhyve'
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             if zlogin_read.expect(/Last login: /)
-              ui.info(I18n.t('vagrant_zones.booted_check_terminal_access'))
+              uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access'))
               Timeout.timeout(config.setup_wait) do
                 loop do
                   zlogin_read.expect(/\n/) { |line| responses.push line }
@@ -911,7 +912,7 @@ end            }
                     break
                   elsif responses[-1].to_s.match(/login: /)
                     ## Code to try to login with username and password
-                    ui.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login'))
+                    uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login'))
                   end
                 end
               end
@@ -931,13 +932,13 @@ end            }
             id_rsa = 'https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant'
             command = "#{@pfexec} curl #{id_rsa}  -O id_rsa"
             Util::Subprocess.new command do |stdout, stderr, thread|
-              ui.rewriting do |ui|
+              uiinfo.rewriting do |ui|
                 ui.clear_line()
                 ui.info(I18n.t('vagrant_zones.importing_vagrant_key'), new_line: false)
                 ui.report_progress(stderr, 100, false)
               end
             end
-            ui.clear_line()
+            uiinfo.clear_line()
             zlogincommand(machine, 'chown -R vagrant:vagrant /home/vagrant/.ssh')
             zlogincommand(machine, 'chmod 600 /home/vagrant/.ssh/authorized_keys')
           end
@@ -1015,11 +1016,11 @@ end            }
         return vagrantuserpass
       end
 
-      def zfs(machine, ui, job, dataset, snapshot_name)
+      def zfs(machine, uiinfo, job, dataset, snapshot_name)
         config = machine.provider_config
         name = machine.name
         if job == 'list'
-          ui.info (I18n.t('vagrant_zones.zfs_snapshot_list'))
+          uiinfo.info (I18n.t('vagrant_zones.zfs_snapshot_list'))
           zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{name}")
           zfssnapshots = zfs_snapshots.split(/\n/)
           snapshotrun = 0
@@ -1033,27 +1034,27 @@ end            }
             snapshotrun += 1
           end
         elsif job == 'create'
-          ui.info (I18n.t('vagrant_zones.zfs_snapshot_create'))
+          uiinfo.info (I18n.t('vagrant_zones.zfs_snapshot_create'))
           zfs_snapshots = execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
         elsif job == 'destroy'
-          ui.info (I18n.t('vagrant_zones.zfs_snapshot_destroy'))
+          uiinfo.info (I18n.t('vagrant_zones.zfs_snapshot_destroy'))
           zfs_snapshots = execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}")
         end
       end
 
-      def halt(machine, ui)
+      def halt(machine, uiinfo)
         name = @machine.name
         config = machine.provider_config
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
         vm_configured = execute(false, "#{@pfexec} zoneadm list -icn | grep  #{name} || true")
         if vm_state == 'running'
-          ui.info(I18n.t('vagrant_zones.graceful_shutdown'))
+          uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown'))
           begin
             status = Timeout::timeout(config.clean_shutdown_time) {
               execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
             }
           rescue Timeout::Error
-            ui.info(I18n.t('vagrant_zones.graceful_shutdown_failed') + config.clean_shutdown_time.to_s)
+            uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown_failed') + config.clean_shutdown_time.to_s)
             begin
               halt_status = Timeout::timeout(60) {
                 execute(false, "#{@pfexec} zoneadm -z #{name} halt")

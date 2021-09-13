@@ -10,6 +10,11 @@ Metrics/MethodLength:
   CountComments: false  # count full line comments?
   Enabled: false
 
+Metrics/ClassLength:
+  Enabled: true
+  Exclude:
+    - lib/vagrant-zones/driver*
+
 Naming/MethodName:
   EnforcedStyle: snake_case
 
@@ -109,3 +114,6 @@ Style/CaseLikeIf:
                  If if unles case styling
   Enabled: true
   AutoCorrect: true
+
+
+
