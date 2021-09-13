@@ -47,7 +47,6 @@ module VagrantPlugins
         else
           :not_created
         end
-        
       end
 
       def execute(*cmd, **opts, &block)
@@ -76,7 +75,6 @@ module VagrantPlugins
         end
         ui.info(I18n.t("vagrant_zones.installing_zone") + " brand: #{config.brand}")
       end
-      
 
       ## Control the Machine from inside the machine
       def control(machine, ui, control)        
@@ -89,7 +87,6 @@ module VagrantPlugins
           ssh_run_command(machine, ui, command)
         end
       end
-
 
       def ssh_run_command(machine, ui , command)
         ip = get_ip_address(machine)
@@ -125,10 +122,7 @@ module VagrantPlugins
         else
           execute(false, "pfexec zadm  webvnc #{netport} #{name}")
         end
-
       end
-
-  
 
       ## Boot the Machine
       def boot(machine, ui)
@@ -152,7 +146,6 @@ module VagrantPlugins
           if !opts[:mac].nil?
             mac  = opts[:mac]
           end
-
           case nictype
           when /external/
             nic_type = "e"
@@ -225,12 +218,10 @@ module VagrantPlugins
         end
       end
 
-      
       ## Manage Network Interfaces
       def network(machine, ui, state)
         config = machine.provider_config
         name = @machine.name
-
         if state == "setup"
           ## Remove old installer netplan config
           ui.info(I18n.t("vagrant_zones.netplan_remove"))              
@@ -244,7 +235,6 @@ module VagrantPlugins
             ip          = opts[:ip].to_s
             defrouter   = opts[:gateway].to_s
             cloud_init_enabled = config.cloud_init_enabled
-
             allowed_address = ip.to_s + "/" + netmask.to_s
             if ip.length == 0
               ip = nil
@@ -253,7 +243,6 @@ module VagrantPlugins
             end
             mac      = 'auto'
             vlan     = 1
-
             if !opts[:mac].nil?
               if opts[:mac].match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/) || !opts[:mac].match(/auto/)
                 mac  = opts[:mac]
@@ -336,7 +325,6 @@ end                  }
                   end
                 end
               end
-
             elsif state == "setup"
               responses=[]
               vmnic=[]
@@ -480,7 +468,6 @@ end                  }
         end
       end
       
-  
       def create_dataset(machine, ui)
         name = @machine.name
         config  = machine.provider_config        
@@ -494,7 +481,6 @@ end                  }
         elsif config.brand == 'bhyve'
           ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_root") + datasetroot)
           execute(false, "#{@pfexec} zfs create #{datasetroot}")
-
           ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot") + config.zonepathsize + ", " + dataset)
           execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
           ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_boot_volume") + dataset )  
@@ -503,10 +489,8 @@ end                  }
             ui.rewriting do |uiprogress|
             uiprogress.clear_line() 
             uiprogress.info(I18n.t("vagrant_zones.importing_box_image_to_disk") + " #{datadir.to_s}/box.zss ==> #{dataset} ==> ", new_line: false)
-
             uiprogress.report_progress(stderr, 100, false)
             end
-            
           end
           ui.clear_line() 
         elsif config.brand == 'illumos'
@@ -538,7 +522,6 @@ end                  }
         ui.info(I18n.t("vagrant_zones.delete_disks"))
         ## Check if Boot Dataset exists
         dataset_boot_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")}/boot |  awk '{ print $1 }' || true")
-
         ## If boot Dataset exists, delete it
         if dataset_boot_exists == "#{config.zonepath.delete_prefix("/")}/boot"
           ## Destroy Additional Disks
@@ -563,7 +546,6 @@ end                  }
           ui.info(I18n.t("vagrant_zones.destroy_dataset") + "#{config.zonepath.delete_prefix("/")}/boot" )
           execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}/boot")
 
-
         else
           ui.info(I18n.t("vagrant_zones.dataset_nil") )
         end
@@ -573,7 +555,6 @@ end                  }
         if dataset_root_exists  == "#{config.zonepath.delete_prefix("/")}"
           execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
         end
-
       end
 
       def zonecfg(machine, ui)
