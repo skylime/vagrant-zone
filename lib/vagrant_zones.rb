@@ -13,7 +13,7 @@ module VagrantPlugins
     # This function returns the path to the source of this plugin
     # @return [Pathname]
     def self.source_root
-      @source_root ||= Pathname.new(File.expand_path('../../', __FILE__))
+      @source_root ||= Pathname.new(File.expand_path('..', __dir__))
     end
   end
 end
@@ -25,6 +25,5 @@ rescue LoadError
 end
 
 raise 'The Vagrant Libvirt plugin is only compatible with Vagrant 2+.' if Vagrant::VERSION < '2'
-
 
 require 'vagrant-zones/plugin'
