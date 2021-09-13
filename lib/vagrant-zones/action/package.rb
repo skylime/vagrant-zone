@@ -15,17 +15,15 @@ module VagrantPlugins
         def call(env)
           @machine = env[:machine]
           @driver  = @machine.provider.driver
-
           config  = @machine.provider_config
-
           boxname = env['package.output']
           raise "#{boxname}: Already exists" if File.exist?(boxname)
 
-          tmp_dir = Dir.pwd + '/_tmp_package'
-          tmp_img = tmp_dir + '/box.zss'
-          Dir.mkdir(tmp_dir) unless File.exists?(tmp_dir)
+          tmp_dir = "#{Dir.pwd}/_tmp_package"
+          tmp_img = "#{tmp_dir}/box.zss"
+          Dir.mkdir(tmp_dir) unless File.exist?(tmp_dir)
 
-          zonepath = config.zonepath.delete_prefix('/').to_s
+          zonepath = "#{config.zonepath.delete_prefix('/')}"
           brand  = @machine.provider_config.brand
           kernel = @machine.provider_config.kernel
           vagrant_cloud_creator = @machine.provider_config.vagrant_cloud_creator
@@ -54,7 +52,7 @@ module VagrantPlugins
             FileUtils.cp(env['package.vagrantfile'], @tmp_include + '/Vagrantfile')
           end
 
-          File.write(tmp_dir + '/metadata.json', metadata_content(brand, kernel))
+          File.write(tmp_dir + '/metadata.json', metadata_content(brand, kernel, vagrant_cloud_creator, url, boxname))
           File.write(tmp_dir + '/Vagrantfile', vagrantfile_content(brand, kernel, zonepath))
 
           Dir.chdir(tmp_dir)
@@ -83,7 +81,7 @@ module VagrantPlugins
           `pfexec zfs send #{zonepath}/boot@vagrant_boxing > #{destination}`
         end
 
-        def metadata_content(brand, kernel)
+        def metadata_content(brand, kernel, vagrant_cloud_creator, url, boxname)
           <<-EOF
           {
             "provider": "zone",

@@ -9,7 +9,7 @@ module VagrantPlugins
     module Action
       # This is use to define the network
       class Network
-        def initialize(app, env)
+        def initialize(app, _env)
           @logger = Log4r::Logger.new('vagrant_zones::action::import')
           @app = app
         end

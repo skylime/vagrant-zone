@@ -11,7 +11,7 @@ module VagrantPlugins
       class WaitTillBoot
         include Vagrant::Util::Retryable
 
-        def initialize(app, env)
+        def initialize(app, _env)
           @logger = Log4r::Logger.new('vagrant_zones::action::import')
           @app = app
         end
