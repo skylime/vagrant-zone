@@ -4,17 +4,17 @@ module VagrantPlugins
   module ProviderZone
     module Command
       # This is used to manage the power controls for the zone
-      class GuestPowerControls < Vagrant.plugin("2", :command)
+      class GuestPowerControls < Vagrant.plugin('2', :command)
         def initialize(argv, env)
           @main_args, @sub_command, @sub_args = split_main_and_subcommand(argv)
 
           @subcommands = Vagrant::Registry.new
           @subcommands.register(:restart) do
-            require File.expand_path('../restart_guest', __FILE__)
+            require File.expand_path('restart_guest', __dir__)
             RestartGuest
           end
           @subcommands.register(:shutdown) do
-            require File.expand_path('../shutdown_guest', __FILE__)
+            require File.expand_path('shutdown_guest', __dir__)
             ShutdownGuest
           end
           super(argv, env)
@@ -37,9 +37,9 @@ module VagrantPlugins
 
         def help
           opts = OptionParser.new do |subopts|
-            subopts.banner = "Usage: vagrant zone control <subcommand> [<args>]"
-            subopts.separator ""
-            subopts.separator "Available subcommands:"
+            subopts.banner = 'Usage: vagrant zone control <subcommand> [<args>]'
+            subopts.separator ''
+            subopts.separator 'Available subcommands:'
             # Add the available subcommands as separators in order to print them
             # out as well.
             keys = []
@@ -47,8 +47,8 @@ module VagrantPlugins
             keys.sort.each do |key|
               subopts.separator "     #{key}"
             end
-            subopts.separator ""
-            subopts.separator "For help on any individual subcommand run `vagrant zone control <subcommand> -h`"
+            subopts.separator ''
+            subopts.separator 'For help on any individual subcommand run `vagrant zone control <subcommand> -h`'
           end
           @env.ui.info(opts.help, :prefix => false)
         end

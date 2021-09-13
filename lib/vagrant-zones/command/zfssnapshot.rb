@@ -10,19 +10,19 @@ module VagrantPlugins
 
           @subcommands = Vagrant::Registry.new
           @subcommands.register(:list) do
-            require File.expand_path('../list_snapshots', __FILE__)
+            require File.expand_path('list_snapshots', __dir__)
             ListSnapshots
           end
           @subcommands.register(:create) do
-            require File.expand_path('../create_snapshots', __FILE__)
+            require File.expand_path('create_snapshots', __dir__)
             CreateSnapshots
           end
           @subcommands.register(:delete) do
-            require File.expand_path('../delete_snapshots', __FILE__)
+            require File.expand_path('delete_snapshots', __dir__)
             DeleteSnapshots
           end
           @subcommands.register(:configure) do
-            require File.expand_path('../configure_snapshots', __FILE__)
+            require File.expand_path('configure_snapshots', __dir__)
             ConfigureSnapshots
           end
           super(argv, env)

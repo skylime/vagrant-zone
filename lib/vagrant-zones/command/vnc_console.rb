@@ -25,19 +25,10 @@ module VagrantPlugins
             return
           end
 
-          if options[:ip].nil?
-            options[:ip] = "127.0.0.1"
-
-          end
-          unless options[:ip] =~ Resolv::IPv4::Regex ? true : false
-            options[:ip] = "127.0.0.1"
-          end
-          if options[:port].nil?
-            options[:port] = nil
-          end
-          unless options[:port] =~ /\d/
-            options[:port] = nil
-          end
+          options[:ip] = '127.0.0.1' if options[:ip].nil?
+          options[:ip] = '127.0.0.1' unless options[:ip] =~ Resolv::IPv4::Regex ? true : false
+          options[:port] = nil if options[:port].nil?
+          options[:port] = nil unless options[:port] =~ /\d/
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
             driver.console(machine, @env.ui, 'vnc', options[:ip], options[:port])

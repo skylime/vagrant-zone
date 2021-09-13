@@ -10,15 +10,15 @@ module VagrantPlugins
 
           @subcommands = Vagrant::Registry.new
           @subcommands.register(:vnc) do
-            require File.expand_path('../vnc_console', __FILE__)
+            require File.expand_path('vnc_console', __dir__)
             VNCConsole
           end
           @subcommands.register(:zlogin) do
-            require File.expand_path('../zlogin_console', __FILE__)
+            require File.expand_path('zlogin_console', __dir__)
             ZloginConsole
           end
           @subcommands.register(:webvnc) do
-            require File.expand_path('../webvnc_console', __FILE__)
+            require File.expand_path('webvnc_console', __dir__)
             WebVNCConsole
           end
           super(argv, env)
@@ -41,9 +41,9 @@ module VagrantPlugins
 
         def help
           opts = OptionParser.new do |subopts|
-            subopts.banner = "Usage: vagrant zone console <subcommand> [<args>]"
-            subopts.separator ""
-            subopts.separator "Available subcommands:"
+            subopts.banner = 'Usage: vagrant zone console <subcommand> [<args>]'
+            subopts.separator ''
+            subopts.separator 'Available subcommands:'
             # Add the available subcommands as separators in order to print them
             # out as well.
             keys = []
@@ -51,7 +51,7 @@ module VagrantPlugins
             keys.sort.each do |key|
               subopts.separator "     #{key}"
             end
-            subopts.separator "For help on any individual subcommand run `vagrant zone console <subcommand> -h`"
+            subopts.separator 'For help on any individual subcommand run `vagrant zone console <subcommand> -h`'
           end
           @env.ui.info(opts.help, :prefix => false)
         end

@@ -13,7 +13,7 @@ module VagrantPlugins
         # command's stdout
         def execute(exit_code, *cmd, **opts, &block)
           # Append in the options for subprocess
-          cmd << { notify: [:stdout, :stderr] }
+          cmd << { notify: %i[stdout stderr] }
 
           cmd.unshift('sh', '-c')
           interrupted = false

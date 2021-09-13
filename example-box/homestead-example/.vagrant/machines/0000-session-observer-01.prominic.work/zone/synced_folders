@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":null,"owner":"prominic","group":"prominic","mount_options":[],"guestpath":"/vagrant","hostpath":"/perm/vagrant-zones/example-provisioner-scripts/ansible","disabled":false,"__vagrantfile":true}}}

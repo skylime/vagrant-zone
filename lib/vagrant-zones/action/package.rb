@@ -23,7 +23,7 @@ module VagrantPlugins
           tmp_img = "#{tmp_dir}/box.zss"
           Dir.mkdir(tmp_dir) unless File.exist?(tmp_dir)
 
-          zonepath = "#{config.zonepath.delete_prefix('/')}"
+          zonepath = config.zonepath.delete_prefix('/').to_s
           brand  = @machine.provider_config.brand
           kernel = @machine.provider_config.kernel
           vagrant_cloud_creator = @machine.provider_config.vagrant_cloud_creator

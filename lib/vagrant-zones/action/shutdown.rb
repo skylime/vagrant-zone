@@ -31,7 +31,7 @@ module VagrantPlugins
 
               loop do
                 break if env[:interrupted]
-                break if !env[:machine].communicate.ready?
+                break unless env[:machine].communicate.ready?
               end
             end
           end

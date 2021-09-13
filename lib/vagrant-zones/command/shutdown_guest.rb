@@ -13,7 +13,7 @@ module VagrantPlugins
           argv = parse_options(opts)
           return unless argv
 
-          if argv.length !empty? 
+          if argv.length !empty?
             @env.ui.info(opts.help)
             return
           end

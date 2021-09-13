@@ -1,0 +1,67 @@
+create
+set zonepath=/Array-1/zones/0000-session-observer-01.prominic.work/path
+set brand=bhyve
+set autoboot=true
+set ip-type=exclusive
+add attr
+  set name=acpi
+  set type=string
+  set value=true
+end
+add attr
+  set name=ram
+  set type=string
+  set value=4G
+end
+add attr
+  set name=bootrom
+  set type=string
+  set value=BHYVE_RELEASE_CSM
+end
+add attr
+  set name=hostbridge
+  set type=string
+  set value=i440fx
+end
+add attr
+  set name=diskif
+  set type=string
+  set value=virtio-blk
+end
+add attr
+  set name=netif
+  set type=string
+  set value=virtio-net-viona
+end
+add device
+  set match=/dev/zvol/rdsk/Array-1/zones/0000-session-observer-01.prominic.work/boot
+end
+add attr
+  set name=bootdisk
+  set type=string
+  set value=Array-1/zones/0000-session-observer-01.prominic.work/boot
+end
+add attr
+  set name=type
+  set type=string
+  set value=generic
+end          
+add attr
+  set name=vcpus
+  set type=string
+  set value="sockets=2,cores=4,threads=2"
+end          
+add attr
+    set name=vnc
+    set type=string
+    set value=on
+end            
+add net
+  set physical=vnice3_0000_0
+  set allowed-address=192.168.2.187/16
+end                  
+add net
+  set physical=vnici3_0000_1
+  set allowed-address=192.168.2.188/16
+end                  
+exit
