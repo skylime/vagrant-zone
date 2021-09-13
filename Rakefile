@@ -25,7 +25,7 @@ RSpec::Core::RakeTask.new
 RuboCop::RakeTask.new
 
 RuboCop::RakeTask.new(:rubocoplayout) do |t|
-  t.options = ['-A']
+  t.options = ['--auto-correct --only ']
 end
 
 # Default task is to run the unit tests
