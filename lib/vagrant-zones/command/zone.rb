@@ -4,9 +4,9 @@ require 'vagrant-zones/action'
 
 module VagrantPlugins
   module ProviderZone
-      module Command
+    module Command
       # This is used manage the zone where vagrant cannot
-      class Zone < Vagrant.plugin("2", :command)
+      class Zone < Vagrant.plugin('2', :command)
         def self.synopsis
           "Manage zones and query zone information"
         end
@@ -17,7 +17,7 @@ module VagrantPlugins
           @subcommands = Vagrant::Registry.new
 
           @subcommands.register(:zfssnapshot) do
-            require File.expand_path("../zfssnapshot", __FILE__)
+            require File.expand_path('../zfssnapshot', __FILE__)
             ZFSSnapshot
           end
           @subcommands.register(:control) do
@@ -32,7 +32,7 @@ module VagrantPlugins
         end
  
         def execute
-          if @main_args.include?("-h") || @main_args.include?("--help")
+          if @main_args.include?('-h') || @main_args.include?('--help')
             # Print the help for all the vagrant-zones commands.
             return help
           end
@@ -47,9 +47,9 @@ module VagrantPlugins
 
         def help
           opts = OptionParser.new do |opts|
-            opts.banner = "Usage: vagrant zone <subcommand> [<args>]"
-            opts.separator ""
-            opts.separator "Available subcommands:"
+            opts.banner = 'Usage: vagrant zone <subcommand> [<args>]'
+            opts.separator ''
+            opts.separator 'Available subcommands:'
 
             # Add the available subcommands as separators in order to print them
             # out as well.
@@ -60,8 +60,8 @@ module VagrantPlugins
               opts.separator "     #{key}"
             end
 
-            opts.separator ""
-            opts.separator "For help on any individual subcommand run `vagrant zone <subcommand> -h`"
+            opts.separator ''
+            opts.separator 'For help on any individual subcommand run `vagrant zone <subcommand> -h`'
           end
 
           @env.ui.info(opts.help, :prefix => false)

@@ -6,51 +6,12 @@ module VagrantPlugins
   module ProviderZone
     # This is used define the variables for the project
     class Config < Vagrant.plugin('2', :config)
-      attr_accessor :brand
-      attr_accessor :autoboot
-      attr_accessor :kernel
-      attr_accessor :zonepath
-      attr_accessor :zonepathsize
-      attr_accessor :diskif
-      attr_accessor :netif
-      attr_accessor :cdroms
-      attr_accessor :disk1path
-      attr_accessor :disk1size
-      attr_accessor :cpus
-      attr_accessor :cpu_configuration
-      attr_accessor :complex_cpu_conf
-      attr_accessor :memory
-      attr_accessor :vagrant_user
-      attr_accessor :vagrant_user_private_key_path
-      attr_accessor :setup_wait
-      attr_accessor :clean_shutdown_time
-      attr_accessor :dhcp
-      attr_accessor :vagrant_user_pass
-      attr_accessor :firmware_type
-      attr_accessor :firmware
-      attr_accessor :vm_type
-      attr_accessor :partition_id
-      attr_accessor :shared_disk_enabled
-      attr_accessor :shared_dir
-      attr_accessor :acpi
-      attr_accessor :os_type
-      attr_accessor :console
-      attr_accessor :consoleport
-      attr_accessor :console_onboot
-      attr_accessor :hostbridge
-      attr_accessor :sshport
-      attr_accessor :rdpport
-      attr_accessor :override
-      attr_accessor :additional_disks
-      attr_accessor :cloud_init_enabled
-      attr_accessor :dns
-      attr_accessor :box
-      attr_accessor :vagrant_cloud_creator
-      
+      attr_accessor :brand, :autoboot, :kernel, :zonepath, :zonepathsize, :diskif, :netif, :cdroms, :disk1path, :disk1size, :cpus, :cpu_configuration, :complex_cpu_conf, :memory, :vagrant_user, :vagrant_user_private_key_path, :setup_wait, :clean_shutdown_time, :dhcp, :vagrant_user_pass, :firmware_type, :firmware, :vm_type, :partition_id, :shared_disk_enabled, :shared_dir, :acpi, :os_type, :console, :consoleport, :console_onboot, :hostbridge, :sshport, :rdpport, :override, :additional_disks, :cloud_init_enabled, :dns, :box, :vagrant_cloud_creator
+
       def initialize
         # pkgsrc, lx, bhyve, kvm, illumos
         @brand = 'bhyve'
-        @additional_disks        = nil
+        @additional_disks = nil
         @autoboot = true
         @kernel = UNSET_VALUE
         @zonepath = '/rpool/myvm'
@@ -75,7 +36,7 @@ module VagrantPlugins
         @setup_wait = 60
         @box = UNSET_VALUE
         @clean_shutdown_time = 300
-        @dns = [ {'nameserver' => '1.1.1.1'} , {'nameserver' => '1.0.0.1'} ]
+        @dns = [{ 'nameserver' => '1.1.1.1' },{ 'nameserver' => '1.0.0.1' }]
         @vmtype = 'production'
         @vm_type = UNSET_VALUE
         @partition_id = '0000'
@@ -89,17 +50,17 @@ module VagrantPlugins
         @vagrant_cloud_creator = UNSET_VALUE
         @firmware =
           case @firmware_type
-          when 'compatability'  
-           @firmware = 'BHYVE_RELEASE_CSM'
-          when 'UEFI'  
+          when 'compatability'
+            @firmware = 'BHYVE_RELEASE_CSM'
+          when 'UEFI'
             @firmware = 'BHYVE_RELEASE'
-          when 'BIOS'  
+          when 'BIOS'
             @firmware = 'BHYVE_CSM'
-          when 'UEFI_DEBUG'  
+          when 'UEFI_DEBUG'
             @firmware = 'BHYVE_DEBUG'
-          when 'BIOS_DEBUG'  
-            @firmware = 'BHYVE_RELEASE_CSM' 
-          else  
+          when 'BIOS_DEBUG'
+            @firmware = 'BHYVE_RELEASE_CSM'
+          else
             @firmware = 'BHYVE_RELEASE_CSM'
           end
           case @vmtype
