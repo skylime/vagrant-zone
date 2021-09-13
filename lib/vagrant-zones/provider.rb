@@ -25,14 +25,14 @@ module VagrantPlugins
         # let Vagrant core deal with it like docker provider does
         return nil if state.id != :running
         ssh_info = {
-          host: "#{driver.get_ip_address(@machine)}",
-          port: "#{driver.sshport(@machine)}",
-          password: "#{driver.vagrantuserpass(@machine)}",
-          username: "#{driver.user(@machine)}",
+          host: driver.get_ip_address(@machine).to_s,
+          port: driver.sshport(@machine).to_s,
+          password: driver.vagrantuserpass(@machine).to_s,
+          username: driver.user(@machine).to_s,
           private_key_path: "#{driver.userprivatekeypath(@machine)}",
           PasswordAuthentication: 'passwordauth'
         }
-        puts "We can connect" unless ssh_info.nil?
+        puts 'We can connect'  unless ssh_info.nil?
       end
 
       # This should return an action callable for the given name.

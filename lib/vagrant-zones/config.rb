@@ -50,21 +50,14 @@ module VagrantPlugins
         @override = false
         @cloud_init_enabled = false
         @vagrant_cloud_creator = UNSET_VALUE
-        @firmware =
-          case @firmware_type
-          when 'compatability'
-            @firmware = 'BHYVE_RELEASE_CSM'
-          when 'UEFI'
-            @firmware = 'BHYVE_RELEASE'
-          when 'BIOS'
-            @firmware = 'BHYVE_CSM'
-          when 'UEFI_DEBUG'
-            @firmware = 'BHYVE_DEBUG'
-          when 'BIOS_DEBUG'
-            @firmware = 'BHYVE_RELEASE_CSM'
-          else
-            @firmware = 'BHYVE_RELEASE_CSM'
-          end
+        case @firmware_type
+        when 'compatability' then @firmware = 'BHYVE_RELEASE_CSM'
+        when 'UEFI' then @firmware = 'BHYVE_RELEASE'
+        when 'BIOS' then @firmware = 'BHYVE_CSM'
+        when 'UEFI_DEBUG' then @firmware = 'BHYVE_DEBUG'
+        when 'BIOS_DEBUG' then @firmware = 'BHYVE_RELEASE_CSM'
+        else @firmware = 'BHYVE_RELEASE_CSM'
+        end
         case @vmtype
         when 'template' then @vm_type = '1'
         when 'development' then @vm_type = '2'
