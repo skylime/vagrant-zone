@@ -24,5 +24,10 @@ RSpec::Core::RakeTask.new
 # Install the `rubocop` task
 RuboCop::RakeTask.new
 
+
+RuboCop::RakeTask.new(:rubocoplayout) do |t|
+    t.options = ['-x']
+  end
+
 # Default task is to run the unit tests
 task default: %w(rubocop spec)
