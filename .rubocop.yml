@@ -59,3 +59,11 @@ Metrics/AbcSize:
   # The ABC size is a calculated magnitude, so this number can be an Integer or
   # a Float.
   Max: 25
+
+Metrics/PerceivedComplexity:
+  Description: >-
+                 A complexity metric geared towards measuring complexity for a
+                 human reader.
+  Enabled: true
+  VersionAdded: '0.25'
+  Max: 20

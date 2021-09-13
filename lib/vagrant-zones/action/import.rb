@@ -59,7 +59,7 @@ module VagrantPlugins
                 ratelimit = 0
                 rate = 500
                 large_file = "#{datadir}/#{image}"
-                open large_file, 'wb' do |io| # 'b' opens the file in binary mode
+                File.open("large_file", 'wb')  do |io| # 'b' opens the file in binary mode
                   response.read_body do |chunk|
                     io.write chunk
                     amount_downloaded += chunk.size

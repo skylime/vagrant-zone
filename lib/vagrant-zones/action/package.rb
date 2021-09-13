@@ -82,18 +82,18 @@ module VagrantPlugins
         end
 
         def metadata_content(brand, kernel, vagrant_cloud_creator, url, boxname)
-          <<-EOF
+          <<-ZONEBOX
           {
             "provider": "zone",
             "format": "zss",
             "brand": "#{brand}",
             "url": "https://app.vagrantup.com/#{vagrant_cloud_creator}/boxes/#{boxname}"
           }
-          EOF
+          ZONEBOX
         end
 
         def vagrantfile_content(brand, kernel, zonepath)
-          <<-EOF
+          <<-ZONEBOX
           Vagrant.configure('2') do |config|
             config.vm.provider :zone do |zone|
               zone.brand = "#{brand}"
@@ -102,7 +102,7 @@ module VagrantPlugins
           end
           user_vagrantfile = File.expand_path('../_include/Vagrantfile', __FILE__)
           load user_vagrantfile if File.exists?(user_vagrantfile)
-          EOF
+          ZONEBOX
         end
 
         def assemble_box(boxname, extra)
