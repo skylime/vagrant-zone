@@ -4,7 +4,7 @@ module VagrantPlugins
   module ProviderZone
     module Command
       # This is used to manage ZFS snapshtos for the zone
-      class ZFSSnapshot < Vagrant.plugin("2", :command)
+      class ZFSSnapshot < Vagrant.plugin('2', :command)
         def initialize(argv, env)
           @main_args, @sub_command, @sub_args = split_main_and_subcommand(argv)
 
@@ -45,9 +45,9 @@ module VagrantPlugins
 
         def help
           opts = OptionParser.new do |subopts|
-            subopts.banner = "Usage: vagrant zone zfssnapshot <subcommand> [<args>]"
-            subopts.separator ""
-            subopts.separator "Available subcommands:"
+            subopts.banner = 'Usage: vagrant zone zfssnapshot <subcommand> [<args>]'
+            subopts.separator ''
+            subopts.separator 'Available subcommands:'
             # Add the available subcommands as separators in order to print them
             # out as well.
             keys = []
@@ -55,8 +55,8 @@ module VagrantPlugins
             keys.sort.each do |key|
               subopts.separator "     #{key}"
             end
-            subopts.separator ""
-            subopts.separator "For help on any individual subcommand run `vagrant zone zfssnapshot <subcommand> -h`"
+            subopts.separator ''
+            subopts.separator 'For help on any individual subcommand run `vagrant zone zfssnapshot <subcommand> -h`'
           end
           @env.ui.info(opts.help, :prefix => false)
         end

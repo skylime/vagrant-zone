@@ -54,10 +54,12 @@ module VagrantPlugins
 
         # Set the logging level on all "vagrant" namespaced
         # logs as long as we have a valid level.
-        return unless level
-        logger = Log4r::Logger.new('vagrant_zones')
-        logger.outputters = Log4r::Outputter.stderr
-        logger.level = level
+
+        if level
+          logger = Log4r::Logger.new('vagrant_zones')
+          logger.outputters = Log4r::Outputter.stderr
+          logger.level = level
+        end
       end
 
       # Setup logging and i18n before any autoloading loads other classes
