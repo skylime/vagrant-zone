@@ -34,13 +34,11 @@ module VagrantPlugins
         @hostbridge = 'i440fx'
         @acpi = 'on'
         @firmware_type = 'compatability'
-        @firmware = UNSET_VALUE
         @setup_wait = 60
         @box = UNSET_VALUE
         @clean_shutdown_time = 300
         @dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '1.0.0.1' }]
         @vmtype = 'production'
-        @vm_type = UNSET_VALUE
         @partition_id = '0000'
         @sshport = '22'
         @rdpport = '3389'
@@ -50,19 +48,23 @@ module VagrantPlugins
         @override = false
         @cloud_init_enabled = false
         @vagrant_cloud_creator = UNSET_VALUE
+        @firmware = 'BHYVE_RELEASE_CSM'
         case @firmware_type
         when 'compatability' then @firmware = 'BHYVE_RELEASE_CSM'
         when 'UEFI' then @firmware = 'BHYVE_RELEASE'
         when 'BIOS' then @firmware = 'BHYVE_CSM'
         when 'UEFI_DEBUG' then @firmware = 'BHYVE_DEBUG'
         when 'BIOS_DEBUG' then @firmware = 'BHYVE_RELEASE_CSM'
+        else 
         end
+        @vm_type = '3'
         case @vmtype
         when 'template' then @vm_type = '1'
         when 'development' then @vm_type = '2'
         when 'production' then  @vm_type = '3'
         when 'firewall' then @vm_type = '4'
         when 'other' then @vm_type = '5'
+        else @vm_type = '3'
         end
       end
     end
