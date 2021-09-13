@@ -11,7 +11,7 @@ module VagrantPlugins
         # When we need the command's exit code we should set parameter
         # exit_code to true, otherwise this method will return executed
         # command's stdout
-        def execute(exit_code, *cmd, **opts, &block)
+        def execute(exit_code, *cmd, _opts, &block)
           # Append in the options for subprocess
           cmd << { notify: %i[stdout stderr] }
 

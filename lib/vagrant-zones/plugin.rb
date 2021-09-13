@@ -56,6 +56,7 @@ module VagrantPlugins
         # logs as long as we have a valid level.
 
         return unless level
+
         logger = Log4r::Logger.new('vagrant_zones')
         logger.outputters = Log4r::Outputter.stderr
         logger.level = level
