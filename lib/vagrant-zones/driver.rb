@@ -165,9 +165,10 @@ module VagrantPlugins
           if _type.to_s == "public_network"
             if opts[:dhcp] == true
               if opts[:managed]
-                if mac == 'auto'
+                vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
+                if mac == 'auto'                  
                   PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-                    zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n") }
+                    zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n") }
                     Timeout.timeout(30) do
                       loop do
                         zlogin_read.expect(/\r\n/) { |line|  responses.push line}
@@ -189,7 +190,7 @@ module VagrantPlugins
                   end
                 else
                   PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-                    zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n") }
+                    zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev  #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n") }
                     Timeout.timeout(30) do
                       loop do
                         zlogin_read.expect(/\r\n/) { |line|  responses.push line}
@@ -437,12 +438,12 @@ end                  }
       nameservers:
         addresses: [#{servers[0]["nameserver"]} , #{servers[1]["nameserver"]}]  }
                             if staticrun == 0
-                              zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Static Subprocess Error Code: $?\"\n")
+                              zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"SSprocess EC: $?\"\n")
                               staticrun+=1
                             end
-                            if responses[-1].to_s.match(/Static Subprocess Error Code: 0/)
+                            if responses[-1].to_s.match(/SSprocess EC: 0/)
                               ui.info(I18n.t("vagrant_zones.netplan_applied_static") + "/etc/netplan/#{vnic_name}.yaml")                              
-                            elsif responses[-1].to_s.match(/Static Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
+                            elsif responses[-1].to_s.match(/SSprocess EC: \b(?![0]\b)\d{1,4}\b/)
                               raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                             end
                           end
@@ -523,39 +524,40 @@ end                  }
         config = machine.provider_config
         ui.info(I18n.t("vagrant_zones.delete_disks"))
         ## Check if Boot Dataset exists
-        dataset_boot_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")}/boot |  awk '{ print $1 }' || true")
+        zp = "#{config.zonepath.delete_prefix("/")}"
+        dataset_boot_exists = execute(false, "#{@pfexec} zfs list | grep  #{zp}/boot |  awk '{ print $1 }' || true")
         ## If boot Dataset exists, delete it
-        if dataset_boot_exists == "#{config.zonepath.delete_prefix("/")}/boot"
+        if dataset_boot_exists == "#{zp}/boot"
           ## Destroy Additional Disks
           unless  !config.additional_disks.nil? ||  config.additional_disks != 'none'
             disks = config.additional_disks
             diskrun=0
             disks.each do |disk|
-              adddataset = "#{disk["array"]}#{disk["path"]}"
+              addataset = "#{disk["array"]}#{disk["path"]}"
               diskname = "disk"
-              ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume_destroy") + disk["size"] + ", " + adddataset)
-              dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{adddataset} |  awk '{ print $1 }' || true")
-              if dataset_exists == adddataset
+              ui.info(I18n.t("vagrant_zones.bhyve_zone_dataset_additional_volume_destroy") + disk["size"] + ", " + addataset)
+              dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{addataset} |  awk '{ print $1 }' || true")
+              if dataset_exists == addataset
                 if diskrun > 0
                   diskname = diskname + diskrun.to_s
                 end
                 diskrun+=1 
-                execute(false, "#{@pfexec} zfs destroy -r #{adddataset}")
+                execute(false, "#{@pfexec} zfs destroy -r #{addataset}")
               end
             end
           end
           ## Destroy Boot dataset
-          ui.info(I18n.t("vagrant_zones.destroy_dataset") + "#{config.zonepath.delete_prefix("/")}/boot" )
-          execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}/boot")
+          ui.info(I18n.t("vagrant_zones.destroy_dataset") + "#{zp}/boot" )
+          execute(false, "#{@pfexec} zfs destroy -r #{zp}/boot")
 
         else
           ui.info(I18n.t("vagrant_zones.dataset_nil") )
         end
         ## Check if root dataset exists
-        ui.info(I18n.t("vagrant_zones.destroy_dataset") + "#{config.zonepath.delete_prefix("/")}")
-        dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep  #{config.zonepath.delete_prefix("/")} |  awk '{ print $1 }' | grep -v path  || true")
-        if dataset_root_exists  == "#{config.zonepath.delete_prefix("/")}"
-          execute(false, "#{@pfexec} zfs destroy -r #{config.zonepath.delete_prefix("/")}")
+        ui.info(I18n.t("vagrant_zones.destroy_dataset") + zp)
+        dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep  #{zp} |  awk '{ print $1 }' | grep -v path  || true")
+        if dataset_root_exists  == "#{zp}"
+          execute(false, "#{@pfexec} zfs destroy -r #{zp}")
         end
       end
 
@@ -862,7 +864,8 @@ end            }
           ## Check for  bhhwcompat
           result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
           if result == 1
-            execute(true, "#{@pfexec} curl -o /usr/sbin/bhhwcompat https://downloads.omnios.org/misc/bhyve/bhhwcompat && #{@pfexec} chmod +x /usr/sbin/bhhwcompat")
+            bhhwcompaturl = 'https://downloads.omnios.org/misc/bhyve/bhhwcompat'
+            execute(true, "#{@pfexec} curl -o /usr/sbin/bhhwcompat #{bhhwcompaturl}  && #{@pfexec} chmod +x /usr/sbin/bhhwcompat")
             result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
             raise Errors::MissingCompatCheckTool if result == 0
           end
@@ -992,7 +995,7 @@ end            }
         userkey = config.vagrant_user_private_key_path.to_s
         if userkey.nil?
           File.open("id_rsa", 'w') do |f|
-            f.puts "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrtvp9eWW6A8YVr+kz4TjGYe7gHzIw+niNltGEFHzD8+v1I2YJ6oXevct1YeS0o9HZyN1Q9qgCgzUFtdOKLv6IedplqoPkcmF0aYet2PkEDo3MlTBckFXPITAMzF8dJSIFo9D8HfdOV0IAdx4O7PtixWKn5y2hMNG0zQPyUecp4pzC6kivAIhyfHilFR61RGL+GPXQ2MWZWFYbAGjyiYJnAmCP3NOTd0jMZEnDkbUvxhMmBYSdETk1rRgm+R4LOzFUGaHqHDLKLX+FIPKcF96hrucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ== vagrant insecure public key"
+            f.puts "sol"
           end
           userkey = "./id_rsa"
         end
