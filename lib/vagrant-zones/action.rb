@@ -57,8 +57,8 @@ module VagrantPlugins
       def self.action_restart
         Vagrant::Action::Builder.new.tap do |b|
           b.use Call, IsCreated do |env, b2|
-            b2.use Call, IsState, :stopped do |env, b3|
-              unless env[:result]
+            b2.use Call, IsState, :stopped do |envv, b3|
+              unless envv[:result]
                 b3.use WaitTillUp
                 b3.use Restart
               end
