@@ -174,14 +174,9 @@ module VagrantPlugins
                     Timeout.timeout(30) do
                       loop do
                         zlogin_read.expect(/\r\n/) { |line| responses.push line }
-                        puts responses[-1]
-                        puts "This is a DHCP address"
                         if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
                           ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, "").lstrip
-                          puts responses[-1]
-                          puts ip
                           return nil if ip.length == 0
-
                           return ip.gsub /\t/, ''
                           break
                         elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
@@ -214,7 +209,6 @@ module VagrantPlugins
                 end
 
               end
-              puts "==> #{machine.name} ==> DHCP is not yet Configured for use"
             elsif opts[:dhcp] == false || opts[:dhcp].nil?
               if opts[:managed]
                 ip = opts[:ip].to_s
@@ -369,7 +363,6 @@ end                  }
                           if interface[/#{regex}/, 1] == "en"
                             interface_desc = interface[/#{regex}/, 2].split("")
                             nic = interface[/#{regex}/, 1] + interface_desc[0]
-                            # puts nic
                             if interface_desc[0] == "x"
                               mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
                               mac_interface = mac_interface.split("enx", 0)
@@ -759,7 +752,6 @@ end            }
           disks.each do |disk|
             diskname = "disk"
             ui.info(I18n.t("vagrant_zones.setting_additional_disks_configurations") + disk["size"] + ", " + disk["path"])
-            puts disk["path"]
             if diskrun > 0
               diskname = diskname + diskrun.to_s
             end
@@ -1033,14 +1025,12 @@ end            }
           zfssnapshots = zfs_snapshots.split(/\n/)
           snapshotrun = 0
           header = "Snapshot\tUsed\tAvailable\tRefer\tName"
-          puts header
           zfssnapshots.each do |snapshot|
             attributes = snapshot.gsub(/\s+/m, ' ').strip.split(" ")
             if !attributes[4].nil? && attributes[4] != "-"
               puts "Drive Mounted at: " + attributes[4]
             end
             data = "##{snapshotrun}\t\t#{attributes[1]}\t#{attributes[2]}\t\t#{attributes[3]}\t#{attributes[0]}"
-            puts data
             snapshotrun += 1
           end
         elsif job == "create"
