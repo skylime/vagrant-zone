@@ -1,29 +1,29 @@
 
 begin
-  require "vagrant"
+  require 'vagrant'
 rescue LoadError
-  raise "The Vagrant Zones plugin must be run within Vagrant."
+  raise 'The Vagrant Zones plugin must be run within Vagrant.'
 end
 
 module VagrantPlugins
   module ProviderZone
     # This is a the plugin droping for the Vagrant-zones vagrant plugin
     class Plugin < Vagrant.plugin('2')
-      name "zone"
+      name 'zone'
       description <<-DESC
         This plugin allows vagrant to manage bhyve, lx-branded zones or native zones on
         OmniOSce or any other illumos based distribution
       DESC
 
       config(:zone, :provider) do
-        require_relative "config"
+        require_relative 'config'
         Config
       end
       
       ## Experimental Parallel Execucution
       ## provider(:zone, parallel: true) do
       provider(:zone) do
-        require_relative "provider"
+        require_relative 'provider'
         Provider
       end
 
@@ -70,7 +70,7 @@ module VagrantPlugins
 
       ## This setups the zone commands master
       command('zone') do
-        require_relative "command/zone"
+        require_relative 'command/zone'
         Command::Zone
       end
     end
