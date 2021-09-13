@@ -87,6 +87,7 @@ module VagrantPlugins
         @override = false
         @cloud_init_enabled = false
         @vagrant_cloud_creator = UNSET_VALUE
+        @firmware =
         case @firmware_type
         when 'compatability'  
           @firmware = 'BHYVE_RELEASE_CSM'
@@ -100,7 +101,8 @@ module VagrantPlugins
           @firmware = 'BHYVE_RELEASE_CSM' 
         else  
           @firmware = 'BHYVE_RELEASE_CSM'
-        end  
+        end 
+        @vm_type =
         case @vmtype
         when 'template'
           @vm_type = '1'
@@ -113,7 +115,7 @@ module VagrantPlugins
         when 'other'
           @vm_type = '5'
         else
-            @vm_type = '3'
+          @vm_type = '3'
         end
       end
     end
