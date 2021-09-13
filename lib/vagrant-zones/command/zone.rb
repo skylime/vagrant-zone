@@ -17,15 +17,15 @@ module VagrantPlugins
           @subcommands = Vagrant::Registry.new
 
           @subcommands.register(:zfssnapshot) do
-            require File.expand_path('../zfssnapshot', __FILE__)
+            require File.expand_path('zfssnapshot', __dir__)
             ZFSSnapshot
           end
           @subcommands.register(:control) do
-            require File.expand_path('../guest_power_controls', __FILE__)
+            require File.expand_path('guest_power_controls', __dir__)
             GuestPowerControls
           end
           @subcommands.register(:console) do
-            require File.expand_path('../console', __FILE__)
+            require File.expand_path('console', __dir__)
             Console
           end
           super(argv, env)
@@ -55,7 +55,7 @@ module VagrantPlugins
             # Add the available subcommands as separators in order to print them
             # out as well.
             keys = []
-            @subcommands.each { |key, value| keys << key.to_s }
+            @subcommands.each { |key, _value| keys << key.to_s }
 
             keys.sort.each do |key|
               subopts.separator "     #{key}"

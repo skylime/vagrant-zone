@@ -25,6 +25,7 @@ module VagrantPlugins
         # We just return nil if were not able to identify the VM's IP and
         # let Vagrant core deal with it like docker provider does
         return nil if state.id != :running
+        
         ssh_info = {
           host: driver.get_ip_address(@machine).to_s,
           port: driver.sshport(@machine).to_s,
