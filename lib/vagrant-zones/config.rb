@@ -104,18 +104,12 @@ module VagrantPlugins
           end 
         @vm_type =
           case @vmtype
-          when 'template'
-            @vm_type = '1'
-          when 'development'
-            @vm_type = '2'
-          when 'production'
-            @vm_type = '3'
-          when 'firewall'
-            @vm_type = '4'
-          when 'other'
-            @vm_type = '5'
-          else
-            @vm_type = '3'
+          when 'template' then @vm_type = '1'
+          when 'development' then @vm_type = '2'
+          when 'production' then  @vm_type = '3'
+          when 'firewall' then @vm_type = '4'
+          when 'other' then @vm_type = '5'
+          else @vm_type = '3'
           end
       end
     end
