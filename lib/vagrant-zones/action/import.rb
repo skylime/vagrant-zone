@@ -59,7 +59,7 @@ module VagrantPlugins
                 ratelimit = 0
                 rate = 500
                 large_file = "#{datadir}/#{image}"
-                File.open("large_file", 'wb')  do |io| # 'b' opens the file in binary mode
+                File.open(large_file, 'wb') do |io|
                   response.read_body do |chunk|
                     io.write chunk
                     amount_downloaded += chunk.size
@@ -85,6 +85,9 @@ module VagrantPlugins
 
           else
             # Support zss format only for now, use other images and convert later
+            unless image_url.nil?
+              puts image_url
+            end
             box_format = env[:machine].box.metadata['format'] unless env[:machine].box.metadata['format'].nil?
             raise Errors::NoBoxFormatSet if box_format.nil?
 

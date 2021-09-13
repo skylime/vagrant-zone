@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require '
 module VagrantPlugins
   module ProviderZone
       module Command
