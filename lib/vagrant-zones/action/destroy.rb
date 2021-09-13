@@ -8,7 +8,7 @@ module VagrantPlugins
     module Action
       # This will destroy the zone
       class Destroy
-        def initialize(app, env)
+        def initialize(app)
           @logger = Log4r::Logger.new('vagrant_zones::action::import')
           @app = app
         end
