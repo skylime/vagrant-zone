@@ -123,7 +123,7 @@ module VagrantPlugins
       # freeing the resources of the underlying virtual machine.
       def self.action_destroy
         Vagrant::Action::Builder.new.tap do |b|
-          b.use Call, IsCreated do | b2|
+          b.use Call, IsCreated do |env, b2|
             b2.use Destroy
           end
         end
