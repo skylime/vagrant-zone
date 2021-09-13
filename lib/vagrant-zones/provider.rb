@@ -35,6 +35,7 @@ module VagrantPlugins
           PasswordAuthentication: 'passwordauth'
         }
         return nil if ssh_info[:ip].nil?
+        puts ssh_info
       end
 
       # This should return an action callable for the given name.

@@ -240,6 +240,7 @@ module VagrantPlugins
           if _type.to_s == "public_network"
             link = opts[:bridge]
             nic_number = opts[:nic_number].to_s
+            vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
             netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count("1")
             ip          = opts[:ip].to_s
             defrouter   = opts[:gateway].to_s
@@ -286,7 +287,7 @@ module VagrantPlugins
             else
               nic_type = "e"
             end
-            vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
+            
             if state == "create"
               if !opts[:vlan].nil?
                 vlan = opts[:vlan]
