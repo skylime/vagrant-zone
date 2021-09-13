@@ -191,7 +191,8 @@ module VagrantPlugins
                   end
                 else
                   PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-                    zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev  #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n") }
+                    command = "ip -4 addr show dev  #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
+                    zlogin_read.expect(/\n/) { |msg| zlogin_write.printf(command) }
                     Timeout.timeout(30) do
                       loop do
                         zlogin_read.expect(/\r\n/) { |line|  responses.push line}
@@ -415,7 +416,8 @@ end                  }
       nameservers:
         addresses: [#{servers[0]["nameserver"]} , #{servers[1]["nameserver"]}]  }
                             if dhcprun == 0
-                              zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n")
+                              command = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n"
+                              zlogin_write.printf(command)
                               dhcprun+=1
                             end
                             if responses[-1].to_s.match(/DHCP Subprocess Error Code: 0/)
