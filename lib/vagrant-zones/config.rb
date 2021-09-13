@@ -50,28 +50,20 @@ module VagrantPlugins
         @vagrant_cloud_creator = UNSET_VALUE
         @firmware_type = 'compatability'
         @firmware = 'BHYVE_RELEASE_CSM'
-        if @firmware_type.eql? 'compatability'
-          @firmware = 'BHYVE_RELEASE_CSM'
-        elsif @firmware_type.eql? 'UEFI'
-          @firmware = 'BHYVE_RELEASE'
-        elsif @firmware_type.eql? 'BIOS'
-          @firmware = 'BHYVE_CSM'
-        elsif @firmware_type.eql? 'BHYVE_DEBUG'
-          @firmware = 'UEFI_DEBUG'
-        elsif @firmware_type.eql? 'BHYVE_RELEASE_CSM'
-          @firmware = 'BIOS_DEBUG'
+        case
+        when @firmware_type.eql? 'compatability' then @firmware = 'BHYVE_RELEASE_CSM'
+        when @firmware_type.eql? 'UEFI' then @firmware = 'BHYVE_RELEASE'
+        when @firmware_type.eql? 'BIOS' then @firmware = 'BHYVE_CSM'
+        when @firmware_type.eql? 'BHYVE_DEBUG' then @firmware = 'UEFI_DEBUG'
+        when @firmware_type.eql? 'BHYVE_RELEASE_CSM' then  @firmware = 'BIOS_DEBUG'
         end
         @vm_type = '3'
-        if @vmtype.eql? 'template'
-          @vm_type = '1'
-        elsif @vmtype.eql? 'development'
-          @vm_type = '2'
-        elsif @vmtypee.eql? 'production'
-          @vm_type = '3'
-        elsif @vmtype.eql? 'firewall'
-          @vm_type = '4'
-        elsif @vmtype.eql? 'other'
-          @vm_type = '5'
+        case
+        when @vmtype.eql? 'template' then @vm_type = '1'
+        when @vmtype.eql? 'development' then @vm_type = '2'
+        when @vmtypee.eql? 'production' then @vm_type = '3'
+        when @vmtype.eql? 'firewall' then @vm_type = '4'
+        when @vmtype.eql? 'other' then @vm_type = '5'
         end
       end
     end

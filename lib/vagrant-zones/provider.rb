@@ -42,7 +42,7 @@ module VagrantPlugins
           private_key_path: userkey,
           PasswordAuthentication: 'passwordauth'
         }
-        puts ssh_info unless !ssh_info.nil?
+        puts ssh_info if !ssh_info.nil?
       end
 
       # This should return an action callable for the given name.
