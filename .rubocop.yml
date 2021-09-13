@@ -58,7 +58,7 @@ Metrics/AbcSize:
   VersionAdded: '0.27'
   # The ABC size is a calculated magnitude, so this number can be an Integer or
   # a Float.
-  Max: 50
+  Max: 100
 
 Metrics/PerceivedComplexity:
   Description: >-
