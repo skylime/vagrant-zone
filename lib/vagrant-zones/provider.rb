@@ -6,7 +6,7 @@ module VagrantPlugins
     # This is a module to assist in managing, creating bhyve, kvm, and lx zones
     module ProviderZone
         autoload :Driver, 'vagrant-zones/driver'
-		# This is to document the Zone
+        # This is to document the Zone
         class Provider < Vagrant.plugin('2', :provider)
           def initialize(machine)
               @logger = Log4r::Logger.new("vagrant::provider::zone")
@@ -26,11 +26,11 @@ module VagrantPlugins
               user = driver.user(@machine)
               userkey = driver.userprivatekeypath(@machine).to_s
               vagrantuserpassword = driver.vagrantuserpass(@machine).to_s
-              passwordauth = "yes" 
+              passwordauth = "yes"
               return nil if !ip
               portnumber = "22"
               unless portnumber.to_s.nil? || portnumber.to_i.zero?
-                  portnumber = driver.sshport(@machine).to_s 
+                  portnumber = driver.sshport(@machine).to_s
               end
               ssh_info = {
                   host: ip,
@@ -39,20 +39,20 @@ module VagrantPlugins
                   username: user,
                   private_key_path: userkey,
                   PasswordAuthentication: 'passwordauth'
-              }          
+              }
           end
 
           # This should return an action callable for the given name.
-          #
           # @param [Symbol] name Name of the action.
           # @return [Object] A callable action sequence object, whether it
           #        is a proc, object, etc.
           def action(name)
-            # Attrmpt to get the action method from the Action class if it 
+            # Attempt to get the action method from the Action class if it
             # exists, otherwise return nil to show that we don't support the
             # given action
             action_method = "action_#{name}"
             return Action.send(action_method) if Action.respond_to?(action_method)
+
             nil
           end
 
@@ -62,8 +62,7 @@ module VagrantPlugins
           # become `nil`). No parameters are given, since the underlying machine
           # is simply the machine instance given to this object. And no
           # return value is necessary.
-          def machine_id_changed
-          end
+          def machine_id_changed :hello end
 
           def state
             state_id = nil
@@ -79,7 +78,7 @@ module VagrantPlugins
             if state_id == :not_created
               state_id = Vagrant::MachineState::NOT_CREATED_ID
             end
-             # Return the MachineState object
+            # Return the MachineState object
             Vagrant::MachineState.new(state_id, short, short)
           end
         end
