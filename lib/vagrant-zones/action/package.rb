@@ -81,7 +81,7 @@ module VagrantPlugins
           `pfexec zfs send #{zonepath}/boot@vagrant_boxing > #{destination}`
         end
 
-        def metadata_content(brand, kernel, vagrant_cloud_creator, url, boxname)
+        def metadata_content(brand, _kernel, vagrant_cloud_creator, _url, boxname)
           <<-ZONEBOX
           {
             "provider": "zone",
@@ -92,7 +92,7 @@ module VagrantPlugins
           ZONEBOX
         end
 
-        def vagrantfile_content(brand, kernel, zonepath)
+        def vagrantfile_content(brand, _kernel, zonepath)
           <<-ZONEBOX
           Vagrant.configure('2') do |config|
             config.vm.provider :zone do |zone|
