@@ -33,12 +33,14 @@ module VagrantPlugins
         @complex_cpu_conf = UNSET_VALUE
         @hostbridge = 'i440fx'
         @acpi = 'on'
-        
+        @firmware_type = 'compatability'
+        @firmware = UNSET_VALUE
         @setup_wait = 60
         @box = UNSET_VALUE
         @clean_shutdown_time = 300
         @dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '1.0.0.1' }]
         @vmtype = 'production'
+        @vm_type = UNSET_VALUE
         @partition_id = '0000'
         @sshport = '22'
         @rdpport = '3389'
@@ -48,31 +50,28 @@ module VagrantPlugins
         @override = false
         @cloud_init_enabled = false
         @vagrant_cloud_creator = UNSET_VALUE
-        @firmware_type = 'compatability'
-        @firmware = "BHYVE_RELEASE_CSM"
-
-        if @firmware_type.eql? "compatability"
-          @firmware = "BHYVE_RELEASE_CSM"
-        elsif @firmware_type.eql? "UEFI"
-          @firmware = "BHYVE_RELEASE"
-        elsif @firmware_type.eql? "BIOS"
-          @firmware = "BHYVE_CSM"
-        elsif @firmware_type.eql? "BHYVE_DEBUG"
-          @firmware = "UEFI_DEBUG"
-        elsif @firmware_type.eql? "BHYVE_RELEASE_CSM"
-          @firmware = "BIOS_DEBUG"
-        end
-        @vm_type = '3'
-        if @vmtype.eql? "template"
-          @vm_type = '1'
-        elsif @vmtype.eql? "development"
-          @vm_type = '2'
-        elsif @vmtypee.eql? "production"
-          @vm_type = '3'
-        elsif @vmtype.eql? "firewall"
-          @vm_type = '4'
-        elsif @vmtype.eql? "other"
-          @vm_type = '5'
+        @firmware =
+          case @firmware_type
+          when 'compatability'
+            @firmware = 'BHYVE_RELEASE_CSM'
+          when 'UEFI'
+            @firmware = 'BHYVE_RELEASE'
+          when 'BIOS'
+            @firmware = 'BHYVE_CSM'
+          when 'UEFI_DEBUG'
+            @firmware = 'BHYVE_DEBUG'
+          when 'BIOS_DEBUG'
+            @firmware = 'BHYVE_RELEASE_CSM'
+          else
+            @firmware = 'BHYVE_RELEASE_CSM'
+          end
+        case @vmtype
+        when 'template' then @vm_type = '1'
+        when 'development' then @vm_type = '2'
+        when 'production' then  @vm_type = '3'
+        when 'firewall' then @vm_type = '4'
+        when 'other' then @vm_type = '5'
+        else @vm_type = '3'
         end
       end
     end
