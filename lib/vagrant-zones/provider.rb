@@ -11,7 +11,7 @@ module VagrantPlugins
     class Provider < Vagrant.plugin('2', :provider)
       def initialize(machine)
         @logger = Log4r::Logger.new('vagrant::provider::zone')
-        @machine = machine
+        super(machine)
       end
 
       def driver

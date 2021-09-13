@@ -499,13 +499,12 @@ end                  }
           commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss').to_s} | #{@pfexec} zfs recv -u -v -F #{dataset} "
           Util::Subprocess.new commandtransfer do |stdout, stderr, thread|
             ui.rewriting do |uiprogress|
-              uiprogress.clear_line()
-              uiprogress.info(I18n.t("vagrant_zones.importing_box_image_to_disk") + " #{datadir.to_s}/box.zss ==> #{dataset} ==> ",
-                              new_line: false)
+              uiprogress.clear_line
+              uiprogress.info(I18n.t("vagrant_zones.importing_box_image_to_disk") + " #{datadir.to_s}/box.zss ==> #{dataset} ==> ", new_line: false)
               uiprogress.report_progress(stderr, 100, false)
             end
           end
-          ui.clear_line()
+          ui.clear_line
         elsif config.brand == 'illumos'
           raise Errors::NotYetImplemented
         elsif config.brand == 'kvm'
@@ -916,7 +915,6 @@ end            }
               Timeout.timeout(config.setup_wait) do
                 loop do
                   zlogin_read.expect(/\n/) { |line| responses.push line }
-                  puts responses[-1]
                   if responses[-1].to_s.match(/:~#/)
                     break
                   elsif responses[-1].to_s.match(/login: /)
