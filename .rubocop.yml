@@ -3,7 +3,6 @@ AllCops:
   Exclude:
     - vendor/**/*
     - bin/**/*
-    - lib/vagrant-zones/driver*
     - example-box/**/*
     - example-provisioning-scripts/**/*
 
