@@ -51,10 +51,10 @@ module VagrantPlugins
         @firmware = 'BHYVE_RELEASE_CSM'
         case @firmware_type
         when 'compatability' then @firmware = 'BHYVE_RELEASE_CSM'
-        when 'UEFI' then @firmware = 'BHYVE_RELEASE'
-        when 'BIOS' then @firmware = 'BHYVE_CSM'
-        when 'UEFI_DEBUG' then @firmware = 'BHYVE_DEBUG'
-        when 'BIOS_DEBUG' then @firmware = 'BHYVE_RELEASE_CSM'
+        when "UEFI" then @firmware = 'BHYVE_RELEASE'
+        when "BIOS" then @firmware = 'BHYVE_CSM'
+        when "UEFI_DEBUG" then @firmware = 'BHYVE_DEBUG'
+        when "BIOS_DEBUG" then @firmware = 'BHYVE_RELEASE_CSM'
         else 
         end
         @vm_type = '3'
