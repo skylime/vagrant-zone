@@ -11,7 +11,7 @@ module VagrantPlugins
       class BoxUpdate
         include Vagrant::Util::Retryable
 
-        def initialize(app)
+        def initialize(app, _env)
           @logger = Log4r::Logger.new('vagrant_zones::action::import')
           @app = app
         end
