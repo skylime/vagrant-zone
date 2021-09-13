@@ -25,11 +25,12 @@ module VagrantPlugins
 				end
 
 				def call(env)
-					@machine = env[:machine]
-					image    = @machine.config.vm.box
-					curdir   = Dir.pwd
-					datadir  = @machine.data_dir
-					@driver  = @machine.provider.driver
+					@machine	= env[:machine]
+					image    	= @machine.config.vm.box
+					image_url   = @machine.config.vm.box_url
+					curdir   	= Dir.pwd
+					datadir  	= @machine.data_dir
+					@driver  	= @machine.provider.driver
 					ui = env[:ui]
 					ui.info(I18n.t("vagrant_zones.meeting"))
 					ui.info(I18n.t("vagrant_zones.detecting_box"))
@@ -95,9 +96,9 @@ module VagrantPlugins
 							raise Errors::WrongBoxFormatSet
 						end
 						print env
-						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected") + image)
+						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected") + image +  image_url)
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s	
-						box_image_url = env[:machine].box.directory.join('box.zss').to_s				
+						image_url				
 						ui.clear_line()  
 					end
 					@app.call(env)
