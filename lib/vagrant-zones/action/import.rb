@@ -26,12 +26,12 @@ module VagrantPlugins
         end
 
         def call(env)
-          @machine  = env[:machine]
-          image      = @machine.config.vm.box
-          image_url   = @machine.config.vm.box_url
-          curdir     = Dir.pwd
-          datadir    = @machine.data_dir
-          @driver    = @machine.provider.driver
+          @machine = env[:machine]
+          image = @machine.config.vm.box
+          image_url = @machine.config.vm.box_url
+          curdir = Dir.pwd
+          datadir = @machine.data_dir
+          @driver = @machine.provider.driver
           ui = env[:ui]
           ui.info(I18n.t('vagrant_zones.meeting'))
           ui.info(I18n.t('vagrant_zones.detecting_box'))
@@ -39,10 +39,10 @@ module VagrantPlugins
           # If image ends on '.zss' it's a local ZFS snapshot which
           # should be used
           if image[-4, 4] == '.zss'
-            if File.exist?(curdir + '/' + image)
-              FileUtils.cp(curdir + '/' + image, datadir.to_s + '/' + image)
+            if File.exist?("#{curdir}/#{image}")
+              FileUtils.cp("#{curdir}/#{image}", "#{datadir}/#{image}")
               ui.info(I18n.t('vagrant_zones.zfs_snapshot_stream_detected'))
-            elsif not File.exist?(datadir.to_s + '/' + image)
+            elsif not File.exist?("#{datadir}/#{image}")
               raise Vagrant::Errors::BoxNotFound
             end
           ## If image looks like an UUID, download the ZFS snapshot from
