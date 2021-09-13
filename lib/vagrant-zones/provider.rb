@@ -5,14 +5,16 @@ module VagrantPlugins
   # This is a module to assist in managing, creating bhyve, kvm, and lx zones
   module ProviderZone
     autoload :Driver, 'vagrant-zones/driver'
+    # This is a module to assist in managing, creating bhyve, kvm, and lx zones
     class Provider < Vagrant.plugin('2', :provider)
       def initialize(machine)
-        @logger = Log4r::Logger.new("vagrant::provider::zone")
+        @logger = Log4r::Logger.new('vagrant::provider::zone')
         @machine = machine
       end
 
       def driver
-      return @driver if @driver
+        return @driver if @driver
+
         @driver = Driver.new(@machine)
       end
 
@@ -20,16 +22,16 @@ module VagrantPlugins
         # We just return nil if were not able to identify the VM's IP and
         # let Vagrant core deal with it like docker provider does
         return nil if state.id != :running
+
         ip = driver.get_ip_address(@machine)
         user = driver.user(@machine)
         userkey = driver.userprivatekeypath(@machine).to_s
         vagrantuserpassword = driver.vagrantuserpass(@machine).to_s
-        passwordauth = "yes"
-        return nil if !ip
-        portnumber = "22"
-        unless portnumber.to_s.nil? || portnumber.to_i.zero?
-            portnumber = driver.sshport(@machine).to_s
-        end
+        passwordauth = 'yes'
+        return nil unless ip
+
+        portnumber = '22'
+        portnumber = driver.sshport(@machine).to_s unless portnumber.to_s.nil? || portnumber.to_i.zero?
         ssh_info = {
           host: ip,
           port: portnumber,
@@ -50,6 +52,7 @@ module VagrantPlugins
         # given action
         action_method = "action_#{name}"
         return Action.send(action_method) if Action.respond_to?(action_method)
+
         nil
       end
 
