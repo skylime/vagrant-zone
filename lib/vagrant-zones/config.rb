@@ -49,71 +49,71 @@ module VagrantPlugins
       
       def initialize
         # pkgsrc, lx, bhyve, kvm, illumos
-        @brand                = 'bhyve'
+        @brand = 'bhyve'
         @additional_disks        = nil
-        @autoboot             = true
-        @kernel               = UNSET_VALUE
-        @zonepath             = '/rpool/myvm'
-        @zonepathsize           = '20G'
-        @cdroms              = nil
-        @shared_dir            = nil
-        @os_type            = 'generic'
-        @shared_disk_enabled      = true
-        @consoleport          = nil
-        @console_onboot          = 'false'
-        @console            = 'webvnc'
-        @memory               = '4G'
-        @diskif               = 'virtio-blk'
-        @netif               = 'virtio-net-viona'
-        @cpus               = 2
-        @cpu_configuration        = 'simple'
-        @complex_cpu_conf         = UNSET_VALUE
-        @hostbridge             = 'i440fx'
-        @acpi               = 'on'
-        @firmware_type           = "compatability"
-        @firmware             = UNSET_VALUE
-        @setup_wait            = 60
-        @box              = UNSET_VALUE
-        @clean_shutdown_time        = 300
-        @dns                = [{"nameserver" => "1.1.1.1"},{"nameserver" => "1.0.0.1"}]
-        @vmtype               = 'production'
-        @vm_type               = UNSET_VALUE
-        @partition_id            = '0000'
-        @sshport              = '22'
-        @rdpport              = '3389'
-        @vagrant_user           = 'vagrant'
-        @vagrant_user_pass        = 'vagrant'
-        @vagrant_user_private_key_path  = './id_rsa'
-        @override            = false
-        @cloud_init_enabled        = false
-        @vagrant_cloud_creator      = UNSET_VALUE
+        @autoboot = true
+        @kernel = UNSET_VALUE
+        @zonepath = '/rpool/myvm'
+        @zonepathsize = '20G'
+        @cdroms = nil
+        @shared_dir = nil
+        @os_type = 'generic'
+        @shared_disk_enabled = true
+        @consoleport = nil
+        @console_onboot = 'false'
+        @console = 'webvnc'
+        @memory = '4G'
+        @diskif = 'virtio-blk'
+        @netif = 'virtio-net-viona'
+        @cpus = 2
+        @cpu_configuration = 'simple'
+        @complex_cpu_conf = UNSET_VALUE
+        @hostbridge = 'i440fx'
+        @acpi = 'on'
+        @firmware_type = 'compatability'
+        @firmware = UNSET_VALUE
+        @setup_wait = 60
+        @box = UNSET_VALUE
+        @clean_shutdown_time = 300
+        @dns = [ {'nameserver' => '1.1.1.1'} , {'nameserver' => '1.0.0.1'} ]
+        @vmtype = 'production'
+        @vm_type = UNSET_VALUE
+        @partition_id = '0000'
+        @sshport = '22'
+        @rdpport = '3389'
+        @vagrant_user = 'vagrant'
+        @vagrant_user_pass = 'vagrant'
+        @vagrant_user_private_key_path = './id_rsa'
+        @override = false
+        @cloud_init_enabled = false
+        @vagrant_cloud_creator = UNSET_VALUE
         case @firmware_type
-          when "compatability"  
-            @firmware         = 'BHYVE_RELEASE_CSM'
-          when "UEFI"  
-            @firmware         = 'BHYVE_RELEASE'
-          when "BIOS"  
-            @firmware         = 'BHYVE_CSM'
-          when "UEFI_DEBUG"  
-            @firmware         = 'BHYVE_DEBUG'
-          when "BIOS_DEBUG"  
-            @firmware         = 'BHYVE_RELEASE_CSM' 
+          when 'compatability'  
+            @firmware = 'BHYVE_RELEASE_CSM'
+          when 'UEFI'  
+            @firmware = 'BHYVE_RELEASE'
+          when 'BIOS'  
+            @firmware = 'BHYVE_CSM'
+          when 'UEFI_DEBUG'  
+            @firmware = 'BHYVE_DEBUG'
+          when 'BIOS_DEBUG'  
+            @firmware = 'BHYVE_RELEASE_CSM' 
         else  
-          @firmware           = "BHYVE_RELEASE_CSM"
+          @firmware = 'BHYVE_RELEASE_CSM'
         end  
         case @vmtype
           when 'template'
-            @vm_type         = "1"
+            @vm_type = '1'
           when 'development'
-            @vm_type         = "2"
+            @vm_type = '2'
           when 'production'
-            @vm_type         = "3"
+            @vm_type = '3'
           when 'firewall'
-            @vm_type         = "4"
+            @vm_type = '4'
           when 'other'
-            @vm_type         = "5"
+            @vm_type = '5'
         else
-          @vm_type           = "3"
+          @vm_type = '3'
         end
       end
     end
