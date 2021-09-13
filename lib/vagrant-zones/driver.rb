@@ -115,6 +115,7 @@ module VagrantPlugins
         else
           netport = ''
         end
+
         execute(false, "pfexec zadm  webvnc #{netport} #{name}") if command == 'webvnc'
         execute(false, "pfexec zadm  vnc #{netport} #{name}") if command == 'vnc'
         execute(false, "pfexec zadm  console #{name}")if command == 'zlogin'
@@ -131,7 +132,7 @@ module VagrantPlugins
       def get_ip_address(machine)
         config = machine.provider_config
         name = @machine.name
-        machine.config.vm.networks.each do |type, opts|
+        machine.config.vm.networks.each do |_type, opts|
           responses = []
           nic_number = opts[:nic_number].to_s
           if !opts[:nictype].nil?
@@ -157,7 +158,7 @@ module VagrantPlugins
           else
             nic_type = 'e'
           end
-          if type.to_s == 'public_network'
+          if _type.to_s == 'public_network'
             if opts[:dhcp] == true
               if opts[:managed]
                 vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
@@ -224,8 +225,8 @@ module VagrantPlugins
           uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
           zlogin(machine, 'rm -rf  /etc/netplan/*.yaml')
         end
-        machine.config.vm.networks.each do |type, opts|
-          if type.to_s == 'public_network'
+        machine.config.vm.networks.each do |_type, opts|
+          if _type.to_s == 'public_network'
             link = opts[:bridge]
             nic_number = opts[:nic_number].to_s
             netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
@@ -567,9 +568,9 @@ end                  }
         attr = ''
         if config.brand == 'lx'
           uiinfo.info(I18n.t("vagrant_zones.lx_zone_config_gen"))
-          machine.config.vm.networks.each do |type, opts|
+          machine.config.vm.networks.each do |_type, opts|
             index = 1
-            if type.to_s == "public_network"
+            if _type.to_s == "public_network"
               @ip        = opts[:ip].to_s
               @network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
               @defrouter = opts[:gateway]
