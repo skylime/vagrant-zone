@@ -19,15 +19,15 @@ module VagrantPlugins
               env[:halt_on_error] = true
               b2.use action_start
             elsif !env[:result]
-              #b2.use BoxUpdate
+              # b2.use BoxUpdate
               b2.use Import
               b2.use Create
               b2.use Network
-              b2.use Start              
+              b2.use Start
               b2.use WaitTillBoot
               b2.use Setup
               b2.use WaitTillUp
-              ## Counter intuitive, but Provision must go before SyncFolders for some reason  . .
+              # Counter intuitive, but Provision must go before SyncFolders for some reason  . .
               b2.use Provision
               b2.use SyncedFolders
               b2.use SyncedFolderCleanup
@@ -46,9 +46,7 @@ module VagrantPlugins
               next
             end
             b1.use Call, IsState, :uncleaned do |env1, b2|
-              if env1[:result]
-                b2.use Cleanup
-              end
+              b2.use Cleanup if env1[:result]
             end
             b1.use Start
             b1.use WaitTillUp
@@ -69,7 +67,6 @@ module VagrantPlugins
         end
       end
 
-      
       def self.action_shutdown
         Vagrant::Action::Builder.new.tap do |b|
           b.use Call, IsCreated do |env, b2|
@@ -77,13 +74,11 @@ module VagrantPlugins
               unless env[:result]
                 b3.use WaitTillUp
                 b3.use Shutdown
-                
               end
             end
           end
         end
       end
-
 
       # This is the action that is primarily responsible for halting the
       # virtual machine.
@@ -158,7 +153,6 @@ module VagrantPlugins
           end
         end
       end
-
 
       def self.action_create_zfs_snapshots
         Vagrant::Action::Builder.new.tap do |b|
