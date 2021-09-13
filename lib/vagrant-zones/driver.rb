@@ -447,12 +447,12 @@ end                  }
       nameservers:
         addresses: [#{servers[0]["nameserver"]} , #{servers[1]["nameserver"]}]  }
                             if staticrun == 0
-                              zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"SSprocess EC: $?\"\n")
+                              zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Static Error Code: $?\"\n")
                               staticrun += 1
                             end
-                            if responses[-1].to_s.match(/SSprocess EC: 0/)
+                            if responses[-1].to_s.match(/Static Error Code: 0/)
                               ui.info(I18n.t("vagrant_zones.netplan_applied_static") + "/etc/netplan/#{vnic_name}.yaml")
-                            elsif responses[-1].to_s.match(/SSprocess EC: \b(?![0]\b)\d{1,4}\b/)
+                            elsif responses[-1].to_s.match(/Static Error Code: \b(?![0]\b)\d{1,4}\b/)
                               raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                             end
                           end
