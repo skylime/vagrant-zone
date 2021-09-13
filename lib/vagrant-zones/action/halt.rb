@@ -1,5 +1,6 @@
-# coding: utf-8
-require "log4r"
+# frozen_string_literal: true
+
+require 'log4r'
 
 module VagrantPlugins
 	module ProviderZone
@@ -7,7 +8,7 @@ module VagrantPlugins
 			# This will halt the zone
 			class Halt
 				def initialize(app, env)
-					@logger = Log4r::Logger.new("vagrant_zones::action::import")
+					@logger = Log4r::Logger.new('vagrant_zones::action::import')
 					@app = app
 				end
 

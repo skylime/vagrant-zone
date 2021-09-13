@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "vagrant"
+require 'vagrant'
 
 module VagrantPlugins
   module ProviderZone

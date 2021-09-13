@@ -1,8 +1,9 @@
-# coding: utf-8
+# frozen_string_literal: true
+
 require 'vagrant-zones/action'
 
 module VagrantPlugins
-	module ProviderZone
+  module ProviderZone
       module Command
       # This is used manage the zone where vagrant cannot
       class Zone < Vagrant.plugin("2", :command)

@@ -1,4 +1,6 @@
-require "resolv"
+# frozen_string_literal: true
+
+require 'resolv'
 module VagrantPlugins
   module ProviderZone
       module Command

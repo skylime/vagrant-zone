@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "vagrant/util/busy"
-require "vagrant/util/subprocess"
+require 'vagrant/util/busy'
+require 'vagrant/util/subprocess'
 
 module VagrantPlugins
   module ProviderZone
