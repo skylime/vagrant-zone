@@ -33,7 +33,6 @@ module VagrantPlugins
         @complex_cpu_conf = UNSET_VALUE
         @hostbridge = 'i440fx'
         @acpi = 'on'
-        
         @setup_wait = 60
         @box = UNSET_VALUE
         @clean_shutdown_time = 300
