@@ -69,9 +69,9 @@ module VagrantPlugins
 
       def self.action_shutdown
         Vagrant::Action::Builder.new.tap do |b|
-          b.use Call, IsCreated do |b2|
-            b2.use Call, IsState, :stopped do |env, b3|
-              unless env[:result]
+          b.use Call, IsCreated do |env, b2|
+            b2.use Call, IsState, :stopped do |env2, b3|
+              unless env2[:result]
                 b3.use WaitTillUp
                 b3.use Shutdown
               end
