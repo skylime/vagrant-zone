@@ -168,7 +168,8 @@ module VagrantPlugins
                 vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
                 if mac == 'auto'                  
                   PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read,zlogin_write,pid|
-                    zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n") }
+                    command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
+                    zlogin_read.expect(/\n/) { |msg| zlogin_write.printf(command) }
                     Timeout.timeout(30) do
                       loop do
                         zlogin_read.expect(/\r\n/) { |line|  responses.push line}
