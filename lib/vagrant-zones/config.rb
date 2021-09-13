@@ -12,6 +12,7 @@ module VagrantPlugins
       # rubocop:enable Layout/LineLength
 
       def initialize
+        super
         # pkgsrc, lx, bhyve, kvm, illumos
         @brand = 'bhyve'
         @additional_disks = nil
@@ -50,10 +51,6 @@ module VagrantPlugins
         @vagrant_cloud_creator = UNSET_VALUE
         @firmware_type = 'compatability'
         @firmware = 'BHYVE_RELEASE_CSM'
-
-
-
-
         ft = @firmware_type
         case ft
         when :compatability
