@@ -30,7 +30,7 @@ module VagrantPlugins
           end
           super(argv, env)
         end
- 
+
         def execute
           if @main_args.include?('-h') || @main_args.include?('--help')
             # Print the help for all the vagrant-zones commands.
@@ -39,6 +39,7 @@ module VagrantPlugins
 
           command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
           return help if !command_class || !@sub_command
+
           @logger.debug("Invoking command class: #{command_class} #{@sub_args.inspect}")
 
           # Initialize and execute the command class
