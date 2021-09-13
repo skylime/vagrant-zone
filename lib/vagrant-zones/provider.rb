@@ -4,9 +4,7 @@ require 'log4r'
 module VagrantPlugins
     # This is a module to assist in managing, creating bhyve, kvm, and lx zones
     module ProviderZone
-		# This is to document the Zone
         autoload :Driver, 'vagrant-zones/driver'
-        
         class Provider < Vagrant.plugin('2', :provider)
           def initialize(machine)
               @logger = Log4r::Logger.new("vagrant::provider::zone")
