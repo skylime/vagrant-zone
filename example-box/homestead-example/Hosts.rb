@@ -10,7 +10,7 @@ class Hosts
       # Main loop to configure VM
       settings['hosts'].each_with_index do |host, index|
         autostart = host.has_key?('autostart') && host['autostart']
-        config.vm.define "#{host['parition_id']}-#{host['name']}", autostart: autostart do |server|
+        config.vm.define "#{host['partition_id']}-#{host['name']}", autostart: autostart do |server|
           server.vm.box = host['box']       
           server.vm.boot_timeout = 900
   
@@ -71,7 +71,7 @@ class Hosts
                   vm.vagrant_user                         = host['vagrant_user']
                   vm.vagrant_user_pass                    = host['vagrant_user_pass']
                   vm.hostname                             = host['name']
-                  vm.name                                 = "#{host['parition_id']}-#{host['name']}"
+                  vm.name                                 = "#{host['partition_id']}-#{host['name']}"
                   vm.cdroms                               = host['cdroms']
                   vm.additional_disks                     = host['additional_disks']
           end
