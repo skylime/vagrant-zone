@@ -413,21 +413,21 @@ end									}
 														netplan = %{network:
   version: 2
   ethernets:
-    vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}:
+    #{vnic_name}:
       match:
         macaddress: #{mac}
       dhcp-identifier: mac
       dhcp4: #{opts[:dhcp]}
       dhcp6: #{opts[:dhcp6]}
-      set-name: vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
+      set-name: #{vnic_name}
       nameservers:
         addresses: [#{servers[0]["nameserver"]} , #{servers[1]["nameserver"]}]	}
 														if dhcprun == 0
-															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n")
+															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n")
 															dhcprun+=1
 														end
 														if responses[-1].to_s.match(/DHCP Subprocess Error Code: 0/)
-															ui.info(I18n.t("vagrant_zones.netplan_applied_dhcp") + "/etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml")														
+															ui.info(I18n.t("vagrant_zones.netplan_applied_dhcp") + "/etc/netplan/#{vnic_name}.yaml")														
 														elsif responses[-1].to_s.match(/DHCP Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
 															raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
 														end
@@ -435,23 +435,23 @@ end									}
 														netplan = %{network:
   version: 2
   ethernets:
-    vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}:
+  #{vnic_name}:
       match:
         macaddress: #{mac}
       dhcp-identifier: mac
       dhcp4: #{opts[:dhcp]}
       dhcp6: #{opts[:dhcp6]}
-      set-name: vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}
+      set-name: #{vnic_name}
       addresses: [#{ip}/#{netmask}]
       gateway4: #{defrouter}
       nameservers:
         addresses: [#{servers[0]["nameserver"]} , #{servers[1]["nameserver"]}]	}
 														if staticrun == 0
-															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml; echo \"Static Subprocess Error Code: $?\"\n")
+															zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Static Subprocess Error Code: $?\"\n")
 															staticrun+=1
 														end
 														if responses[-1].to_s.match(/Static Subprocess Error Code: 0/)
-															ui.info(I18n.t("vagrant_zones.netplan_applied_static") + "/etc/netplan/vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}.yaml")															
+															ui.info(I18n.t("vagrant_zones.netplan_applied_static") + "/etc/netplan/#{vnic_name}.yaml")															
 														elsif responses[-1].to_s.match(/Static Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
 															raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
 														end
