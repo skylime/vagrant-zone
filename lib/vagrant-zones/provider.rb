@@ -20,8 +20,6 @@ module VagrantPlugins
 
         @driver = Driver.new(@machine)
       end
-
-
             def ssh_info                
                 # We just return nil if were not able to identify the VM's IP and
                 # let Vagrant core deal with it like docker provider does
@@ -46,7 +44,6 @@ module VagrantPlugins
                 }
                     
             end
-
       # This should return an action callable for the given name.
       # @param [Symbol] name Name of the action.
       # @return [Object] A callable action sequence object, whether it
