@@ -176,7 +176,7 @@ module VagrantPlugins
         end
       end
 
-      action_root = Pathname.new(File.xpand_path('action', __dir__))
+      action_root = Pathname.new(File.expand_path('action', __dir__))
       # autoload :BoxUpdate, action_root.join('box_update')
       autoload :Import, action_root.join('import')
       autoload :Create, action_root.join('create')
