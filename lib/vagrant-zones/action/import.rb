@@ -42,7 +42,7 @@ module VagrantPlugins
             if File.exist?("#{curdir}/#{image}")
               FileUtils.cp("#{curdir}/#{image}", "#{datadir}/#{image}")
               ui.info(I18n.t('vagrant_zones.zfs_snapshot_stream_detected'))
-            elsif ! File.exist?("#{datadir}/#{image}")
+            elsif !File.exist?("#{datadir}/#{image}")
               raise Vagrant::Errors::BoxNotFound
             end
           ## If image looks like an UUID, download the ZFS snapshot from
@@ -58,7 +58,7 @@ module VagrantPlugins
                 amount_downloaded = 0
                 ratelimit = 0
                 rate = 500
-                large_file = "#{datadir.to_s}/#{image}"
+                large_file = "#{datadir}/#{image}"
                 open large_file, 'wb' do |io| # 'b' opens the file in binary mode
                   response.read_body do |chunk|
                     io.write chunk
@@ -67,7 +67,8 @@ module VagrantPlugins
                       ratelimit += 1
                       if ratelimit >= rate
                         uiprogress.clear_line
-                        status = '%.2f%%' % (amount_downloaded.to_f / file_size * 100)
+
+                        status = format(''%.2f%%', (amount_downloaded.to_f / file_size * 100))
                         uiprogress.info(I18n.t('vagrant_zones.importing_joyent_image') + "#{image} ==> ", new_line: false)
                         uiprogress.report_progress(status, 100, false)
                         ratelimit = 0
