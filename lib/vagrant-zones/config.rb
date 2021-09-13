@@ -101,8 +101,7 @@ module VagrantPlugins
             @firmware = 'BHYVE_RELEASE_CSM' 
           else  
             @firmware = 'BHYVE_RELEASE_CSM'
-          end 
-        @vm_type =
+          end
           case @vmtype
           when 'template' then @vm_type = '1'
           when 'development' then @vm_type = '2'
