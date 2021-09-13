@@ -44,19 +44,19 @@ module VagrantPlugins
         end
 
         def help
-          opts = OptionParser.new do |opts|
-            opts.banner = "Usage: vagrant zone zfssnapshot <subcommand> [<args>]"
-            opts.separator ""
-            opts.separator "Available subcommands:"
+          opts = OptionParser.new do |subopts|
+            subopts.banner = "Usage: vagrant zone zfssnapshot <subcommand> [<args>]"
+            subopts.separator ""
+            subopts.separator "Available subcommands:"
             # Add the available subcommands as separators in order to print them
             # out as well.
             keys = []
             @subcommands.each { |key, value| keys << key.to_s }
             keys.sort.each do |key|
-              opts.separator "     #{key}"
+              subopts.separator "     #{key}"
             end
-            opts.separator ""
-            opts.separator "For help on any individual subcommand run `vagrant zone zfssnapshot <subcommand> -h`"
+            subopts.separator ""
+            subopts.separator "For help on any individual subcommand run `vagrant zone zfssnapshot <subcommand> -h`"
           end
           @env.ui.info(opts.help, :prefix => false)
         end
