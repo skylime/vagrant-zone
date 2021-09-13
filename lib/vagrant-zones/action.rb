@@ -14,7 +14,7 @@ module VagrantPlugins
       # This action is called to bring the box up from nothing.
       def self.action_up
         Vagrant::Action::Builder.new.tap do |b|
-          b.use Call, IsCreated do |env, b2|
+          b.use Call, IsCreated do |b2|
             if env[:result]
               env[:halt_on_error] = true
               b2.use action_start
