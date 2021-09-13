@@ -50,6 +50,10 @@ module VagrantPlugins
         @vagrant_cloud_creator = UNSET_VALUE
         @firmware_type = 'compatability'
         @firmware = 'BHYVE_RELEASE_CSM'
+
+
+
+
         ft = @firmware_type
         case ft
         when :compatability
@@ -62,10 +66,9 @@ module VagrantPlugins
           @firmware = 'UEFI_DEBUG'
         when :BHYVE_RELEASE_CSM
           @firmware = 'BIOS_DEBUG'
-        else
-          @firmware = 'BHYVE_RELEASE_CSM'
         end
-        case  @vm_type
+
+        case @vm_type
         when :template
           @vmtype = '1'
         when :development
@@ -75,8 +78,6 @@ module VagrantPlugins
         when :firewall
           @vmtype = '4'
         when :other
-          @vmtype = '5'
-        else
           @vmtype = '5'
         end
       end
