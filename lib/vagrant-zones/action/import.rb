@@ -96,7 +96,7 @@ module VagrantPlugins
 							raise Errors::WrongBoxFormatSet
 						end
 						print env
-						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected") + image +  image_url)
+						ui.info(I18n.t("vagrant_zones.vagrant_cloud_box_detected") + image)
 						box_image_file = env[:machine].box.directory.join('box.zss').to_s	
 						image_url				
 						ui.clear_line()  
