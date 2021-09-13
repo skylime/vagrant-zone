@@ -814,7 +814,7 @@ end            }
         execute(false, "cat #{name}.zoneconfig | #{@pfexec} zonecfg -z #{machine.name}")
       end
 
-      def check_zone_support(machine, ui)
+      def check_zone_support(machine, uiinfo)
         config = machine.provider_config
         box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
         name = @machine.name
@@ -822,7 +822,7 @@ end            }
         ## Detect if Virtualbox is Running
         ## Kernel, KVM, and Bhyve cannot run conncurently with Virtualbox:
         ### https://forums.virtualbox.org/viewtopic.php?f=11&t=64652
-        ui.info(I18n.t("vagrant_zones.vbox_run_check"))
+        uiinfo.info(I18n.t("vagrant_zones.vbox_run_check"))
         result = execute(true, "#{@pfexec} VBoxManage list runningvms")
         if result == 0
           raise Errors::VirtualBoxRunningConflictDetected
@@ -1050,13 +1050,13 @@ end            }
         if vm_state == 'running'
           uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown'))
           begin
-            status = Timeout::timeout(config.clean_shutdown_time) {
+            Timeout::timeout(config.clean_shutdown_time) {
               execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
             }
           rescue Timeout::Error
             uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown_failed') + config.clean_shutdown_time.to_s)
             begin
-              halt_status = Timeout::timeout(60) {
+              Timeout::timeout(60) {
                 execute(false, "#{@pfexec} zoneadm -z #{name} halt")
               }
             rescue Timeout::Error
