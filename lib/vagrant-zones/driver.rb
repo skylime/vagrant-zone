@@ -82,7 +82,6 @@ module VagrantPlugins
 
       ## Control the Machine from inside the machine
       def control(machine, uiinfo, control)
-        config = machine.provider_config
         if control == 'restart'
           command = 'sudo shutdown -r'
           ssh_run_command(machine, uiinfo, command)
@@ -116,15 +115,9 @@ module VagrantPlugins
         else
           netport = ''
         end
-
-        if command == 'webvnc'
-          execute(false, "pfexec zadm  webvnc #{netport} #{name}")
-        elsif command == 'vnc'
-          execute(false, "pfexec zadm  vnc #{netport} #{name}")
-        elsif command == 'zlogin'
-          execute(false, "pfexec zadm  console #{name}")
-        else
-          execute(false, "pfexec zadm  webvnc #{netport} #{name}")
+        execute(false, "pfexec zadm  webvnc #{netport} #{name}") if command == 'webvnc'
+        execute(false, "pfexec zadm  vnc #{netport} #{name}") if command == 'vnc'
+        execute(false, "pfexec zadm  console #{name}")if command == 'zlogin'
         end
       end
 
@@ -138,7 +131,7 @@ module VagrantPlugins
       def get_ip_address(machine)
         config = machine.provider_config
         name = @machine.name
-        machine.config.vm.networks.each do |_type, opts|
+        machine.config.vm.networks.each do |type, opts|
           responses = []
           nic_number = opts[:nic_number].to_s
           if !opts[:nictype].nil?
@@ -164,7 +157,7 @@ module VagrantPlugins
           else
             nic_type = 'e'
           end
-          if _type.to_s == 'public_network'
+          if type.to_s == 'public_network'
             if opts[:dhcp] == true
               if opts[:managed]
                 vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
@@ -231,8 +224,8 @@ module VagrantPlugins
           uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
           zlogin(machine, 'rm -rf  /etc/netplan/*.yaml')
         end
-        machine.config.vm.networks.each do |_type, opts|
-          if _type.to_s == 'public_network'
+        machine.config.vm.networks.each do |type, opts|
+          if type.to_s == 'public_network'
             link = opts[:bridge]
             nic_number = opts[:nic_number].to_s
             netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
@@ -474,6 +467,7 @@ end                  }
         end
       end
 
+      # This helps us create all the datasets for the zone
       def create_dataset(machine, uiinfo)
         name = @machine.name
         config  = machine.provider_config
@@ -522,6 +516,7 @@ end                  }
         end
       end
 
+      # This helps us set delete any associated datasets of the zone
       def delete_dataset(machine, uiinfo)
         name = @machine.name
         config = machine.provider_config
@@ -564,6 +559,7 @@ end                  }
         end
       end
 
+      # This helps us set the zone configurations for the zone
       def zonecfg(machine, uiinfo)
         name = @machine.name
         ## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console
@@ -571,9 +567,9 @@ end                  }
         attr = ''
         if config.brand == 'lx'
           uiinfo.info(I18n.t("vagrant_zones.lx_zone_config_gen"))
-          machine.config.vm.networks.each do |_type, opts|
+          machine.config.vm.networks.each do |type, opts|
             index = 1
-            if _type.to_s == "public_network"
+            if type.to_s == "public_network"
               @ip        = opts[:ip].to_s
               @network   = NetAddr.parse_net(opts[:ip].to_s + '/' + opts[:netmask].to_s)
               @defrouter = opts[:gateway]
@@ -814,6 +810,7 @@ end            }
         execute(false, "cat #{name}.zoneconfig | #{@pfexec} zonecfg -z #{machine.name}")
       end
 
+      # This ensures the zone is safe to boot
       def check_zone_support(machine, uiinfo)
         config = machine.provider_config
         box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
@@ -886,6 +883,7 @@ end            }
         end
       end
 
+      # This helps us set up the networking of the VM
       def setup(machine, uiinfo)
         config = machine.provider_config
         name = machine.name
@@ -896,6 +894,7 @@ end            }
         end
       end
 
+      # This helps up wait for the boot of the vm by using zlogin
       def waitforboot(machine, uiinfo)
         uiinfo.info(I18n.t('vagrant_zones.wait_for_boot'))
         name = @machine.name
@@ -944,7 +943,8 @@ end            }
           end
         end
       end
-
+      
+      # This checks if the user exists on the VM, usually for LX zones
       def user_exists?(machine, user = 'vagrant')
         name = @machine.name
         ret  = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
@@ -955,11 +955,14 @@ end            }
         return false
       end
 
+
+      # This gives us a console to the VM for the user
       def zlogincommand(machine, cmd)
         name = @machine.name
         execute(false, "#{@pfexec} zlogin #{name} #{cmd}")
       end
 
+      # This gives us a console to the VM
       def zlogin(machine, cmd)
         name = @machine.name
         config = machine.provider_config
@@ -980,12 +983,14 @@ end            }
         end
       end
 
+      # This filters the vagrantuser
       def user(machine)
         config = machine.provider_config
         user = config.vagrant_user
         return user
       end
 
+      # This filters the userprivatekeypath
       def userprivatekeypath(machine)
         config = machine.provider_config
         userkey = config.vagrant_user_private_key_path.to_s
@@ -998,24 +1003,28 @@ end            }
         return userkey
       end
 
+      # This filters the sshport
       def sshport(machine)
         config = machine.provider_config
         accessport = config.sshport.to_s
         return accessport
       end
 
+      # This filters the rdpport
       def rdpport(machine)
         config = machine.provider_config
         accessport = config.rdpport.to_s
         return accessport
       end
 
+      # This filters the vagrantuserpass
       def vagrantuserpass(machine)
         config = machine.provider_config
         vagrantuserpass = config.vagrant_user_pass.to_s
         return vagrantuserpass
       end
 
+      # This helps us create ZFS Snapshots
       def zfs(machine, uiinfo, job, dataset, snapshot_name)
         config = machine.provider_config
         name = machine.name
@@ -1042,6 +1051,7 @@ end            }
         end
       end
 
+      # Halts the Zone, first via shutdown command, then a halt.
       def halt(machine, uiinfo)
         name = @machine.name
         config = machine.provider_config
@@ -1066,6 +1076,7 @@ end            }
         end
       end
 
+      # Destroys the Zone configurations and path
       def destroy(machine, id)
         name = @machine.name
 
@@ -1091,10 +1102,6 @@ end            }
         ### Nic Configurations
         state = 'delete'
         network(@machine, id, state)
-
-        ### Check State of additional Disks
-
-        # disks_configured = execute(false, "#{@pfexec}  zfs list ")
       end
     end
   end
