@@ -915,7 +915,6 @@ end            }
               Timeout.timeout(config.setup_wait) do
                 loop do
                   zlogin_read.expect(/\n/) { |line| responses.push line }
-                  puts responses[-1]
                   if responses[-1].to_s.match(/:~#/)
                     break
                   elsif responses[-1].to_s.match(/login: /)

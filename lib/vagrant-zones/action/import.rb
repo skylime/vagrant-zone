@@ -27,6 +27,7 @@ module VagrantPlugins
 
         def call(env)
           @machine = env[:machine]
+          @executor = Executor::Exec.new
           image = @machine.config.vm.box
           image_url = @machine.config.vm.box_url
           curdir = Dir.pwd
@@ -85,9 +86,7 @@ module VagrantPlugins
 
           else
             # Support zss format only for now, use other images and convert later
-            unless image_url.nil?
-              puts image_url
-            end
+            puts image_url unless image_url.nil?
             box_format = env[:machine].box.metadata['format'] unless env[:machine].box.metadata['format'].nil?
             raise Errors::NoBoxFormatSet if box_format.nil?
 
@@ -104,10 +103,14 @@ module VagrantPlugins
           @app.call(env)
         end
 
+        def execute(*cmd, **opts, &block)
+          @executor.execute(*cmd, **opts, &block)
+        end
+
         def check(uuid, env_ui)
-          `curl --output /dev/null --silent  -r 0-0 --fail #{@joyent_images_url}/#{uuid}`
+          vm_state = execute(true, "curl --output /dev/null --silent  -r 0-0 --fail #{@joyent_images_url}/#{uuid}")
           env_ui.info(I18n.t('vagrant_zones.joyent_image_uuid_verified') + @joyent_images_url + uuid)
-          return $?.success?
+          return vm_state
         end
       end
     end
