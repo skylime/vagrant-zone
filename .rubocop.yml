@@ -68,18 +68,32 @@ Metrics/PerceivedComplexity:
   VersionAdded: '0.25'
   Max: 20
 
-
 Style/RedundantReturn:
+  Description: >-
+                 ensure there are no redudant returs
+  Enabled: true
   AutoCorrect: true
 
 Style/SpecialGlobalVars:
+  Description: >-
+                 Set Special Global vars
+  Enabled: true
   AutoCorrect: true
 
 Style/RedundantInterpolation:
+  Description: >-
+                 Check for redudant interpolation
+  Enabled: true
   AutoCorrect: true
 
 Style/StringConcatenation:
+  Description: >-
+                 Prefer to use String contactenation
+  Enabled: true
   AutoCorrect: true
 
 Style/IfUnlessModifier:
+  Description: >-
+                 Used to check If/Unless should be used
+  Enabled: true
   AutoCorrect: true
