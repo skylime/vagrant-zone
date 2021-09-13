@@ -52,17 +52,16 @@ module VagrantPlugins
         @firmware = "BHYVE_RELEASE_CSM"
 
         if @firmware_type.eql? "compatability"
-          @firmware = 'BHYVE_RELEASE_CSM'
+          @firmware = "BHYVE_RELEASE_CSM"
         elsif @firmware_type.eql? "UEFI"
-          @firmware = 'BHYVE_RELEASE_CSM'
+          @firmware = "BHYVE_RELEASE"
         elsif @firmware_type.eql? "BIOS"
-          @firmware = 'BHYVE_RELEASE_CSM'
-        elsif @firmware_type.eql? "UEFI_DEBUG"
-          @firmware = 'BHYVE_RELEASE_CSM'
-        elsif @firmware_type.eql? "BIOS_DEBUG"
-          @firmware = 'BHYVE_RELEASE_CSM'
+          @firmware = "BHYVE_CSM"
+        elsif @firmware_type.eql? "BHYVE_DEBUG"
+          @firmware = "UEFI_DEBUG"
+        elsif @firmware_type.eql? "BHYVE_RELEASE_CSM"
+          @firmware = "BIOS_DEBUG"
         end
-
         @vm_type = '3'
         if @vmtype.eql? "template"
           @vm_type = '1'
