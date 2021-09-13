@@ -55,7 +55,6 @@ module VagrantPlugins
         when "BIOS" then @firmware = 'BHYVE_CSM'
         when "UEFI_DEBUG" then @firmware = 'BHYVE_DEBUG'
         when "BIOS_DEBUG" then @firmware = 'BHYVE_RELEASE_CSM'
-        else 
         end
         @vm_type = '3'
         case @vmtype
@@ -64,7 +63,6 @@ module VagrantPlugins
         when 'production' then  @vm_type = '3'
         when 'firewall' then @vm_type = '4'
         when 'other' then @vm_type = '5'
-        else @vm_type = '3'
         end
       end
     end
