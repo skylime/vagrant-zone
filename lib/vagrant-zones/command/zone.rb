@@ -8,7 +8,7 @@ module VagrantPlugins
       # This is used manage the zone where vagrant cannot
       class Zone < Vagrant.plugin('2', :command)
         def self.synopsis
-          "Manage zones and query zone information"
+          'Manage zones and query zone information'
         end
 
         def initialize(argv, env)
