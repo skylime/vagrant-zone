@@ -10,8 +10,8 @@ module VagrantPlugins
     # This is a module to assist in managing, creating bhyve, kvm, and lx zones
     class Provider < Vagrant.plugin('2', :provider)
       def initialize(machine)
+        super(machine)
         @logger = Log4r::Logger.new('vagrant::provider::zone')
-        @machine = machine
       end
 
       def driver
@@ -32,6 +32,7 @@ module VagrantPlugins
           private_key_path: "#{driver.userprivatekeypath(@machine)}",
           PasswordAuthentication: 'passwordauth'
         }
+        puts "We can connect" unless ssh_info.nil?
       end
 
       # This should return an action callable for the given name.

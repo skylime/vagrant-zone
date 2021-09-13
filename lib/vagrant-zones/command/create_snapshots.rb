@@ -29,12 +29,12 @@ module VagrantPlugins
               return
             end
             if options[:snapshot_name].nil?
-              time = Time.new
+              t = Time.new
               dash = "-"
               colon = ":"
 
 
-              datetime = time.year.to_s + dash + time.month.to_s + dash + time.day.to_s + dash + time.hour.to_s + colon + time.min.to_s + colon + time.sec.to_s
+              datetime = t.year.to_s + dash + t.month.to_s + dash + t.day.to_s + dash + t.hour.to_s + colon + t.min.to_s + colon + t.sec.to_s
               
               options[:snapshot_name] = datetime
             end
