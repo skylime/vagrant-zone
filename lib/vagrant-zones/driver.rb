@@ -802,7 +802,7 @@ end            }
         end
 
         ## Nic Configurations
-        network(@machine, ui, "config")
+        network(@machine, uiinfo, "config")
 
         ## Write out Config
         exit = %{exit}
