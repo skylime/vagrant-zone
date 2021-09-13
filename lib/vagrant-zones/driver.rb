@@ -1029,7 +1029,7 @@ end            }
         config = machine.provider_config
         name = machine.name
         if job == 'list'
-          uiinfo.info (I18n.t('vagrant_zones.zfs_snapshot_list'))
+          uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
           zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{name}")
           zfssnapshots = zfs_snapshots.split(/\n/)
           snapshotrun = 0
@@ -1043,10 +1043,10 @@ end            }
             snapshotrun += 1
           end
         elsif job == 'create'
-          uiinfo.info (I18n.t('vagrant_zones.zfs_snapshot_create'))
+          uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
           zfs_snapshots = execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
         elsif job == 'destroy'
-          uiinfo.info (I18n.t('vagrant_zones.zfs_snapshot_destroy'))
+          uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
           zfs_snapshots = execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}")
         end
       end
