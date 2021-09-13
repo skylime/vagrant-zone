@@ -15,11 +15,10 @@ module VagrantPlugins
       def self.action_up
         Vagrant::Action::Builder.new.tap do |b|
           b.use Call, IsCreated do |env, b2|
-            #re = env[:result]
-            #m = env[:machine].state.id
-            #ui = env[:ui]
-
-            if !env[:result]
+            if env[:result]
+              env[:halt_on_error] = true
+              b2.use action_start
+            elsif !env[:result]
               #b2.use BoxUpdate
               b2.use Import
               b2.use Create
@@ -28,15 +27,10 @@ module VagrantPlugins
               b2.use WaitTillBoot
               b2.use Setup
               b2.use WaitTillUp
-              
               ## Counter intuitive, but Provision must go before SyncFolders for some reason  . .
               b2.use Provision
               b2.use SyncedFolders
               b2.use SyncedFolderCleanup
-              
-            else
-              env[:halt_on_error] = true
-              b2.use action_start
             end
           end
         end
