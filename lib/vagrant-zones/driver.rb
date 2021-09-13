@@ -435,7 +435,7 @@ end									}
 														netplan = %{network:
   version: 2
   ethernets:
-  #{vnic_name}:
+    #{vnic_name}:
       match:
         macaddress: #{mac}
       dhcp-identifier: mac
