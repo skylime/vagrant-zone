@@ -1008,6 +1008,9 @@ end            }
       def sshport(machine)
         config = machine.provider_config
         accessport = config.sshport.to_s
+        unless accessport.to_s.nil? || accessport.to_i.zero?
+          accessport = '22'
+				end
         return accessport
       end
 
