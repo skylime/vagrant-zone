@@ -918,7 +918,7 @@ end            }
         return false
       end
 
-      # This gives us a console to the VM for the user
+      # This gives us a  console to the VM for the user
       def zlogincommand(machine, cmd)
         name = @machine.name
         execute(false, "#{@pfexec} zlogin #{name} #{cmd}")
