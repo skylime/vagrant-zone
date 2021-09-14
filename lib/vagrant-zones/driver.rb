@@ -488,7 +488,7 @@ end                  }
           Util::Subprocess.new commandtransfer do |stdout, stderr, thread|
             uiinfo.rewriting do |uiprogress|
               uiprogress.clear_line
-              uiprogress.info(I18n.t('vagrant_zones.importing_box_image_to_disk') + " #{datadir.to_s}/box.zss ==> #{dataset} ==> ", new_line: false)
+              uiprogress.info(I18n.t('vagrant_zones.importing_box_image_to_disk') + "#{datadir.to_s}/box.zss ==> ", new_line: false)
               uiprogress.report_progress(stderr, 100, false)
             end
           end

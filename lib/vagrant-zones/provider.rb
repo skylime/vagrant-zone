@@ -30,7 +30,6 @@ module VagrantPlugins
 				user = driver.user(@machine)
 				userkey = driver.userprivatekeypath(@machine).to_s
 				vagrantuserpassword = driver.vagrantuserpass(@machine).to_s
-				passwordauth = "yes" 
 				return nil if !ip
         portnumber = driver.sshport(@machine).to_s 
 				ssh_info = {
