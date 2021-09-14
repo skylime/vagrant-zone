@@ -991,26 +991,26 @@ end            }
 
       # This helps us create ZFS Snapshots
       def zfs(machine, uiinfo, job, dataset, snapshot_name)
-        config = machine.provider_config
         name = machine.name
-        if job == 'list'
+        case job
+        when 'list'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
           zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{name}")
           zfssnapshots = zfs_snapshots.split(/\n/)
           snapshotrun = 0
           header = "Snapshot\tUsed\tAvailable\tRefer\tName"
           zfssnapshots.each do |snapshot|
-            attributes = snapshot.gsub(/\s+/m, ' ').strip.split(' ')
-            puts 'Drive Mounted at: ' + attributes[4] if !attributes[4].nil? && attributes[4] != '-'
+            attributes = snapshot.gsub(/\s+/m, ' ').strip.split
+            puts "Drive Mounted at: #{header} #{attributes[4]}" if !attributes[4].nil? && attributes[4] != '-'
             # data = "##{snapshotrun}\t\t#{attributes[1]}\t#{attributes[2]}\t\t#{attributes[3]}\t#{attributes[0]}"
             snapshotrun += 1
           end
-        elsif job == 'create'
+        when 'create'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
           execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
-        elsif job == 'destroy'
+        when 'destroy'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
-          zfs_snapshots = execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}")
+          execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}")
         end
       end
 
@@ -1059,7 +1059,7 @@ end            }
         end
 
         ## If state is configured or incomplete, uninstall from destroy from zonecfg
-        if %w['incomplete', 'configured'].include?(vm_state)
+        if ['incomplete', 'configured'].include?(vm_state)
           id.info(I18n.t('vagrant_zones.bhyve_zone_config_remove'))
           execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
         end
