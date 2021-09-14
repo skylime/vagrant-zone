@@ -997,6 +997,7 @@ end            }
         if userkey.nil?
           File.open('id_rsa', 'w') do |f|
             f.puts 'sol'
+            puts 'Not Key Defined, putting SOL in file so user can update later'
           end
           userkey = './id_rsa'
         end
@@ -1044,7 +1045,7 @@ end            }
           end
         elsif job == 'create'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
-          zfs_snapshots = execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
+          execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
         elsif job == 'destroy'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
           zfs_snapshots = execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}")
@@ -1056,7 +1057,6 @@ end            }
         name = @machine.name
         config = machine.provider_config
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
-        vm_configured = execute(false, "#{@pfexec} zoneadm list -icn | grep  #{name} || true")
         if vm_state == 'running'
           uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown'))
           begin

@@ -56,7 +56,7 @@ module VagrantPlugins
 
       def self.action_restart
         Vagrant::Action::Builder.new.tap do |b|
-          b.use Call, IsCreated do |_env, b2|
+          b.use Call, IsCreated do |env, b2|
             b2.use Call, IsState, :stopped do |env2, b3|
               unless env2[:result]
                 b3.use WaitTillUp
@@ -69,7 +69,7 @@ module VagrantPlugins
 
       def self.action_shutdown
         Vagrant::Action::Builder.new.tap do |b|
-          b.use Call, IsCreated do |_env, b2|
+          b.use Call, IsCreated do |env, b2|
             b2.use Call, IsState, :stopped do |env2, b3|
               unless env2[:result]
                 b3.use WaitTillUp
@@ -132,8 +132,8 @@ module VagrantPlugins
       # This action is called when `vagrant provision` is called.
       def self.action_provision
         Vagrant::Action::Builder.new.tap do |b|
-          b.use Call, IsCreated do |_env, b2|
-            b2.use Call, IsState, :running do |_env2, b3|
+          b.use Call, IsCreated do |env, b2|
+            b2.use Call, IsState, :running do |env2, b3|
               b3.use Provision
             end
           end
