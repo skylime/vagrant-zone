@@ -96,11 +96,11 @@ module VagrantPlugins
 
       def console(machine, command, ip, port)
         name = machine.name
-        if !port.nil?
+        if port.nil?
+          netport = ''
+        else
           ip = '127.0.0.1' unless !ip.nil?
           netport = "#{ip}:#{port}"
-        else
-          netport = ''
         end
         execute(false, "pfexec zadm  webvnc #{netport} #{name}") if command == 'webvnc'
         execute(false, "pfexec zadm  vnc #{netport} #{name}") if command == 'vnc'
@@ -214,17 +214,17 @@ module VagrantPlugins
             link = opts[:bridge]
             nic_number = opts[:nic_number].to_s
             netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
-            ip          = opts[:ip].to_s
-            defrouter   = opts[:gateway].to_s
+            ip = opts[:ip].to_s
+            defrouter = opts[:gateway].to_s
             
-            allowed_address = "#{ip}/#{netmask.to_s}"
+            allowed_address = "#{ip}/#{netmask}"
             if ip.empty?
               ip = nil
             else
               ip = ip.gsub /\t/, ''
             end
-            mac      = 'auto'
-            vlan     = 1
+            mac = 'auto'
+            vlan = 1
             unless opts[:mac].nil?
               if opts[:mac].match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/) || !opts[:mac].match(/auto/)
                 mac = opts[:mac]
