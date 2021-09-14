@@ -28,11 +28,10 @@ module VagrantPlugins
         if Process.uid.zero?
           @pfexec = ''
         else
-          sudo = system('sudo -v')
-          if sudo
-            @pfexec = 'sudo'
+          @pfexec = if system('sudo -v')
+            'sudo'
           else
-            @pfexec = 'pfexec'
+            'pfexec'
           end
         end
       end
@@ -40,17 +39,20 @@ module VagrantPlugins
       def state(machine)
         name = machine.name
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
-        if vm_state == 'running'
+
+        # good
+        case vm_state
+        when 'running'
           :running
-        elsif vm_state == 'configured'
+        when 'configured'
           :preparing
-        elsif vm_state == 'installed'
+        when 'installed'
           :stopped
-        elsif vm_state == 'incomplete'
+        when 'incomplete'
           :incomplete
         else
           :not_created
-        end
+        end 
       end
 
       def execute(*cmd, **opts, &block)
