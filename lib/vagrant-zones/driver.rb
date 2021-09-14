@@ -48,7 +48,7 @@ module VagrantPlugins
           :incomplete
         else
           :not_created
-        end 
+        end
       end
 
       def execute(*cmd, **opts, &block)
@@ -57,39 +57,31 @@ module VagrantPlugins
 
       def install(machine, uiinfo)
         config = machine.provider_config
-        box  = @machine.data_dir.to_s + '/' + @machine.config.vm.box
+        box  = "#{@machine.data_dir.to_s}/#{@machine.config.vm.box}"
         name = @machine.name
-
-        if config.brand == 'lx'
-          results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
-          if results.include? 'unknown brand'
-            raise 'You appear to not have LX Zones installed in this Machine'
-          end
-        end
-        if config.brand == 'bhyve'
-          execute(false, "#{@pfexec} zoneadm -z #{name} install")
-        end
-        if config.brand == 'kvm'
-          execute(false, "#{@pfexec} zoneadm -z #{name} install")
-        end
-        if config.brand == 'illumos'
-          execute(false, "#{@pfexec} zoneadm -z #{name} install")
-        end
+        results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}") if config.brand == 'lx'
+        raise 'You appear to not have LX Zones installed in this Machine' if results.include? 'unknown brand'
+        execute(false, "#{@pfexec} zoneadm -z #{name} install") if config.brand == 'bhyve'
+        execute(false, "#{@pfexec} zoneadm -z #{name} install") if config.brand == 'kvm'
+        execute(false, "#{@pfexec} zoneadm -z #{name} install") if config.brand == 'illumos'
         uiinfo.info(I18n.t('vagrant_zones.installing_zone') + " brand: #{config.brand}")
       end
 
       ## Control the Machine from inside the machine
-      def control(machine, uiinfo, control)
-        if control == 'restart'
+      def control(machine, control)
+        case control
+        when  'restart'
           command = 'sudo shutdown -r'
-          ssh_run_command(machine, uiinfo, command)
-        elsif control == 'shutdown'
+          ssh_run_command(machine, command)
+        when 'shutdown'
           command = 'sudo shutdown -h now'
-          ssh_run_command(machine, uiinfo, command)
+          ssh_run_command(machine, command)
+        else
+          puts "No Command specified"
         end
       end
 
-      def ssh_run_command(machine, uiinfo, command)
+      def ssh_run_command(machine, command)
         ip = get_ip_address(machine)
         user = user(machine)
         key = userprivatekeypath(machine).to_s
@@ -99,6 +91,7 @@ module VagrantPlugins
           port = 22
         end
 
+        puts "#{password} not used for this connection at this time"
         execute(false, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  '#{command}' ")
       end
 
