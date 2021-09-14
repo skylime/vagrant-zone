@@ -21,28 +21,28 @@ module VagrantPlugins
         @driver = Driver.new(@machine)
       end
 
-			def ssh_info				
-				# We just return nil if were not able to identify the VM's IP and
-				# let Vagrant core deal with it like docker provider does
-				return nil if state.id != :running
+      def ssh_info        
+        # We just return nil if were not able to identify the VM's IP and
+        # let Vagrant core deal with it like docker provider does
+        return nil if state.id != :running
 
-				ip = driver.get_ip_address(@machine)
-				user = driver.user(@machine)
-				userkey = driver.userprivatekeypath(@machine).to_s
-				vagrantuserpassword = driver.vagrantuserpass(@machine).to_s
-				passwordauth = "yes" 
-				return nil if !ip
+        ip = driver.get_ip_address(@machine)
+        user = driver.user(@machine)
+        userkey = driver.userprivatekeypath(@machine).to_s
+        vagrantuserpassword = driver.vagrantuserpass(@machine).to_s
+        passwordauth = "yes" 
+        return nil if !ip
         portnumber = driver.sshport(@machine).to_s 
-				ssh_info = {
-					host: ip,
-					port: portnumber,
-					password: vagrantuserpassword,
-					username: user,
-					private_key_path: userkey,
-					PasswordAuthentication: 'passwordauth'
-				}
+        ssh_info = {
+          host: ip,
+          port: portnumber,
+          password: vagrantuserpassword,
+          username: user,
+          private_key_path: userkey,
+          PasswordAuthentication: 'passwordauth'
+        }
         return ssh_info unless ssh_info.nil?
-			end
+      end
 
       # This should return an action callable for the given name.
       # @param [Symbol] name Name of the action.
