@@ -936,7 +936,6 @@ end            }
               zlogin_read.expect(/\r\n/) { |line| responses.push line }
               break if responses[-1].to_s.match(/Error Code: 0/)
               raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}" if responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
-              end
             end
           end
           Process.kill('HUP', pid)
