@@ -27,12 +27,10 @@ module VagrantPlugins
         @executor = Executor::Exec.new
         @pfexec = if Process.uid.zero?
                     ''
+                  elsif system('sudo -v')
+                    'sudo'
                   else
-                    if system('sudo -v')
-                      'sudo'
-                    else
-                      'pfexec'
-                    end
+                    'pfexec'
                   end
       end
 
