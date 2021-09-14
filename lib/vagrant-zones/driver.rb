@@ -29,11 +29,11 @@ module VagrantPlugins
           @pfexec = ''
         else
           sudo = system('sudo -v')
-          if sudo
-            @pfexec = 'sudo'
+          @pfexec = if sudo
+                      'sudo'
           else
-            @pfexec = 'pfexec'
-          end
+            'pfexec'
+                    end
         end
       end
 
@@ -97,16 +97,16 @@ module VagrantPlugins
       def console(machine, uiinfo, command, ip, port)
         name = @machine.name
 
-        if !port.nil?
+        if port.nil?
+          netport = ''
+        else
           ip = '127.0.0.1' if ip.nil?
           netport = ip + ':' + port
-        else
-          netport = ''
         end
 
         execute(false, "pfexec zadm  webvnc #{netport} #{name}") if command == 'webvnc'
         execute(false, "pfexec zadm  vnc #{netport} #{name}") if command == 'vnc'
-        execute(false, "pfexec zadm  console #{name}")if command == 'zlogin'
+        execute(false, "pfexec zadm  console #{name}") if command == 'zlogin'
       end
 
       ## Boot the Machine
@@ -122,27 +122,27 @@ module VagrantPlugins
         machine.config.vm.networks.each do |_type, opts|
           responses = []
           nic_number = opts[:nic_number].to_s
-          if !opts[:nictype].nil?
-            nictype = opts[:nictype]
-          else
-            nictype = 'external'
-          end
+          nictype = if opts[:nictype].nil?
+                      'external'
+                    else
+                      opts[:nictype]
+                    end
           mac = 'auto'
           mac = opts[:mac] unless opts[:mac].nil?
-          case nictype
-          when /external/
-            nic_type = 'e'
-          when /internal/
-            nic_type = 'i'
-          when /carp/
-            nic_type = 'c'
-          when /management/
-            nic_type = 'm'
-          when /host/
-            nic_type = 'h'
+          nic_type = case nictype
+                     when /external/
+                       'e'
+                     when /internal/
+                       'i'
+                     when /carp/
+                       'c'
+                     when /management/
+                       'm'
+                     when /host/
+                       'h'
           else
-            nic_type = 'e'
-          end
+                       'e'
+                     end
           if _type.to_s == 'public_network'
             if opts[:dhcp] == true
               if opts[:managed]
@@ -219,11 +219,11 @@ module VagrantPlugins
             defrouter   = opts[:gateway].to_s
             cloud_init_enabled = config.cloud_init_enabled
             allowed_address = ip.to_s + '/' + netmask.to_s
-            if ip.length == 0
-              ip = nil
+            ip = if ip.length == 0
+                   nil
             else
-              ip = ip.gsub /\t/, ''
-            end
+              ip.gsub /\t/, ''
+                 end
             mac      = 'auto'
             vlan     = 1
             unless opts[:mac].nil?
@@ -232,11 +232,11 @@ module VagrantPlugins
               end
             end
             nictype = opts[:nictype] unless opts[:nictype].nil?
-            if !config.dns.nil?
-              dns = config.dns
-            else
-              dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '1.0.0.1' }]
-            end
+            dns = if config.dns.nil?
+                    [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '1.0.0.1' }]
+                  else
+                    config.dns
+                  end
             dnsrun = 0
             servers = []
             unless dns.nil?
@@ -244,28 +244,28 @@ module VagrantPlugins
                 servers.append(server)
               end
             end
-            case nictype
-            when /external/
-              nic_type = 'e'
-            when /internal/
-              nic_type = 'i'
-            when /carp/
-              nic_type = 'c'
-            when /management/
-              nic_type = 'm'
-            when /host/
-              nic_type = 'h'
+            nic_type = case nictype
+                       when /external/
+                         'e'
+                       when /internal/
+                         'i'
+                       when /carp/
+                         'c'
+                       when /management/
+                         'm'
+                       when /host/
+                         'h'
             else
-              nic_type = 'e'
-            end
+                         'e'
+                       end
             vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
             if state == 'create'
-              if !opts[:vlan].nil?
+              if opts[:vlan].nil?
+                execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
+              else
                 vlan = opts[:vlan]
                 uiinfo.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
                 execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
-              else
-                execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
               end
             elsif state == 'delete'
               uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name)
@@ -278,7 +278,7 @@ module VagrantPlugins
   set physical=#{vnic_name}
   set global-nic=auto
   set allowed-address=#{allowed_address}
-  add property (name=gateway,value="#{@defrouter.to_s}")
+  add property (name=gateway,value="#{@defrouter}")
   add property (name=ips,value="#{allowed_address}")
   add property (name=primary,value="true")
 end              }
@@ -311,30 +311,26 @@ end                  }
               ## regex to grab standard Device interface names in ifconfig
               regex = /(en|eth)(\d|o\d|s\d|x[0-9A-Fa-f]{2}{6}|(p\d)(s\d)(f?\d?))/
               PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-                zlogin_read.expect(/\n/) { |msg|
+                zlogin_read.expect(/\n/) do |msg|
                   zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n")
-                }
+                end
                 Timeout.timeout(30) do
                   staticrun = 0
                   dhcprun = 0
                   loop do
                     zlogin_read.expect(/\r\n/) { |line| responses.push line }
                     if responses[-1][0] =~ regex
-                      if !vmnic.include? responses[-1][0][/#{regex}/]
-                        vmnic.append(responses[-1][0][/#{regex}/])
-                      else
+                      if vmnic.include? responses[-1][0][/#{regex}/]
                         raise 'We are testing something'
+                      else
+                        vmnic.append(responses[-1][0][/#{regex}/])
                       end
                     end
-                    vmnic.each { |interface|
+                    vmnic.each do |interface|
                       nicfunction = ''
                       devid = ''
                       unless interface[/#{regex}/, 1].nil?
-                        if !interface[/#{regex}/, 3].nil?
-                          nic = interface[/#{regex}/, 1]
-                          nicbus = interface[/#{regex}/, 3]
-                          devid = nicbus
-                        else
+                        if interface[/#{regex}/, 3].nil?
                           if interface[/#{regex}/, 1] == 'en'
                             interface_desc = interface[/#{regex}/, 2].split('')
                             nic = interface[/#{regex}/, 1] + interface_desc[0]
@@ -351,8 +347,15 @@ end                  }
                             nicbus = interface[/#{regex}/, 2]
                             devid = nicbus
                           end
+                        else
+                          nic = interface[/#{regex}/, 1]
+                          nicbus = interface[/#{regex}/, 3]
+                          devid = nicbus
                         end
-                        if !interface[/#{regex}/, 4].nil?
+                        if interface[/#{regex}/, 4].nil?
+                          nicfunction = nicbus
+                          devid = nicfunction
+                        else
                           nicdevice = interface[/#{regex}/, 4]
                           if interface[/#{regex}/, 5][/f\d/].nil?
                             nicfunction = 'f0'
@@ -361,9 +364,6 @@ end                  }
                             nicfunction = interface[/#{regex}/, 5]
                             devid = nicfunction
                           end
-                        else
-                          nicfunction = nicbus
-                          devid = nicfunction
                         end
                       end
                       devid = devid.gsub /f/, ''
@@ -427,7 +427,7 @@ end                  }
                           end
                         end
                       end
-                    }
+                    end
                     ## Check if last command ran successfully and break from the loop
                     zlogin_write.printf("echo \"Final Network Check Error Code: $?\"\n")
                     if responses[-1].to_s.match(/Final Network Check Error Code: 0/)
@@ -466,11 +466,11 @@ end                  }
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot') + config.zonepathsize + ', ' + dataset)
           execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + dataset)
-          commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss').to_s} | #{@pfexec} zfs recv -u -v -F #{dataset} "
+          commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss')} | #{@pfexec} zfs recv -u -v -F #{dataset} "
           Util::Subprocess.new commandtransfer do |stdout, stderr, thread|
             uiinfo.rewriting do |uiprogress|
               uiprogress.clear_line
-              uiprogress.info(I18n.t('vagrant_zones.importing_box_image_to_disk') + "#{datadir.to_s}/box.zss ==> ", new_line: false)
+              uiprogress.info(I18n.t('vagrant_zones.importing_box_image_to_disk') + "#{datadir}/box.zss ==> ", new_line: false)
               uiprogress.report_progress(stderr, 100, false)
             end
           end
@@ -491,7 +491,7 @@ end                  }
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + disk['size'].to_s + ', ' + disk['array'] + disk['path'])
             diskname = diskname + diskrun.to_s if diskrun > 0
             diskrun += 1
-            execute(true, "#{@pfexec} zfs create -V #{disk["size"].to_s} #{disk["array"]}#{disk["path"]}")
+            execute(true, "#{@pfexec} zfs create -V #{disk["size"]} #{disk["array"]}#{disk["path"]}")
           end
         end
       end
@@ -743,7 +743,7 @@ end            }
           console = config.console
           if console != 'disabled'
 
-            if console == 'webvnc' || console == 'vnc'
+            if %w[webvnc vnc].include?(console)
               console = 'vnc'
               value = 'on'
             elsif console == 'console'
@@ -917,7 +917,6 @@ end            }
         return false
       end
 
-
       # This gives us a console to the VM for the user
       def zlogincommand(machine, cmd)
         name = @machine.name
@@ -1021,15 +1020,15 @@ end            }
         if vm_state == 'running'
           uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown'))
           begin
-            Timeout::timeout(config.clean_shutdown_time) {
+            Timeout.timeout(config.clean_shutdown_time) do
               execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
-            }
+            end
           rescue Timeout::Error
             uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown_failed') + config.clean_shutdown_time.to_s)
             begin
-              Timeout::timeout(60) {
+              Timeout.timeout(60) do
                 execute(false, "#{@pfexec} zoneadm -z #{name} halt")
-              }
+              end
             rescue Timeout::Error
               raise "==> #{name}: VM failed to halt in alloted time 60 after waiting to shutdown for #{config.clean_shutdown_time.to_i}"
             end
@@ -1055,7 +1054,7 @@ end            }
           execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
         end
         ## If state is seen, uninstall from zoneadm and destroy from zonecfg
-        if vm_state == 'incomplete' || vm_state == 'configured'
+        if %w[incomplete configured].include?(vm_state)
           id.info(I18n.t('vagrant_zones.bhyve_zone_config_remove'))
           execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
         end
