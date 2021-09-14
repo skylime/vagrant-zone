@@ -949,19 +949,26 @@ end            }
       def user(machine)
         config = machine.provider_config
         user = config.vagrant_user
-        return user
+        return config.vagrant_user unless config.vagrant_user.nil?
       end
 
       # This filters the userprivatekeypath
       def userprivatekeypath(machine)
         config = machine.provider_config
         userkey = config.vagrant_user_private_key_path.to_s
-        if userkey.nil?
-          File.open('id_rsa', 'w') do |f|
-            f.puts 'sol'
-            puts 'Not Key Defined, putting SOL in file so user can update later'
+        if config.vagrant_user_private_key_path.to_s.nil?
+          id_rsa = 'https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant'
+          file = "./id_rsa"
+          command = "#{@pfexec} curl #{id_rsa}  -O #{file}"
+          Util::Subprocess.new command do |stdout, stderr, thread|
+            uiinfo.rewriting do |ui|
+              ui.clear_line()
+              ui.info(I18n.t('vagrant_zones.importing_vagrant_key'), new_line: false)
+              ui.report_progress(stderr, 100, false)
+            end
           end
-          userkey = './id_rsa'
+          uiinfo.clear_line()
+          return'./id_rsa'
         end
         return userkey
       end
@@ -969,23 +976,20 @@ end            }
       # This filters the sshport
       def sshport(machine)
         config = machine.provider_config
-        accessport = config.sshport.to_s
-        accessport = '22' unless accessport.to_s.nil? || accessport.to_i.zero?
-        return accessport
+        return '22' unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
+        return config.sshport.to_s
       end
 
       # This filters the rdpport
       def rdpport(machine)
         config = machine.provider_config
-        accessport = config.rdpport.to_s
-        return accessport
+        return config.rdpport.to_s unless config.rdpport.to_s.nil?
       end
 
       # This filters the vagrantuserpass
       def vagrantuserpass(machine)
         config = machine.provider_config
-        vagrantuserpass = config.vagrant_user_pass.to_s
-        return vagrantuserpass
+        return config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
 
       # This helps us create ZFS Snapshots
@@ -1018,6 +1022,8 @@ end            }
         name = @machine.name
         config = machine.provider_config
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
+
+        
         if vm_state == 'running'
           uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown'))
           begin
@@ -1039,7 +1045,7 @@ end            }
 
       # Destroys the Zone configurations and path
       def destroy(machine, id)
-        name = @machine.name
+        name = machine.name
 
         id.info(I18n.t('vagrant_zones.leaving'))
         id.info(I18n.t('vagrant_zones.destroy_zone'))
@@ -1047,22 +1053,23 @@ end            }
         ## Check state in zoneadm
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 
-        ## If state is seen, uninstall from zoneadm and destroy from zonecfg
+        ## If state is installed, uninstall from zoneadm and destroy from zonecfg
         if vm_state == 'installed'
           id.info(I18n.t('vagrant_zones.bhyve_zone_config_uninstall'))
           execute(false, "#{@pfexec} zoneadm -z #{name} uninstall -F")
           id.info(I18n.t('vagrant_zones.bhyve_zone_config_remove'))
           execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
         end
-        ## If state is seen, uninstall from zoneadm and destroy from zonecfg
-        if ['incomplete', 'configured'].include?(vm_state)
+
+        ## If state is configured or incomplete, uninstall from destroy from zonecfg
+        if %w['incomplete', 'configured'].include?(vm_state)
           id.info(I18n.t('vagrant_zones.bhyve_zone_config_remove'))
           execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
         end
 
         ### Nic Configurations
         state = 'delete'
-        network(@machine, id, state)
+        network(machine, id, state)
       end
     end
   end

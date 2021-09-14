@@ -26,7 +26,7 @@ module VagrantPlugins
         # let Vagrant core deal with it like docker provider does
         return nil if state.id != :running
         return nil unless driver.get_ip_address(@machine)
-        
+
         passwordauth = 'passwordauth'
         ssh_info = {
           host: driver.get_ip_address(@machine),
