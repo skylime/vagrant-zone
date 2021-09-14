@@ -99,7 +99,7 @@ module VagrantPlugins
         if port.nil?
           netport = ''
         else
-          ip = '127.0.0.1' unless !ip.nil?
+          ip = '127.0.0.1' if ip.nil?
           netport = "#{ip}:#{port}"
         end
         execute(false, "pfexec zadm  webvnc #{netport} #{name}") if command == 'webvnc'
@@ -120,27 +120,28 @@ module VagrantPlugins
         machine.config.vm.networks.each do |adpatertype, opts|
           responses = []
           nic_number = opts[:nic_number].to_s
-          nictype = if !opts[:nictype].nil?
-                      opts[:nictype]
-                    else
+          nictype = if opts[:nictype].nil?
                       'external'
+                    else
+                      opts[:nictype]
+                      
                     end
           mac = 'auto'
           mac = opts[:mac] unless opts[:mac].nil?
           nic_type = case nictype
-          when /external/
-            'e'
-          when /internal/
-            'i'
-          when /carp/
-            'c'
-          when /management/
-            'm'
-          when /host/
-            'h'
-          else
-            'e'
-          end
+                     when /external/
+                       'e'
+                      when /internal/
+                        'i'
+                      when /carp/
+                        'c'
+                      when /management/
+                        'm'
+                      when /host/
+                        'h'
+                      else
+                        'e'
+                      end
           if adpatertype.to_s == 'public_network'
             if opts[:dhcp] == true
               if opts[:managed]
