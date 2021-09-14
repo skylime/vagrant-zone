@@ -87,34 +87,28 @@ module VagrantPlugins
         key = userprivatekeypath(machine).to_s
         password = vagrantuserpass(machine).to_s
         port = sshport(machine).to_s
-        if port.to_s.nil?
-          port = 22
+        port = 22 if sshport(machine).to_s.nil?
         end
-
         puts "#{password} not used for this connection at this time"
         execute(false, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  '#{command}' ")
       end
 
-      def console(machine, uiinfo, command, ip, port)
-        name = @machine.name
-
-        if !port.nil?
-          if ip.nil?
-            ip = '127.0.0.1'
-          end
+      def console(machine, command, ip, port)
+        name = machine.name
+        unless port.nil?
+          ip = '127.0.0.1' if ip.nil?
           netport = "#{ip}:#{port}"
         else
           netport = ''
         end
-
         execute(false, "pfexec zadm  webvnc #{netport} #{name}") if command == 'webvnc'
         execute(false, "pfexec zadm  vnc #{netport} #{name}") if command == 'vnc'
-        execute(false, "pfexec zadm  console #{name}")if command == 'zlogin'
+        execute(false, "pfexec zadm  console #{name}") if command == 'zlogin'
       end
 
       ## Boot the Machine
       def boot(machine, uiinfo)
-        name = @machine.name
+        name = machine.name
         uiinfo.info(I18n.t('vagrant_zones.starting_zone'))
         execute(false, "#{@pfexec} zoneadm -z #{name} boot")
       end
@@ -125,13 +119,13 @@ module VagrantPlugins
         machine.config.vm.networks.each do |_type, opts|
           responses = []
           nic_number = opts[:nic_number].to_s
-          if !opts[:nictype].nil?
+          unless opts[:nictype].nil?
             nictype = opts[:nictype]
           else
             nictype = 'external'
           end
           mac = 'auto'
-          if !opts[:mac].nil?
+          unless opts[:mac].nil?
             mac = opts[:mac]
           end
           case nictype
@@ -148,7 +142,7 @@ module VagrantPlugins
           else
             nic_type = 'e'
           end
-          if _type.to_s == 'public_network'
+          if adpatertype.to_s == 'public_network'
             if opts[:dhcp] == true
               if opts[:managed]
                 vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
@@ -215,8 +209,8 @@ module VagrantPlugins
           uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
           zlogin(machine, 'rm -rf  /etc/netplan/*.yaml')
         end
-        machine.config.vm.networks.each do |_type, opts|
-          if _type.to_s == 'public_network'
+        machine.config.vm.networks.each do |adpatertype, opts|
+          if adpatertype.to_s == 'public_network'
             link = opts[:bridge]
             nic_number = opts[:nic_number].to_s
             netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
@@ -231,22 +225,20 @@ module VagrantPlugins
             end
             mac      = 'auto'
             vlan     = 1
-            if !opts[:mac].nil?
+            unless opts[:mac].nil?
               if opts[:mac].match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/) || !opts[:mac].match(/auto/)
                 mac = opts[:mac]
               end
             end
-            if !opts[:nictype].nil?
-              nictype = opts[:nictype]
-            end
-            if !config.dns.nil?
+            nictype = opts[:nictype]  unless opts[:nictype].nil?
+            unless config.dns.nil?
               dns = config.dns
             else
               dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '1.0.0.1' }]
             end
             dnsrun = 0
             servers = []
-            if !dns.nil?
+            unless dns.nil?
               dns.each do |server|
                 servers.append(server)
               end
@@ -563,7 +555,7 @@ end                  }
           uiinfo.info(I18n.t("vagrant_zones.lx_zone_config_gen"))
           machine.config.vm.networks.each do |_type, opts|
             index = 1
-            if _type.to_s == "public_network"
+            if adpatertype.to_s == "public_network"
               @ip = opts[:ip].to_s
               cinfo = "#{opts[:ip].to_s}/#{opts[:netmask].to_s}"
               @network = NetAddr.parse_net(cinfo)
