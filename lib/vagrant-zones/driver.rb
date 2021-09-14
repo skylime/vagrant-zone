@@ -25,22 +25,20 @@ module VagrantPlugins
         @logger = Log4r::Logger.new('vagrant_zones::driver')
         @machine = machine
         @executor = Executor::Exec.new
-        if Process.uid.zero?
-          @pfexec = ''
-        else
-          @pfexec = if system('sudo -v')
-            'sudo'
+        @pfexec = if Process.uid.zero?
+            ''
           else
-            'pfexec'
+            if system('sudo -v')
+              'sudo'
+            else
+              'pfexec'
+            end
           end
-        end
       end
 
       def state(machine)
         name = machine.name
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
-
-        # good
         case vm_state
         when 'running'
           :running
