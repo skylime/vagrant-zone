@@ -178,7 +178,7 @@ module VagrantPlugins
 
                           return ip.gsub /\t/, ''
                           break
-                        elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+                        elsif responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
                           raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                         end
                       end
@@ -934,10 +934,8 @@ end            }
           Timeout.timeout(30) do
             loop do
               zlogin_read.expect(/\r\n/) { |line| responses.push line }
-              if responses[-1].to_s.match(/Error Code: 0/)
-                break
-              elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
-                raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+              break if responses[-1].to_s.match(/Error Code: 0/)
+              raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}" if responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
               end
             end
           end
