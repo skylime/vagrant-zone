@@ -256,7 +256,7 @@ module VagrantPlugins
             vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
             case state
             when 'create'
-              unless opts[:vlan].nil?
+              if !opts[:vlan].nil?
                 vlan = opts[:vlan]
                 uiinfo.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
                 execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
@@ -266,23 +266,24 @@ module VagrantPlugins
             when 'delete'
               uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name)
               vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
-              execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
+              if vnic_configured == "#{vnic_name}"
+                execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
+              end
             when 'config'
               uiinfo.info(I18n.t('vagrant_zones.vnic_setup') + vnic_name)
-              case config.brand
-              when 'lx'
+              if config.brand == 'lx'
                 nic_attr = %{add net
   set physical=#{vnic_name}
   set global-nic=auto
   set allowed-address=#{allowed_address}
-  add property (name=gateway,value="#{@defrouter}")
+  add property (name=gateway,value="#{@defrouter.to_s}")
   add property (name=ips,value="#{allowed_address}")
   add property (name=primary,value="true")
 end              }
                 File.open("#{name}.zoneconfig", 'a') do |f|
                   f.puts nic_attr
                 end
-              when 'bhyve'
+              elsif config.brand == 'bhyve'
                 if cloud_init_enabled 
                   nic_attr = %{add net
   set physical=#{vnic_name}
@@ -292,17 +293,13 @@ end                  }
                     f.puts nic_attr
                   end
                 else
-                  nic_attr = %(add net
+                  nic_attr = %{add net
   set physical=#{vnic_name}
   set allowed-address=#{allowed_address}
-end                  )
+end                  }
                   File.open("#{name}.zoneconfig", 'a') do |f|
                     f.puts nic_attr
                   end
-                end
-              when 'kvm'
-                if cloud_init_enabled
-                  puts 'Its a KVM machine and cloud_init_enabled'
                 end
               end
             when 'setup'
