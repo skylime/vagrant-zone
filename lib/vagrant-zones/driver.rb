@@ -254,8 +254,7 @@ module VagrantPlugins
               'e'
             end
             vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
-            case state
-            when 'create'
+            if state == 'create'
               if !opts[:vlan].nil?
                 vlan = opts[:vlan]
                 uiinfo.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
@@ -263,13 +262,13 @@ module VagrantPlugins
               else
                 execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
               end
-            when 'delete'
+            elsif state == 'delete'
               uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name)
               vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
               if vnic_configured == "#{vnic_name}"
                 execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
               end
-            when 'config'
+            elsif state == 'config'
               uiinfo.info(I18n.t('vagrant_zones.vnic_setup') + vnic_name)
               if config.brand == 'lx'
                 nic_attr = %{add net
@@ -302,7 +301,7 @@ end                  }
                   end
                 end
               end
-            when 'setup'
+            elsif state == 'setup'
               responses = []
               vmnic = []
               uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
