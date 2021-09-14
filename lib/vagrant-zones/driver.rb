@@ -120,15 +120,13 @@ module VagrantPlugins
         machine.config.vm.networks.each do |_type, opts|
           responses = []
           nic_number = opts[:nic_number].to_s
-          unless opts[:nictype].nil?
-            nictype = opts[:nictype]
+          nictype = if !opts[:nictype].nil?
+            opts[:nictype]
           else
-            nictype = 'external'
+            'external'
           end
           mac = 'auto'
-          unless opts[:mac].nil?
-            mac = opts[:mac]
-          end
+          mac = opts[:mac] unless opts[:mac].nil?
           case nictype
           when /external/
             nic_type = 'e'
