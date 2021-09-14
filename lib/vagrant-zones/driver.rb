@@ -121,25 +121,25 @@ module VagrantPlugins
           responses = []
           nic_number = opts[:nic_number].to_s
           nictype = if !opts[:nictype].nil?
-            opts[:nictype]
-          else
-            'external'
-          end
+                      opts[:nictype]
+                    else
+                      'external'
+                    end
           mac = 'auto'
           mac = opts[:mac] unless opts[:mac].nil?
-          case nictype
+          nic_type = case nictype
           when /external/
-            nic_type = 'e'
+            'e'
           when /internal/
-            nic_type = 'i'
+            'i'
           when /carp/
-            nic_type = 'c'
+            'c'
           when /management/
-            nic_type = 'm'
+            'm'
           when /host/
-            nic_type = 'h'
+            'h'
           else
-            nic_type = 'e'
+            'e'
           end
           if adpatertype.to_s == 'public_network'
             if opts[:dhcp] == true
