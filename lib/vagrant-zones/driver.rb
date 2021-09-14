@@ -117,7 +117,7 @@ module VagrantPlugins
       def get_ip_address(machine)
         config = machine.provider_config
         name = @machine.name
-        machine.config.vm.networks.each do |_type, opts|
+        machine.config.vm.networks.each do |adpatertype, opts|
           responses = []
           nic_number = opts[:nic_number].to_s
           nictype = if !opts[:nictype].nil?
@@ -230,11 +230,8 @@ module VagrantPlugins
               end
             end
             nictype = opts[:nictype]  unless opts[:nictype].nil?
-            unless config.dns.nil?
-              dns = config.dns
-            else
-              dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '1.0.0.1' }]
-            end
+            dns = config.dns
+            dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '1.0.0.1' }] unless !config.dns.nil?
             dnsrun = 0
             servers = []
             unless dns.nil?
@@ -552,7 +549,7 @@ end                  }
         attr = ''
         if config.brand == 'lx'
           uiinfo.info(I18n.t("vagrant_zones.lx_zone_config_gen"))
-          machine.config.vm.networks.each do |_type, opts|
+          machine.config.vm.networks.each do |adpatertype, opts|
             index = 1
             if adpatertype.to_s == "public_network"
               @ip = opts[:ip].to_s
