@@ -303,6 +303,7 @@ end                  )
               when 'kvm'
                 if cloud_init_enabled
                   puts 'Its a KVM machine and cloud_init_enabled'
+                end
               end
             when 'setup'
               responses = []
