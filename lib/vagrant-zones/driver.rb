@@ -59,8 +59,10 @@ module VagrantPlugins
         config = machine.provider_config
         box  = "#{@machine.data_dir.to_s}/#{@machine.config.vm.box}"
         name = @machine.name
-        results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}") if config.brand == 'lx'
-        raise 'You appear to not have LX Zones installed in this Machine' if results.include? 'unknown brand'
+        if config.brand == 'lx'
+          results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}") 
+          raise 'You appear to not have LX Zones installed in this Machine' if results.include? 'unknown brand'
+        end
         execute(false, "#{@pfexec} zoneadm -z #{name} install") if config.brand == 'bhyve'
         execute(false, "#{@pfexec} zoneadm -z #{name} install") if config.brand == 'kvm'
         execute(false, "#{@pfexec} zoneadm -z #{name} install") if config.brand == 'illumos'
