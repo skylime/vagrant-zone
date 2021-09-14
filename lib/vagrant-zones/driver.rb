@@ -127,19 +127,19 @@ module VagrantPlugins
           end
           mac = 'auto'
           mac = opts[:mac] unless opts[:mac].nil?
-          nic_type = case nictype
+          case nictype
           when /external/
-            'e'
+            nic_type = 'e'
           when /internal/
-            'i'
+            nic_type = 'i'
           when /carp/
-            'c'
+            nic_type = 'c'
           when /management/
-            'm'
+            nic_type = 'm'
           when /host/
-            'h'
+            nic_type = 'h'
           else
-            'e'
+            nic_type = 'e'
           end
           if adpatertype.to_s == 'public_network'
             if opts[:dhcp] == true
@@ -214,25 +214,26 @@ module VagrantPlugins
             link = opts[:bridge]
             nic_number = opts[:nic_number].to_s
             netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
-            ip = opts[:ip].to_s
-            defrouter = opts[:gateway].to_s
+            ip          = opts[:ip].to_s
+            defrouter   = opts[:gateway].to_s
             
-            allowed_address = "#{ip}/#{netmask}"
+            allowed_address = "#{ip}/#{netmask.to_s}"
             if ip.empty?
               ip = nil
             else
               ip = ip.gsub /\t/, ''
             end
-            mac = 'auto'
-            vlan = unless !opts[:vlan].nil?
+            mac      = 'auto'
+            vlan     = 1
             unless opts[:mac].nil?
               if opts[:mac].match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/) || !opts[:mac].match(/auto/)
                 mac = opts[:mac]
               end
             end
-            nictype = opts[:nictype] unless opts[:nictype].nil?
+            nictype = opts[:nictype]  unless opts[:nictype].nil?
             dns = config.dns
             dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '1.0.0.1' }] unless !config.dns.nil?
+            dnsrun = 0
             servers = []
             unless dns.nil?
               dns.each do |server|
