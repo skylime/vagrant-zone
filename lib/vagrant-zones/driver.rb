@@ -26,14 +26,14 @@ module VagrantPlugins
         @machine = machine
         @executor = Executor::Exec.new
         @pfexec = if Process.uid.zero?
-            ''
-          else
-            if system('sudo -v')
-              'sudo'
-            else
-              'pfexec'
-            end
-          end
+                    ''
+                  else
+                    if system('sudo -v')
+                      'sudo'
+                    else
+                      'pfexec'
+                    end
+                  end
       end
 
       def state(machine)
