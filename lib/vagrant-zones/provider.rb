@@ -30,6 +30,7 @@ module VagrantPlugins
 				user = driver.user(@machine)
 				userkey = driver.userprivatekeypath(@machine).to_s
 				vagrantuserpassword = driver.vagrantuserpass(@machine).to_s
+				passwordauth = "yes" 
 				return nil if !ip
         portnumber = driver.sshport(@machine).to_s 
 				ssh_info = {
@@ -40,7 +41,7 @@ module VagrantPlugins
 					private_key_path: userkey,
 					PasswordAuthentication: 'passwordauth'
 				}
-        puts ssh_info unless ssh_info.nil?
+        return ssh_info unless ssh_info.nil?
 			end
 
       # This should return an action callable for the given name.
