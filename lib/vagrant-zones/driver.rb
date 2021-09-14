@@ -57,10 +57,10 @@ module VagrantPlugins
 
       def install(machine, uiinfo)
         config = machine.provider_config
-        box  = "#{@machine.data_dir.to_s}/#{@machine.config.vm.box}"
+        box  = "#{@machine.data_dir}/#{@machine.config.vm.box}"
         name = @machine.name
         if config.brand == 'lx'
-          results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}") 
+          results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
           raise 'You appear to not have LX Zones installed in this Machine' if results.include? 'unknown brand'
         end
         execute(false, "#{@pfexec} zoneadm -z #{name} install") if config.brand == 'bhyve'
@@ -72,14 +72,14 @@ module VagrantPlugins
       ## Control the Machine from inside the machine
       def control(machine, control)
         case control
-        when  'restart'
+        when 'restart'
           command = 'sudo shutdown -r'
           ssh_run_command(machine, command)
         when 'shutdown'
           command = 'sudo shutdown -h now'
           ssh_run_command(machine, command)
         else
-          puts "No Command specified"
+          puts 'No Command specified'
         end
       end
 
@@ -96,8 +96,8 @@ module VagrantPlugins
 
       def console(machine, command, ip, port)
         name = machine.name
-        unless port.nil?
-          ip = '127.0.0.1' if ip.nil?
+        if !port.nil?
+          ip = '127.0.0.1' unless !ip.nil?
           netport = "#{ip}:#{port}"
         else
           netport = ''
