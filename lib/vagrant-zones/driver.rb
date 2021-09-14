@@ -127,19 +127,19 @@ module VagrantPlugins
           end
           mac = 'auto'
           mac = opts[:mac] unless opts[:mac].nil?
-          case nictype
+          nic_type = case nictype
           when /external/
-            nic_type = 'e'
+            'e'
           when /internal/
-            nic_type = 'i'
+            'i'
           when /carp/
-            nic_type = 'c'
+            'c'
           when /management/
-            nic_type = 'm'
+            'm'
           when /host/
-            nic_type = 'h'
+            'h'
           else
-            nic_type = 'e'
+            'e'
           end
           if adpatertype.to_s == 'public_network'
             if opts[:dhcp] == true
@@ -157,7 +157,7 @@ module VagrantPlugins
                           return nil if ip.length.empty?
                           return ip.gsub(/\t/, '')
                           break
-                        elsif responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+                        elsif responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
                           raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                         end
                       end
@@ -173,7 +173,7 @@ module VagrantPlugins
                         zlogin_read.expect(/\r\n/) { |line| responses.push line }
                         if responses[-1].to_s.match(/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/)
                           ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
-                          return nil if ip.length == 0
+                          return nil if ip.empty?
 
                           return ip.gsub /\t/, ''
                           break
@@ -190,7 +190,7 @@ module VagrantPlugins
             elsif opts[:dhcp] == false || opts[:dhcp].nil?
               if opts[:managed]
                 ip = opts[:ip].to_s
-                return nil if ip.length == 0
+                return nil if ip.empty?
 
                 return ip.gsub /\t/, ''
               end
@@ -203,6 +203,7 @@ module VagrantPlugins
       def network(machine, uiinfo, state)
         config = machine.provider_config
         name = @machine.name
+        cloud_init_enabled = config.cloud_init_enabled
         if state == 'setup'
           ## Remove old installer netplan config
           uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
@@ -213,26 +214,25 @@ module VagrantPlugins
             link = opts[:bridge]
             nic_number = opts[:nic_number].to_s
             netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
-            ip          = opts[:ip].to_s
-            defrouter   = opts[:gateway].to_s
-            cloud_init_enabled = config.cloud_init_enabled
-            allowed_address = "#{ip.to_s}/#{netmask.to_s}"
-            if ip.length == 0
+            ip = opts[:ip].to_s
+            defrouter = opts[:gateway].to_s
+            
+            allowed_address = "#{ip}/#{netmask}"
+            if ip.empty?
               ip = nil
             else
               ip = ip.gsub /\t/, ''
             end
-            mac      = 'auto'
-            vlan     = 1
+            mac = 'auto'
+            vlan = unless !opts[:vlan].nil?
             unless opts[:mac].nil?
               if opts[:mac].match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/) || !opts[:mac].match(/auto/)
                 mac = opts[:mac]
               end
             end
-            nictype = opts[:nictype]  unless opts[:nictype].nil?
+            nictype = opts[:nictype] unless opts[:nictype].nil?
             dns = config.dns
             dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '1.0.0.1' }] unless !config.dns.nil?
-            dnsrun = 0
             servers = []
             unless dns.nil?
               dns.each do |server|
@@ -254,36 +254,36 @@ module VagrantPlugins
               'e'
             end
             vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
-            if state == 'create'
-              if !opts[:vlan].nil?
+            case state
+            when 'create'
+              unless opts[:vlan].nil?
                 vlan = opts[:vlan]
                 uiinfo.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
                 execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
               else
                 execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
               end
-            elsif state == 'delete'
+            when 'delete'
               uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name)
               vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
-              if vnic_configured == "#{vnic_name}"
-                execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}")
-              end
-            elsif state == 'config'
+              execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
+            when 'config'
               uiinfo.info(I18n.t('vagrant_zones.vnic_setup') + vnic_name)
-              if config.brand == 'lx'
+              case config.brand
+              when 'lx'
                 nic_attr = %{add net
   set physical=#{vnic_name}
   set global-nic=auto
   set allowed-address=#{allowed_address}
-  add property (name=gateway,value="#{@defrouter.to_s}")
+  add property (name=gateway,value="#{@defrouter}")
   add property (name=ips,value="#{allowed_address}")
   add property (name=primary,value="true")
 end              }
                 File.open("#{name}.zoneconfig", 'a') do |f|
                   f.puts nic_attr
                 end
-              elsif config.brand == 'bhyve'
-                if config.cloud_init_enabled
+              when 'bhyve'
+                if cloud_init_enabled 
                   nic_attr = %{add net
   set physical=#{vnic_name}
   set allowed-address=#{allowed_address}
@@ -292,16 +292,19 @@ end                  }
                     f.puts nic_attr
                   end
                 else
-                  nic_attr = %{add net
+                  nic_attr = %(add net
   set physical=#{vnic_name}
   set allowed-address=#{allowed_address}
-end                  }
+end                  )
                   File.open("#{name}.zoneconfig", 'a') do |f|
                     f.puts nic_attr
                   end
                 end
+              when 'kvm'
+                if cloud_init_enabled
+                  puts 'Its a KVM machine and cloud_init_enabled'
               end
-            elsif state == 'setup'
+            when 'setup'
               responses = []
               vmnic = []
               uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
