@@ -749,7 +749,6 @@ end            )
             File.open("#{name}.zoneconfig", 'a') do |f|
               f.puts cloud_init_attr
             end
-          end
         end
 
         ## Nic Configurations
