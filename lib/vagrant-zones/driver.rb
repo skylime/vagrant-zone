@@ -189,13 +189,11 @@ module VagrantPlugins
                   end
                 end
               end
-            elsif opts[:dhcp] == false || opts[:dhcp].nil?
-              if opts[:managed]
-                ip = opts[:ip].to_s
-                return nil if ip.empty?
+            elsif (opts[:dhcp] == false || opts[:dhcp].nil?) && opts[:managed]
+              ip = opts[:ip].to_s
+              return nil if ip.empty?
 
-                return ip.gsub(/\t/, '')
-              end
+              return ip.gsub(/\t/, '')
             end
           end
         end
@@ -315,7 +313,7 @@ end             )
                       unless interface[/#{regex}/, 1].nil?
                         if interface[/#{regex}/, 3].nil?
                           if interface[/#{regex}/, 1] == 'en'
-                            interface_desc = interface[/#{regex}/, 2].split('')
+                            interface_desc = interface[/#{regex}/, 2].chars
                             case interface_desc[0]
                             when 'x'
                               mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
@@ -339,8 +337,7 @@ end             )
                                       end
                         devid = nicfunction
                       end
-                      devid = devid.gsub(/f/, '')
-                      unless devid.nil?
+                      devid = devid.gsub(/f/, '') unless devid.nil?  
                         if nic_number == devid
                           vnic = vmnic[devid.to_i]
                           ## Get Device Mac Address for when Mac is not specified
@@ -399,7 +396,6 @@ end             )
                             raise errormessage if responses[-1].to_s.match(/Static Error Code: \b(?!0\b)\d{1,4}\b/)
                           end
                         end
-                      end
                     end
                     ## Check if last command ran successfully and break from the loop
                     zlogin_write.printf("echo \"Final Network Check Error Code: $?\"\n")
@@ -733,13 +729,13 @@ end            )
         ## Cloud-init settings
         if config.cloud_init_enabled
           cloudconfig = case config.cloud_init_enabled
-                        when 'on'
-                          'on'
-                        when 'off'
-                          'off'
-                        else
-                          config.cloud_init_enabled
-                        end
+          when 'on'
+            'on'
+          when 'off'
+            'off'
+          else
+            config.cloud_init_enabled
+          end
           unless config.cloud_init_dnsdomain.nil?
             cinfo = "Cloud-init dns-domain: #{config.cloud_init_dnsdomain}"
             uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + cinfo)
@@ -796,9 +792,9 @@ end            )
     set type=string
     set value=#{cloudconfig}
 end            )
-          File.open("#{name}.zoneconfig", 'a') do |f|
-            f.puts cloud_init_attr
-          end
+            File.open("#{name}.zoneconfig", 'a') do |f|
+              f.puts cloud_init_attr
+            end
         end
 
         ## Nic Configurations
