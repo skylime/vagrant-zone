@@ -312,15 +312,15 @@ end             )
                       devid = ''
                       unless interface[/#{regex}/, 1].nil?
                         if interface[/#{regex}/, 3].nil? && interface[/#{regex}/, 1] == 'en'
-                            interface_desc = interface[/#{regex}/, 2].chars
-                            case interface_desc[0]
-                            when 'x'
-                              mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
-                              mac_interface = mac_interface.split('enx', 0)
-                              nicbus = mac_interface[1]
-                            when 's' || 'o'
-                              nicbus = interface_desc[1]
-                            end
+                          interface_desc = interface[/#{regex}/, 2].chars
+                          case interface_desc[0]
+                          when 'x'
+                            mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
+                            mac_interface = mac_interface.split('enx', 0)
+                            nicbus = mac_interface[1]
+                          when 's' || 'o'
+                            nicbus = interface_desc[1]
+                          end
                         elsif interface[/#{regex}/, 1] != 'en'
                           nicbus = interface[/#{regex}/, 2]
                         else
@@ -387,7 +387,9 @@ end             )
                             zlogin_write.printf(cmd)
                             staticrun += 1
                           end
-                          uiinfo.info(I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml") if responses[-1].to_s.match(/Static Error Code: 0/)
+                          if responses[-1].to_s.match(/Static Error Code: 0/)
+                            uiinfo.info(I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml")
+                          end
                           errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                           raise errormessage if responses[-1].to_s.match(/Static Error Code: \b(?!0\b)\d{1,4}\b/)
                         end
@@ -725,13 +727,13 @@ end            )
         ## Cloud-init settings
         if config.cloud_init_enabled
           cloudconfig = case config.cloud_init_enabled
-          when 'on'
-            'on'
-          when 'off'
-            'off'
-          else
-            config.cloud_init_enabled
-          end
+                        when 'on'
+                          'on'
+                        when 'off'
+                          'off'
+                        else
+                          config.cloud_init_enabled
+                        end
           unless config.cloud_init_dnsdomain.nil?
             cinfo = "Cloud-init dns-domain: #{config.cloud_init_dnsdomain}"
             uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + cinfo)
@@ -788,9 +790,9 @@ end            )
     set type=string
     set value=#{cloudconfig}
 end          )
-            File.open("#{name}.zoneconfig", 'a') do |f|
-              f.puts cloud_init_attr
-            end
+          File.open("#{name}.zoneconfig", 'a') do |f|
+            f.puts cloud_init_attr
+          end
         end
 
         ## Nic Configurations
