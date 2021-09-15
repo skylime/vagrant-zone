@@ -441,10 +441,12 @@ end             )
           raise Errors::InvalidBrand
         end
 
+
+        
         ## Create Additional Disks
         unless config.additional_disks.nil?
-          disks = config.additional_disks
-          disks.each do |disk|
+          inspect config.additional_disks
+          config.additional_disks.each do |disk|
             cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
