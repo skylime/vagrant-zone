@@ -178,6 +178,7 @@ module VagrantPlugins
                           ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
                           return nil if ip.empty?
                           return ip.gsub(/\t/, '') unless ip.empty?
+
                           break
                         end
                         errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
@@ -221,8 +222,8 @@ module VagrantPlugins
             allowed_address = "#{ip}/#{netmask}"
             ip = if ip.empty?
                    nil
-            else
-              ip.gsub(/\t/, '')
+                 else
+                   ip.gsub(/\t/, '')
                  end
             mac = 'auto'
 
@@ -249,7 +250,7 @@ module VagrantPlugins
                          'm'
                        when /host/
                          'h'
-                        end
+                       end
             vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
             case state
             when 'create'
@@ -334,12 +335,12 @@ end             )
                           nicbus = interface[/#{regex}/, 3]
                         end
                         nicfunction = if interface[/#{regex}/, 4].nil?
-                          nicbus
-                        elsif interface[/#{regex}/, 5][/f\d/].nil?
-                            'f0'
-                        else
-                          interface[/#{regex}/, 5]
-                        end
+                                        nicbus
+                                      elsif interface[/#{regex}/, 5][/f\d/].nil?
+                                        'f0'
+                                      else
+                                        interface[/#{regex}/, 5]
+                                      end
                         devid = nicfunction
                       end
                       devid = devid.gsub(/f/, '')
@@ -537,10 +538,10 @@ add dataset
 end
 set max-lwps=2000
         )
-      when 'bhyve'
+        when 'bhyve'
         ## General Configuration
-        uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
-        attr = %(create
+          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
+          attr = %(create
 set zonepath=#{config.zonepath}/path
 set brand=#{config.brand}
 set autoboot=#{config.autoboot}
