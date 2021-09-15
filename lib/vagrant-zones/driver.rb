@@ -444,11 +444,11 @@ end             )
 
         ## Create Additional Disks
         return if config.additional_disks.nil?
-          config.additional_disks.each do |disk|
-            cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
-            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-            execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
-          end
+        config.additional_disks.each do |disk|
+          cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
+          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
+          execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
+        end
       end
 
       # This helps us set delete any associated datasets of the zone
