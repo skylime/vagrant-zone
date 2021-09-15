@@ -327,8 +327,6 @@ end             )
                               else
                                 interface[/#{regex}/, 5]
                               end
-
-
                       devid = devid.gsub(/f/, '') unless devid.nil?
                       if nic_number == devid
                         vnic = vmnic[devid.to_i]
