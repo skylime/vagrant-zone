@@ -442,7 +442,8 @@ end             )
         end
 
         ## Create Additional Disks
-        disks = config.additional_disks unless !config.additional_disks.nil? || config.additional_disks != 'none'
+        disks = config.additional_disks unless config.additional_disks.nil? || config.additional_disks != 'none'
+        puts disks
         disks.each do |disk|
           cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
@@ -450,6 +451,9 @@ end             )
         end
       end
 
+
+
+      
       # This helps us set delete any associated datasets of the zone
       def delete_dataset(machine, uiinfo)
         config = machine.provider_config
@@ -460,7 +464,7 @@ end             )
         ## If boot Dataset exists, delete it
         if dataset_boot_exists == "#{zp}/boot"
           ## Destroy Additional Disks
-          unless !config.additional_disks.nil? unless || config.additional_disks != 'none'
+          unless  !config.additional_disks.nil? || config.additional_disks != 'none'
             disks = config.additional_disks
             disks.each do |disk|
               addataset = "#{disk['array']}#{disk['path']}"
