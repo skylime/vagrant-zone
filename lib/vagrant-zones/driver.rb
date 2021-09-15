@@ -326,7 +326,7 @@ end             )
                               else
                                 interface[/#{regex}/, 5]
                               end
-                      raise 'No Device ID found' unless devid.nil?
+                      raise 'No Device ID found' if devid.nil?
 
                       if nic_number == devid.gsub(/f/, '')
                         vnic = vmnic[devid.to_i]
