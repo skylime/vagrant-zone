@@ -415,7 +415,8 @@ end                  )
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
                             if staticrun.zero?
-                              zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Static Error Code: $?\"\n")
+                              cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Static Error Code: $?\"\n"
+                              zlogin_write.printf(cmd)
                               staticrun += 1
                             end
                             if responses[-1].to_s.match(/Static Error Code: 0/)
