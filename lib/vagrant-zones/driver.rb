@@ -177,6 +177,7 @@ module VagrantPlugins
                         if responses[-1].to_s.match(/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/)
                           ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
                           return nil if ip.empty?
+
                           return ip.gsub(/\t/, '')
                           break
                         end
@@ -187,7 +188,6 @@ module VagrantPlugins
                     Process.kill('HUP', pid)
                   end
                 end
-
               end
             elsif opts[:dhcp] == false || opts[:dhcp].nil?
               if opts[:managed]
