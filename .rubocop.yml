@@ -72,7 +72,7 @@ Metrics/PerceivedComplexity:
                  human reader.
   Enabled: true
   VersionAdded: '0.25'
-  Max: 15
+  Max: 52
 
 Style/RedundantReturn:
   Description: >-
