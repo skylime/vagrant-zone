@@ -1036,7 +1036,7 @@ end            )
         end
 
         ## If state is configured or incomplete, uninstall from destroy from zonecfg
-        if %w['incomplete configured'].include?(vm_state)
+        if %w[incomplete configured].include?(vm_state)
           id.info(I18n.t('vagrant_zones.bhyve_zone_config_remove'))
           execute(false, "#{@pfexec} zonecfg -z #{name} delete -F")
         end
