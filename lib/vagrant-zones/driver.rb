@@ -233,9 +233,9 @@ module VagrantPlugins
             end
             nictype = opts[:nictype] unless opts[:nictype].nil?
             dns = config.dns
-            dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '1.0.0.1' }] if config.dns.nil?
+            dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
             servers = []
-            unless dns.nil?
+            unless dns&.nil?
               dns.each do |server|
                 servers.append(server)
               end
