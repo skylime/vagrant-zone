@@ -414,6 +414,7 @@ end             )
         dataset = "#{config.zonepath.delete_prefix('/')}/boot"
         datadir = machine.data_dir
         datasetroot = config.zonepath.delete_prefix('/').to_s
+
         ## Create Boot Volume
         case config.brand
         when 'lx'
@@ -440,17 +441,14 @@ end             )
         else
           raise Errors::InvalidBrand
         end
-        inspect config.additional_disks
-        puts config.additional_disks.length
-        puts config.additional_disks
+
         ## Create Additional Disks
-        return unless config.additional_disks.nil?
+        return if config.additional_disks.nil?
           config.additional_disks.each do |disk|
             cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
           end
-        end
       end
 
       # This helps us set delete any associated datasets of the zone
