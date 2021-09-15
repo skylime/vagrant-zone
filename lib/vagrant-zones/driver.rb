@@ -271,31 +271,31 @@ module VagrantPlugins
             elsif state == 'config'
               uiinfo.info(I18n.t('vagrant_zones.vnic_setup') + vnic_name)
               if config.brand == 'lx'
-                nic_attr = %{add net
+                nic_attr = %(add net
   set physical=#{vnic_name}
   set global-nic=auto
   set allowed-address=#{allowed_address}
   add property (name=gateway,value="#{@defrouter}")
   add property (name=ips,value="#{allowed_address}")
   add property (name=primary,value="true")
-end              }
+end              )
                 File.open("#{name}.zoneconfig", 'a') do |f|
                   f.puts nic_attr
                 end
               elsif config.brand == 'bhyve'
                 if cloud_init_enabled
-                  nic_attr = %{add net
+                  nic_attr = %(add net
   set physical=#{vnic_name}
   set allowed-address=#{allowed_address}
-end                  }
+end                  )
                   File.open("#{name}.zoneconfig", 'a') do |f|
                     f.puts nic_attr
                   end
                 else
-                  nic_attr = %{add net
+                  nic_attr = %(add net
   set physical=#{vnic_name}
   set allowed-address=#{allowed_address}
-end                  }
+end                  )
                   File.open("#{name}.zoneconfig", 'a') do |f|
                     f.puts nic_attr
                   end
@@ -375,7 +375,7 @@ end                  }
                             end
                           end
                           if opts[:dhcp] == true || opts[:dhcp].nil?
-                            netplan = %{network:
+                            netplan = %(network:
   version: 2
   ethernets:
     #{vnic_name}:
@@ -386,7 +386,7 @@ end                  }
       dhcp6: #{opts[:dhcp6]}
       set-name: #{vnic_name}
       nameservers:
-        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}]  }
+        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}]  )
                             if dhcprun == 0
                               command = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n"
                               zlogin_write.printf(command)
@@ -398,7 +398,7 @@ end                  }
                               raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                             end
                           elsif opts[:dhcp] == false
-                            netplan = %{network:
+                            netplan = %(network:
   version: 2
   ethernets:
     #{vnic_name}:
@@ -411,7 +411,7 @@ end                  }
       addresses: [#{ip}/#{netmask}]
       gateway4: #{defrouter}
       nameservers:
-        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}]  }
+        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
                             if staticrun == 0
                               zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Static Error Code: $?\"\n")
                               staticrun += 1
@@ -553,7 +553,7 @@ end                  }
             end
           end
           allowed_address = @ip + @network.netmask.to_s
-          attr = %{create
+          attr = %(create
 set zonepath=#{config.zonepath}/path
 set brand=#{config.brand}
 set autoboot=#{config.autoboot}
@@ -571,11 +571,11 @@ add dataset
   set name=#{config.zonepath.delete_prefix('/')}/boot
 end
 set max-lwps=2000
-          }
+        )
         elsif config.brand == 'bhyve'
           ## General Configuration
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
-          attr = %{create
+          attr = %(create
 set zonepath=#{config.zonepath}/path
 set brand=#{config.brand}
 set autoboot=#{config.autoboot}
@@ -622,7 +622,7 @@ add attr
   set name=type
   set type=string
   set value=#{config.os_type}
-end          }
+end     )
         end
         File.open("#{name}.zoneconfig", 'w') do |f|
           f.puts attr
@@ -631,11 +631,11 @@ end          }
         ## Shared Disk Configurations
         unless !config.shared_disk_enabled
           uiinfo.info(I18n.t('vagrant_zones.setting_alt_shared_disk_configurations') + path.path)
-          shared_disk_attr = %{add fs
+          shared_disk_attr = %(add fs
   set dir=/vagrant
   set special=#{config.shared_dir}
   set type=lofs
-end          }
+end       )
           File.open("#{name}.zoneconfig", 'a') do |f|
             f.puts shared_disk_attr
           end
@@ -643,22 +643,22 @@ end          }
 
         ## CPU Configurations
         if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm')
-          cpu_attr = %{add attr
+          cpu_attr = %(add attr
   set name=vcpus
   set type=string
   set value=#{config.cpus}
-end          }
+end       )
           File.open("#{name}.zoneconfig", 'a') do |f|
             f.puts cpu_attr
           end
         elsif config.cpu_configuration == 'complex' && (config.brand == 'bhyve' || config.brand == 'kvm')
 
           hash = config.complex_cpu_conf[0]
-          cpu_attr = %{add attr
+          cpu_attr = %(add attr
   set name=vcpus
   set type=string
   set value="sockets=#{hash['sockets']},cores=#{hash['cores']},threads=#{hash['threads']}"
-end          }
+end       )
           File.open("#{name}.zoneconfig", 'a') do |f|
             f.puts cpu_attr
           end
@@ -669,7 +669,7 @@ end          }
         #   ui.info(I18n.t('vagrant_zones.setting_pci_configurations') + path.path)
         #  puts config.ppt
         #  puts config.config.ppt
-        #  ppt_attr = %{
+        #  ppt_attr = %(
         # add device
         #  set match=/dev/ppt0
         # end
@@ -679,7 +679,7 @@ end          }
         #  set value='slot0'
         # end
         #  }
-        #  ppt_data_attr = %{
+        #  ppt_data_attr = %(
         # {ppt_data}
         #  }
 
@@ -698,7 +698,7 @@ end          }
             uiinfo.info(I18n.t('vagrant_zones.setting_cd_rom_configurations') + cdrom['path'])
             cdname = cdname + cdrun.to_s if cdrun > 0
             cdrun += 1
-            cdrom_attr = %{add attr
+            cdrom_attr = %(add attr
     set name=#{cdname}
     set type=string
     set value=#{cdrom['path']}
@@ -709,7 +709,7 @@ add fs
     set type=lofs
     add options ro
     add options nodevices
-end            }
+end         )
             File.open("#{name}.zoneconfig", 'a') do |f|
               f.puts cdrom_attr
             end
@@ -725,14 +725,14 @@ end            }
             uiinfo.info(I18n.t('vagrant_zones.setting_additional_disks_configurations') + disk['size'] + ', ' + disk['path'])
             diskname = diskname + diskrun.to_s if diskrun > 0
             diskrun += 1
-            additional_disk_attr = %{add device
+            additional_disk_attr = %(add device
   set match=/dev/zvol/rdsk#{disk['path']}
 end
 add attr
   set name=#{diskname}
   set type=string
   set value=#{disk['path']}
-end            }
+end         )
             File.open("#{name}.zoneconfig", 'a') do |f|
               f.puts additional_disk_attr
             end
@@ -755,11 +755,11 @@ end            }
             value = value + ',wait' if config.console_onboot
 
             uiinfo.info(I18n.t('vagrant_zones.setting_console_access') + console.to_s + ', ' + config.consoleport.to_s + ', ' + value.to_s)
-            console_attr = %{add attr
+            console_attr = %(add attr
     set name=#{console}
     set type=string
     set value=#{value}
-end            }
+end            )
             File.open("#{name}.zoneconfig", 'a') do |f|
               f.puts console_attr
             end
