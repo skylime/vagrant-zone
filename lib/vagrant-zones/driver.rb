@@ -445,13 +445,14 @@ end             )
         else
           raise Errors::InvalidBrand
         end
+        
         ## Create Additional Disks
-          disks = config.additional_disks unless config.additional_disks.nil? && config.additional_disks != 'none'
-          disks.each do |disk|
-            cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
-            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-            execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
-          end
+        disks = config.additional_disks unless config.additional_disks.nil? && config.additional_disks != 'none'
+        disks.each do |disk|
+          cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
+          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
+          execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
+        end
       end
 
       # This helps us set delete any associated datasets of the zone
