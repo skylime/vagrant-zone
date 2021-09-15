@@ -49,7 +49,7 @@ Metrics/CyclomaticComplexity:
 
 Metrics/BlockLength:
  Description: 'Limit Block to 139 Characters'
- Max: 140
+ Max: 180
 
 Metrics/ModuleLength:
  Description: 'Limit Block to 179 Characters'
