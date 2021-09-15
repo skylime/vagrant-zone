@@ -319,13 +319,14 @@ end             )
                                 interface[/#{regex}/, 5]
                               end
                       raise 'No Device ID found' if devid.nil?
-                      return 'No Device ID found' if opts[:nic_number] == devid.gsub(/f/, '')
-                      ## Get Device Mac Address for when Mac is not specified
-                      macregex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
-                      zlogin_write.printf("\nip link show dev #{vmnic[opts[:nic_number].to_i]} | grep ether | awk '{ print $2 }'\n")
-                      mac = responses[-1][0][macregex] if mac == 'auto'
-                      if opts[:dhcp] == true || opts[:dhcp].nil?
-                        netplan = %(network:
+
+                      if opts[:nic_number] == devid.gsub(/f/, '')
+                        ## Get Device Mac Address for when Mac is not specified
+                        macregex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
+                        zlogin_write.printf("\nip link show dev #{vmnic[opts[:nic_number].to_i]} | grep ether | awk '{ print $2 }'\n")
+                        mac = responses[-1][0][macregex] if mac == 'auto'
+                        if opts[:dhcp] == true || opts[:dhcp].nil?
+                          netplan = %(network:
   version: 2
   ethernets:
     #{vnic_name}:
@@ -337,17 +338,17 @@ end             )
       set-name: #{vnic_name}
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}]  )
-                        if dhcprun.zero?
-                          command = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"DHCP Error Code: $?\"\n"
-                          zlogin_write.printf(command)
-                          dhcprun += 1
-                        end
-                        infomessage = I18n.t('vagrant_zones.netplan_applied_dhcp') + "/etc/netplan/#{vnic_name}.yaml"
-                        uiinfo.info(infomessage) if responses[-1].to_s.match(/DHCP Error Code: 0/)
-                        errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-                        raise errormessage if responses[-1].to_s.match(/DHCP Error Code: \b(?!0\b)\d{1,4}\b/)
-                      elsif opts[:dhcp] == false
-                        netplan = %(network:
+                          if dhcprun.zero?
+                            command = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"DHCP Error Code: $?\"\n"
+                            zlogin_write.printf(command)
+                            dhcprun += 1
+                          end
+                          infomessage = I18n.t('vagrant_zones.netplan_applied_dhcp') + "/etc/netplan/#{vnic_name}.yaml"
+                          uiinfo.info(infomessage) if responses[-1].to_s.match(/DHCP Error Code: 0/)
+                          errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+                          raise errormessage if responses[-1].to_s.match(/DHCP Error Code: \b(?!0\b)\d{1,4}\b/)
+                        elsif opts[:dhcp] == false
+                          netplan = %(network:
   version: 2
   ethernets:
     #{vnic_name}:
@@ -361,16 +362,17 @@ end             )
       gateway4: #{defrouter}
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
-                        if staticrun.zero?
-                          cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Static Error Code: $?\"\n"
-                          zlogin_write.printf(cmd)
-                          staticrun += 1
+                          if staticrun.zero?
+                            cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Static Error Code: $?\"\n"
+                            zlogin_write.printf(cmd)
+                            staticrun += 1
+                          end
+                          if responses[-1].to_s.match(/Static Error Code: 0/)
+                            uiinfo.info(I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml")
+                          end
+                          errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+                          raise errormessage if responses[-1].to_s.match(/Static Error Code: \b(?!0\b)\d{1,4}\b/)
                         end
-                        if responses[-1].to_s.match(/Static Error Code: 0/)
-                          uiinfo.info(I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml")
-                        end
-                        errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-                        raise errormessage if responses[-1].to_s.match(/Static Error Code: \b(?!0\b)\d{1,4}\b/)
                       end
                     end
                     ## Check if last command ran successfully and break from the loop
