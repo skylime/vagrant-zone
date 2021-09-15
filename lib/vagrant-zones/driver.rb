@@ -531,7 +531,7 @@ end
 set max-lwps=2000
         )
         when 'bhyve'
-        ## General Configuration
+          ## General Configuration
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
           attr = %(create
 set zonepath=#{config.zonepath}/path
@@ -705,12 +705,12 @@ end         )
             port = if %w[webvnc vnc].include?(console)
                      console = 'vnc'
                      'on'
-            end
+                   end
 
             port = if %w[console].include?(console) && config.consoleport.nil?
                      'socket,/tmp/vm.com1'
                    else
-                    config.consoleport
+                     config.consoleport
                    end
 
             port += ',wait' if config.console_onboot
