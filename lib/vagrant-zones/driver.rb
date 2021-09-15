@@ -914,20 +914,18 @@ end            }
         name = @machine.name
         ret  = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
         return true if ret == 0
-
-        return false
+        false
       end
 
       # This gives us a  console to the VM for the user
       def zlogincommand(machine, cmd)
-        name = @machine.name
+        name = machine.name
         execute(false, "#{@pfexec} zlogin #{name} #{cmd}")
       end
 
       # This gives us a console to the VM
       def zlogin(machine, cmd)
         name = @machine.name
-        config = machine.provider_config
         responses = []
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           zlogin_read.expect(/\n/) { zlogin_write.printf("#{cmd} \; echo \"Error Code: $?\"\n") }
@@ -935,6 +933,7 @@ end            }
             loop do
               zlogin_read.expect(/\r\n/) { |line| responses.push line }
               break if responses[-1].to_s.match(/Error Code: 0/)
+
               errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
               raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
             end
