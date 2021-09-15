@@ -159,7 +159,7 @@ module VagrantPlugins
                           ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
                           return nil if ip.length.empty?
                           return ip.gsub(/\t/, '')
-                          break  
+                          break
                         end
                         errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                         raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
@@ -180,11 +180,11 @@ module VagrantPlugins
                           return nil if ip.empty?
 
                           return ip.gsub(/\t/, '')
-                          break   
+                          break
                         end
                         errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                         raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
-                       
+
                       end
                     end
                     Process.kill('HUP', pid)
@@ -512,9 +512,7 @@ end                  )
               cinfo="#{disk['size']}, #{addataset}"
               uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo)
               dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{addataset} |  awk '{ print $1 }' || true")
-              if dataset_exists == addataset
-                execute(false, "#{@pfexec} zfs destroy -r #{addataset}")
-              end
+              execute(false, "#{@pfexec} zfs destroy -r #{addataset}") if dataset_exists == addataset
             end
           end
           ## Destroy Boot dataset
@@ -738,13 +736,13 @@ end         )
           console = config.console
           if console != 'disabled'
             port = if ['webvnc', 'vnc'].include?(console)
-                    console = 'vnc'
-                    'on'
+                     console = 'vnc'
+                     'on'
                   elsif console == 'console'
                     port = 'socket,/tmp/vm.com1'
                     port = config.consoleport unless config.consoleport.nil?
                     port
-                  end
+                   end
 
             port += ',wait' if config.console_onboot
             cinfo = "Console type: #{console},  Port: #{port}"
