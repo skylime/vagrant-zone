@@ -302,7 +302,6 @@ end             )
 
                     vmnic.append(responses[-1][0][/#{regex}/]) if responses[-1][0] =~ regex
                     vmnic.each do |interface|
-                      devid = ''
                       unless interface[/#{regex}/, 1].nil?
                         if interface[/#{regex}/, 3].nil? && interface[/#{regex}/, 1] == 'en'
                           interface_desc = interface[/#{regex}/, 2].chars
@@ -328,6 +327,7 @@ end             )
                                 interface[/#{regex}/, 5]
                               end
                       raise 'No Device ID found' unless devid.nil?
+
                       if nic_number == devid.gsub(/f/, '')
                         vnic = vmnic[devid.to_i]
                         ## Get Device Mac Address for when Mac is not specified
