@@ -130,7 +130,6 @@ module VagrantPlugins
                     end
           mac = 'auto'
           mac = opts[:mac] unless opts[:mac].nil?
-          nic_type = 'e'
           nic_type = case nictype
                      when /external/
                        'e'
@@ -157,8 +156,9 @@ module VagrantPlugins
                         if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
                           ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
                           return nil if ip.length.empty?
-                          return ip.gsub(/\t/, '')
-                          break  
+
+                          return ip.gsub(/\t/, '') unless ip.length.empty?
+                          break
                         end
                         errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                         raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
