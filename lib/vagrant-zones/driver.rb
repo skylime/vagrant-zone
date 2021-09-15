@@ -328,46 +328,38 @@ end                  )
                       end
                     end
                     vmnic.each do |interface|
-                      nicfunction = ''
                       devid = ''
                       unless interface[/#{regex}/, 1].nil?
                         if interface[/#{regex}/, 3].nil?
                           if interface[/#{regex}/, 1] == 'en'
                             interface_desc = interface[/#{regex}/, 2].split('')
-                            nic = interface[/#{regex}/, 1] + interface_desc[0]
-                            if interface_desc[0] == 'x'
+                            case interface_desc[0]
+                            when 'x'
                               mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
                               mac_interface = mac_interface.split('enx', 0)
                               nicbus = mac_interface[1]
-                            elsif interface_desc[0] == 's' || interface_desc[0] == 'o'
+                            when 's' || 'o'
                               nicbus = interface_desc[1]
                             end
-                            devid = nicbus
                           else
-                            nic = interface[/#{regex}/, 1]
                             nicbus = interface[/#{regex}/, 2]
-                            devid = nicbus
                           end
                         else
-                          nic = interface[/#{regex}/, 1]
                           nicbus = interface[/#{regex}/, 3]
-                          devid = nicbus
                         end
+                        devid = nicbus
                         if interface[/#{regex}/, 4].nil?
                           nicfunction = nicbus
-                          devid = nicfunction
                         else
-                          nicdevice = interface[/#{regex}/, 4]
                           if interface[/#{regex}/, 5][/f\d/].nil?
                             nicfunction = 'f0'
-                            devid = nicfunction
                           else
                             nicfunction = interface[/#{regex}/, 5]
-                            devid = nicfunction
                           end
                         end
+                        devid = nicfunction
                       end
-                      devid = devid.gsub /f/, ''
+                      devid = devid.gsub(/f/, '')
                       unless devid.nil?
                         if nic_number == devid
                           vnic = vmnic[devid.to_i]
@@ -392,13 +384,14 @@ end                  )
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}]  )
                             if dhcprun.zero?
-                              command = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n"
+                              command = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"DHCP Error Code: $?\"\n"
                               zlogin_write.printf(command)
                               dhcprun += 1
                             end
-                            uiinfo.info(I18n.t('vagrant_zones.netplan_applied_dhcp') + "/etc/netplan/#{vnic_name}.yaml") if responses[-1].to_s.match(/DHCP Subprocess Error Code: 0/)
+                            infomessage = I18n.t('vagrant_zones.netplan_applied_dhcp') + "/etc/netplan/#{vnic_name}.yaml"
+                            uiinfo.info(infomessage) if responses[-1].to_s.match(/DHCP Error Code: 0/)
                             errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-                            raise errormessage if responses[-1].to_s.match(/DHCP Subprocess Error Code: \b(?!0\b)\d{1,4}\b/)
+                            raise errormessage if responses[-1].to_s.match(/DHCP Error Code: \b(?!0\b)\d{1,4}\b/)
                           elsif opts[:dhcp] == false
                             netplan = %(network:
   version: 2
@@ -423,7 +416,7 @@ end                  )
                               uiinfo.info(I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml")
                             end
                             errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-                            raise errormessage if responses[-1].to_s.match(/Static Error Code: \b(?![0]\b)\d{1,4}\b/)
+                            raise errormessage if responses[-1].to_s.match(/Static Error Code: \b(?!0\b)\d{1,4}\b/)
                           end
                         end
                       end
@@ -435,7 +428,7 @@ end                  )
                       break
                     end
                     errormessage = "==> #{name} ==> Final Network Check \nFailed with: #{responses[-1]}"
-                    raise errormessage if responses[-1].to_s.match(/Final Network Check Error Code: \b(?![0]\b)\d{1,4}\b/)
+                    raise errormessage if responses[-1].to_s.match(/Final Network Check Error Code: \b(?!0\b)\d{1,4}\b/)
                   end
                 end
                 Process.kill('HUP', pid)
@@ -463,7 +456,7 @@ end                  )
         when 'bhyve'
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_root') + datasetroot)
           execute(false, "#{@pfexec} zfs create #{datasetroot}")
-          cinfo="#{config.zonepathsize}, #{dataset}"
+          cinfo = "#{config.zonepathsize}, #{dataset}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot') + cinfo)
           execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + dataset)
@@ -485,7 +478,7 @@ end                  )
         unless  !config.additional_disks.nil? || config.additional_disks != 'none'
           disks = config.additional_disks
           disks.each do |disk|
-            cinfo="#{disk['size']}, #{disk['array']}#{disk['path']}"
+            cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
           end
@@ -506,7 +499,7 @@ end                  )
             disks = config.additional_disks
             disks.each do |disk|
               addataset = "#{disk['array']}#{disk['path']}"
-              cinfo="#{disk['size']}, #{addataset}"
+              cinfo = "#{disk['size']}, #{addataset}"
               uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo)
               dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{addataset} |  awk '{ print $1 }' || true")
               if dataset_exists == addataset
@@ -564,9 +557,9 @@ end
 set max-lwps=2000
         )
       when 'bhyve'
-          ## General Configuration
-          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
-          attr = %(create
+        ## General Configuration
+        uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
+        attr = %(create
 set zonepath=#{config.zonepath}/path
 set brand=#{config.brand}
 set autoboot=#{config.autoboot}
@@ -735,14 +728,14 @@ end         )
         unless config.console.nil?
           console = config.console
           if console != 'disabled'
-            port = if ['webvnc', 'vnc'].include?(console)
-                    console = 'vnc'
-                    'on'
-                  elsif console == 'console'
-                    port = 'socket,/tmp/vm.com1'
-                    port = config.consoleport unless config.consoleport.nil?
-                    port
-                  end
+            port = if %w[webvnc vnc].include?(console)
+                     console = 'vnc'
+                     'on'
+                     elsif console == 'console'
+                       port = 'socket,/tmp/vm.com1'
+                       port = config.consoleport unless config.consoleport.nil?
+                       port
+                   end
 
             port += ',wait' if config.console_onboot
             cinfo = "Console type: #{console},  Port: #{port}"
@@ -847,12 +840,9 @@ end            )
               Timeout.timeout(config.setup_wait) do
                 loop do
                   zlogin_read.expect(/\n/) { |line| responses.push line }
-                  if responses[-1].to_s.match(/:~#/)
-                    break
-                  elsif responses[-1].to_s.match(/login: /)
-                    ## Code to try to login with username and password
-                    uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login'))
-                  end
+                  break if responses[-1].to_s.match(/:~#/)
+                  ## Code to try to login with username and password
+                  uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login')) if responses[-1].to_s.match(/login: /)
                 end
               end
             end
