@@ -702,13 +702,11 @@ end         )
         unless config.console.nil?
           console = config.console
           if console != 'disabled'
-            port = if %w[webvnc vnc].include?(console)
-                     console = 'vnc'
-                     'on'
-                   end
-
             port = if %w[console].include?(console) && config.consoleport.nil?
                      'socket,/tmp/vm.com1'
+                   elsif %w[webvnc vnc].include?(console)
+                     console = 'vnc'
+                     'on'
                    else
                      config.consoleport
                    end
