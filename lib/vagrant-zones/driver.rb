@@ -294,8 +294,7 @@ end             )
 
                     vmnic.append(responses[-1][0][/#{regex}/]) if responses[-1][0] =~ regex
                     vmnic.each do |interface|
-                      unless interface[/#{regex}/, 1].nil?
-                        if interface[/#{regex}/, 3].nil? && interface[/#{regex}/, 1] == 'en'
+                        if interface[/#{regex}/, 3].nil? && interface[/#{regex}/, 1] == 'en' && !interface[/#{regex}/, 1].nil?
                           interface_desc = interface[/#{regex}/, 2].chars
                           case interface_desc[0]
                           when 'x'
@@ -310,7 +309,6 @@ end             )
                         else
                           nicbus = interface[/#{regex}/, 3]
                         end
-                      end
                       devid = if interface[/#{regex}/, 4].nil?
                                 nicbus
                               elsif interface[/#{regex}/, 5][/f\d/].nil?
