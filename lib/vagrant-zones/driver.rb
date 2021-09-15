@@ -705,9 +705,12 @@ end         )
             port = if %w[webvnc vnc].include?(console)
                      console = 'vnc'
                      'on'
-                   elsif console == 'console'
-                     config.consoleport unless config.consoleport.nil?
-                     'socket,/tmp/vm.com1' if config.consoleport.nil?
+            end
+
+            port = if %w[console].include?(console) && config.consoleport.nil?
+                     'socket,/tmp/vm.com1'
+                   else
+                    config.consoleport
                    end
 
             port += ',wait' if config.console_onboot
