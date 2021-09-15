@@ -494,14 +494,6 @@ end             )
         case config.brand
         when 'lx'
           uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
-          machine.config.vm.networks.each do |adpatertype, opts|
-            if adpatertype.to_s == 'public_network'
-              @ip = opts[:ip].to_s
-              cinfo = "#{opts[:ip]}/#{opts[:netmask]}"
-              @network = NetAddr.parse_net(cinfo)
-              @defrouter = opts[:gateway]
-            end
-          end
           attr = %(create
 set zonepath=#{config.zonepath}/path
 set brand=#{config.brand}
