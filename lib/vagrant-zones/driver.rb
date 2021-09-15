@@ -454,7 +454,6 @@ end                  )
 
       # This helps us create all the datasets for the zone
       def create_dataset(machine, uiinfo)
-        name = @machine.name
         config  = machine.provider_config
         dataset = "#{config.zonepath.delete_prefix('/')}/boot"
         datadir = machine.data_dir
@@ -472,7 +471,7 @@ end                  )
           execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + dataset)
           commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss')} | #{@pfexec} zfs recv -u -v -F #{dataset} "
-          Util::Subprocess.new commandtransfer do |stdout, stderr, thread|
+          Util::Subprocess.new commandtransfer do |_stdout, stderr, _thread|
             uiinfo.rewriting do |uiprogress|
               uiprogress.clear_line
               uiprogress.info(I18n.t('vagrant_zones.importing_box_image_to_disk') + "#{datadir}/box.zss ==> ", new_line: false)
@@ -490,13 +489,9 @@ end                  )
         ## Create Additional Disks
         unless  !config.additional_disks.nil? || config.additional_disks != 'none'
           disks = config.additional_disks
-          diskrun = 0
           disks.each do |disk|
-            diskname = 'disk'
             cinfo="#{disk['size']}, #{disk['array']}#{disk['path']}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-            diskname += diskrun.to_s if diskrun.positive?
-            diskrun += 1
             execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
           end
         end
@@ -504,7 +499,6 @@ end                  )
 
       # This helps us set delete any associated datasets of the zone
       def delete_dataset(machine, uiinfo)
-        name = @machine.name
         config = machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.delete_disks'))
         ## Check if Boot Dataset exists
