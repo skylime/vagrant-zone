@@ -122,3 +122,11 @@ Layout/CaseIndentation:
   Enabled: true
   AutoCorrect: true
 
+Layout/TrailingWhitespace:
+  Description: >-
+                 Enusures cases are Indented properly
+  Enabled: true
+  AutoCorrect: true
+
+  
+
