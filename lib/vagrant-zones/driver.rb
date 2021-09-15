@@ -488,7 +488,7 @@ end                  )
             diskname = 'disk'
             cinfo="#{disk['size']}, #{disk['array']}#{disk['path']}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-            diskname = diskname + diskrun.to_s if diskrun > 0
+            diskname = diskname + diskrun.to_s if diskrun.positive?
             diskrun += 1
             execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
           end
@@ -516,7 +516,7 @@ end                  )
               uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo)
               dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{addataset} |  awk '{ print $1 }' || true")
               if dataset_exists == addataset
-                diskname = diskname + diskrun.to_s if diskrun > 0
+                diskname = diskname + diskrun.to_s if diskrun.positive?
                 diskrun += 1
                 execute(false, "#{@pfexec} zfs destroy -r #{addataset}")
               end
@@ -629,7 +629,7 @@ end     )
         end
 
         ## Shared Disk Configurations
-        unless !config.shared_disk_enabled
+        if config.shared_disk_enabled
           uiinfo.info(I18n.t('vagrant_zones.setting_alt_shared_disk_configurations') + path.path)
           shared_disk_attr = %(add fs
   set dir=/vagrant
@@ -696,7 +696,7 @@ end       )
           cdroms.each do |cdrom|
             cdname = 'cdrom'
             uiinfo.info(I18n.t('vagrant_zones.setting_cd_rom_configurations') + cdrom['path'])
-            cdname = cdname + cdrun.to_s if cdrun > 0
+            cdname += cdrun.to_s if cdrun > 0
             cdrun += 1
             cdrom_attr = %(add attr
     set name=#{cdname}
@@ -722,8 +722,9 @@ end         )
           diskrun = 0
           disks.each do |disk|
             diskname = 'disk'
-            uiinfo.info(I18n.t('vagrant_zones.setting_additional_disks_configurations') + disk['size'] + ', ' + disk['path'])
-            diskname = diskname + diskrun.to_s if diskrun > 0
+            cinfo = "#{disk['size']}, #{disk['path']}"
+            uiinfo.info(I18n.t('vagrant_zones.setting_additional_disks_configurations') + cinfo)
+            diskname += diskrun.to_s if diskrun.positive?
             diskrun += 1
             additional_disk_attr = %(add device
   set match=/dev/zvol/rdsk#{disk['path']}
@@ -744,21 +745,21 @@ end         )
           console = config.console
           if console != 'disabled'
             port = if ['webvnc', 'vnc'].include?(console)
-              console = 'vnc'
-              'on'
-            elsif console == 'console'
-              port = "socket,/tmp/vm.com1"
-              port = config.consoleport unless config.consoleport.nil?
-              port
-            end
+                    console = 'vnc'
+                    'on'
+                  elsif console == 'console'
+                    port = 'socket,/tmp/vm.com1'
+                    port = config.consoleport unless config.consoleport.nil?
+                    port
+                  end
 
-            port += ",wait" if config.console_onboot
+            port += ',wait' if config.console_onboot
             cinfo = "Console type: #{console},  Port: #{port}"
             uiinfo.info(I18n.t('vagrant_zones.setting_console_access') + cinfo)
             console_attr = %(add attr
     set name=#{console}
     set type=string
-    set value=#{value}
+    set value=#{port}
 end            )
             File.open("#{name}.zoneconfig", 'a') do |f|
               f.puts console_attr
