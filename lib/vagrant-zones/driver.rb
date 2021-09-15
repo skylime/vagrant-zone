@@ -444,7 +444,7 @@ end             )
         puts config.additional_disks.length
         puts config.additional_disks
         ## Create Additional Disks
-        unless config.additional_disks.nil?
+        return unless config.additional_disks.nil?
           config.additional_disks.each do |disk|
             cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
@@ -463,8 +463,6 @@ end             )
         ## If boot Dataset exists, delete it
         if dataset_boot_exists == "#{zp}/boot"
           ## Destroy Additional Disks
-          puts config.additional_disks.length
-          puts config.additional_disks
           unless  config.additional_disks.nil?
             disks = config.additional_disks
             disks.each do |disk|
