@@ -443,7 +443,6 @@ end             )
 
         ## Create Additional Disks
         disks = config.additional_disks unless config.additional_disks.nil? || config.additional_disks != 'none'
-        puts disks
         disks.each do |disk|
           cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
@@ -451,9 +450,6 @@ end             )
         end
       end
 
-
-
-      
       # This helps us set delete any associated datasets of the zone
       def delete_dataset(machine, uiinfo)
         config = machine.provider_config
