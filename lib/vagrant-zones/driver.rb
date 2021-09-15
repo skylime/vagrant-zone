@@ -228,12 +228,8 @@ module VagrantPlugins
             mac = 'auto'
 
             regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
-            if (opts[:mac].nil? || opts[:mac].match(/auto/)) && opts[:mac].match(regex) )
-              mac = opts[:mac]
-            end
             mac = opts[:mac] unless opts[:mac].nil?
-            mac = nil unless mac.match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)
-            end
+            mac = nil unless mac.match(regex)
             nictype = opts[:nictype] unless opts[:nictype].nil?
             dns = config.dns
             dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?

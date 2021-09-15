@@ -134,3 +134,8 @@ Layout/EmptyLinesAroundBlockBody:
   Enabled: true
   AutoCorrect: true
 
+Layout/ElseAlignment:
+  Description: >-
+                 Enusures cases are Indented properly
+  Enabled: true
+  AutoCorrect: true
