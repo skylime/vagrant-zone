@@ -460,10 +460,11 @@ end                  )
         datadir = machine.data_dir
         datasetroot = config.zonepath.delete_prefix('/').to_s
         ## Create Boot Volume
-        if config.brand == 'lx'
+        case config.brand
+        when 'lx'
           uiinfo.info(I18n.t('vagrant_zones.lx_zone_dataset') + dataset)
           execute(false, "#{@pfexec} zfs create -o zoned=on -p #{dataset}")
-        elsif config.brand == 'bhyve'
+        when 'bhyve'
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_root') + datasetroot)
           execute(false, "#{@pfexec} zfs create #{datasetroot}")
           cinfo="#{config.zonepathsize}, #{dataset}"
@@ -479,9 +480,9 @@ end                  )
             end
           end
           uiinfo.clear_line
-        elsif config.brand == 'illumos'
+        when 'illumos'
           raise Errors::NotYetImplemented
-        elsif config.brand == 'kvm'
+        when 'kvm'
           raise Errors::NotYetImplemented
         else
           raise Errors::InvalidBrand
