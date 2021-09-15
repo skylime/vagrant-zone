@@ -445,9 +445,9 @@ end             )
         else
           raise Errors::InvalidBrand
         end
-        
+
         ## Create Additional Disks
-        disks = config.additional_disks unless config.additional_disks.nil? && config.additional_disks != 'none'
+        disks = config.additional_disks unless config.additional_disks.nil? || config.additional_disks != 'none'
         disks.each do |disk|
           cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
