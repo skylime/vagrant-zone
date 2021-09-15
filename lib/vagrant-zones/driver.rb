@@ -141,7 +141,7 @@ module VagrantPlugins
                        'm'
                      when /host/
                        'h'
-                      else
+                     else
                        'e'
                      end
           if adpatertype.to_s == 'public_network'
@@ -158,12 +158,12 @@ module VagrantPlugins
                         if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
                           ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
                           return nil if ip.length.empty?
+
                           return ip.gsub(/\t/, '')
                           break
                         end
                         errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                         raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
-
                       end
                     end
                     Process.kill('HUP', pid)
@@ -184,7 +184,6 @@ module VagrantPlugins
                         end
                         errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                         raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
-
                       end
                     end
                     Process.kill('HUP', pid)
@@ -225,8 +224,8 @@ module VagrantPlugins
             allowed_address = "#{ip}/#{netmask}"
             ip = if ip.empty?
                    nil
-            else
-              ip.gsub /\t/, ''
+                 else
+                   ip.gsub /\t/, ''
                  end
             mac = 'auto'
             vlan = 1
@@ -255,7 +254,7 @@ module VagrantPlugins
                          'm'
                        when /host/
                          'h'
-            else
+                       else
                          'e'
                        end
             vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
@@ -398,7 +397,7 @@ end                  )
                             end
                             if responses[-1].to_s.match(/DHCP Subprocess Error Code: 0/)
                               uiinfo.info(I18n.t('vagrant_zones.netplan_applied_dhcp') + "/etc/netplan/#{vnic_name}.yaml")
-                            elsif responses[-1].to_s.match(/DHCP Subprocess Error Code: \b(?![0]\b)\d{1,4}\b/)
+                            elsif responses[-1].to_s.match(/DHCP Subprocess Error Code: \b(?!0\b)\d{1,4}\b/)
                               raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                             end
                           elsif opts[:dhcp] == false
@@ -422,7 +421,7 @@ end                  )
                             end
                             if responses[-1].to_s.match(/Static Error Code: 0/)
                               uiinfo.info(I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml")
-                            elsif responses[-1].to_s.match(/Static Error Code: \b(?![0]\b)\d{1,4}\b/)
+                            elsif responses[-1].to_s.match(/Static Error Code: \b(?!0\b)\d{1,4}\b/)
                               raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                             end
                           end
@@ -434,7 +433,7 @@ end                  )
                     if responses[-1].to_s.match(/Final Network Check Error Code: 0/)
                       uiinfo.info(I18n.t('vagrant_zones.netplan_set'))
                       break
-                    elsif responses[-1].to_s.match(/Final Network Check Error Code: \b(?![0]\b)\d{1,4}\b/)
+                    elsif responses[-1].to_s.match(/Final Network Check Error Code: \b(?!0\b)\d{1,4}\b/)
                       raise "==> #{name} ==> Final Network Check \nFailed with: #{responses[-1]}"
                     end
                   end
@@ -464,7 +463,7 @@ end                  )
         when 'bhyve'
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_root') + datasetroot)
           execute(false, "#{@pfexec} zfs create #{datasetroot}")
-          cinfo="#{config.zonepathsize}, #{dataset}"
+          cinfo = "#{config.zonepathsize}, #{dataset}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot') + cinfo)
           execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + dataset)
@@ -488,7 +487,7 @@ end                  )
         unless  !config.additional_disks.nil? || config.additional_disks != 'none'
           disks = config.additional_disks
           disks.each do |disk|
-            cinfo="#{disk['size']}, #{disk['array']}#{disk['path']}"
+            cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
           end
@@ -509,7 +508,7 @@ end                  )
             disks = config.additional_disks
             disks.each do |disk|
               addataset = "#{disk['array']}#{disk['path']}"
-              cinfo="#{disk['size']}, #{addataset}"
+              cinfo = "#{disk['size']}, #{addataset}"
               uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo)
               dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{addataset} |  awk '{ print $1 }' || true")
               execute(false, "#{@pfexec} zfs destroy -r #{addataset}") if dataset_exists == addataset
@@ -738,10 +737,10 @@ end         )
             port = if ['webvnc', 'vnc'].include?(console)
                      console = 'vnc'
                      'on'
-                  elsif console == 'console'
-                    port = 'socket,/tmp/vm.com1'
-                    port = config.consoleport unless config.consoleport.nil?
-                    port
+                   elsif console == 'console'
+                     port = 'socket,/tmp/vm.com1'
+                     port = config.consoleport unless config.consoleport.nil?
+                     port
                    end
 
             port += ',wait' if config.console_onboot
