@@ -386,7 +386,7 @@ end                  }
       dhcp6: #{opts[:dhcp6]}
       set-name: #{vnic_name}
       nameservers:
-        addresses: [#{servers[0]["nameserver"]} , #{servers[1]["nameserver"]}]  }
+        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}]  }
                             if dhcprun == 0
                               command = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n"
                               zlogin_write.printf(command)
@@ -411,7 +411,7 @@ end                  }
       addresses: [#{ip}/#{netmask}]
       gateway4: #{defrouter}
       nameservers:
-        addresses: [#{servers[0]["nameserver"]} , #{servers[1]["nameserver"]}]  }
+        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}]  }
                             if staticrun == 0
                               zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Static Error Code: $?\"\n")
                               staticrun += 1
@@ -490,7 +490,7 @@ end                  }
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             diskname = diskname + diskrun.to_s if diskrun > 0
             diskrun += 1
-            execute(true, "#{@pfexec} zfs create -V #{disk["size"]} #{disk["array"]}#{disk["path"]}")
+            execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
           end
         end
       end
@@ -510,9 +510,9 @@ end                  }
             disks = config.additional_disks
             diskrun = 0
             disks.each do |disk|
-              addataset = "#{disk["array"]}#{disk["path"]}"
+              addataset = "#{disk['array']}#{disk['path']}"
               diskname = 'disk'
-              cinfo="#{disk["size"]}, #{addataset}"
+              cinfo="#{disk['size']}, #{addataset}"
               uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo)
               dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{addataset} |  awk '{ print $1 }' || true")
               if dataset_exists == addataset
@@ -568,7 +568,7 @@ add capped-memory
   set locked=#{config.memory}
 end
 add dataset
-  set name=#{config.zonepath.delete_prefix("/")}/boot
+  set name=#{config.zonepath.delete_prefix('/')}/boot
 end
 set max-lwps=2000
           }
@@ -616,7 +616,7 @@ end
 add attr
   set name=bootdisk
   set type=string
-  set value=#{config.zonepath.delete_prefix("/")}/boot
+  set value=#{config.zonepath.delete_prefix('/')}/boot
 end
 add attr
   set name=type
@@ -657,7 +657,7 @@ end          }
           cpu_attr = %{add attr
   set name=vcpus
   set type=string
-  set value="sockets=#{hash["sockets"]},cores=#{hash["cores"]},threads=#{hash["threads"]}"
+  set value="sockets=#{hash['sockets']},cores=#{hash['cores']},threads=#{hash['threads']}"
 end          }
           File.open("#{name}.zoneconfig", 'a') do |f|
             f.puts cpu_attr
@@ -666,7 +666,7 @@ end          }
 
         ### Passthrough PCI Devices
         # if config.ppt_devices == 'none'
-        #   ui.info(I18n.t("vagrant_zones.setting_pci_configurations") + path.path)
+        #   ui.info(I18n.t('vagrant_zones.setting_pci_configurations') + path.path)
         #  puts config.ppt
         #  puts config.config.ppt
         #  ppt_attr = %{
@@ -676,7 +676,7 @@ end          }
         # add attr
         #  set name=ppt0
         #  set type=string
-        #  set value="slot0"
+        #  set value='slot0'
         # end
         #  }
         #  ppt_data_attr = %{
@@ -701,11 +701,11 @@ end          }
             cdrom_attr = %{add attr
     set name=#{cdname}
     set type=string
-    set value=#{cdrom["path"]}
+    set value=#{cdrom['path']}
 end
 add fs
-    set dir=#{cdrom["path"]}
-    set special=#{cdrom["path"]}
+    set dir=#{cdrom['path']}
+    set special=#{cdrom['path']}
     set type=lofs
     add options ro
     add options nodevices
@@ -726,12 +726,12 @@ end            }
             diskname = diskname + diskrun.to_s if diskrun > 0
             diskrun += 1
             additional_disk_attr = %{add device
-  set match=/dev/zvol/rdsk#{disk["path"]}
+  set match=/dev/zvol/rdsk#{disk['path']}
 end
 add attr
   set name=#{diskname}
   set type=string
-  set value=#{disk["path"]}
+  set value=#{disk['path']}
 end            }
             File.open("#{name}.zoneconfig", 'a') do |f|
               f.puts additional_disk_attr
