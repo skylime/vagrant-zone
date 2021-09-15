@@ -1030,25 +1030,32 @@ end            )
       def halt(machine, uiinfo)
         name = machine.name
         config = machine.provider_config
-
+        
         ## Check state in zoneadm
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 
-          begin if vm_state == 'running'
-            uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown'))
+
+        
+        
+          uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown'))
+          begin
             Timeout.timeout(config.clean_shutdown_time) do
-              execute(false, "#{@pfexec} zoneadm -z #{name} shutdown")
+              execute(false, "#{@pfexec} zoneadm -z #{name} shutdown") if vm_state == 'running'
             end
           rescue Timeout::Error
-            uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown_failed') + config.clean_shutdown_time.to_s)
+            uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown_failed') + config.clean_shutdown_time)
             begin
               Timeout.timeout(60) do
                 execute(false, "#{@pfexec} zoneadm -z #{name} halt")
               end
             rescue Timeout::Error
-              raise "==> #{name}: VM failed to halt in alloted time 60 after waiting to shutdown for #{config.clean_shutdown_time.to_i}"
+              raise "==> #{name}: VM failed to halt in alloted time 60 after waiting to shutdown for #{config.clean_shutdown_time}"
             end
           end
+
+
+
+
       end
 
       # Destroys the Zone configurations and path
