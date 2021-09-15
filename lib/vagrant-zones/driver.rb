@@ -441,8 +441,6 @@ end             )
           raise Errors::InvalidBrand
         end
 
-
-        
         ## Create Additional Disks
         unless config.additional_disks.nil?
           inspect config.additional_disks
