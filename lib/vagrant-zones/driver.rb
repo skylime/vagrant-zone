@@ -294,21 +294,21 @@ end             )
 
                     vmnic.append(responses[-1][0][/#{regex}/]) if responses[-1][0] =~ regex
                     vmnic.each do |interface|
-                        if interface[/#{regex}/, 3].nil? && interface[/#{regex}/, 1] == 'en' && !interface[/#{regex}/, 1].nil?
-                          interface_desc = interface[/#{regex}/, 2].chars
-                          case interface_desc[0]
-                          when 'x'
-                            mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
-                            mac_interface = mac_interface.split('enx', 0)
-                            nicbus = mac_interface[1]
-                          when 's' || 'o'
-                            nicbus = interface_desc[1]
-                          end
-                        elsif interface[/#{regex}/, 1] != 'en'
-                          nicbus = interface[/#{regex}/, 2]
-                        else
-                          nicbus = interface[/#{regex}/, 3]
+                      if interface[/#{regex}/, 3].nil? && interface[/#{regex}/, 1] == 'en' && !interface[/#{regex}/, 1].nil?
+                        interface_desc = interface[/#{regex}/, 2].chars
+                        case interface_desc[0]
+                        when 'x'
+                          mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
+                          mac_interface = mac_interface.split('enx', 0)
+                          nicbus = mac_interface[1]
+                        when 's' || 'o'
+                          nicbus = interface_desc[1]
                         end
+                      elsif interface[/#{regex}/, 1] != 'en'
+                        nicbus = interface[/#{regex}/, 2]
+                      else
+                        nicbus = interface[/#{regex}/, 3]
+                      end
                       devid = if interface[/#{regex}/, 4].nil?
                                 nicbus
                               elsif interface[/#{regex}/, 5][/f\d/].nil?
