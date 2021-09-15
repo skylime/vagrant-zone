@@ -442,7 +442,7 @@ end             )
         end
 
         ## Create Additional Disks
-        disks = config.additional_disks unless config.additional_disks.nil?
+        disks = config.additional_disks unless unless  !config.additional_disks.nil?        
         puts disks
         disks.each do |disk|
           cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
@@ -450,6 +450,20 @@ end             )
           execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
         end
       end
+
+        ## Create Additional Disks
+        unless config.additional_disks.nil?
+          disks = config.additional_disks
+          if config.additional_disks != 'none'
+            disks.each do |disk|
+              cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
+              uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
+              execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
+            end
+          end
+        end
+      end
+
 
       # This helps us set delete any associated datasets of the zone
       def delete_dataset(machine, uiinfo)
