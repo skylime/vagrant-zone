@@ -121,7 +121,6 @@ module VagrantPlugins
         name = @machine.name
         machine.config.vm.networks.each do |adpatertype, opts|
           responses = []
-          nic_number = opts[:nic_number].to_s
           nictype = if opts[:nictype].nil?
                       'external'
                     else
@@ -145,7 +144,7 @@ module VagrantPlugins
           if adpatertype.to_s == 'public_network'
             if opts[:dhcp] == true
               if opts[:managed]
-                vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
+                vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{opts[:nic_number].to_s}"
                 if mac == 'auto'
                   PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
                     command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
@@ -203,15 +202,12 @@ module VagrantPlugins
       def network(machine, uiinfo, state)
         config = machine.provider_config
         name = @machine.name
-        if state == 'setup'
-          ## Remove old installer netplan config
-          uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
-          zlogin(machine, 'rm -rf  /etc/netplan/*.yaml')
-        end
+
+        ## Remove old installer netplan config
+        uiinfo.info(I18n.t('vagrant_zones.netplan_remove')) if state == 'setup'
+        zlogin(machine, 'rm -rf  /etc/netplan/*.yaml') if state == 'setup'
         machine.config.vm.networks.each do |adpatertype, opts|
           if adpatertype.to_s == 'public_network'
-            link = opts[:bridge]
-            nic_number = opts[:nic_number].to_s
             netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
             ip = opts[:ip].to_s
             defrouter = opts[:gateway].to_s
@@ -245,15 +241,15 @@ module VagrantPlugins
                        when /host/
                          'h'
                        end
-            vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
+            vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{opts[:nic_number].to_s}"
             case state
             when 'create'
               if opts[:vlan].nil?
-                execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
+                execute(false, "#{@pfexec} dladm create-vnic -l #{opts[:bridge]} -m #{mac} #{vnic_name}")
               else
                 vlan = opts[:vlan]
                 uiinfo.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
-                execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
+                execute(false, "#{@pfexec} dladm create-vnic -l #{opts[:bridge]} -m #{mac} -v #{vlan} #{vnic_name}")
               end
             when 'delete'
               uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name)
@@ -328,10 +324,10 @@ end             )
                               end
                       raise 'No Device ID found' if devid.nil?
 
-                      if nic_number == devid.gsub(/f/, '')
+                      if opts[:nic_number] == devid.gsub(/f/, '')
                         ## Get Device Mac Address for when Mac is not specified
                         macregex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
-                        zlogin_write.printf("\nip link show dev #{vmnic[nic_number.to_i]} | grep ether | awk '{ print $2 }'\n")
+                        zlogin_write.printf("\nip link show dev #{vmnic[opts[:nic_number].to_i]} | grep ether | awk '{ print $2 }'\n")
                         mac = responses[-1][0][macregex] if mac == 'auto'
                         if opts[:dhcp] == true || opts[:dhcp].nil?
                           netplan = %(network:
