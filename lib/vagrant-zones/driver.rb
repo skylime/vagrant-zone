@@ -327,8 +327,8 @@ end             )
                               else
                                 interface[/#{regex}/, 5]
                               end
-                      devid = devid.gsub(/f/, '') unless devid.nil?
-                      if nic_number == devid
+                      raise 'No Device ID found' unless devid.nil?
+                      if nic_number == devid.gsub(/f/, '')
                         vnic = vmnic[devid.to_i]
                         ## Get Device Mac Address for when Mac is not specified
                         if mac == 'auto'
