@@ -64,11 +64,11 @@ module VagrantPlugins
           results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
           raise 'You appear to not have LX Zones installed in this Machine' if results.include? 'unknown brand'
         when 'bhyve'
-        execute(false, "#{@pfexec} zoneadm -z #{name} install")
+          execute(false, "#{@pfexec} zoneadm -z #{name} install")
         when 'kvm'
-        execute(false, "#{@pfexec} zoneadm -z #{name} install")
+          execute(false, "#{@pfexec} zoneadm -z #{name} install")
         when 'illumos'
-        execute(false, "#{@pfexec} zoneadm -z #{name} install") 
+          execute(false, "#{@pfexec} zoneadm -z #{name} install") 
         end
         uiinfo.info(I18n.t('vagrant_zones.installing_zone') + " brand: #{config.brand}")
       end
@@ -153,7 +153,7 @@ module VagrantPlugins
                 if mac == 'auto'
                   PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
                     command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
-                    zlogin_read.expect(/\n/) { |msg| zlogin_write.printf(command) }
+                    zlogin_read.expect(/\n/) { zlogin_write.printf(command) }
                     Timeout.timeout(30) do
                       loop do
                         zlogin_read.expect(/\r\n/) { |line| responses.push line }
@@ -161,10 +161,11 @@ module VagrantPlugins
                           ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
                           return nil if ip.length.empty?
                           return ip.gsub(/\t/, '')
-                          break
-                        elsif responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
-                          raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+                          break  
                         end
+                        errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+                        raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
+
                       end
                     end
                     Process.kill('HUP', pid)
@@ -172,7 +173,7 @@ module VagrantPlugins
                 else
                   PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
                     command = "ip -4 addr show dev  #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
-                    zlogin_read.expect(/\n/) { |msg| zlogin_write.printf(command) }
+                    zlogin_read.expect(/\n/) { zlogin_write.printf(command) }
                     Timeout.timeout(30) do
                       loop do
                         zlogin_read.expect(/\r\n/) { |line| responses.push line }
@@ -180,11 +181,12 @@ module VagrantPlugins
                           ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
                           return nil if ip.empty?
 
-                          return ip.gsub /\t/, ''
-                          break
-                        elsif responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
-                          raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+                          return ip.gsub(/\t/, '')
+                          break   
                         end
+                        errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+                        raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
+                       
                       end
                     end
                     Process.kill('HUP', pid)
@@ -197,7 +199,7 @@ module VagrantPlugins
                 ip = opts[:ip].to_s
                 return nil if ip.empty?
 
-                return ip.gsub /\t/, ''
+                return ip.gsub(/\t/, '')
               end
             end
           end
@@ -237,8 +239,7 @@ module VagrantPlugins
             end
             nictype = opts[:nictype] unless opts[:nictype].nil?
             dns = config.dns
-            dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '1.0.0.1' }] unless !config.dns.nil?
-            dnsrun = 0
+            dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '1.0.0.1' }] if config.dns.nil?
             servers = []
             unless dns.nil?
               dns.each do |server|
@@ -260,7 +261,8 @@ module VagrantPlugins
                          'e'
                        end
             vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
-            if state == 'create'
+            case state
+            when 'create'
               if opts[:vlan].nil?
                 execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
               else
@@ -268,11 +270,11 @@ module VagrantPlugins
                 uiinfo.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
                 execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
               end
-            elsif state == 'delete'
+            when 'delete'
               uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name)
               vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
               execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
-            elsif state == 'config'
+            when 'config'
               uiinfo.info(I18n.t('vagrant_zones.vnic_setup') + vnic_name)
               if config.brand == 'lx'
                 nic_attr = %(add net
@@ -305,7 +307,7 @@ end                  )
                   end
                 end
               end
-            elsif state == 'setup'
+            when 'setup'
               responses = []
               vmnic = []
               uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
