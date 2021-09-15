@@ -321,12 +321,12 @@ end             )
                         end
                       end
                       devid = if interface[/#{regex}/, 4].nil?
-                        nicbus
-                      elsif interface[/#{regex}/, 5][/f\d/].nil?
-                        'f0'
-                      else
-                        interface[/#{regex}/, 5]
-                      end
+                                nicbus
+                              elsif interface[/#{regex}/, 5][/f\d/].nil?
+                                'f0'
+                              else
+                                interface[/#{regex}/, 5]
+                              end
 
 
                       devid = devid.gsub(/f/, '') unless devid.nil?
