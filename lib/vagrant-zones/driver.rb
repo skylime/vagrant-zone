@@ -1044,7 +1044,7 @@ end          )
             execute(false, "#{@pfexec} zoneadm -z #{name} shutdown") if vm_state == 'running'
           end
         rescue Timeout::Error
-          uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown_failed') + config.clean_shutdown_time)
+          uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown_failed') + config.clean_shutdown_time.to_s)
           begin
             Timeout.timeout(60) do
               execute(false, "#{@pfexec} zoneadm -z #{name} halt")
