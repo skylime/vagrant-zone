@@ -897,12 +897,12 @@ end            }
             command = "#{@pfexec} curl #{id_rsa}  -O id_rsa"
             Util::Subprocess.new command do |stdout, stderr, thread|
               uiinfo.rewriting do |ui|
-                ui.clear_line()
+                ui.clear_line
                 ui.info(I18n.t('vagrant_zones.importing_vagrant_key'), new_line: false)
                 ui.report_progress(stderr, 100, false)
               end
             end
-            uiinfo.clear_line()
+            uiinfo.clear_line
             zlogincommand(machine, 'chown -R vagrant:vagrant /home/vagrant/.ssh')
             zlogincommand(machine, 'chmod 600 /home/vagrant/.ssh/authorized_keys')
           end
@@ -958,14 +958,14 @@ end            }
           id_rsa = 'https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant'
           file = "./id_rsa"
           command = "#{@pfexec} curl #{id_rsa}  -O #{file}"
-          Util::Subprocess.new command do |stdout, stderr, thread|
+          Util::Subprocess.new command do |stdout, stderr, _thread|
             uiinfo.rewriting do |ui|
-              ui.clear_line()
+              ui.clear_line
               ui.info(I18n.t('vagrant_zones.importing_vagrant_key'), new_line: false)
               ui.report_progress(stderr, 100, false)
             end
           end
-          uiinfo.clear_line()
+          uiinfo.clear_line
           userkey = './id_rsa'
         end
         userkey
