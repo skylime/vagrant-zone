@@ -319,14 +319,16 @@ end             )
                         else
                           nicbus = interface[/#{regex}/, 3]
                         end
-                        devid = if interface[/#{regex}/, 4].nil?
-                                  nicbus
-                                elsif interface[/#{regex}/, 5][/f\d/].nil?
-                                  'f0'
-                                else
-                                  interface[/#{regex}/, 5]
-                                end
                       end
+                      devid = if interface[/#{regex}/, 4].nil?
+                        nicbus
+                      elsif interface[/#{regex}/, 5][/f\d/].nil?
+                        'f0'
+                      else
+                        interface[/#{regex}/, 5]
+                      end
+
+
                       devid = devid.gsub(/f/, '') unless devid.nil?
                       if nic_number == devid
                         vnic = vmnic[devid.to_i]
@@ -442,7 +444,7 @@ end             )
         end
 
         ## Create Additional Disks
-        disks = config.additional_disks unless config.additional_disks.nil? || config.additional_disks == 'none'
+        disks = config.additional_disks unless config.additional_disks.nil? && config.additional_disks == 'none'
         disks.each do |disk|
           cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
