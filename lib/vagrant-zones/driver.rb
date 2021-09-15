@@ -205,7 +205,6 @@ module VagrantPlugins
       def network(machine, uiinfo, state)
         config = machine.provider_config
         name = @machine.name
-        cloud_init_enabled = config.cloud_init_enabled
         if state == 'setup'
           ## Remove old installer netplan config
           uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
@@ -281,9 +280,6 @@ end              )
                   f.puts nic_attr
                 end
               when 'bhyve'
-                if cloud_init_enabled
-
-                end
                 nic_attr = %(add net
   set physical=#{vnic_name}
   set allowed-address=#{allowed_address}
@@ -299,7 +295,7 @@ end             )
               ## regex to grab standard Device interface names in ifconfig
               regex = /(en|eth)(\d|o\d|s\d|x[0-9A-Fa-f]{2}{6}|(p\d)(s\d)(f?\d?))/
               PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-                zlogin_read.expect(/\n/) do |msg|
+                zlogin_read.expect(/\n/) do
                   zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n")
                 end
                 Timeout.timeout(30) do
@@ -729,6 +725,29 @@ end         )
 end            )
             File.open("#{name}.zoneconfig", 'a') do |f|
               f.puts console_attr
+            end
+          end
+        end
+
+        ## Cloud-init settings
+        unless config.cloud_init_enabled.nil?
+          cloudconfig = case config.cloud_init_enabled
+          when 'on'
+            'on'
+          when 'off'
+            'off'
+          else
+            config.cloud_init_enabled
+          end
+          cinfo = "Cloud Config: #{cloudconfig}"
+          uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cinfo)
+          cloud_init_attr = %(add attr
+    set name=cloud-init
+    set type=string
+    set value=#{cloudconfig}
+end            )
+            File.open("#{name}.zoneconfig", 'a') do |f|
+              f.puts cloud_init_attr
             end
           end
         end
