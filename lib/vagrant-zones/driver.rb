@@ -144,7 +144,7 @@ module VagrantPlugins
           if adpatertype.to_s == 'public_network'
             if opts[:dhcp] == true
               if opts[:managed]
-                vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{opts[:nic_number].to_s}"
+                vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{opts[:nic_number]}"
                 if mac == 'auto'
                   PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
                     command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
