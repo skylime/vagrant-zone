@@ -930,12 +930,13 @@ end            }
         config = machine.provider_config
         responses = []
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-          zlogin_read.expect(/\n/) { |msg| zlogin_write.printf("#{cmd} \; echo \"Error Code: $?\"\n") }
+          zlogin_read.expect(/\n/) { zlogin_write.printf("#{cmd} \; echo \"Error Code: $?\"\n") }
           Timeout.timeout(30) do
             loop do
               zlogin_read.expect(/\r\n/) { |line| responses.push line }
               break if responses[-1].to_s.match(/Error Code: 0/)
-              raise "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}" if responses[-1].to_s.match(/Error Code: \b(?![0]\b)\d{1,4}\b/)
+              errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+              raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
             end
           end
           Process.kill('HUP', pid)
@@ -946,7 +947,7 @@ end            }
       def user(machine)
         config = machine.provider_config
         user = config.vagrant_user unless config.vagrant_user.nil?
-        user = "vagrant" unless !config.vagrant_user.nil?
+        user = 'vagrant' if config.vagrant_user.nil?
         user
       end
 
@@ -956,9 +957,9 @@ end            }
         userkey = config.vagrant_user_private_key_path.to_s
         if config.vagrant_user_private_key_path.to_s.nil?
           id_rsa = 'https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant'
-          file = "./id_rsa"
+          file = './id_rsa'
           command = "#{@pfexec} curl #{id_rsa}  -O #{file}"
-          Util::Subprocess.new command do |stdout, stderr, _thread|
+          Util::Subprocess.new command do |_stdout, stderr, _thread|
             uiinfo.rewriting do |ui|
               ui.clear_line
               ui.info(I18n.t('vagrant_zones.importing_vagrant_key'), new_line: false)
@@ -975,7 +976,8 @@ end            }
       def sshport(machine)
         config = machine.provider_config
         sshport = '22'
-        config.sshport.to_s unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
+        sshport = config.sshport.to_s unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
+        sshport
       end
 
       # This filters the rdpport
@@ -1020,8 +1022,6 @@ end            }
         name = @machine.name
         config = machine.provider_config
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
-
-        
         if vm_state == 'running'
           uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown'))
           begin
