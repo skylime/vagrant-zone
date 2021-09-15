@@ -157,12 +157,12 @@ module VagrantPlugins
                         if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
                           ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
                           return nil if ip.length.empty?
-
                           return ip.gsub(/\t/, '')
-                          break
+                          break  
                         end
                         errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                         raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
+
                       end
                     end
                     Process.kill('HUP', pid)
@@ -222,14 +222,17 @@ module VagrantPlugins
             allowed_address = "#{ip}/#{netmask}"
             ip = if ip.empty?
                    nil
-                 else
-                   ip.gsub(/\t/, '')
+            else
+              ip.gsub(/\t/, '')
                  end
             mac = 'auto'
-            unless opts[:mac].nil?
-              if opts[:mac].match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/) || !opts[:mac].match(/auto/)
-                mac = opts[:mac]
-              end
+
+            regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
+            if (opts[:mac].nil? || opts[:mac].match(/auto/)) && opts[:mac].match(regex) )
+              mac = opts[:mac]
+            end
+            mac = opts[:mac] unless opts[:mac].nil?
+            mac = nil unless mac.match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)
             end
             nictype = opts[:nictype] unless opts[:nictype].nil?
             dns = config.dns
@@ -240,7 +243,6 @@ module VagrantPlugins
                 servers.append(server)
               end
             end
-            nic_type = 'e'
             nic_type = case nictype
                        when /external/
                          'e'
@@ -252,7 +254,7 @@ module VagrantPlugins
                          'm'
                        when /host/
                          'h'
-                       end
+                        end
             vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
             case state
             when 'create'
@@ -337,12 +339,12 @@ end             )
                           nicbus = interface[/#{regex}/, 3]
                         end
                         nicfunction = if interface[/#{regex}/, 4].nil?
-                                        nicbus
-                                      elsif interface[/#{regex}/, 5][/f\d/].nil?
-                                        'f0'
-                                      else
-                                        interface[/#{regex}/, 5]
-                                      end
+                          nicbus
+                        elsif interface[/#{regex}/, 5][/f\d/].nil?
+                            'f0'
+                        else
+                          interface[/#{regex}/, 5]
+                        end
                         devid = nicfunction
                       end
                       devid = devid.gsub(/f/, '')
@@ -540,10 +542,10 @@ add dataset
 end
 set max-lwps=2000
         )
-        when 'bhyve'
+      when 'bhyve'
         ## General Configuration
-          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
-          attr = %(create
+        uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
+        attr = %(create
 set zonepath=#{config.zonepath}/path
 set brand=#{config.brand}
 set autoboot=#{config.autoboot}

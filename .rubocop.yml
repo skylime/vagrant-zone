@@ -128,14 +128,13 @@ Layout/TrailingWhitespace:
   Enabled: true
   AutoCorrect: true
 
-  
-EmptyLinesAroundBlockBody:
+Layout/EmptyLinesAroundBlockBody:
   Description: >-
                  Enusures cases are Indented properly
   Enabled: true
   AutoCorrect: true
 
-  Layout/ElseAlignment:
+Layout/ElseAlignment:
     Description: >-
                  Enusures cases are Indented properly
   Enabled: true
