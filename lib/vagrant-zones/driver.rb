@@ -130,6 +130,7 @@ module VagrantPlugins
                     end
           mac = 'auto'
           mac = opts[:mac] unless opts[:mac].nil?
+          nic_type = 'e'
           nic_type = case nictype
                      when /external/
                        'e'
@@ -141,8 +142,6 @@ module VagrantPlugins
                        'm'
                      when /host/
                        'h'
-                      else
-                       'e'
                      end
           if adpatertype.to_s == 'public_network'
             if opts[:dhcp] == true
@@ -178,13 +177,11 @@ module VagrantPlugins
                         if responses[-1].to_s.match(/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/)
                           ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
                           return nil if ip.empty?
-
                           return ip.gsub(/\t/, '')
-                          break   
+                          break
                         end
                         errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                         raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
-                       
                       end
                     end
                     Process.kill('HUP', pid)
@@ -226,10 +223,9 @@ module VagrantPlugins
             ip = if ip.empty?
                    nil
             else
-              ip.gsub /\t/, ''
+              ip.gsub(/\t/, '')
                  end
             mac = 'auto'
-            vlan = 1
             unless opts[:mac].nil?
               if opts[:mac].match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/) || !opts[:mac].match(/auto/)
                 mac = opts[:mac]
@@ -244,6 +240,7 @@ module VagrantPlugins
                 servers.append(server)
               end
             end
+            nic_type = 'e'
             nic_type = case nictype
                        when /external/
                          'e'
@@ -255,8 +252,6 @@ module VagrantPlugins
                          'm'
                        when /host/
                          'h'
-                        else
-                          'e'
                         end
             vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
             case state
@@ -274,7 +269,8 @@ module VagrantPlugins
               execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
             when 'config'
               uiinfo.info(I18n.t('vagrant_zones.vnic_setup') + vnic_name)
-              if config.brand == 'lx'
+              case config.brand
+              when 'lx'
                 nic_attr = %(add net
   set physical=#{vnic_name}
   set global-nic=auto
@@ -286,23 +282,16 @@ end              )
                 File.open("#{name}.zoneconfig", 'a') do |f|
                   f.puts nic_attr
                 end
-              elsif config.brand == 'bhyve'
+              when 'bhyve'
                 if cloud_init_enabled
-                  nic_attr = %(add net
+
+                end
+                nic_attr = %(add net
   set physical=#{vnic_name}
   set allowed-address=#{allowed_address}
-end                  )
-                  File.open("#{name}.zoneconfig", 'a') do |f|
-                    f.puts nic_attr
-                  end
-                else
-                  nic_attr = %(add net
-  set physical=#{vnic_name}
-  set allowed-address=#{allowed_address}
-end                  )
-                  File.open("#{name}.zoneconfig", 'a') do |f|
-                    f.puts nic_attr
-                  end
+end             )
+                File.open("#{name}.zoneconfig", 'a') do |f|
+                  f.puts nic_attr
                 end
               end
             when 'setup'
@@ -322,7 +311,7 @@ end                  )
                     zlogin_read.expect(/\r\n/) { |line| responses.push line }
                     if responses[-1][0] =~ regex
                       if vmnic.include? responses[-1][0][/#{regex}/]
-                        raise 'We are testing something'
+                        raise 'Did not receive expected networking configurations'
                       else
                         vmnic.append(responses[-1][0][/#{regex}/])
                       end
@@ -347,15 +336,12 @@ end                  )
                         else
                           nicbus = interface[/#{regex}/, 3]
                         end
-                        devid = nicbus
-                        if interface[/#{regex}/, 4].nil?
-                          nicfunction = nicbus
+                        nicfunction = if interface[/#{regex}/, 4].nil?
+                          nicbus
+                        elsif interface[/#{regex}/, 5][/f\d/].nil?
+                            'f0'
                         else
-                          if interface[/#{regex}/, 5][/f\d/].nil?
-                            nicfunction = 'f0'
-                          else
-                            nicfunction = interface[/#{regex}/, 5]
-                          end
+                          interface[/#{regex}/, 5]
                         end
                         devid = nicfunction
                       end
@@ -475,7 +461,7 @@ end                  )
           raise Errors::InvalidBrand
         end
         ## Create Additional Disks
-        unless  !config.additional_disks.nil? || config.additional_disks != 'none'
+        unless config.additional_disks.nil? || config.additional_disks != 'none'
           disks = config.additional_disks
           disks.each do |disk|
             cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
@@ -502,9 +488,7 @@ end                  )
               cinfo = "#{disk['size']}, #{addataset}"
               uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo)
               dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{addataset} |  awk '{ print $1 }' || true")
-              if dataset_exists == addataset
-                execute(false, "#{@pfexec} zfs destroy -r #{addataset}")
-              end
+              execute(false, "#{@pfexec} zfs destroy -r #{addataset}") if dataset_exists == addataset
             end
           end
           ## Destroy Boot dataset
@@ -731,10 +715,10 @@ end         )
             port = if %w[webvnc vnc].include?(console)
                      console = 'vnc'
                      'on'
-                     elsif console == 'console'
-                       port = 'socket,/tmp/vm.com1'
-                       port = config.consoleport unless config.consoleport.nil?
-                       port
+                   elsif console == 'console'
+                     port = 'socket,/tmp/vm.com1'
+                     port = config.consoleport unless config.consoleport.nil?
+                     port
                    end
 
             port += ',wait' if config.console_onboot
@@ -841,6 +825,7 @@ end            )
                 loop do
                   zlogin_read.expect(/\n/) { |line| responses.push line }
                   break if responses[-1].to_s.match(/:~#/)
+
                   ## Code to try to login with username and password
                   uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login')) if responses[-1].to_s.match(/login: /)
                 end
