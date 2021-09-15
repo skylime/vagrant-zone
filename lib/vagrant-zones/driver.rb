@@ -334,7 +334,6 @@ end             )
                         macregex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
                         zlogin_write.printf("\nip link show dev #{vnic} | grep ether | awk '{ print $2 }'\n")
                         mac = responses[-1][0][macregex] if mac == 'auto'
-                        end
                         if opts[:dhcp] == true || opts[:dhcp].nil?
                           netplan = %(network:
   version: 2
