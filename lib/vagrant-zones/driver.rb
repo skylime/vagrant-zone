@@ -311,8 +311,7 @@ end             )
                     vmnic.each do |interface|
                       devid = ''
                       unless interface[/#{regex}/, 1].nil?
-                        if interface[/#{regex}/, 3].nil?
-                          if interface[/#{regex}/, 1] == 'en'
+                        if interface[/#{regex}/, 3].nil? && interface[/#{regex}/, 1] == 'en'
                             interface_desc = interface[/#{regex}/, 2].chars
                             case interface_desc[0]
                             when 'x'
@@ -322,9 +321,8 @@ end             )
                             when 's' || 'o'
                               nicbus = interface_desc[1]
                             end
-                          else
+                          elsif interface[/#{regex}/, 1] != 'en'
                             nicbus = interface[/#{regex}/, 2]
-                          end
                         else
                           nicbus = interface[/#{regex}/, 3]
                         end
