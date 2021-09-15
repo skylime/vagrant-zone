@@ -743,18 +743,18 @@ end         )
         unless config.console.nil?
           console = config.console
           if console != 'disabled'
-
-            if ['webvnc', 'vnc'].include?(console)
+            port = if ['webvnc', 'vnc'].include?(console)
               console = 'vnc'
-              value = 'on'
+              'on'
             elsif console == 'console'
-              value = 'on'
-              value = config.consoleport unless config.consoleport.nil?
+              port = "socket,/tmp/vm.com1"
+              port = config.consoleport unless config.consoleport.nil?
+              port
             end
 
-            value = value + ',wait' if config.console_onboot
-
-            uiinfo.info(I18n.t('vagrant_zones.setting_console_access') + console.to_s + ', ' + config.consoleport.to_s + ', ' + value.to_s)
+            port += ",wait" if config.console_onboot
+            cinfo = "Console type: #{console},  Port: #{port}"
+            uiinfo.info(I18n.t('vagrant_zones.setting_console_access') + cinfo)
             console_attr = %(add attr
     set name=#{console}
     set type=string
