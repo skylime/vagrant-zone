@@ -331,7 +331,7 @@ end             )
                       if nic_number == devid.gsub(/f/, '')
                         ## Get Device Mac Address for when Mac is not specified
                         macregex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
-                        zlogin_write.printf("\nip link show dev #{vmnic[nic_number]} | grep ether | awk '{ print $2 }'\n")
+                        zlogin_write.printf("\nip link show dev #{vmnic[nic_number.to_i]} | grep ether | awk '{ print $2 }'\n")
                         mac = responses[-1][0][macregex] if mac == 'auto'
                         if opts[:dhcp] == true || opts[:dhcp].nil?
                           netplan = %(network:
