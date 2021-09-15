@@ -265,7 +265,6 @@ end             )
                 end
                 Timeout.timeout(30) do
                   staticrun = 0
-                  dhcprun = 0
                   loop do
                     zlogin_read.expect(/\r\n/) { |line| responses.push line }
                     puts responses[-1][0]
