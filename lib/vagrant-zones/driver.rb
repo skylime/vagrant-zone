@@ -121,7 +121,6 @@ module VagrantPlugins
         name = @machine.name
         machine.config.vm.networks.each do |adpatertype, opts|
           responses = []
-          nic_number = opts[:nic_number].to_s
           nictype = if opts[:nictype].nil?
                       'external'
                     else
@@ -145,7 +144,7 @@ module VagrantPlugins
           if adpatertype.to_s == 'public_network'
             if opts[:dhcp] == true
               if opts[:managed]
-                vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
+                vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{opts[:nic_number]}"
                 if mac == 'auto'
                   PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
                     command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
@@ -203,24 +202,17 @@ module VagrantPlugins
       def network(machine, uiinfo, state)
         config = machine.provider_config
         name = @machine.name
-        if state == 'setup'
-          ## Remove old installer netplan config
-          uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
-          zlogin(machine, 'rm -rf  /etc/netplan/*.yaml')
-        end
-        machine.config.vm.networks.each do |adpatertype, opts|
-          if adpatertype.to_s == 'public_network'
-            link = opts[:bridge]
-            nic_number = opts[:nic_number].to_s
-            netmask = IPAddr.new(opts[:netmask].to_s)
+
+        ## Remove old installer netplan config
+        uiinfo.info(I18n.t('vagrant_zones.netplan_remove')) if state == 'setup'
+        zlogin(machine, 'rm -rf  /etc/netplan/*.yaml') if state == 'setup'
+        machine.config.vm.networks.each do |adaptertype, opts|
+          if adaptertype.to_s == 'public_network'
+            netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
             ip = opts[:ip].to_s
             defrouter = opts[:gateway].to_s
             allowed_address = "#{ip}/#{netmask}"
-            ip = if ip.empty?
-                   nil
-                 else
-                   ip.gsub(/\t/, '')
-                 end
+            ip = ip.gsub(/\t/, '') unless ip.empty?
             regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
             mac = opts[:mac] unless opts[:mac].nil?
             mac = 'auto' unless mac.match(regex)
@@ -245,15 +237,15 @@ module VagrantPlugins
                        when /host/
                          'h'
                        end
-            vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
+            vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{opts[:nic_number]}"
             case state
             when 'create'
               if opts[:vlan].nil?
-                execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
+                execute(false, "#{@pfexec} dladm create-vnic -l #{opts[:bridge]} -m #{mac} #{vnic_name}")
               else
                 vlan = opts[:vlan]
                 uiinfo.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
-                execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
+                execute(false, "#{@pfexec} dladm create-vnic -l #{opts[:bridge]} -m #{mac} -v #{vlan} #{vnic_name}")
               end
             when 'delete'
               uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name)
@@ -302,22 +294,20 @@ end             )
 
                     vmnic.append(responses[-1][0][/#{regex}/]) if responses[-1][0] =~ regex
                     vmnic.each do |interface|
-                      unless interface[/#{regex}/, 1].nil?
-                        if interface[/#{regex}/, 3].nil? && interface[/#{regex}/, 1] == 'en'
-                          interface_desc = interface[/#{regex}/, 2].chars
-                          case interface_desc[0]
-                          when 'x'
-                            mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
-                            mac_interface = mac_interface.split('enx', 0)
-                            nicbus = mac_interface[1]
-                          when 's' || 'o'
-                            nicbus = interface_desc[1]
-                          end
-                        elsif interface[/#{regex}/, 1] != 'en'
-                          nicbus = interface[/#{regex}/, 2]
-                        else
-                          nicbus = interface[/#{regex}/, 3]
+                      if interface[/#{regex}/, 3].nil? && interface[/#{regex}/, 1] == 'en' && !interface[/#{regex}/, 1].nil?
+                        interface_desc = interface[/#{regex}/, 2].chars
+                        case interface_desc[0]
+                        when 'x'
+                          mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
+                          mac_interface = mac_interface.split('enx', 0)
+                          nicbus = mac_interface[1]
+                        when 's' || 'o'
+                          nicbus = interface_desc[1]
                         end
+                      elsif interface[/#{regex}/, 1] != 'en'
+                        nicbus = interface[/#{regex}/, 2]
+                      else
+                        nicbus = interface[/#{regex}/, 3]
                       end
                       devid = if interface[/#{regex}/, 4].nil?
                                 nicbus
@@ -326,17 +316,13 @@ end             )
                               else
                                 interface[/#{regex}/, 5]
                               end
-                      raise 'No Device ID found' unless devid.nil?
+                      raise 'No Device ID found' if devid.nil?
 
-                      if nic_number == devid.gsub(/f/, '')
-                        vnic = vmnic[devid.to_i]
+                      if opts[:nic_number] == devid.gsub(/f/, '')
                         ## Get Device Mac Address for when Mac is not specified
-                        if mac == 'auto'
-                          zlogin_write.printf("\nip link show dev #{vnic} | grep ether | awk '{ print $2 }'\n")
-                          if responses[-1].to_s.match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)
-                            mac = responses[-1][0][/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/]
-                          end
-                        end
+                        macregex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
+                        zlogin_write.printf("\nip link show dev #{vmnic[opts[:nic_number].to_i]} | grep ether | awk '{ print $2 }'\n")
+                        mac = responses[-1][0][macregex] if mac == 'auto'
                         if opts[:dhcp] == true || opts[:dhcp].nil?
                           netplan = %(network:
   version: 2
@@ -414,6 +400,7 @@ end             )
         dataset = "#{config.zonepath.delete_prefix('/')}/boot"
         datadir = machine.data_dir
         datasetroot = config.zonepath.delete_prefix('/').to_s
+
         ## Create Boot Volume
         case config.brand
         when 'lx'
@@ -442,12 +429,12 @@ end             )
         end
 
         ## Create Additional Disks
-        unless  config.additional_disks.nil?
-          disks = config.additional_disks unless config.additional_disks.nil? || config.additional_disks == 'none'
-          disks.each do |disk|
-            cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
-            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-            execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
+        return if config.additional_disks.nil?
+
+        config.additional_disks.each do |disk|
+          cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
+          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
+          execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
         end
       end
 
@@ -462,7 +449,7 @@ end             )
         if dataset_boot_exists == "#{zp}/boot"
           ## Destroy Additional Disks
           unless  config.additional_disks.nil?
-            disks = config.additional_disks unless config.additional_disks != 'none'
+            disks = config.additional_disks
             disks.each do |disk|
               addataset = "#{disk['array']}#{disk['path']}"
               cinfo = "#{disk['size']}, #{addataset}"
@@ -493,14 +480,6 @@ end             )
         case config.brand
         when 'lx'
           uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
-          machine.config.vm.networks.each do |adpatertype, opts|
-            if adpatertype.to_s == 'public_network'
-              @ip = opts[:ip].to_s
-              cinfo = "#{opts[:ip]}/#{opts[:netmask]}"
-              @network = NetAddr.parse_net(cinfo)
-              @defrouter = opts[:gateway]
-            end
-          end
           attr = %(create
 set zonepath=#{config.zonepath}/path
 set brand=#{config.brand}
