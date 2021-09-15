@@ -241,7 +241,7 @@ module VagrantPlugins
                        when /host/
                          'h'
                        end
-            vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{opts[:nic_number].to_s}"
+            vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{opts[:nic_number]}"
             case state
             when 'create'
               if opts[:vlan].nil?
