@@ -116,5 +116,9 @@ Style/CaseLikeIf:
   Enabled: true
   AutoCorrect: true
 
-
+Layout/CaseIndentation:
+  Description: >-
+                 Enusures cases are Indented properly
+  Enabled: true
+  AutoCorrect: true
 
