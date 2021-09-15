@@ -895,7 +895,7 @@ end            }
 
             id_rsa = 'https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant'
             command = "#{@pfexec} curl #{id_rsa}  -O id_rsa"
-            Util::Subprocess.new command do |stdout, stderr, thread|
+            Util::Subprocess.new command do |_stdout, stderr, _thread|
               uiinfo.rewriting do |ui|
                 ui.clear_line
                 ui.info(I18n.t('vagrant_zones.importing_vagrant_key'), new_line: false)
@@ -911,10 +911,11 @@ end            }
 
       # This checks if the user exists on the VM, usually for LX zones
       def user_exists?(machine, user = 'vagrant')
-        name = @machine.name
+        name = machine.name
         ret  = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
-        return true if ret == 0
+        return true if ret.zero?
         false
+        # return false
       end
 
       # This gives us a  console to the VM for the user
