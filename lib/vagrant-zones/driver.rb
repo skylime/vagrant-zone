@@ -207,7 +207,7 @@ module VagrantPlugins
         uiinfo.info(I18n.t('vagrant_zones.netplan_remove')) if state == 'setup'
         zlogin(machine, 'rm -rf  /etc/netplan/*.yaml') if state == 'setup'
         machine.config.vm.networks.each do |adaptertype, opts|
-          if adapatertype.to_s == 'public_network'
+          if adaptertype.to_s == 'public_network'
             netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
             ip = opts[:ip].to_s
             defrouter = opts[:gateway].to_s
