@@ -212,11 +212,7 @@ module VagrantPlugins
             ip = opts[:ip].to_s
             defrouter = opts[:gateway].to_s
             allowed_address = "#{ip}/#{netmask}"
-            ip = if ip.empty?
-                   nil
-                 else
-                   ip.gsub(/\t/, '')
-                 end
+            ip = ip.gsub(/\t/, '') if !ip.empty?
             regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
             mac = opts[:mac] unless opts[:mac].nil?
             mac = 'auto' unless mac.match(regex)
