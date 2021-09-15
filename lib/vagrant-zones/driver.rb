@@ -793,33 +793,19 @@ end            }
         case config.brand
         when 'lx'
           uiinfo.info(I18n.t('vagrant_zones.lx_check'))
-          return
-        end
         when 'ipkg'
           uiinfo.info(I18n.t('vagrant_zones.ipkg_check'))
-          return
-        end
         when 'lipkg'
           uiinfo.info(I18n.t('vagrant_zones.lipkg_check'))
-          return
-        end
         when 'pkgsrc'
           uiinfo.info(I18n.t('vagrant_zones.pkgsrc_check'))
-          return
-        end
         when 'sparse'
           uiinfo.info(I18n.t('vagrant_zones.sparse_check'))
-          return
-        end
         when 'kvm'
           ## https://man.omnios.org/man5/kvm
           uiinfo.info(I18n.t('vagrant_zones.kvm_check'))
-          return
-        end
         when 'illumos'
           uiinfo.info(I18n.t('vagrant_zones.illumos_check'))
-          return
-        end
         when 'bhyve'
           ## https://man.omnios.org/man5/bhyve
           ## Check for  bhhwcompat
