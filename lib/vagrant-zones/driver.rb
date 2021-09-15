@@ -787,7 +787,7 @@ end            )
     set name=cloud-init
     set type=string
     set value=#{cloudconfig}
-end            )
+end          )
             File.open("#{name}.zoneconfig", 'a') do |f|
               f.puts cloud_init_attr
             end
@@ -1030,7 +1030,7 @@ end            )
       def halt(machine, uiinfo)
         name = machine.name
         config = machine.provider_config
-        
+
         ## Check state in zoneadm
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
         uiinfo.info(I18n.t('vagrant_zones.graceful_shutdown'))
