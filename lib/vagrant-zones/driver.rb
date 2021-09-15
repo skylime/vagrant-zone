@@ -455,12 +455,14 @@ end             )
           raise Errors::InvalidBrand
         end
         ## Create Additional Disks
-        unless config.additional_disks.nil? || config.additional_disks != 'none'
+        unless config.additional_disks.nil?
           disks = config.additional_disks
-          disks.each do |disk|
-            cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
-            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-            execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
+          if config.additional_disks != 'none'
+            disks.each do |disk|
+              cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
+              uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
+              execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
+            end
           end
         end
       end
@@ -710,9 +712,8 @@ end         )
                      console = 'vnc'
                      'on'
                    elsif console == 'console'
-                     port = 'socket,/tmp/vm.com1'
-                     port = config.consoleport unless config.consoleport.nil?
-                     port
+                     config.consoleport unless config.consoleport.nil?
+                     'socket,/tmp/vm.com1' if config.consoleport.nil?
                    end
 
             port += ',wait' if config.console_onboot
