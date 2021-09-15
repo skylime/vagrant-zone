@@ -739,6 +739,55 @@ end            )
           else
             config.cloud_init_enabled
           end
+          unless config.cloud_init_dnsdomain.nil?
+            cinfo = "Cloud-init dns-domain: #{config.cloud_init_dnsdomain}"
+            uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + cinfo)
+            cloud_init_dnsdomain_attr = %(add attr
+      set name=dns-domain
+      set type=string
+      set value=#{config.cloud_init_dnsdomain}
+  end       )
+            File.open("#{name}.zoneconfig", 'a') do |f|
+              f.puts cloud_init_dnsdomain_attr
+            end
+          end
+          unless config.cloud_init_password.nil?
+            cinfo = "Cloud-init password: #{config.cloud_init_password}"
+            uiinfo.info(I18n.t('vagrant_zones.setting_cloud_password') + cinfo)
+            cloud_init_password_attr = %(add attr
+      set name=password
+      set type=string
+      set value=#{config.cloud_init_password}
+  end       )
+            File.open("#{name}.zoneconfig", 'a') do |f|
+              f.puts cloud_init_password_attr
+            end
+          end
+          unless config.cloud_init_resolvers.nil?
+            cinfo = "Cloud-init resolvers: #{config.cloud_init_resolvers}"
+            uiinfo.info(I18n.t('vagrant_zones.setting_cloud_resolvers') + cinfo)
+            cloud_init_resolvers_attr = %(add attr
+      set name=resolvers
+      set type=string
+      set value=#{config.cloud_init_resolvers}
+  end       )
+            File.open("#{name}.zoneconfig", 'a') do |f|
+              f.puts cloud_init_resolvers_attr
+            end
+          end
+          unless config.cloud_init_sshkey.nil?
+            cinfo = "Cloud-init SSH Key: #{config.cloud_init_sshkey}"
+            uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + cinfo)
+            cloud_init_ssh_attr = %(add attr
+      set name=sshkey
+      set type=string
+      set value=#{config.cloud_init_sshkey}
+  end       )
+            File.open("#{name}.zoneconfig", 'a') do |f|
+              f.puts cloud_init_ssh_attr
+            end
+          end
+
           cinfo = "Cloud Config: #{cloudconfig}"
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cinfo)
           cloud_init_attr = %(add attr
