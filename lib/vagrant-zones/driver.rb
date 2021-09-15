@@ -947,6 +947,7 @@ end            }
         config = machine.provider_config
         user = config.vagrant_user unless config.vagrant_user.nil?
         user = "vagrant" unless !config.vagrant_user.nil?
+        user
       end
 
       # This filters the userprivatekeypath
@@ -967,25 +968,26 @@ end            }
           uiinfo.clear_line()
           userkey = './id_rsa'
         end
+        userkey
       end
 
       # This filters the sshport
       def sshport(machine)
         config = machine.provider_config
         sshport = '22'
-        sshport = config.sshport.to_s unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
+        config.sshport.to_s unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
       end
 
       # This filters the rdpport
       def rdpport(machine)
         config = machine.provider_config
-        rdpport = config.rdpport.to_s unless config.rdpport.to_s.nil?
+        config.rdpport.to_s unless config.rdpport.to_s.nil?
       end
 
       # This filters the vagrantuserpass
       def vagrantuserpass(machine)
         config = machine.provider_config
-        vagrantuserpass = config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
+        config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
 
       # This helps us create ZFS Snapshots
