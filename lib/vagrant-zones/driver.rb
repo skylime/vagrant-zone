@@ -299,10 +299,8 @@ end             )
                   loop do
                     zlogin_read.expect(/\r\n/) { |line| responses.push line }
                     if responses[-1][0] =~ regex
-                      if vmnic.include? responses[-1][0][/#{regex}/]
-                        raise 'Did not receive expected networking configurations'
-                      else
-                        vmnic.append(responses[-1][0][/#{regex}/])
+                      raise 'Did not receive expected networking configurations' if vmnic.include? responses[-1][0][/#{regex}/]
+                      vmnic.append(responses[-1][0][/#{regex}/])
                       end
                     end
                     vmnic.each do |interface|
