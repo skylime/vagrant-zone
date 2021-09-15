@@ -320,12 +320,12 @@ end             )
                           nicbus = interface[/#{regex}/, 3]
                         end
                         devid = if interface[/#{regex}/, 4].nil?
-                                        nicbus
-                                      elsif interface[/#{regex}/, 5][/f\d/].nil?
-                                        'f0'
-                                      else
-                                        interface[/#{regex}/, 5]
-                                      end
+                                  nicbus
+                                elsif interface[/#{regex}/, 5][/f\d/].nil?
+                                  'f0'
+                                else
+                                  interface[/#{regex}/, 5]
+                                end
                       end
                       devid = devid.gsub(/f/, '') unless devid.nil?
                       if nic_number == devid
