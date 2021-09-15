@@ -59,13 +59,17 @@ module VagrantPlugins
         config = machine.provider_config
         box  = "#{@machine.data_dir}/#{@machine.config.vm.box}"
         name = @machine.name
-        if config.brand == 'lx'
+        case config.brand
+        when 'lx'
           results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
           raise 'You appear to not have LX Zones installed in this Machine' if results.include? 'unknown brand'
+        when 'bhyve'
+        execute(false, "#{@pfexec} zoneadm -z #{name} install")
+        when 'kvm'
+        execute(false, "#{@pfexec} zoneadm -z #{name} install")
+        when 'illumos'
+        execute(false, "#{@pfexec} zoneadm -z #{name} install") 
         end
-        execute(false, "#{@pfexec} zoneadm -z #{name} install") if config.brand == 'bhyve'
-        execute(false, "#{@pfexec} zoneadm -z #{name} install") if config.brand == 'kvm'
-        execute(false, "#{@pfexec} zoneadm -z #{name} install") if config.brand == 'illumos'
         uiinfo.info(I18n.t('vagrant_zones.installing_zone') + " brand: #{config.brand}")
       end
 
@@ -488,7 +492,7 @@ end                  )
             diskname = 'disk'
             cinfo="#{disk['size']}, #{disk['array']}#{disk['path']}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-            diskname = diskname + diskrun.to_s if diskrun.positive?
+            diskname += diskrun.to_s if diskrun.positive?
             diskrun += 1
             execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
           end
@@ -508,16 +512,12 @@ end                  )
           ## Destroy Additional Disks
           unless  !config.additional_disks.nil? || config.additional_disks != 'none'
             disks = config.additional_disks
-            diskrun = 0
             disks.each do |disk|
               addataset = "#{disk['array']}#{disk['path']}"
-              diskname = 'disk'
               cinfo="#{disk['size']}, #{addataset}"
               uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo)
               dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{addataset} |  awk '{ print $1 }' || true")
               if dataset_exists == addataset
-                diskname = diskname + diskrun.to_s if diskrun.positive?
-                diskrun += 1
                 execute(false, "#{@pfexec} zfs destroy -r #{addataset}")
               end
             end
@@ -544,7 +544,6 @@ end                  )
         if config.brand == 'lx'
           uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
           machine.config.vm.networks.each do |adpatertype, opts|
-            index = 1
             if adpatertype.to_s == 'public_network'
               @ip = opts[:ip].to_s
               cinfo = "#{opts[:ip]}/#{opts[:netmask]}"
@@ -552,7 +551,6 @@ end                  )
               @defrouter = opts[:gateway]
             end
           end
-          allowed_address = @ip + @network.netmask.to_s
           attr = %(create
 set zonepath=#{config.zonepath}/path
 set brand=#{config.brand}
@@ -696,7 +694,7 @@ end       )
           cdroms.each do |cdrom|
             cdname = 'cdrom'
             uiinfo.info(I18n.t('vagrant_zones.setting_cd_rom_configurations') + cdrom['path'])
-            cdname += cdrun.to_s if cdrun > 0
+            cdname += cdrun.to_s if cdrun.positive?
             cdrun += 1
             cdrom_attr = %(add attr
     set name=#{cdname}
