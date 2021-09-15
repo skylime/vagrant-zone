@@ -733,13 +733,13 @@ end            )
         ## Cloud-init settings
         if config.cloud_init_enabled
           cloudconfig = case config.cloud_init_enabled
-          when 'on'
-            'on'
-          when 'off'
-            'off'
-          else
-            config.cloud_init_enabled
-          end
+                        when 'on'
+                          'on'
+                        when 'off'
+                          'off'
+                        else
+                          config.cloud_init_enabled
+                        end
           unless config.cloud_init_dnsdomain.nil?
             cinfo = "Cloud-init dns-domain: #{config.cloud_init_dnsdomain}"
             uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + cinfo)
@@ -796,9 +796,9 @@ end            )
     set type=string
     set value=#{cloudconfig}
 end            )
-            File.open("#{name}.zoneconfig", 'a') do |f|
-              f.puts cloud_init_attr
-            end
+          File.open("#{name}.zoneconfig", 'a') do |f|
+            f.puts cloud_init_attr
+          end
         end
 
         ## Nic Configurations
