@@ -65,10 +65,8 @@ module VagrantPlugins
           raise 'You appear to not have LX Zones installed in this Machine' if results.include? 'unknown brand'
         when 'bhyve'
           execute(false, "#{@pfexec} zoneadm -z #{name} install")
-        when 'kvm'
-          execute(false, "#{@pfexec} zoneadm -z #{name} install")
-        when 'illumos'
-          execute(false, "#{@pfexec} zoneadm -z #{name} install") 
+        when 'kvm' || 'illumos'
+          raise Errors::NotYetImplemented
         end
         uiinfo.info(I18n.t('vagrant_zones.installing_zone') + " brand: #{config.brand}")
       end
