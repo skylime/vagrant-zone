@@ -212,21 +212,18 @@ module VagrantPlugins
           if adpatertype.to_s == 'public_network'
             link = opts[:bridge]
             nic_number = opts[:nic_number].to_s
-            netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
+            netmask = IPAddr.new(opts[:netmask].to_s)
             ip = opts[:ip].to_s
             defrouter = opts[:gateway].to_s
-
             allowed_address = "#{ip}/#{netmask}"
             ip = if ip.empty?
                    nil
                  else
                    ip.gsub(/\t/, '')
                  end
-            mac = 'auto'
-
             regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
             mac = opts[:mac] unless opts[:mac].nil?
-            mac = nil unless mac.match(regex)
+            mac = 'auto' unless mac.match(regex)
             nictype = opts[:nictype] unless opts[:nictype].nil?
             dns = config.dns
             dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
@@ -449,16 +446,12 @@ end             )
           raise Errors::InvalidBrand
         end
         ## Create Additional Disks
-        unless config.additional_disks.nil?
-          disks = config.additional_disks
-          if config.additional_disks != 'none'
-            disks.each do |disk|
-              cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
-              uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-              execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
-            end
+          disks = config.additional_disks unless config.additional_disks.nil? && config.additional_disks != 'none'
+          disks.each do |disk|
+            cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
+            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
+            execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
           end
-        end
       end
 
       # This helps us set delete any associated datasets of the zone
