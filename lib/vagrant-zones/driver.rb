@@ -460,7 +460,7 @@ end             )
         ## If boot Dataset exists, delete it
         if dataset_boot_exists == "#{zp}/boot"
           ## Destroy Additional Disks
-          unless  !config.additional_disks.nil? || config.additional_disks != 'none'
+          unless  config.additional_disks unless config.additional_disks.nil? || config.additional_disks == 'none'
             disks = config.additional_disks
             disks.each do |disk|
               addataset = "#{disk['array']}#{disk['path']}"
