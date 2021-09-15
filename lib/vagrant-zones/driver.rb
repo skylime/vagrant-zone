@@ -141,7 +141,7 @@ module VagrantPlugins
                        'm'
                      when /host/
                        'h'
-                     else
+                      else
                        'e'
                      end
           if adpatertype.to_s == 'public_network'
@@ -158,12 +158,12 @@ module VagrantPlugins
                         if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
                           ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
                           return nil if ip.length.empty?
-
                           return ip.gsub(/\t/, '')
-                          break
+                          break  
                         end
                         errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                         raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
+
                       end
                     end
                     Process.kill('HUP', pid)
@@ -180,10 +180,11 @@ module VagrantPlugins
                           return nil if ip.empty?
 
                           return ip.gsub(/\t/, '')
-                          break
+                          break   
                         end
                         errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                         raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
+                       
                       end
                     end
                     Process.kill('HUP', pid)
@@ -224,8 +225,8 @@ module VagrantPlugins
             allowed_address = "#{ip}/#{netmask}"
             ip = if ip.empty?
                    nil
-                 else
-                   ip.gsub /\t/, ''
+            else
+              ip.gsub /\t/, ''
                  end
             mac = 'auto'
             vlan = 1
@@ -254,9 +255,9 @@ module VagrantPlugins
                          'm'
                        when /host/
                          'h'
-                       else
-                         'e'
-                       end
+                        else
+                          'e'
+                        end
             vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
             case state
             when 'create'
@@ -390,16 +391,14 @@ end                  )
       set-name: #{vnic_name}
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}]  )
-                            if dhcprun == 0
+                            if dhcprun.zero?
                               command = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"DHCP Subprocess Error Code: $?\"\n"
                               zlogin_write.printf(command)
                               dhcprun += 1
                             end
-                            if responses[-1].to_s.match(/DHCP Subprocess Error Code: 0/)
-                              uiinfo.info(I18n.t('vagrant_zones.netplan_applied_dhcp') + "/etc/netplan/#{vnic_name}.yaml")
-                            elsif responses[-1].to_s.match(/DHCP Subprocess Error Code: \b(?!0\b)\d{1,4}\b/)
-                              raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-                            end
+                            uiinfo.info(I18n.t('vagrant_zones.netplan_applied_dhcp') + "/etc/netplan/#{vnic_name}.yaml") if responses[-1].to_s.match(/DHCP Subprocess Error Code: 0/)
+                            errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+                            raise errormessage if responses[-1].to_s.match(/DHCP Subprocess Error Code: \b(?!0\b)\d{1,4}\b/)
                           elsif opts[:dhcp] == false
                             netplan = %(network:
   version: 2
@@ -415,15 +414,15 @@ end                  )
       gateway4: #{defrouter}
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
-                            if staticrun == 0
+                            if staticrun.zero?
                               zlogin_write.printf("echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Static Error Code: $?\"\n")
                               staticrun += 1
                             end
                             if responses[-1].to_s.match(/Static Error Code: 0/)
                               uiinfo.info(I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml")
-                            elsif responses[-1].to_s.match(/Static Error Code: \b(?!0\b)\d{1,4}\b/)
-                              raise "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
                             end
+                            errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+                            raise errormessage if responses[-1].to_s.match(/Static Error Code: \b(?![0]\b)\d{1,4}\b/)
                           end
                         end
                       end
@@ -433,9 +432,9 @@ end                  )
                     if responses[-1].to_s.match(/Final Network Check Error Code: 0/)
                       uiinfo.info(I18n.t('vagrant_zones.netplan_set'))
                       break
-                    elsif responses[-1].to_s.match(/Final Network Check Error Code: \b(?!0\b)\d{1,4}\b/)
-                      raise "==> #{name} ==> Final Network Check \nFailed with: #{responses[-1]}"
                     end
+                    errormessage = "==> #{name} ==> Final Network Check \nFailed with: #{responses[-1]}"
+                    raise errormessage if responses[-1].to_s.match(/Final Network Check Error Code: \b(?![0]\b)\d{1,4}\b/)
                   end
                 end
                 Process.kill('HUP', pid)
@@ -463,7 +462,7 @@ end                  )
         when 'bhyve'
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_root') + datasetroot)
           execute(false, "#{@pfexec} zfs create #{datasetroot}")
-          cinfo = "#{config.zonepathsize}, #{dataset}"
+          cinfo="#{config.zonepathsize}, #{dataset}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot') + cinfo)
           execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + dataset)
@@ -476,9 +475,7 @@ end                  )
             end
           end
           uiinfo.clear_line
-        when 'illumos'
-          raise Errors::NotYetImplemented
-        when 'kvm'
+        when 'illumos' || 'kvm'
           raise Errors::NotYetImplemented
         else
           raise Errors::InvalidBrand
@@ -487,7 +484,7 @@ end                  )
         unless  !config.additional_disks.nil? || config.additional_disks != 'none'
           disks = config.additional_disks
           disks.each do |disk|
-            cinfo = "#{disk['size']}, #{disk['array']}#{disk['path']}"
+            cinfo="#{disk['size']}, #{disk['array']}#{disk['path']}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             execute(true, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
           end
@@ -508,10 +505,12 @@ end                  )
             disks = config.additional_disks
             disks.each do |disk|
               addataset = "#{disk['array']}#{disk['path']}"
-              cinfo = "#{disk['size']}, #{addataset}"
+              cinfo="#{disk['size']}, #{addataset}"
               uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo)
               dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{addataset} |  awk '{ print $1 }' || true")
-              execute(false, "#{@pfexec} zfs destroy -r #{addataset}") if dataset_exists == addataset
+              if dataset_exists == addataset
+                execute(false, "#{@pfexec} zfs destroy -r #{addataset}")
+              end
             end
           end
           ## Destroy Boot dataset
@@ -533,7 +532,8 @@ end                  )
         ## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console
         config = machine.provider_config
         attr = ''
-        if config.brand == 'lx'
+        case config.brand
+        when 'lx'
           uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
           machine.config.vm.networks.each do |adpatertype, opts|
             if adpatertype.to_s == 'public_network'
@@ -562,7 +562,7 @@ add dataset
 end
 set max-lwps=2000
         )
-        elsif config.brand == 'bhyve'
+      when 'bhyve'
           ## General Configuration
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
           attr = %(create
@@ -735,13 +735,13 @@ end         )
           console = config.console
           if console != 'disabled'
             port = if ['webvnc', 'vnc'].include?(console)
-                     console = 'vnc'
-                     'on'
-                   elsif console == 'console'
-                     port = 'socket,/tmp/vm.com1'
-                     port = config.consoleport unless config.consoleport.nil?
-                     port
-                   end
+                    console = 'vnc'
+                    'on'
+                  elsif console == 'console'
+                    port = 'socket,/tmp/vm.com1'
+                    port = config.consoleport unless config.consoleport.nil?
+                    port
+                  end
 
             port += ',wait' if config.console_onboot
             cinfo = "Console type: #{console},  Port: #{port}"
