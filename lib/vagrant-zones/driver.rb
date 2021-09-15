@@ -770,7 +770,7 @@ end            }
         network(@machine, uiinfo, 'config')
 
         ## Write out Config
-        exit = %{exit}
+        exit = %(exit)
         File.open("#{name}.zoneconfig", 'a') do |f|
           f.puts exit
         end
@@ -782,47 +782,45 @@ end            }
       # This ensures the zone is safe to boot
       def check_zone_support(machine, uiinfo)
         config = machine.provider_config
-        box  = "#{@machine.data_dir}/#{@machine.config.vm.box}"
-        name = @machine.name
-
         ## Detect if Virtualbox is Running
         ## Kernel, KVM, and Bhyve cannot run conncurently with Virtualbox:
         ### https://forums.virtualbox.org/viewtopic.php?f=11&t=64652
         uiinfo.info(I18n.t('vagrant_zones.vbox_run_check'))
         result = execute(true, "#{@pfexec} VBoxManage list runningvms")
-        raise Errors::VirtualBoxRunningConflictDetected if result == 0
+        raise Errors::VirtualBoxRunningConflictDetected if result.zero?
 
         ## https://man.omnios.org/man5/brands
-        if config.brand == 'lx'
+        case config.brand
+        when 'lx'
           uiinfo.info(I18n.t('vagrant_zones.lx_check'))
           return
         end
-        if config.brand == 'ipkg'
+        when 'ipkg'
           uiinfo.info(I18n.t('vagrant_zones.ipkg_check'))
           return
         end
-        if config.brand == 'lipkg'
+        when 'lipkg'
           uiinfo.info(I18n.t('vagrant_zones.lipkg_check'))
           return
         end
-        if config.brand == 'pkgsrc'
+        when 'pkgsrc'
           uiinfo.info(I18n.t('vagrant_zones.pkgsrc_check'))
           return
         end
-        if config.brand == 'sparse'
+        when 'sparse'
           uiinfo.info(I18n.t('vagrant_zones.sparse_check'))
           return
         end
-        if config.brand == 'kvm'
+        when 'kvm'
           ## https://man.omnios.org/man5/kvm
           uiinfo.info(I18n.t('vagrant_zones.kvm_check'))
           return
         end
-        if config.brand == 'illumos'
+        when 'illumos'
           uiinfo.info(I18n.t('vagrant_zones.illumos_check'))
           return
         end
-        if config.brand == 'bhyve'
+        when 'bhyve'
           ## https://man.omnios.org/man5/bhyve
           ## Check for  bhhwcompat
           result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
@@ -830,7 +828,7 @@ end            }
             bhhwcompaturl = 'https://downloads.omnios.org/misc/bhyve/bhhwcompat'
             execute(true, "#{@pfexec} curl -o /usr/sbin/bhhwcompat #{bhhwcompaturl}  && #{@pfexec} chmod +x /usr/sbin/bhhwcompat")
             result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
-            raise Errors::MissingCompatCheckTool if result == 0
+            raise Errors::MissingCompatCheckTool if result.zero?
           end
 
           # Check whether OmniOS version is lower than r30
@@ -853,9 +851,7 @@ end            }
       # This helps us set up the networking of the VM
       def setup(machine, uiinfo)
         config = machine.provider_config
-        name = machine.name
         ### network Configurations
-
         network(@machine, uiinfo, 'setup') if config.brand == 'bhyve'
       end
 
@@ -865,8 +861,9 @@ end            }
         name = @machine.name
         config = machine.provider_config
         responses = []
-        if config.brand == 'bhyve'
-          PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+        case config.brand
+        when 'bhyve'
+          PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, _zlogin_write, pid|
             if zlogin_read.expect(/Last login: /)
               uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access'))
               Timeout.timeout(config.setup_wait) do
@@ -883,7 +880,7 @@ end            }
             end
             Process.kill('HUP', pid)
           end
-        elsif config.brand == 'lx'
+        when 'lx'
           unless user_exists?(machine, config.vagrant_user)
             zlogincommand(machine, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
             zlogincommand(machine, %('echo nameserver 1.0.0.1 >> /etc/resolv.conf'))
@@ -914,6 +911,7 @@ end            }
         name = machine.name
         ret  = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
         return true if ret.zero?
+
         false
         # return false
       end
@@ -926,7 +924,7 @@ end            }
 
       # This gives us a console to the VM
       def zlogin(machine, cmd)
-        name = @machine.name
+        name = machine.name
         responses = []
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           zlogin_read.expect(/\n/) { zlogin_write.printf("#{cmd} \; echo \"Error Code: $?\"\n") }
