@@ -463,7 +463,6 @@ end             )
         ## If boot Dataset exists, delete it
         if dataset_boot_exists == "#{zp}/boot"
           ## Destroy Additional Disks
-          inspect config.additional_disks
           puts config.additional_disks.length
           puts config.additional_disks
           unless  config.additional_disks.nil?
