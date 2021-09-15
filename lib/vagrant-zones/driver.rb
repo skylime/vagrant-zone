@@ -301,7 +301,6 @@ end             )
                     if responses[-1][0] =~ regex
                       raise 'Did not receive expected networking configurations' if vmnic.include? responses[-1][0][/#{regex}/]
                       vmnic.append(responses[-1][0][/#{regex}/])
-                      end
                     end
                     vmnic.each do |interface|
                       devid = ''
