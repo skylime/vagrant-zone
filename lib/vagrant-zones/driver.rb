@@ -319,13 +319,13 @@ end             )
                         else
                           nicbus = interface[/#{regex}/, 3]
                         end
-                        nicfunction = if interface[/#{regex}/, 4].nil?
-                                        nicbus
-                                      elsif interface[/#{regex}/, 5][/f\d/].nil?
-                                        'f0'
-                                      else
-                                        interface[/#{regex}/, 5]
-                                      end
+                        if interface[/#{regex}/, 4].nil?
+                          nicfunction = nicbus
+                        elsif interface[/#{regex}/, 5][/f\d/].nil?
+                          nicfunction = 'f0'
+                        else
+                          nicfunction = interface[/#{regex}/, 5]
+                        end
                         devid = nicfunction
                       end
                       devid = devid.gsub(/f/, '') unless devid.nil?
