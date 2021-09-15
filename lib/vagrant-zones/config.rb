@@ -15,7 +15,7 @@ module VagrantPlugins
         super
         # pkgsrc, lx, bhyve, kvm, illumos
         @brand = 'bhyve'
-        @additional_disks = nil
+        @additional_disks = UNSET_VALUE
         @autoboot = true
         @kernel = UNSET_VALUE
         @zonepath = '/rpool/myvm'

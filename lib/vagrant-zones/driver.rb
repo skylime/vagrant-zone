@@ -440,7 +440,9 @@ end             )
         else
           raise Errors::InvalidBrand
         end
-
+        inspect config.additional_disks
+        puts config.additional_disks.length
+        puts config.additional_disks
         ## Create Additional Disks
         unless config.additional_disks.nil?
           inspect config.additional_disks
@@ -465,9 +467,6 @@ end             )
         if dataset_boot_exists == "#{zp}/boot"
           ## Destroy Additional Disks
           unless  config.additional_disks.nil?
-            inspect config.additional_disks
-            puts config.additional_disks.length
-            puts config.additional_disks
             disks = config.additional_disks
             disks.each do |disk|
               addataset = "#{disk['array']}#{disk['path']}"
