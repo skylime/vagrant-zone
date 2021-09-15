@@ -730,7 +730,7 @@ end            )
         end
 
         ## Cloud-init settings
-        unless config.cloud_init_enabled.nil?
+        if config.cloud_init_enabled
           cloudconfig = case config.cloud_init_enabled
           when 'on'
             'on'
