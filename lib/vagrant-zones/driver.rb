@@ -180,61 +180,61 @@ module VagrantPlugins
           zlogin(machine, 'rm -rf  /etc/netplan/*.yaml')
         end
         machine.config.vm.networks.each do |adpatertype, opts|
-          if adpatertype.to_s == 'public_network'
-            link = opts[:bridge]
-            nic_number = opts[:nic_number].to_s
-            netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
-            ip = opts[:ip].to_s
-            defrouter = opts[:gateway].to_s
-            allowed_address = "#{ip}/#{netmask}"
-            ip = if ip.empty?
-                   nil
-                 else
-                   ip.gsub(/\t/, '')
-                 end
-            regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
-            mac = opts[:mac] unless opts[:mac].nil?
-            mac = 'auto' unless mac.match(regex)
-            nictype = opts[:nictype] unless opts[:nictype].nil?
-            dns = config.dns
-            dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
-            servers = []
-            unless dns&.nil?
-              dns.each do |server|
-                servers.append(server)
-              end
+          return if adpatertype.to_s != 'public_network'
+          link = opts[:bridge]
+          nic_number = opts[:nic_number].to_s
+          netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
+          ip = opts[:ip].to_s
+          defrouter = opts[:gateway].to_s
+          allowed_address = "#{ip}/#{netmask}"
+          ip = if ip.empty?
+                 nil
+               else
+                 ip.gsub(/\t/, '')
+               end
+          regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
+          mac = opts[:mac] unless opts[:mac].nil?
+          mac = 'auto' unless mac.match(regex)
+          nictype = opts[:nictype] unless opts[:nictype].nil?
+          dns = config.dns
+          dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
+          servers = []
+          unless dns&.nil?
+            dns.each do |server|
+              servers.append(server)
             end
-            nic_type = case nictype
-                       when /external/
-                         'e'
-                       when /internal/
-                         'i'
-                       when /carp/
-                         'c'
-                       when /management/
-                         'm'
-                       when /host/
-                         'h'
-                       end
-            vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
-            case state
-            when 'create'
-              if opts[:vlan].nil?
-                execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
-              else
-                vlan = opts[:vlan]
-                uiinfo.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
-                execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
-              end
-            when 'delete'
-              uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name)
-              vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
-              execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
-            when 'config'
-              uiinfo.info(I18n.t('vagrant_zones.vnic_setup') + vnic_name)
-              case config.brand
-              when 'lx'
-                nic_attr = %(add net
+          end
+          nic_type = case nictype
+                     when /external/
+                       'e'
+                     when /internal/
+                       'i'
+                     when /carp/
+                       'c'
+                     when /management/
+                       'm'
+                     when /host/
+                       'h'
+                     end
+          vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
+          case state
+          when 'create'
+            if opts[:vlan].nil?
+              execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
+            else
+              vlan = opts[:vlan]
+              uiinfo.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
+              execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
+            end
+          when 'delete'
+            uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name)
+            vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
+            execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
+          when 'config'
+            uiinfo.info(I18n.t('vagrant_zones.vnic_setup') + vnic_name)
+            case config.brand
+            when 'lx'
+              nic_attr = %(add net
   set physical=#{vnic_name}
   set global-nic=auto
   set allowed-address=#{allowed_address}
@@ -250,66 +250,66 @@ end              )
   set physical=#{vnic_name}
   set allowed-address=#{allowed_address}
 end             )
-                File.open("#{name}.zoneconfig", 'a') do |f|
-                  f.puts nic_attr
-                end
+              File.open("#{name}.zoneconfig", 'a') do |f|
+                f.puts nic_attr
               end
-            when 'setup'
-              responses = []
-              vmnic = []
-              uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
-              ## regex to grab standard Device interface names in ifconfig
-              regex = /(en|eth)(\d|o\d|s\d|x[0-9A-Fa-f]{2}{6}|(p\d)(s\d)(f?\d?))/
-              PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-                zlogin_read.expect(/\n/) do
-                  zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n")
-                end
-                Timeout.timeout(30) do
-                  staticrun = 0
-                  dhcprun = 0
-                  loop do
-                    zlogin_read.expect(/\r\n/) { |line| responses.push line }
-                    raise 'Did not receive expected networking configurations' if vmnic.include? responses[-1][0][/#{regex}/]
+            end
+          when 'setup'
+            responses = []
+            vmnic = []
+            uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
+            ## regex to grab standard Device interface names in ifconfig
+            regex = /(en|eth)(\d|o\d|s\d|x[0-9A-Fa-f]{2}{6}|(p\d)(s\d)(f?\d?))/
+            PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+              zlogin_read.expect(/\n/) do
+                zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n")
+              end
+              Timeout.timeout(30) do
+                staticrun = 0
+                dhcprun = 0
+                loop do
+                  zlogin_read.expect(/\r\n/) { |line| responses.push line }
+                  raise 'Did not receive expected networking configurations' if vmnic.include? responses[-1][0][/#{regex}/]
 
-                    vmnic.append(responses[-1][0][/#{regex}/]) if responses[-1][0] =~ regex
-                    vmnic.each do |interface|
-                      unless interface[/#{regex}/, 1].nil?
-                        if interface[/#{regex}/, 3].nil? && interface[/#{regex}/, 1] == 'en'
-                          interface_desc = interface[/#{regex}/, 2].chars
-                          case interface_desc[0]
-                          when 'x'
-                            mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
-                            mac_interface = mac_interface.split('enx', 0)
-                            nicbus = mac_interface[1]
-                          when 's' || 'o'
-                            nicbus = interface_desc[1]
-                          end
-                        elsif interface[/#{regex}/, 1] != 'en'
-                          nicbus = interface[/#{regex}/, 2]
-                        else
-                          nicbus = interface[/#{regex}/, 3]
+                  vmnic.append(responses[-1][0][/#{regex}/]) if responses[-1][0] =~ regex
+                  vmnic.each do |interface|
+                    unless interface[/#{regex}/, 1].nil?
+                      if interface[/#{regex}/, 3].nil? && interface[/#{regex}/, 1] == 'en'
+                        interface_desc = interface[/#{regex}/, 2].chars
+                        case interface_desc[0]
+                        when 'x'
+                          mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
+                          mac_interface = mac_interface.split('enx', 0)
+                          nicbus = mac_interface[1]
+                        when 's' || 'o'
+                          nicbus = interface_desc[1]
                         end
+                      elsif interface[/#{regex}/, 1] != 'en'
+                        nicbus = interface[/#{regex}/, 2]
+                      else
+                        nicbus = interface[/#{regex}/, 3]
                       end
-                      devid = if interface[/#{regex}/, 4].nil?
-                                nicbus
-                              elsif interface[/#{regex}/, 5][/f\d/].nil?
-                                'f0'
-                              else
-                                interface[/#{regex}/, 5]
-                              end
-                      raise 'No Device ID found' if devid.nil?
+                    end
+                    devid = if interface[/#{regex}/, 4].nil?
+                              nicbus
+                            elsif interface[/#{regex}/, 5][/f\d/].nil?
+                              'f0'
+                            else
+                              interface[/#{regex}/, 5]
+                            end
+                    raise 'No Device ID found' if devid.nil?
 
-                      if mac == 'auto'
-                        zlogin_write.printf("\nip link show dev #{vmnic[devid.to_i]} | grep ether | awk '{ print $2 }'\n")
-                        if responses[-1].to_s.match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)
-                          mac = responses[-1][0][/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/]
-                        end
+                    if mac == 'auto'
+                      zlogin_write.printf("\nip link show dev #{vmnic[devid.to_i]} | grep ether | awk '{ print $2 }'\n")
+                      if responses[-1].to_s.match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)
+                        mac = responses[-1][0][/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/]
                       end
+                    end
 
-                      if nic_number == devid.gsub(/f/, '')
-                        ## Get Device Mac Address for when Mac is not specified
-                        if opts[:dhcp] == true || opts[:dhcp].nil?
-                          netplan = %(network:
+                    if nic_number == devid.gsub(/f/, '')
+                      ## Get Device Mac Address for when Mac is not specified
+                      if opts[:dhcp] == true || opts[:dhcp].nil?
+                        netplan = %(network:
   version: 2
   ethernets:
     #{vnic_name}:
@@ -321,17 +321,17 @@ end             )
       set-name: #{vnic_name}
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}]  )
-                          if dhcprun.zero?
-                            command = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"DHCP Error Code: $?\"\n"
-                            zlogin_write.printf(command)
-                            dhcprun += 1
-                          end
-                          infomessage = I18n.t('vagrant_zones.netplan_applied_dhcp') + "/etc/netplan/#{vnic_name}.yaml"
-                          uiinfo.info(infomessage) if responses[-1].to_s.match(/DHCP Error Code: 0/)
-                          errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-                          raise errormessage if responses[-1].to_s.match(/DHCP Error Code: \b(?!0\b)\d{1,4}\b/)
-                        elsif opts[:dhcp] == false
-                          netplan = %(network:
+                        if dhcprun.zero?
+                          command = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"DHCP Error Code: $?\"\n"
+                          zlogin_write.printf(command)
+                          dhcprun += 1
+                        end
+                        infomessage = I18n.t('vagrant_zones.netplan_applied_dhcp') + "/etc/netplan/#{vnic_name}.yaml"
+                        uiinfo.info(infomessage) if responses[-1].to_s.match(/DHCP Error Code: 0/)
+                        errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+                        raise errormessage if responses[-1].to_s.match(/DHCP Error Code: \b(?!0\b)\d{1,4}\b/)
+                      elsif opts[:dhcp] == false
+                        netplan = %(network:
   version: 2
   ethernets:
     #{vnic_name}:
@@ -345,36 +345,35 @@ end             )
       gateway4: #{defrouter}
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
-                          if staticrun.zero?
-                            cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Static Error Code: $?\"\n"
-                            zlogin_write.printf(cmd)
-                            staticrun += 1
-                          end
-                          if responses[-1].to_s.match(/Static Error Code: 0/)
-                            uiinfo.info(I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml")
-                          end
-                          errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-                          raise errormessage if responses[-1].to_s.match(/Static Error Code: \b(?!0\b)\d{1,4}\b/)
+                        if staticrun.zero?
+                          cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Static Error Code: $?\"\n"
+                          zlogin_write.printf(cmd)
+                          staticrun += 1
                         end
+                        if responses[-1].to_s.match(/Static Error Code: 0/)
+                          uiinfo.info(I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml")
+                        end
+                        errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+                        raise errormessage if responses[-1].to_s.match(/Static Error Code: \b(?!0\b)\d{1,4}\b/)
                       end
                     end
-                    ## Check if last command ran successfully and break from the loop
-                    zlogin_write.printf("echo \"Final Network Check Error Code: $?\"\n")
-                    if responses[-1].to_s.match(/Final Network Check Error Code: 0/)
-                      uiinfo.info(I18n.t('vagrant_zones.netplan_set'))
-                      break
-                    end
-                    errormessage = "==> #{name} ==> Final Network Check \nFailed with: #{responses[-1]}"
-                    raise errormessage if responses[-1].to_s.match(/Final Network Check Error Code: \b(?!0\b)\d{1,4}\b/)
                   end
+                  ## Check if last command ran successfully and break from the loop
+                  zlogin_write.printf("echo \"Final Network Check Error Code: $?\"\n")
+                  if responses[-1].to_s.match(/Final Network Check Error Code: 0/)
+                    uiinfo.info(I18n.t('vagrant_zones.netplan_set'))
+                    break
+                  end
+                  errormessage = "==> #{name} ==> Final Network Check \nFailed with: #{responses[-1]}"
+                  raise errormessage if responses[-1].to_s.match(/Final Network Check Error Code: \b(?!0\b)\d{1,4}\b/)
                 end
-                Process.kill('HUP', pid)
               end
-              ## Apply the Configuration
-              zlogin(machine, 'netplan apply')
-              zlogin(machine, 'netplan apply')
-              uiinfo.info(I18n.t('vagrant_zones.netplan_applied'))
+              Process.kill('HUP', pid)
             end
+            ## Apply the Configuration
+            zlogin(machine, 'netplan apply')
+            zlogin(machine, 'netplan apply')
+            uiinfo.info(I18n.t('vagrant_zones.netplan_applied'))
           end
         end
       end
