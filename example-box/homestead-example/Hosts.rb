@@ -42,7 +42,7 @@ class Hosts
                   vm.vagrant_cloud_creator                = host['cloud_creator']
                   vm.autoboot                             = host['autostart']
                   vm.partition_id                          = host['partition_id']
-                  vm.zonepath                             = "#{host['zonepath']}/#{host['partition_id']}-#{host['name']}"
+                  vm.zonepath                             = "#{host['zonepath']}/#{host['partition_id']}--#{host['name']}"
                   vm.zonepathsize                         = host['rootdisksize']
                   vm.setup_wait                           = host['setup_wait']
                   vm.memory                               = host['memory']
