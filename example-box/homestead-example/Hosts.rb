@@ -68,7 +68,7 @@ class Hosts
                   vm.vagrant_user                         = host['vagrant_user']
                   vm.vagrant_user_pass                    = host['vagrant_user_pass']
                   vm.hostname                             = host['name']
-                  vm.name                                 = "#{host['partition_id']}-#{host['name']}"
+                  vm.name                                 = "#{host['partition_id']}--#{host['name']}"
                   vm.cdroms                               = host['cdroms']
                   vm.additional_disks                     = host['additional_disks']
           end
