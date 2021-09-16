@@ -218,6 +218,7 @@ module VagrantPlugins
                      end
           vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
           case state
+          # Create the VNIC
           when 'create'
             if opts[:vlan].nil?
               execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
@@ -226,10 +227,12 @@ module VagrantPlugins
               uiinfo.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
               execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
             end
+          # Delete the VNIC
           when 'delete'
             uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name)
             vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
             execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
+          # Set Zonecfg Settings
           when 'config'
             uiinfo.info(I18n.t('vagrant_zones.vnic_setup') + vnic_name)
             case config.brand
@@ -238,7 +241,7 @@ module VagrantPlugins
   set physical=#{vnic_name}
   set global-nic=auto
   set allowed-address=#{allowed_address}
-  add property (name=gateway,value="#{@defrouter}")
+  add property (name=gateway,value="#{defrouter}")
   add property (name=ips,value="#{allowed_address}")
   add property (name=primary,value="true")
 end              )
@@ -254,6 +257,7 @@ end             )
                 f.puts nic_attr
               end
             end
+          # Setup Interface in the VM
           when 'setup'
             responses = []
             vmnic = []
@@ -411,7 +415,7 @@ end             )
           raise Errors::InvalidBrand
         end
         ## Create Additional Disks
-        return unless config.additional_disks.nil?
+        return if config.additional_disks.nil?
 
         config.additional_disks.each do |disk|
           cinfo = ",#{disk['size']}, #{disk['array']}#{disk['path']}"
