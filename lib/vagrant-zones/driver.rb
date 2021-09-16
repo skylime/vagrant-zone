@@ -277,6 +277,7 @@ end             )
                   vmnic.append(responses[-1][0][/#{regex}/]) if responses[-1][0] =~ regex
                   vmnic.each do |interface|
                     next unless interface[/#{regex}/, 1].nil?
+
                     if interface[/#{regex}/, 3].nil? && interface[/#{regex}/, 1] == 'en'
                       interface_desc = interface[/#{regex}/, 2].chars
                       case interface_desc[0]
