@@ -181,6 +181,7 @@ module VagrantPlugins
         end
         machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
+
           link = opts[:bridge]
           nic_number = opts[:nic_number].to_s
           netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
@@ -244,12 +245,12 @@ module VagrantPlugins
   add property (name=gateway,value="#{defrouter}")
   add property (name=ips,value="#{allowed_address}")
   add property (name=primary,value="true")
-end              )
-                File.open("#{name}.zoneconfig", 'a') do |f|
-                  f.puts nic_attr
-                end
-              when 'bhyve'
-                nic_attr = %(add net
+end             )
+              File.open("#{name}.zoneconfig", 'a') do |f|
+                f.puts nic_attr
+              end
+            when 'bhyve'
+              nic_attr = %(add net
   set physical=#{vnic_name}
   set allowed-address=#{allowed_address}
 end             )
@@ -269,7 +270,6 @@ end             )
                 zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n")
               end
               Timeout.timeout(30) do
-                staticrun = 0
                 loop do
                   zlogin_read.expect(/\r\n/) { |line| responses.push line }
                   raise 'Did not receive expected networking configurations' if vmnic.include? responses[-1][0][/#{regex}/]
@@ -325,7 +325,6 @@ end             )
       gateway4: #{defrouter}
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
-                      
                       cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Net Error Code: $?\"\n"
                       zlogin_write.printf(cmd)
                       infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
