@@ -87,10 +87,9 @@ module VagrantPlugins
           else
             # Support zss format only for now, use other images and convert later
             puts image_url unless image_url.nil?
-            #raise Errors::NoBoxFormatSet if box_format.nil?
+            # raise Errors::NoBoxFormatSet if box_format.nil?
             box_format = env[:machine].box.metadata['format'] unless env[:machine].box.metadata['format'].nil?
             
-
             if box_format == 'ovf'
               ## Code to try to convert existing box
               ui.info(I18n.t('vagrant_zones.detected_ovf_format'))
