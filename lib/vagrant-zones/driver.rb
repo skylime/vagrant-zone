@@ -119,7 +119,7 @@ module VagrantPlugins
       def get_ip_address(machine)
         config = machine.provider_config
         name = @machine.name
-        machine.config.vm.networks.each do |adpatertype, opts|
+        machine.config.vm.networks.each do |adaptertype, opts|
           responses = []
           nic_number = opts[:nic_number].to_s
           nictype = if opts[:nictype].nil?
@@ -140,7 +140,7 @@ module VagrantPlugins
                      when /host/
                        'h'
                      end
-          if opts[:dhcp] && opts[:managed] && adpatertype.to_s == 'public_network'
+          if opts[:dhcp] && opts[:managed] && adaptertype.to_s == 'public_network'
             vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
             PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
               command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
@@ -161,7 +161,7 @@ module VagrantPlugins
               end
               Process.kill('HUP', pid)
             end
-          elsif (opts[:dhcp] == false || opts[:dhcp].nil?) && opts[:managed] && adpatertype.to_s == 'public_network'
+          elsif (opts[:dhcp] == false || opts[:dhcp].nil?) && opts[:managed] && adaptertype.to_s == 'public_network'
             ip = opts[:ip].to_s
             return nil if ip.empty?
 
@@ -179,8 +179,8 @@ module VagrantPlugins
           uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
           zlogin(machine, 'rm -rf  /etc/netplan/*.yaml')
         end
-        machine.config.vm.networks.each do |adpatertype, opts|
-          return if adpatertype.to_s != 'public_network'
+        machine.config.vm.networks.each do |adaptertype, opts|
+          next unless adaptertype.to_s == 'public_network'
           link = opts[:bridge]
           nic_number = opts[:nic_number].to_s
           netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
@@ -438,8 +438,8 @@ end             )
         case config.brand
         when 'lx'
           uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
-          machine.config.vm.networks.each do |adpatertype, opts|
-            if adpatertype.to_s == 'public_network'
+          machine.config.vm.networks.each do |adaptertype, opts|
+            if adaptertype.to_s == 'public_network'
               @ip = opts[:ip].to_s
               cinfo = "#{opts[:ip]}/#{opts[:netmask]}"
               @network = NetAddr.parse_net(cinfo)
