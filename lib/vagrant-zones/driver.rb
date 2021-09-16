@@ -128,8 +128,6 @@ module VagrantPlugins
                       opts[:nictype]
 
                     end
-          mac = 'auto'
-          mac = opts[:mac] unless opts[:mac].nil?
           nic_type = case nictype
                      when /external/
                        'e'
