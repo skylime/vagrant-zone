@@ -327,18 +327,16 @@ end             )
                                 interface[/#{regex}/, 5]
                               end
                       raise 'No Device ID found' if devid.nil?
-
+                      
                       if mac == 'auto'
-                        zlogin_write.printf("\nip link show dev #{vnic} | grep ether | awk '{ print $2 }'\n")
+                        zlogin_write.printf("\nip link show dev #{vmnic[devid.to_i]} | grep ether | awk '{ print $2 }'\n")
                         if responses[-1].to_s.match(/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/)
                           mac = responses[-1][0][/^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/]
                         end
                       end
 
                       if nic_number == devid.gsub(/f/, '')
-                        vnic = vmnic[devid.to_i]
                         ## Get Device Mac Address for when Mac is not specified
-
                         if opts[:dhcp] == true || opts[:dhcp].nil?
                           netplan = %(network:
   version: 2
@@ -443,12 +441,11 @@ end             )
           raise Errors::InvalidBrand
         end
         ## Create Additional Disks
-        unless config.additional_disks.nil?
-          config.additional_disks.each do |disk|
-            cinfo = ",#{disk['size']}, #{disk['array']}#{disk['path']}"
-            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-            execute(false, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
-          end
+        return unless config.additional_disks.nil?
+        config.additional_disks.each do |disk|
+          cinfo = ",#{disk['size']}, #{disk['array']}#{disk['path']}"
+          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
+          execute(false, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
         end
       end
 
