@@ -310,6 +310,7 @@ end             )
                     end
 
                     next unless nic_number == devid.gsub(/f/, '')
+
                     ## Get Device Mac Address for when Mac is not specified
                     netplan = %(network:
   version: 2
@@ -438,6 +439,7 @@ end             )
           uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
           machine.config.vm.networks.each do |adaptertype, opts|
             next unless adaptertype.to_s == 'public_network'
+
             @ip = opts[:ip].to_s
             cinfo = "#{opts[:ip]}/#{opts[:netmask]}"
             @network = NetAddr.parse_net(cinfo)
