@@ -309,9 +309,9 @@ end             )
                       end
                     end
 
-                    if nic_number == devid.gsub(/f/, '')
-                      ## Get Device Mac Address for when Mac is not specified
-                      netplan = %(network:
+                    next unless nic_number == devid.gsub(/f/, '')
+                    ## Get Device Mac Address for when Mac is not specified
+                    netplan = %(network:
   version: 2
   ethernets:
     #{vnic_name}:
@@ -325,13 +325,12 @@ end             )
       gateway4: #{defrouter}
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
-                      cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Net Error Code: $?\"\n"
-                      zlogin_write.printf(cmd)
-                      infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
-                      uiinfo.info(infomessage) if responses[-1].to_s.match(/Net Error Code: 0/)
-                      errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-                      raise errormessage if responses[-1].to_s.match(/Net Error Code: \b(?!0\b)\d{1,4}\b/)
-                    end
+                    cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml; echo \"Net Error Code: $?\"\n"
+                    zlogin_write.printf(cmd)
+                    infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
+                    uiinfo.info(infomessage) if responses[-1].to_s.match(/Net Error Code: 0/)
+                    errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+                    raise errormessage if responses[-1].to_s.match(/Net Error Code: \b(?!0\b)\d{1,4}\b/)
                   end
                   ## Check if last command ran successfully and break from the loop
                   zlogin_write.printf("echo \"Final Network Check Error Code: $?\"\n")
@@ -438,12 +437,11 @@ end             )
         when 'lx'
           uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
           machine.config.vm.networks.each do |adaptertype, opts|
-            if adaptertype.to_s == 'public_network'
-              @ip = opts[:ip].to_s
-              cinfo = "#{opts[:ip]}/#{opts[:netmask]}"
-              @network = NetAddr.parse_net(cinfo)
-              @defrouter = opts[:gateway]
-            end
+            next unless adaptertype.to_s == 'public_network'
+            @ip = opts[:ip].to_s
+            cinfo = "#{opts[:ip]}/#{opts[:netmask]}"
+            @network = NetAddr.parse_net(cinfo)
+            @defrouter = opts[:gateway]
           end
           attr = %(create
 set zonepath=#{config.zonepath}/path
