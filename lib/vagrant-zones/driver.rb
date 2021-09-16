@@ -146,47 +146,24 @@ module VagrantPlugins
             if opts[:dhcp] == true
               if opts[:managed]
                 vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
-                if mac == 'auto'
-                  PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-                    command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
-                    zlogin_read.expect(/\n/) { zlogin_write.printf(command) }
-                    Timeout.timeout(30) do
-                      loop do
-                        zlogin_read.expect(/\r\n/) { |line| responses.push line }
-                        if responses[-1].to_s.match(/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/)
-                          ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
-                          return nil if ip.length.empty?
+                PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+                  command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
+                  zlogin_read.expect(/\n/) { zlogin_write.printf(command) }
+                  Timeout.timeout(30) do
+                    loop do
+                      zlogin_read.expect(/\r\n/) { |line| responses.push line }
+                      if responses[-1].to_s.match(/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/)
+                        ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
+                        return nil if ip.empty?
+                        return ip.gsub(/\t/, '') unless ip.empty?
 
-                          return ip.gsub(/\t/, '') unless ip.length.empty?
-
-                          break
-                        end
-                        errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-                        raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
+                        break
                       end
+                      errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+                      raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
                     end
-                    Process.kill('HUP', pid)
                   end
-                else
-                  PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-                    command = "ip -4 addr show dev  #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
-                    zlogin_read.expect(/\n/) { zlogin_write.printf(command) }
-                    Timeout.timeout(30) do
-                      loop do
-                        zlogin_read.expect(/\r\n/) { |line| responses.push line }
-                        if responses[-1].to_s.match(/(?:[0-9]{1,3}\.){3}[0-9]{1,3}/)
-                          ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
-                          return nil if ip.empty?
-                          return ip.gsub(/\t/, '') unless ip.empty?
-
-                          break
-                        end
-                        errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-                        raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
-                      end
-                    end
-                    Process.kill('HUP', pid)
-                  end
+                  Process.kill('HUP', pid)
                 end
               end
             elsif (opts[:dhcp] == false || opts[:dhcp].nil?) && opts[:managed]
