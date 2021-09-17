@@ -282,7 +282,13 @@ end             )
               end
               Process.kill('HUP', pid)
             end
+            puts
+            puts
+            puts            
             vmnic.each do |interface|
+              puts interface
+              puts interface
+              puts interface              
               next unless interface[/#{regex}/, 1].nil?
 
               if interface[/#{regex}/, 3].nil? && interface[/#{regex}/, 1] == 'en'
