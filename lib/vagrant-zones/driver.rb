@@ -272,7 +272,7 @@ end             )
       gateway4: #{defrouter}
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
-            cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml\n"
+            cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
             errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
             raise errormessage unless zlogin(machine, cmd)
             infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
