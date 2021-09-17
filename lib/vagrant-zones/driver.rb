@@ -261,22 +261,44 @@ end             )
             uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
             ## regex to grab standard Device interface names in ifconfig
             regex = /(en|eth)(\d|o\d|s\d|x[0-9A-Fa-f]{2}{6}|(p\d)(s\d)(f?\d?))/
-            PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-              zlogin_read.expect(/\n/) do
-                zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface\n")
+
+
+
+###############################################
+            PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, _zlogin_write, pid|
+            if zlogin_read.expect(/Last login: /)
+              uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access'))
+              Timeout.timeout(config.setup_wait) do
+                loop do
+                  zlogin_read.expect(/\n/) { |line| responses.push line }
+                  break if responses[-1].to_s.match(/:~#/)
+
+                  ## Code to try to login with username and password
+                  uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login')) if responses[-1].to_s.match(/login: /)
+                end
               end
+            end
+            Process.kill('HUP', pid)
+          end
+###############################################
+
+
+            
+            PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+              zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface && echo \"Error Code: $?\"\n") 
               Timeout.timeout(config.clean_shutdown_time) do
                 loop do
                   zlogin_read.expect(/\r\n/) { |line| responses.push line }
                   raise 'Did not receive expected networking configurations' if vmnic.include? responses[-1][0][/#{regex}/]
 
                   vmnic.append(responses[-1][0][/#{regex}/]) if responses[-1][0] =~ regex
-                  if mac == 'auto'
-                    macregex= /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
-                    zlogin_write.printf("\nip link show dev #{vmnic[devid.to_i]} | grep ether | awk '{ print $2 }'\n")
-                    if responses[-1].to_s.match(macregex)
-                      mac = responses[-1][0][macregex]
-                    end
+                  break if responses[-1].to_s.match(/Error Code: 0/)
+                end
+                if mac == 'auto'
+                  macregex= /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
+                  zlogin_write.printf("\nip link show dev #{vmnic[opts[:nic_number]]} | grep ether | awk '{ print $2 }'\n")
+                  if responses[-1].to_s.match(macregex)
+                    mac = responses[-1][0][macregex]
                   end
                 end
               end
