@@ -121,12 +121,10 @@ module VagrantPlugins
         name = @machine.name
         machine.config.vm.networks.each do |adaptertype, opts|
           responses = []
-          nic_number = opts[:nic_number].to_s
           nictype = if opts[:nictype].nil?
                       'external'
                     else
                       opts[:nictype]
-
                     end
           nic_type = case nictype
                      when /external/
@@ -141,7 +139,7 @@ module VagrantPlugins
                        'h'
                      end
           if opts[:dhcp] && opts[:managed] && adaptertype.to_s == 'public_network'
-            vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
+            vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{opts[:nic_number]}"
             PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
               command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
               zlogin_read.expect(/\n/) { zlogin_write.printf(command) }
@@ -182,12 +180,9 @@ module VagrantPlugins
         machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
 
-          link = opts[:bridge]
-          nic_number = opts[:nic_number].to_s
-          netmask = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')
           ip = opts[:ip].to_s
           defrouter = opts[:gateway].to_s
-          allowed_address = "#{ip}/#{netmask}"
+          allowed_address = "#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
           ip = if ip.empty?
                  nil
                else
@@ -217,16 +212,16 @@ module VagrantPlugins
                      when /host/
                        'h'
                      end
-          vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{nic_number}"
+          vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{opts[:nic_number]}"
           case state
           # Create the VNIC
           when 'create'
             if opts[:vlan].nil?
-              execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} #{vnic_name}")
+              execute(false, "#{@pfexec} dladm create-vnic -l #{opts[:bridge]} -m #{mac} #{vnic_name}")
             else
               vlan = opts[:vlan]
               uiinfo.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
-              execute(false, "#{@pfexec} dladm create-vnic -l #{link} -m #{mac} -v #{vlan} #{vnic_name}")
+              execute(false, "#{@pfexec} dladm create-vnic -l #{opts[:bridge]} -m #{mac} -v #{vlan} #{vnic_name}")
             end
           # Delete the VNIC
           when 'delete'
@@ -314,7 +309,7 @@ end             )
               end
               raise 'No Device ID found' if devid.nil?
 
-              next unless nic_number == devid.gsub(/f/, '')
+              next unless opts[:nic_number] == devid.gsub(/f/, '')
 
               netplan = %(network:
 version: 2
@@ -326,7 +321,7 @@ dhcp-identifier: mac
 dhcp4: #{opts[:dhcp]}
 dhcp6: #{opts[:dhcp6]}
 set-name: #{vnic_name}
-addresses: [#{ip}/#{netmask}]
+addresses: [#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}]
 gateway4: #{defrouter}
 nameservers:
 addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
@@ -861,6 +856,7 @@ end          )
       # This gives us a console to the VM
       def zlogin(machine, cmd)
         name = machine.name
+        config = machine.provider_config
         responses = []
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           zlogin_read.expect(/\n/) { zlogin_write.printf("#{cmd} \; echo \"Error Code: $?\"\n") }
