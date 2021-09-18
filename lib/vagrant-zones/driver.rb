@@ -335,7 +335,6 @@ end             )
 
 #              next unless opts[:nic_number] == devid.gsub(/f/, '')
 
-
       # This helps us create all the datasets for the zone
       def create_dataset(machine, uiinfo)
         config  = machine.provider_config
@@ -965,7 +964,7 @@ end          )
               execute(false, "#{@pfexec} zoneadm -z #{name} halt")
             end
           rescue Timeout::Error
-            raise "==> #{name}: VM failed to halt in alloted time #{config.setup_wait} after waiting to shutdown for #{config.clean_shutdown_time}"
+            raise "==> #{name}: VM failed to halt in alloted time #{config.setup_wait} after waiting for #{config.clean_shutdown_time}"
           end
         end
       end
