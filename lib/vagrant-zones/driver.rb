@@ -281,57 +281,6 @@ end             )
           end
         end
       end
-
-#            ## regex to grab standard Device interface names in ifconfig
-#            regex = /(en|eth)(\d|o\d|s\d|x[0-9A-Fa-f]{2}{6}|(p\d)(s\d)(f?\d?))/
-#            vmnic = []
-#            PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-#              zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface && echo \"Error Code: $?\"\n")
-#              Timeout.timeout(config.clean_shutdown_time) do
-#                loop do
-#                  zlogin_read.expect(/\r\n/) { |line| responses.push line }
-#                  raise 'Did not receive expected networking configurations' if vmnic.include? responses[-1][0][/#{regex}/]
-#
-#                  vmnic.append(responses[-1][0][/#{regex}/]) if responses[-1][0] =~ regex
-#                  break if responses[-1].to_s.match(/Error Code: 0/)
-#                end
-#                if mac == 'auto'
-#                  macregex= /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
-#                  zlogin_write.printf("\nip link show dev #{vmnic[opts[:nic_number]]} | grep ether | awk '{ print $2 }'\n")
-#                  if responses[-1].to_s.match(macregex)
-#                    mac = responses[-1][0][macregex]
-#                  end
-#                end
-#              end
-#              Process.kill('HUP', pid)
-#            end
-#            vmnic.each do |interface|
-#              next unless interface[/#{regex}/, 1].nil?
-
-#              if interface[/#{regex}/, 3].nil? && interface[/#{regex}/, 1] == 'en'
-#                interface_desc = interface[/#{regex}/, 2].chars
-#                case interface_desc[0]
-#                when 'x'
-#                  mac_interface = interface[/#{regex}/, 1] + interface[/#{regex}/, 2]
-#                  mac_interface = mac_interface.split('enx', 0)
-#                  nicbus = mac_interface[1]
-#                when 's' || 'o'
-#                  nicbus = interface_desc[1]
-#                end
-#              elsif interface[/#{regex}/, 1] != 'en'
-#                nicbus = interface[/#{regex}/, 2]
-#              else
-#                nicbus = interface[/#{regex}/, 3]
-#              end
-#              devid = if interface[/#{regex}/, 4].nil?
-#                nicbus
-#              elsif interface[/#{regex}/, 5][/f\d/].nil?
-#                'f0'
-#              else
-#                interface[/#{regex}/, 5]
-#              end
-#              raise 'No Device ID found' if devid.nil?
-#  next unless opts[:nic_number] == devid.gsub(/f/, '')
       # This helps us create all the datasets for the zone
       def create_dataset(machine, uiinfo)
         config  = machine.provider_config
