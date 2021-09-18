@@ -273,10 +273,9 @@ end             )
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
             cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
-            errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-            infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
+            # errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
+            # infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
             zlogin(machine, 'netplan apply') if zlogin(machine, cmd)
-            
             ## Apply the Configuration
             uiinfo.info(I18n.t('vagrant_zones.netplan_applied'))
           end
@@ -287,7 +286,7 @@ end             )
 #            regex = /(en|eth)(\d|o\d|s\d|x[0-9A-Fa-f]{2}{6}|(p\d)(s\d)(f?\d?))/
 #            vmnic = []
 #            PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-#              zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface && echo \"Error Code: $?\"\n") 
+#              zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface && echo \"Error Code: $?\"\n")
 #              Timeout.timeout(config.clean_shutdown_time) do
 #                loop do
 #                  zlogin_read.expect(/\r\n/) { |line| responses.push line }
@@ -334,7 +333,6 @@ end             )
 #              raise 'No Device ID found' if devid.nil?
 
 #              next unless opts[:nic_number] == devid.gsub(/f/, '')
-
       # This helps us create all the datasets for the zone
       def create_dataset(machine, uiinfo)
         config  = machine.provider_config
