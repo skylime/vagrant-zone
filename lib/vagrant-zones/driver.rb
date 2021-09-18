@@ -255,7 +255,7 @@ end             )
             end
           # Setup Interface in the VM
           when 'setup'
-            responses = []
+            # responses = []
 
             uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
             netplan = %(network:
@@ -331,7 +331,6 @@ end             )
 #                interface[/#{regex}/, 5]
 #              end
 #              raise 'No Device ID found' if devid.nil?
-
 #              next unless opts[:nic_number] == devid.gsub(/f/, '')
       # This helps us create all the datasets for the zone
       def create_dataset(machine, uiinfo)
