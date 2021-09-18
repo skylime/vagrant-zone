@@ -256,7 +256,7 @@ end             )
           # Setup Interface in the VM
           when 'setup'
             responses = []
-            vmnic = []
+
             uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
             netplan = %(network:
   version: 2
@@ -274,16 +274,18 @@ end             )
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
             cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
             errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-            raise errormessage unless zlogin(machine, cmd)
             infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
+            zlogin(machine, 'netplan apply') if zlogin(machine, cmd)
+            
             ## Apply the Configuration
-            uiinfo.info(I18n.t('vagrant_zones.netplan_applied')) if zlogin(machine, 'netplan apply')
+            uiinfo.info(I18n.t('vagrant_zones.netplan_applied')) if 
           end
         end
       end
 
 #            ## regex to grab standard Device interface names in ifconfig
 #            regex = /(en|eth)(\d|o\d|s\d|x[0-9A-Fa-f]{2}{6}|(p\d)(s\d)(f?\d?))/
+#            vmnic = []
 #            PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
 #              zlogin_write.printf("\nifconfig -s -a | grep -v lo  | awk '{ print $1 }' | grep -v Iface && echo \"Error Code: $?\"\n") 
 #              Timeout.timeout(config.clean_shutdown_time) do
