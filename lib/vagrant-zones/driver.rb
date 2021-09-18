@@ -278,7 +278,7 @@ end             )
             zlogin(machine, 'netplan apply') if zlogin(machine, cmd)
             
             ## Apply the Configuration
-            uiinfo.info(I18n.t('vagrant_zones.netplan_applied')) if 
+            uiinfo.info(I18n.t('vagrant_zones.netplan_applied'))
           end
         end
       end
