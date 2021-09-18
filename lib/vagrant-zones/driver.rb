@@ -331,7 +331,7 @@ end             )
 #                interface[/#{regex}/, 5]
 #              end
 #              raise 'No Device ID found' if devid.nil?
-#              next unless opts[:nic_number] == devid.gsub(/f/, '')
+#        next unless opts[:nic_number] == devid.gsub(/f/, '')
       # This helps us create all the datasets for the zone
       def create_dataset(machine, uiinfo)
         config  = machine.provider_config
