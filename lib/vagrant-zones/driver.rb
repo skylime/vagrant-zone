@@ -255,8 +255,6 @@ end             )
             end
           # Setup Interface in the VM
           when 'setup'
-            # responses = []
-
             uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
             netplan = %(network:
   version: 2
@@ -277,7 +275,7 @@ end             )
             infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
             uiinfo.info(infomessage) if zlogin(machine, cmd)
             ## Apply the Configuration
-            uiinfo.info(I18n.t('vagrant_zones.netplan_applied')) if zlogin(machine, 'netplan apply') 
+            uiinfo.info(I18n.t('vagrant_zones.netplan_applied')) if zlogin(machine, 'netplan apply')
           end
         end
       end
