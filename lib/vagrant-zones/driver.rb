@@ -274,10 +274,10 @@ end             )
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
             cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
             # errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-            # infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
-            zlogin(machine, 'netplan apply') if zlogin(machine, cmd)
+            infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
+            uiinfo.info(infomessage) if zlogin(machine, cmd)
             ## Apply the Configuration
-            uiinfo.info(I18n.t('vagrant_zones.netplan_applied'))
+            uiinfo.info(I18n.t('vagrant_zones.netplan_applied')) if zlogin(machine, 'netplan apply') 
           end
         end
       end
