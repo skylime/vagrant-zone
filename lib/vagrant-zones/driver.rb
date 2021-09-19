@@ -267,7 +267,7 @@ end             )
       dhcp6: #{opts[:dhcp6]}
       set-name: #{vnic_name}
       addresses: [#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}]
-#      gateway4: #{defrouter}
+      gateway4: #{defrouter}
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
             cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
