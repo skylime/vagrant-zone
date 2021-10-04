@@ -54,15 +54,15 @@ module VagrantPlugins
         ft = @firmware_type
         case ft
         when :compatability
-          @firmware = 'BHYVE_RELEASE_CSM'
+          'BHYVE_RELEASE_CSM'
         when :UEFI
-          @firmware = 'BHYVE_RELEASE'
+          'BHYVE_RELEASE'
         when :BIOS
-          @firmware = 'BHYVE_CSM'
+          'BHYVE_CSM'
         when :BHYVE_DEBUG
-          @firmware = 'UEFI_DEBUG'
+          'UEFI_DEBUG'
         when :BHYVE_RELEASE_CSM
-          @firmware = 'BIOS_DEBUG'
+          'BIOS_DEBUG'
         end
 
         case @vm_type
