@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.5.0'
   spec.required_rubygems_version = '>= 1.3.6'
 
-  spec.add_runtime_dependency 'i18n', '~> 1.8'
+  spec.add_runtime_dependency 'i18n', '~> 1.0'
   spec.add_runtime_dependency 'iniparse', '~> 1.0'
   spec.add_runtime_dependency 'log4r', '~> 1.1'
   spec.add_runtime_dependency 'netaddr', '~> 2.0', '>= 2.0.4'
