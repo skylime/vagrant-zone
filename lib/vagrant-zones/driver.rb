@@ -393,7 +393,7 @@ set max-lwps=2000
         )
         when 'bhyve'
           case config.firmware_type
-          puts config.firmware_type
+          p config.firmware_type
           when :compatability
             firmware = 'BHYVE_RELEASE_CSM'
           when :UEFI
