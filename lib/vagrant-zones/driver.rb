@@ -856,7 +856,6 @@ end          )
       # This filters the firmware
       def firmware(machine)
         config = machine.provider_config
-        puts firmware_type
         firmware = 'BHYVE_RELEASE_CSM'
         case config.firmware_type
         when :compatability
