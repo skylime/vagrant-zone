@@ -856,18 +856,21 @@ end          )
       # This filters the firmware
       def firmware(machine)
         config = machine.provider_config
+        puts firmware_type
+        firmware = 'BHYVE_RELEASE_CSM'
         case config.firmware_type
         when :compatability
-          'BHYVE_RELEASE_CSM'
+          firmware = 'BHYVE_RELEASE_CSM'
         when :UEFI
-          'BHYVE_RELEASE'
+          firmware = 'BHYVE_RELEASE'
         when :BIOS
-          'BHYVE_CSM'
+          firmware = 'BHYVE_CSM'
         when :BHYVE_DEBUG
-          'UEFI_DEBUG'
+          firmware = 'UEFI_DEBUG'
         when :BHYVE_RELEASE_CSM
-          'BIOS_DEBUG'
+          firmware = 'BIOS_DEBUG'
         end
+        firmware
       end
 
       # This filters the rdpport
