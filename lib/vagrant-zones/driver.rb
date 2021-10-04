@@ -360,19 +360,6 @@ end             )
         name = @machine.name
         ## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console
         config = machine.provider_config
-        puts config.firmware_type
-        case config.firmware_type
-        when :compatability
-          firmware = 'BHYVE_RELEASE_CSM'
-        when :UEFI
-          firmware = 'BHYVE_RELEASE'
-        when :BIOS
-          firmware = 'BHYVE_CSM'
-        when :BHYVE_DEBUG
-          firmware = 'UEFI_DEBUG'
-        when :BHYVE_RELEASE_CSM
-          firmware = 'BIOS_DEBUG'
-        end
         attr = ''
         case config.brand
         when 'lx'
@@ -425,7 +412,7 @@ end
 add attr
   set name=bootrom
   set type=string
-  set value=#{firmware}
+  set value=#{firmware(machine)}
 end
 add attr
   set name=hostbridge
@@ -864,6 +851,23 @@ end          )
         sshport = '22'
         sshport = config.sshport.to_s unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
         sshport
+      end
+
+      # This filters the firmware
+      def firmware(machine)
+        config = machine.provider_config
+        case config.firmware_type
+        when :compatability
+          'BHYVE_RELEASE_CSM'
+        when :UEFI
+          'BHYVE_RELEASE'
+        when :BIOS
+          'BHYVE_CSM'
+        when :BHYVE_DEBUG
+          'UEFI_DEBUG'
+        when :BHYVE_RELEASE_CSM
+          'BIOS_DEBUG'
+        end
       end
 
       # This filters the rdpport
