@@ -872,7 +872,8 @@ end          )
         when :BHYVE_RELEASE_CSM
           'BIOS_DEBUG'
         end
-        firmware
+        puts firmware
+        firmware.to_s
       end
 
       # This filters the rdpport
