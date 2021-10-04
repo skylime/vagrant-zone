@@ -7,7 +7,7 @@ module VagrantPlugins
     # This is used define the variables for the project
     class Config < Vagrant.plugin('2', :config)
       # rubocop:disable Layout/LineLength
-      attr_accessor :brand, :autoboot, :kernel, :zonepath, :zonepathsize, :diskif, :netif, :cdroms, :disk1path, :disk1size, :cpus, :cpu_configuration, :complex_cpu_conf, :memory, :vagrant_user, :vagrant_user_private_key_path, :setup_wait, :clean_shutdown_time, :dhcp, :vagrant_user_pass, :firmware_type, :firmware, :vm_type, :partition_id, :shared_disk_enabled, :shared_dir, :acpi, :os_type, :console, :consoleport, :console_onboot, :hostbridge, :sshport, :rdpport, :override, :additional_disks, :cloud_init_enabled, :dns, :box, :vagrant_cloud_creator
+      attr_accessor :brand, :autoboot, :kernel, :zonepath, :zonepathsize, :diskif, :netif, :cdroms, :disk1path, :disk1size, :cpus, :cpu_configuration, :complex_cpu_conf, :memory, :vagrant_user, :vagrant_user_private_key_path, :setup_wait, :clean_shutdown_time, :dhcp, :vagrant_user_pass, :firmware_type, :vm_type, :partition_id, :shared_disk_enabled, :shared_dir, :acpi, :os_type, :console, :consoleport, :console_onboot, :hostbridge, :sshport, :rdpport, :override, :additional_disks, :cloud_init_enabled, :dns, :box, :vagrant_cloud_creator
 
       # rubocop:enable Layout/LineLength
 
@@ -50,18 +50,17 @@ module VagrantPlugins
         @cloud_init_enabled = false
         @vagrant_cloud_creator = UNSET_VALUE
         @firmware_type = 'compatability'
-        @firmware = 'BHYVE_RELEASE_CSM'
         case @firmware_type
         when :compatability
-          @firmware = 'BHYVE_RELEASE_CSM'
+          'BHYVE_RELEASE_CSM'
         when :UEFI
-          @firmware = 'BHYVE_RELEASE'
+          'BHYVE_RELEASE'
         when :BIOS
-          @firmware = 'BHYVE_CSM'
+          'BHYVE_CSM'
         when :BHYVE_DEBUG
-          @firmware = 'UEFI_DEBUG'
+          'UEFI_DEBUG'
         when :BHYVE_RELEASE_CSM
-          @firmware = 'BIOS_DEBUG'
+          'BIOS_DEBUG'
         end
 
         case @vm_type

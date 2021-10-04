@@ -412,7 +412,7 @@ end
 add attr
   set name=bootrom
   set type=string
-  set value=#{config.firmware}
+  set value=#{config.firmware_type}
 end
 add attr
   set name=hostbridge
