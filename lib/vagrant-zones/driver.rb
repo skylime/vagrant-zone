@@ -191,7 +191,6 @@ module VagrantPlugins
           regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
           mac = opts[:mac] unless opts[:mac].nil?
           mac = 'auto' unless mac.match(regex)
-          nictype = opts[:nictype] unless opts[:nictype].nil?
           dns = config.dns
           dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
           servers = []
@@ -199,6 +198,11 @@ module VagrantPlugins
             dns.each do |server|
               servers.append(server)
             end
+          end
+          nictype = if opts[:nictype].nil?
+            'external'
+          else
+            opts[:nictype]
           end
           nic_type = case nictype
                      when /external/
@@ -856,18 +860,17 @@ end          )
       # This filters the firmware
       def firmware(machine)
         config = machine.provider_config
-        firmware = 'BHYVE_RELEASE_CSM'
-        case config.firmware_type
+        firmware = case config.firmware_type
         when :compatability
-          firmware = 'BHYVE_RELEASE_CSM'
+          'BHYVE_RELEASE_CSM'
         when :UEFI
-          firmware = 'BHYVE_RELEASE'
+          'BHYVE_RELEASE'
         when :BIOS
-          firmware = 'BHYVE_CSM'
+          'BHYVE_CSM'
         when :BHYVE_DEBUG
-          firmware = 'UEFI_DEBUG'
+          'UEFI_DEBUG'
         when :BHYVE_RELEASE_CSM
-          firmware = 'BIOS_DEBUG'
+          'BIOS_DEBUG'
         end
         firmware
       end
