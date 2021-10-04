@@ -10,7 +10,7 @@ class Hosts
       # Main loop to configure VM
       settings['hosts'].each_with_index do |host, index|
         autostart = host.has_key?('autostart') && host['autostart']
-        config.vm.define "#{host['partition_id']}-#{host['name']}", autostart: autostart do |server|
+        config.vm.define "#{host['partition_id']}--#{host['name']}", autostart: autostart do |server|
           server.vm.box = host['box']       
           server.vm.boot_timeout = 900
   
