@@ -376,6 +376,7 @@ end             )
             @network = NetAddr.parse_net(cinfo)
             @defrouter = opts[:gateway]
           end
+          #execute(false, "#{@pfexec} zonecfg -z #{name} \"create ; set  zonepath=/rpool/zones/#{name}/path\"")
           attr = %(create
 set zonepath=#{config.zonepath}/path
 set brand=#{config.brand}
@@ -794,7 +795,7 @@ end          )
         # return false
       end
 
-      # This gives us a  console to the VM for the user
+      # This gives the user a terminal console
       def zlogincommand(machine, cmd)
         name = machine.name
         execute(false, "#{@pfexec} zlogin #{name} #{cmd}")
@@ -860,16 +861,26 @@ end          )
       # This filters the firmware
       def firmware(machine)
         config = machine.provider_config
+        puts config.firmware_type
+        puts config.firmware_type.to_s
+        ft = if config.firmware_type.nil?
+          'compatability'
+        else
+          config.firmware_type
+        end
+        puts config.firmware_type
+        puts config.firmware_type.to_s
+        puts ft
         ft = case config.firmware_type
-        when :compatability
+        when /compatability/
           'BHYVE_RELEASE_CSM'
-        when :UEFI
+        when /UEFI/
           'BHYVE_RELEASE'
-        when :BIOS
+        when /BIOS/
           'BHYVE_CSM'
-        when :BHYVE_DEBUG
+        when /BHYVE_DEBUG/
           'UEFI_DEBUG'
-        when :BHYVE_RELEASE_CSM
+        when /BHYVE_RELEASE_CSM/
           'BIOS_DEBUG'
         end
         puts ft.to_s
