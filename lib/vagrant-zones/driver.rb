@@ -360,6 +360,19 @@ end             )
         name = @machine.name
         ## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console
         config = machine.provider_config
+        puts config.firmware_type
+        case config.firmware_type
+        when :compatability
+          firmware = 'BHYVE_RELEASE_CSM'
+        when :UEFI
+          firmware = 'BHYVE_RELEASE'
+        when :BIOS
+          firmware = 'BHYVE_CSM'
+        when :BHYVE_DEBUG
+          firmware = 'UEFI_DEBUG'
+        when :BHYVE_RELEASE_CSM
+          firmware = 'BIOS_DEBUG'
+        end
         attr = ''
         case config.brand
         when 'lx'
@@ -392,19 +405,6 @@ end
 set max-lwps=2000
         )
         when 'bhyve'
-          puts config.firmware_type
-          case config.firmware_type
-          when :compatability
-            firmware = 'BHYVE_RELEASE_CSM'
-          when :UEFI
-            firmware = 'BHYVE_RELEASE'
-          when :BIOS
-            firmware = 'BHYVE_CSM'
-          when :BHYVE_DEBUG
-            firmware = 'UEFI_DEBUG'
-          when :BHYVE_RELEASE_CSM
-            firmware = 'BIOS_DEBUG'
-          end
           ## General Configuration
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
           attr = %(create
