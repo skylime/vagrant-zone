@@ -861,16 +861,6 @@ end          )
       # This filters the firmware
       def firmware(machine)
         config = machine.provider_config
-        puts config.firmware_type
-        puts config.firmware_type.to_s
-        ft = if config.firmware_type.nil?
-          'compatability'
-        else
-          config.firmware_type
-        end
-        puts config.firmware_type
-        puts config.firmware_type.to_s
-        puts ft
         ft = case config.firmware_type
         when /compatability/
           'BHYVE_RELEASE_CSM'
@@ -883,8 +873,6 @@ end          )
         when /BHYVE_RELEASE_CSM/
           'BIOS_DEBUG'
         end
-        puts ft.to_s
-
         ft.to_s
       end
 
