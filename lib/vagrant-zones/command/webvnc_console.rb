@@ -33,7 +33,7 @@ module VagrantPlugins
 
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
-            driver.console(machine, @env.ui, 'webvnc', options[:ip], options[:port])
+            driver.console(machine, 'webvnc', options[:ip], options[:port])
           end
         end
       end

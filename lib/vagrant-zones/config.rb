@@ -50,19 +50,7 @@ module VagrantPlugins
         @cloud_init_enabled = false
         @vagrant_cloud_creator = UNSET_VALUE
         @firmware_type = 'compatability'
-
-        case @vm_type
-        when :template
-          '1'
-        when :development
-          '2'
-        when :production
-          '3'
-        when :firewall
-          '4'
-        when :other
-          '5'
-        end
+        @vm_type = 'production'
       end
     end
   end

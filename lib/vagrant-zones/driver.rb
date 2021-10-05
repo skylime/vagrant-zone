@@ -96,7 +96,7 @@ module VagrantPlugins
         execute(false, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  '#{command}' ")
       end
 
-      def console(machine,uiinfo, command, ip, port)
+      def console(machine, command, ip, port)
         name = machine.name
         if port.nil?
           netport = ''
@@ -114,6 +114,27 @@ module VagrantPlugins
         name = machine.name
         uiinfo.info(I18n.t('vagrant_zones.starting_zone'))
         execute(false, "#{@pfexec} zoneadm -z #{name} boot")
+      end
+
+      # This filters the firmware
+      def vtype(machine)
+        config = machine.provider_config
+        vmt = case config.vm_type
+        when /template/
+          '1'
+        when /development/
+          '2'
+        when /production/
+          '3'
+        when /firewall/
+          '4'
+        when /other/
+          '5'
+        else
+          '3'
+        end
+
+        vmt.to_s
       end
 
       def get_ip_address(machine)
@@ -139,7 +160,7 @@ module VagrantPlugins
                        'h'
                      end
           if opts[:dhcp] && opts[:managed] && adaptertype.to_s == 'public_network'
-            vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{opts[:nic_number]}"
+            vnic_name = "vnic#{nic_type}#{vtype(machine)}_#{config.partition_id}_#{opts[:nic_number]}"
             PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
               command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
               zlogin_read.expect(/\n/) { zlogin_write.printf(command) }
@@ -216,7 +237,7 @@ module VagrantPlugins
                      when /host/
                        'h'
                      end
-          vnic_name = "vnic#{nic_type}#{config.vm_type}_#{config.partition_id}_#{opts[:nic_number]}"
+          vnic_name = "vnic#{nic_type}#{vtype(machine)}_#{config.partition_id}_#{opts[:nic_number]}"
           case state
           # Create the VNIC
           when 'create'

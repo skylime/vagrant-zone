@@ -31,7 +31,7 @@ module VagrantPlugins
           options[:port] = nil unless options[:port] =~ /\d/
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
-            driver.console(machine, @env.ui, 'zlogin', options[:ip], options[:port])
+            driver.console(machine, 'zlogin', options[:ip], options[:port])
           end
         end
       end

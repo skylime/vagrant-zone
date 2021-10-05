@@ -21,7 +21,7 @@ module VagrantPlugins
           ui = env[:ui]
 
           ui.info(I18n.t('vagrant_zones.graceful_shutdown_started'))
-          @driver.control(@machine,  'shutdown')
+          @driver.control(@machine, 'shutdown')
 
           env[:metrics] ||= {}
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do

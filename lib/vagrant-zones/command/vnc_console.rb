@@ -31,7 +31,7 @@ module VagrantPlugins
           options[:port] = nil unless options[:port] =~ /\d/
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
-            driver.console(machine, @env.ui, 'vnc', options[:ip], options[:port])
+            driver.console(machine, 'vnc', options[:ip], options[:port])
           end
         end
       end

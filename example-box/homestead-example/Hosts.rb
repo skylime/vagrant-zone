@@ -30,11 +30,17 @@ class Hosts
             end
           end
   
-          #server.vm.network :public_network do |vm|
-          #end
+  
+          # Expermimental dynamic network configurations. Note Do not place two IPs in the same subnet on both nics at the same time, They must be different subnets or on a different network segment(ie VLAN, physical seperation)
+          if host.has_key?('public_network')
+            host['network'].each_with_index do |network, netindex|
+              server.vm.network "public_network", ip: network['address'], dhcp: network['dhcp4'], dhcp6: network['dhcp6'], bridge: network['bridge'], auto_config: false, :netmask => network['netmask'], :mac => network['mac'], gateway: network['gateway'], nictype: network['type'], nic_number: netindex, managed: network['is_control'], vlan: network['vlan']
+            end
+          end
 
-          server.vm.network "public_network", ip: host['ip1'], dhcp: host['dhcp4-1'], dhcp6: host['dhcp6-1'], bridge: host['bridge1'], auto_config: false, :netmask => host['netmask1'], :mac => host['mac1'], gateway: host['gateway1'], nictype: host['type1'], nic_number: "0", managed: host['managed1']#, vlan: host['vlan1']
-          server.vm.network "public_network", ip: host['ip2'], dhcp: host['dhcp4-2'], dhcp6: host['dhcp6-2'], bridge: host['bridge2'], auto_config: false, :netmask => host['netmask2'], :mac => host['mac2'], gateway: host['gateway2'], nictype: host['type2'], nic_number: "1", managed: host['managed2']#, vlan: host['vlan2']
+
+          #server.vm.network "public_network", ip: host['ip1'], dhcp: host['dhcp4-1'], dhcp6: host['dhcp6-1'], bridge: host['bridge1'], auto_config: false, :netmask => host['netmask1'], :mac => host['mac1'], gateway: host['gateway1'], nictype: host['type1'], nic_number: "0", managed: host['managed1']#, vlan: host['vlan1']
+          #server.vm.network "public_network", ip: host['ip2'], dhcp: host['dhcp4-2'], dhcp6: host['dhcp6-2'], bridge: host['bridge2'], auto_config: false, :netmask => host['netmask2'], :mac => host['mac2'], gateway: host['gateway2'], nictype: host['type2'], nic_number: "1", managed: host['managed2']#, vlan: host['vlan2']
           # Vagrant-Zone machine configuration
           server.vm.provider :zone do |vm|
                   vm.cloud_init_enabled                   = host['cloud_init_enabled']
