@@ -119,7 +119,7 @@ module VagrantPlugins
       # This filters the firmware
       def vtype(machine)
         config = machine.provider_config
-        vmt = case config.vm_type
+        case config.vm_type
         when /template/
           '1'
         when /development/
@@ -133,8 +133,6 @@ module VagrantPlugins
         else
           '3'
         end
-
-        vmt.to_s
       end
 
       def get_ip_address(machine)
