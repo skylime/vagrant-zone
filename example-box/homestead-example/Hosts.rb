@@ -109,9 +109,9 @@ class Hosts
             host['ansible_provision_scripts'].each do |scripts|
               if scripts.has_key?('local')
                 scripts['local'].each do |localscript|
-                  server.vm.provision :ansible do |ansible|
+                  server.vm.provision :ansible_local do |ansible|
                     ansible.playbook = localscript['script']
-                    ansible.compatibility_mode = localscript['compatibility_mode']
+                    ansible.compatibility_mode = localscript['compatibility_mode'].to_s
                     ansible.install_mode = "pip" if localscript['install_mode'] == "pip"
                     ansible.extra_vars = {ip:host['ip'], ansible_python_interpreter:localscript['ansible_python_interpreter']}
                   end
@@ -121,7 +121,7 @@ class Hosts
                 scripts['remote'].each do |remotescript|
                   server.vm.provision :ansible do |ansible|
                     ansible.playbook = remotescript['script']
-                    ansible.compatibility_mode = remotescript['compatibility_mode']
+                    ansible.compatibility_mode = remotescript['compatibility_mode'].to_s
                     ansible.install_mode = "pip" if remotescript['install_mode'] == "pip"
                     ansible.extra_vars = {ip:host['ip'], ansible_python_interpreter:remotescript['ansible_python_interpreter']}
                   end
@@ -133,4 +133,5 @@ class Hosts
       end
     end
   end
+
   
