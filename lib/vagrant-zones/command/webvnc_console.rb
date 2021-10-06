@@ -40,8 +40,6 @@ module VagrantPlugins
 
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
-            kill = "no"
-            detach = "yes"
             driver.console(machine, 'webvnc', options[:ip], options[:port], detach, kill)
           end
         end
