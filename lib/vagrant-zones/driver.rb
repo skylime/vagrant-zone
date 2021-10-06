@@ -135,8 +135,8 @@ module VagrantPlugins
             run = "pfexec zadm  console #{name}"
           end
           pid = spawn(run, :out => "console.out", :err => "console.err")
-          Process.detach(pid) if detach
-          File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{puts Time.new.strftime("%Y-%m-%d-%H:%M:%S")}\n#{name}\n#{netport}" }
+          Process.detach(pid) if detach == "yes"
+          File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{Time.new.strftime("%Y-%m-%d-%H:%M:%S")}\n#{name}\n#{netport}" }
           puts "VM is running with PID: #{pid} as console type: #{cType} served at: #{nport}"
         end
       end
