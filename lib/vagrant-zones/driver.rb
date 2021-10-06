@@ -198,7 +198,7 @@ module VagrantPlugins
         end
         machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
-
+          puts "How Far down do you wanna go"
           ip = opts[:ip].to_s
           defrouter = opts[:gateway].to_s
           allowed_address = "#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"

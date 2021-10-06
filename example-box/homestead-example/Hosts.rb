@@ -5,8 +5,8 @@ class Hosts
       # Configure scripts path variable
       scriptsPath = File.dirname(__FILE__) + '/scripts'
   
-  #    config.vm.provider = 'zone'
-  
+      #config.vm.provider = 'zone'
+
       # Main loop to configure VM
       settings['hosts'].each_with_index do |host, index|
         autostart = host.has_key?('autostart') && host['autostart']
@@ -31,23 +31,24 @@ class Hosts
           end
   
   
-          # Expermimental dynamic network configurations. Note Do not place two IPs in the same subnet on both nics at the same time, They must be different subnets or on a different network segment(ie VLAN, physical seperation)
-          if host.has_key?('public_network')
-            host['network'].each_with_index do |network, netindex|
+          ## Expermimental dynamic network configurations. Note Do not place two IPs in the same subnet on both nics at the same time, They must be different subnets or on a different network segment(ie VLAN, physical seperation)
+          if host.has_key?('networks')
+            host['networks'].each_with_index do |network, netindex|
               server.vm.network "public_network", ip: network['address'], dhcp: network['dhcp4'], dhcp6: network['dhcp6'], bridge: network['bridge'], auto_config: false, :netmask => network['netmask'], :mac => network['mac'], gateway: network['gateway'], nictype: network['type'], nic_number: netindex, managed: network['is_control'], vlan: network['vlan']
             end
           end
 
-
+          ## Legacy Network Definitions
           #server.vm.network "public_network", ip: host['ip1'], dhcp: host['dhcp4-1'], dhcp6: host['dhcp6-1'], bridge: host['bridge1'], auto_config: false, :netmask => host['netmask1'], :mac => host['mac1'], gateway: host['gateway1'], nictype: host['type1'], nic_number: "0", managed: host['managed1']#, vlan: host['vlan1']
           #server.vm.network "public_network", ip: host['ip2'], dhcp: host['dhcp4-2'], dhcp6: host['dhcp6-2'], bridge: host['bridge2'], auto_config: false, :netmask => host['netmask2'], :mac => host['mac2'], gateway: host['gateway2'], nictype: host['type2'], nic_number: "1", managed: host['managed2']#, vlan: host['vlan2']
+          
           # Vagrant-Zone machine configuration
           server.vm.provider :zone do |vm|
                   vm.cloud_init_enabled                   = host['cloud_init_enabled']
                   vm.brand                                = host['brand']
                   vm.vagrant_cloud_creator                = host['cloud_creator']
                   vm.autoboot                             = host['autostart']
-                  vm.partition_id                          = host['partition_id']
+                  vm.partition_id                         = host['partition_id']
                   vm.zonepath                             = "#{host['zonepath']}/#{host['partition_id']}--#{host['name']}"
                   vm.zonepathsize                         = host['rootdisksize']
                   vm.setup_wait                           = host['setup_wait']
@@ -77,6 +78,7 @@ class Hosts
                   vm.name                                 = "#{host['partition_id']}--#{host['name']}"
                   vm.cdroms                               = host['cdroms']
                   vm.additional_disks                     = host['additional_disks']
+                  vm.boot                                 = host['boot']
           end
   
           # Register shared folders
@@ -104,12 +106,26 @@ class Hosts
   
           # Run the Ansible Provisioner
           if host.has_key?('ansible_provision_scripts') && host['ansible_provision']
-            host['ansible_provision_scripts'].each do |script|
-              server.vm.provision :ansible do |ansible|
-                ansible.playbook =  script
-                ansible.compatibility_mode = "2.0"
-                #ansible.install_mode = "pip"
-                ansible.extra_vars = {ip:host['ip'], ansible_python_interpreter:"/usr/bin/python3"}
+            host['ansible_provision_scripts'].each do |scripts|
+              if scripts.has_key?('local')
+                scripts['local'].each do |localscript|
+                  server.vm.provision :ansible do |ansible|
+                    ansible.playbook = localscript['script']
+                    ansible.compatibility_mode = localscript['compatibility_mode']
+                    ansible.install_mode = "pip" if localscript['install_mode'] == "pip"
+                    ansible.extra_vars = {ip:host['ip'], ansible_python_interpreter:localscript['ansible_python_interpreter']}
+                  end
+                end
+              end
+              if scripts.has_key?('remote')
+                scripts['remote'].each do |remotescript|
+                  server.vm.provision :ansible do |ansible|
+                    ansible.playbook = remotescript['script']
+                    ansible.compatibility_mode = remotescript['compatibility_mode']
+                    ansible.install_mode = "pip" if remotescript['install_mode'] == "pip"
+                    ansible.extra_vars = {ip:host['ip'], ansible_python_interpreter:remotescript['ansible_python_interpreter']}
+                  end
+                end
               end
             end
           end
