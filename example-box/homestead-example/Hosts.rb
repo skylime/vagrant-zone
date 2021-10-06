@@ -29,8 +29,7 @@ class Hosts
               server.vm.box_url = settings['boxes'][server.vm.box]
             end
           end
-  
-  
+
           ## Expermimental dynamic network configurations. Note Do not place two IPs in the same subnet on both nics at the same time, They must be different subnets or on a different network segment(ie VLAN, physical seperation)
           if host.has_key?('networks')
             host['networks'].each_with_index do |network, netindex|
@@ -89,7 +88,7 @@ class Hosts
               end
           end
   
-          # Add Branch Files to Vagrant Share on VM
+          # Add Branch Files to Vagrant Share on VM Change to Git folders to pull
           if host.has_key?('branch') && host['shell_provision']
               server.vm.provision 'shell' do |s|
                 s.path = scriptsPath + '/add-branch.sh'
@@ -98,8 +97,8 @@ class Hosts
           end
   
           # Run the Shell Provisioner
-          if host.has_key?('provision')  && host['shell_provision']
-             host['shell_provision'].each do |file|
+          if host.has_key?('provision_scripts') && host['shell_provision']
+             host['provision_scripts'].each do |file|
                  server.vm.provision 'shell', path: file
              end
           end
