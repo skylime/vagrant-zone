@@ -96,7 +96,7 @@ module VagrantPlugins
         execute(false, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  '#{command}' ")
       end
 
-      def console(machine, command, ip, port)
+      def console(machine, command, ip, port, detach, kill)
         name = machine.name
         if port.nil?
           netport = ''
@@ -104,9 +104,41 @@ module VagrantPlugins
           ip = '127.0.0.1' if ip.nil?
           netport = "#{ip}:#{port}"
         end
-        execute(false, "pfexec zadm  webvnc #{netport} #{name}") if command == 'webvnc'
-        execute(false, "pfexec zadm  vnc #{netport} #{name}") if command == 'vnc'
-        execute(false, "pfexec zadm  console #{name}") if command == 'zlogin'
+
+
+        if(File.exist?('console.pid')) 
+          file = File.open("console.pid")
+          file_data = file.readlines.map(&:chomp)
+          ## PID ConsoleType TimeStarted VMName Netport
+          pid = file_data[0]
+          cType = file_data[1]
+          timeStarted = file_data[2]
+          vmname = file_data[3]
+          nport = file_data[4]
+          if vmname == name
+            puts pid,cType,timeStarted,name,nport
+            puts "VM is running with PID: #{pid} since: #{timeStarted} as console type: #{cType} served at: #{nport}"
+          end
+          if kill == 'yes'
+            Process.kill "TERM", pid
+            Process.wait pid
+            puts "Session Terminated"
+          end
+          file.close
+        else 
+          case command
+          when :webvnc
+            run = "pfexec zadm  webvnc #{netport} #{name}"
+          when :vnc
+            run = "pfexec zadm  vnc #{netport} #{name}"
+          when :zlogin
+            run = "pfexec zadm  console #{name}"
+          end
+          pid = spawn(run, :out => "console.out", :err => "console.err")
+          Process.detach(pid) if detach
+          File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{puts Time.new.strftime("%Y-%m-%d-%H:%M:%S")}\n#{name}\n#{netport}" }
+          puts "VM is running with PID: #{pid} as console type: #{cType} served at: #{nport}"
+        end
       end
 
       ## Boot the Machine
