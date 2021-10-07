@@ -353,27 +353,27 @@ end             )
         
         datadir = machine.data_dir
         bootconfigs = config.boot[0]
-        bootconfigs['array']
-        bootconfigs['dataset']
-        bootconfigs['volume_name']
-        
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{config.name}"
-
-
-        dataset = "#{datasetpath}/boot"
+        datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
         ## Create Boot Volume
         case config.brand
         when 'lx'
-          uiinfo.info(I18n.t('vagrant_zones.lx_zone_dataset') + dataset)
-          execute(false, "#{@pfexec} zfs create -o zoned=on -p #{dataset}")
+          uiinfo.info(I18n.t('vagrant_zones.lx_zone_dataset') + datasetroot)
+          execute(false, "#{@pfexec} zfs create -o zoned=on -p #{datasetroot}")
         when 'bhyve'
+          ## Create root dataset
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_root') + datasetpath)
           execute(false, "#{@pfexec} zfs create #{datasetpath}")
-          cinfo = "#{bootconfigs['size']}, #{dataset}"
+
+          # Create boot volume
+          cinfo = "#{bootconfigs['size']}, #{datasetroot}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot') + cinfo)
-          execute(false, "#{@pfexec} zfs create -V #{bootconfigs['size']} #{dataset}")
-          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + dataset)
-          commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss')} | #{@pfexec} zfs recv -u -v -F #{dataset} "
+          execute(false, "#{@pfexec} zfs create -V #{bootconfigs['size']} #{datasetroot}")
+
+          ## Import template to boot volume
+          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + datasetroot)
+          commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss')} | #{@pfexec} zfs recv -u -v -F #{datasetroot} "
+
           Util::Subprocess.new commandtransfer do |_stdout, stderr, _thread|
             uiinfo.rewriting do |uiprogress|
               uiprogress.clear_line
@@ -391,9 +391,10 @@ end             )
         return if config.additional_disks.nil?
 
         config.additional_disks.each do |disk|
-          cinfo = ",#{disk['size']}, #{disk['array']}#{disk['path']}"
+          dataset = "#{disk['array']}/#{disk['dataset']}/#{config.partition_id}--#{config.name}/#{disk['volume_name']}"
+          cinfo = ",#{disk['size']}, #{dataset}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-          execute(false, "#{@pfexec} zfs create -V #{disk['size']} #{disk['array']}#{disk['path']}")
+          execute(false, "#{@pfexec} zfs create -V #{disk['size']} #{dataset}")
         end
       end
 
@@ -616,17 +617,18 @@ end         )
           diskrun = 0
           disks.each do |disk|
             diskname = 'disk'
-            cinfo = "#{disk['size']}, #{disk['path']}"
+            dset = "#{disk['array']}/#{disk['dataset']}/#{config.partition_id}--#{config.name}/#{disk['volume_name']}"
+            cinfo = "#{disk['size']}, #{dset}"
             uiinfo.info(I18n.t('vagrant_zones.setting_additional_disks_configurations') + cinfo)
             diskname += diskrun.to_s if diskrun.positive?
             diskrun += 1
             additional_disk_attr = %(add device
-  set match=/dev/zvol/rdsk#{disk['path']}
+  set match=/dev/zvol/rdsk/#{dset}
 end
 add attr
   set name=#{diskname}
   set type=string
-  set value=#{disk['path']}
+  set value=#{dset}
 end         )
             File.open("#{name}.zoneconfig", 'a') do |f|
               f.puts additional_disk_attr
@@ -965,8 +967,21 @@ end          )
       # This helps us create ZFS Snapshots
       def zfs(machine, uiinfo, job, dataset, snapshot_name)
         name = machine.name
+          
+        ## get disks configurations
+        datadir = machine.data_dir
+        bootconfigs = config.boot[0]
+        datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{config.name}/#{bootconfigs['volume_name']}"
+        datasets = []
+        datasets << datasetroot
+        config.additional_disks.each do |disk|
+          additionaldataset = "#{disk['array']}/#{disk['dataset']}/#{config.partition_id}--#{config.name}/#{disk['volume_name']}"
+          datasets << additionaldataset
+        end
+        puts datasets
         if dataset == "all"
           print "SUCCESS"
+
         end
         case job
         when 'list'
