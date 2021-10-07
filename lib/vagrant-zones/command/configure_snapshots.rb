@@ -52,7 +52,7 @@ module VagrantPlugins
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
             subcommanddata = []
-            subcommanddata =  options[:list] unless options[:delete] || options[:frequency]
+            subcommanddata =  [options[:list]] unless options[:delete] || options[:frequency]
             subcommand = "list" unless options[:delete] || options[:frequency]
             subcommanddata =  options[:delete] unless options[:list] || options[:frequency]
             subcommand = "delete" unless options[:list] || options[:frequency] || 
