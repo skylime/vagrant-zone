@@ -113,11 +113,9 @@ module VagrantPlugins
           end
         end
         if ip.nil?
-          ip = '127.0.0.1' unless options[:ip] =~ Resolv::IPv4::Regex ? true : false
+          ip = '127.0.0.1' unless ip =~ Resolv::IPv4::Regex ? true : false
         end
         netport = "#{ip}:#{port}"
-
-
 
         puts detach
         pid = 0
