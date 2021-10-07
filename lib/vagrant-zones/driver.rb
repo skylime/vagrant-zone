@@ -1043,21 +1043,16 @@ end          )
             ## Specify the dataset by number
             datasets.each_with_index do |disk,dindex|
               if dataset.to_i == dindex
-                puts dataset
-                puts snapshot_name
                 output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
                 output = output.split(/\n/).drop(1)
                 output.each_with_index do |snaps, spindex|
-                puts snapshot_name
-                puts snapshot_name
-                puts snapshot_name
                   if snapshot_name.to_i == spindex
                     puts snaps, spindex
                     #execute(false, "#{@pfexec} zfs destroy #{snaps}") 
                     uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
                   end
                   if snapshot_name.to_s == 'all'
-                    puts snaps, spindex
+                    puts "#{snaps} #{spindex}"
                     #execute(false, "#{@pfexec} zfs destroy #{snaps}") 
                     uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
                   end
