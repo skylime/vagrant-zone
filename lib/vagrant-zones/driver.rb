@@ -1046,12 +1046,12 @@ end          )
                 output.each_with_index do |snaps, spindex|
                   if snapshot_name.to_i == spindex && !snapshot_name.to_s == 'all'
                     puts snaps, spindex
-                    #execute(false, "#{@pfexec} zfs destroy #{snaps}") 
+                    execute(false, "#{@pfexec} zfs destroy #{snaps}") 
                     uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
                   end
                   if snapshot_name.to_s == 'all'
                     puts "#{snaps} #{spindex}"
-                    #execute(false, "#{@pfexec} zfs destroy #{snaps}") 
+                    execute(false, "#{@pfexec} zfs destroy #{snaps}") 
                     uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
                   end
                 end
