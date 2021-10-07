@@ -1030,12 +1030,12 @@ end          )
           if dataset == "all"
             datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
-              output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{dataset}@#{snapshot_name}")
+              output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{dataset}@#{snapshot_name} || true")
               
-              output.each_with_index do |snaps, snapsindex|
+              #output.each_with_index do |snaps, snapsindex|
                 #puts snaps
                 #execute(false, "#{@pfexec} zfs destroy  #{snaps}") 
-              end
+              #end
               output.reverse.drop(1).reverse do |snaps, snapsindex|
                 puts snaps
                 #execute(false, "#{@pfexec} zfs destroy  #{snaps}") 
