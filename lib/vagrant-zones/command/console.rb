@@ -44,10 +44,11 @@ module VagrantPlugins
               @sub_command = machine.provider_config.console.to_sym  if @sub_command.nil?
               command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
               subargs = @sub_args unless @sub_args.nil?
+              puts @sub_args
+              p @sub_args
               subargs = '--kill no' if @sub_args.nil?
-              puts "some"
               puts subargs
-              puts "some"
+              puts ""
               @logger.debug("Invoking command class: #{command_class} #{machine.provider_config.console.to_sym}")
               # Initialize and execute the command class
               command_class.new(subargs, @env).execute
