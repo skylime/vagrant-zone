@@ -1065,7 +1065,7 @@ end          )
         
         when 'cron'
           if dataset == "all"
-              puts subcommand
+              subcommanddata = snapshot_name
               case subcommand
               when /list/
                 puts  "We are supposed to list things now"
