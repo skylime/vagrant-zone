@@ -1036,7 +1036,7 @@ end          )
                 #puts snaps
                 #execute(false, "#{@pfexec} zfs destroy  #{snaps}") 
               #end
-              output = output.reverse.drop(1)
+              
               output.reverse do |snaps, snapsindex|
                 puts snaps
                 #execute(false, "#{@pfexec} zfs destroy  #{snaps}") 
