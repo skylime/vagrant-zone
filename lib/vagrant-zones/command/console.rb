@@ -20,7 +20,6 @@ module VagrantPlugins
             require File.expand_path('webvnc_console', __dir__)
             WebVNCConsole
           end
-          @machine = env[:machine]
           super(argv, env)
         end
 
