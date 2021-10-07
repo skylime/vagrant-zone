@@ -1026,6 +1026,9 @@ end          )
           end
         when 'destroy'
           puts dataset
+          puts dataset
+          puts dataset
+          puts dataset
           if dataset.to_s == "all"
             datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
@@ -1035,7 +1038,7 @@ end          )
               output.reverse.each do |snaps, snapsindex|
                 puts snaps
                 execute(false, "#{@pfexec} zfs destroy #{snaps}") 
-                uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
+                uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
               end
             end 
           else 
@@ -1053,12 +1056,12 @@ end          )
                   if snapshot_name.to_i == spindex
                     puts snaps, spindex
                     #execute(false, "#{@pfexec} zfs destroy #{snaps}") 
-                    uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
+                    uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
                   end
                   if snapshot_name.to_s == 'all'
                     puts snaps, spindex
                     #execute(false, "#{@pfexec} zfs destroy #{snaps}") 
-                    uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
+                    uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
                   end
                 end
               end
