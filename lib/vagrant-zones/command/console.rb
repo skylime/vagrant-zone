@@ -30,13 +30,21 @@ module VagrantPlugins
             return help
           end
 
+
+          
+          argv = parse_options(opts)
+          puts argv.length
+
           command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
-          #return help if !command_class || !@sub_command
+          return help if !command_class || !@sub_command
 
           @logger.debug("Invoking command class: #{command_class} #{@sub_args.inspect}")
 
           # Initialize and execute the command class
           command_class.new(@sub_args, @env).execute
+
+
+
         end
 
         def help
