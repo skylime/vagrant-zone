@@ -980,14 +980,12 @@ end          )
             datasets << additionaldataset.to_s
           end
         end
-        puts datasets
-        if dataset == "all"
-          print "SUCCESS"
-
-        end
         case job
         when 'list'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
+          datasets.each_with_index do |disk,index|
+            puts "Disk Number: #{index} Disk Path: #{disk}"
+          end
           zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{name}")
           zfssnapshots = zfs_snapshots.split(/\n/)
           snapshotrun = 0
@@ -1000,18 +998,17 @@ end          )
           end
         when 'create'
           if dataset == "all"
-            print "SUCCESS"
               datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
-              execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}")
+              execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}") 
             end 
           else 
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
-            execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
+            execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") unless  datasets.include?(dataset)
           end
         when 'destroy'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
-          execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}")
+          execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") unless  datasets.include?(dataset)
         end
       end
 
