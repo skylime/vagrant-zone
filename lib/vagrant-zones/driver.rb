@@ -997,12 +997,12 @@ end          )
               refermaxlength = attributes[3].length.to_i if attributes[3].length.to_i > refermaxlength.to_i
               pathmaxlength = attributes[4].length.to_i if attributes[4].length.to_i > pathmaxlength.to_i
             end
-            zfssnapshots.each_with_index do |snapshot, snapindex|
+            zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               if snapindex == 0
                 puts sprintf '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', "#",  snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3],pathmaxlength, attributes[4]
               else
-                puts sprintf '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', snapindex - 1, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3],pathmaxlength, attributes[4]
+                puts sprintf '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', snapindex - 2, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3],pathmaxlength, attributes[4]
               end
               output = {}
             end
