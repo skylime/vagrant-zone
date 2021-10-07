@@ -1048,7 +1048,7 @@ end          )
                 puts snapshot_name
                 output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
                 output = output.split(/\n/).drop(1)
-                output.each_with_index do |snaps, spindex|
+                output.reverse.each_with_index do |snaps, spindex|
                   
                   if snapshot_name.to_i == spindex
                     puts snaps, spindex
