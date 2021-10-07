@@ -991,7 +991,7 @@ end          )
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               
-              puts = "#{snapindex.to_s}"
+              puts = "#{index.to_s}"
 
               output = {Snapshot: attributes[0], Used: attributes[1],Available: attributes[2], Refer:attributes[3], Mount: attributes[4]}
               output.each do |key, value|
