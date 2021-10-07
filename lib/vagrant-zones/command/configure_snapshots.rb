@@ -58,7 +58,8 @@ module VagrantPlugins
             if !options[:delete] && !options[:list]
                 subcommanddata = [options[:frequency],options[:frequency_retention]]
                 subcommand = "frequency" unless options[:delete] || options[:list]
-              end
+            end
+            puts subcommanddata
             driver.zfs(machine, @env.ui, 'cron', options[:dataset], subcommanddata , subcommand)
           end
         end
