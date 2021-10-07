@@ -1052,7 +1052,7 @@ end          )
               puts index
               if dataset == index
                 output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}@#{snapshot_name}")
-                print output
+                print index
                 execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
               end
             end
