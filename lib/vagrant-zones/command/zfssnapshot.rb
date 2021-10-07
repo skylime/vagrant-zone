@@ -36,13 +36,13 @@ module VagrantPlugins
           
           command_class = @subcommands.get("create".to_sym) if @sub_command.nil?
           command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
-          return help if !command_class || !@sub_args
 
-          @logger.debug("Invoking command class: #{command_class} #{@sub_args.inspect}")
+          subargs = @sub_args unless @sub_args.nil?
+          subargs = "--dataset all --snapshot_name all" unless @sub_args.nil?
+          @logger.debug("Invoking command class: #{command_class} #{subargs.inspect}")
 
           # Initialize and execute the command class
-          command_class.new(@sub_args, @env).execute
-
+          command_class.new(subargs, @env).execute
         end
 
         def help
