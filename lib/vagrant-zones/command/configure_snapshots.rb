@@ -53,11 +53,13 @@ module VagrantPlugins
             driver = machine.provider.driver
             subcommanddata = []
             subcommanddata =  [options[:list]] unless options[:delete] || options[:frequency]
+            
             subcommand = "list" unless options[:delete] || options[:frequency]
             subcommanddata =  options[:delete] unless options[:list] || options[:frequency]
             subcommand = "delete" unless options[:list] || options[:frequency] || 
             if !options[:delete] && !options[:list]
                 subcommanddata = [options[:frequency],options[:frequency_retention]]
+                puts subcommanddata
                 subcommand = "frequency" unless options[:delete] || options[:list]
             end
             puts subcommanddata.inspect
