@@ -51,10 +51,10 @@ module VagrantPlugins
 
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
-            subcommanddata = options[:list] if options[:list]
+            subcommanddata = [options[:list]] if options[:list]
             subcommand = "list" if options[:list]
             
-            subcommanddata =  options[:delete] if options[:delete]
+            subcommanddata =  [options[:delete]] if options[:delete]
             subcommand = "delete" if options[:delete] 
             
             subcommanddata = ["#{options[:frequency]}","#{options[:frequency_retention]}"]
