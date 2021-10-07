@@ -113,6 +113,7 @@ module VagrantPlugins
           
           vmname = IO.readlines("console.pid")[3]
           puts vmname
+          puts name
           nport = IO.readlines("console.pid")[4]
           if vmname == name
             puts pid
