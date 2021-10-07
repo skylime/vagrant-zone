@@ -985,16 +985,18 @@ end          )
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
           datasets.each_with_index do |disk,index|
             puts "Disk Number: #{index} Disk Path: #{disk}"
+            zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk}")
+            zfssnapshots = zfs_snapshots.split(/\n/)
+            snapshotrun = 0
+            header = "Snapshot\tUsed\tAvailable\tRefer\tName"
+            zfssnapshots.each do |snapshot|
+              attributes = snapshot.gsub(/\s+/m, ' ').strip.split
+              puts "Drive Mounted at: #{header} #{attributes[4]}" if !attributes[4].nil? && attributes[4] != '-'
+              # data = "##{snapshotrun}\t\t#{attributes[1]}\t#{attributes[2]}\t\t#{attributes[3]}\t#{attributes[0]}"
+              snapshotrun += 1
           end
-          zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{name}")
-          zfssnapshots = zfs_snapshots.split(/\n/)
-          snapshotrun = 0
-          header = "Snapshot\tUsed\tAvailable\tRefer\tName"
-          zfssnapshots.each do |snapshot|
-            attributes = snapshot.gsub(/\s+/m, ' ').strip.split
-            puts "Drive Mounted at: #{header} #{attributes[4]}" if !attributes[4].nil? && attributes[4] != '-'
-            # data = "##{snapshotrun}\t\t#{attributes[1]}\t#{attributes[2]}\t\t#{attributes[3]}\t#{attributes[0]}"
-            snapshotrun += 1
+          
+
           end
         when 'create'
           if dataset == "all"
