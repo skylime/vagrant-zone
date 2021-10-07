@@ -31,11 +31,7 @@ module VagrantPlugins
           end
 
           if options[:snapshot_name].nil?
-            t = Time.new
-            dash = '-'
-            colon = ':'
-            datetime = t.year.to_s + dash + t.month.to_s + dash + t.day.to_s + dash + t.hour.to_s + colon + t.min.to_s + colon + t.sec.to_s
-            options[:snapshot_name] = datetime
+            options[:dataset] = 'all'
           end
 
           
