@@ -115,15 +115,13 @@ module VagrantPlugins
           ip = '0.0.0.0' unless ip =~ Resolv::IPv4::Regex ? true : false
         end
         netport = "#{ip}:#{port}"
-
-        puts detach
         pid = 0
         if(File.exist?('console.pid')) 
-          pid = IO.readlines("console.pid")[0]
-          cType = IO.readlines("console.pid")[1]
-          timeStarted = IO.readlines("console.pid")[2]
-          vmname = IO.readlines("console.pid")[3]
-          nport = IO.readlines("console.pid")[4]
+          pid = IO.readlines("console.pid")[0].strip
+          cType = IO.readlines("console.pid")[1].strip
+          timeStarted = IO.readlines("console.pid")[2].strip
+          vmname = IO.readlines("console.pid")[3].strip
+          nport = IO.readlines("console.pid")[4].strip
           if vmname[name.to_s]
             puts "VM is running with PID: #{pid} since: #{timeStarted} as console type: #{cType} served at: #{nport}"
           end
@@ -142,7 +140,7 @@ module VagrantPlugins
             Process.detach(pid) if detach == "yes"
             time = Time.new.strftime("%Y-%m-%d-%H:%M:%S")
             File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == "yes"
-            puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == "yes"
+            puts "VM is running with PID: #{pid.strip} as console type: #{command.strip} served at: #{netport.strip}" if detach == "yes"
           when "vnc"
             run = "pfexec zadm  vnc #{netport} #{name}"
             pid = spawn(run)
