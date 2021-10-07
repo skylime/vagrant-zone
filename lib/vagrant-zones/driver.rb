@@ -112,7 +112,7 @@ module VagrantPlugins
           end
         end
         if ip.nil?
-          ip = '127.0.0.1' unless ip =~ Resolv::IPv4::Regex ? true : false
+          ip = '0.0.0.0' unless ip =~ Resolv::IPv4::Regex ? true : false
         end
         netport = "#{ip}:#{port}"
 
