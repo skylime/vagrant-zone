@@ -43,10 +43,10 @@ module VagrantPlugins
 
             else
               
-              command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
+              command_class = @subcommands.get(machine.provider_config.console) if @sub_command
               @logger.debug("Invoking command class: #{command_class} #{@sub_args.inspect}")
               # Initialize and execute the command class
-              machine.provider_config.console.new(@sub_args, @env).execute
+              command_class.new(@sub_args, @env).execute
 
             end
 
