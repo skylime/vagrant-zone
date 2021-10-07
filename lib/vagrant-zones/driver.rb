@@ -991,11 +991,12 @@ end          )
             snapshotrun = 0
             header = "Snapshot\tUsed\tAvailable\tRefer\tName"
             zfssnapshots.each do |snapshot|
+              puts snapshot
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               puts "Drive Mounted at: #{header} #{attributes[4]}" if !attributes[4].nil? && attributes[4] != '-'
               # data = "##{snapshotrun}\t\t#{attributes[1]}\t#{attributes[2]}\t\t#{attributes[3]}\t#{attributes[0]}"
               snapshotrun += 1
-          end
+            end
           
 
           end
