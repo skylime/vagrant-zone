@@ -32,7 +32,10 @@ module VagrantPlugins
 
           with_target_vms(@main_args,provider: :zone) do |machine|
             if machine.provider_config.console.nil?
-              puts @sub_args.inspect
+              puts @sub_command
+              puts @sub_command.to_sym
+              puts machine.provider_config.console
+              puts machine.provider_config.console.to_sym
               command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
               return help if !command_class || !@sub_command
   
