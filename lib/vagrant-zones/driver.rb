@@ -1041,9 +1041,7 @@ end          )
             end 
           else 
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
-            ## Specify the Dataset by path
-            puts "something"
-            execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") unless  datasets.include?("#{dataset}@#{snapshot_name}")
+
             ## Specify the dataset by number
             puts "something"
             datasets.each_with_index do |disk,dindex|
@@ -1063,6 +1061,9 @@ end          )
                 #execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}")
               end
             end
+            ## Specify the Dataset by path
+            puts "something"
+            execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") unless  datasets.include?("#{dataset}@#{snapshot_name}")
           end
         end
       end
