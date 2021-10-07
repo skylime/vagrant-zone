@@ -988,11 +988,23 @@ end          )
             zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk}")
             zfssnapshots = zfs_snapshots.split(/\n/)
             zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
-            maxlength = 0
+            pathmaxlength, refermaxlength, availmaxlength, usedmaxlength, snapmaxlength = 0
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
-              if attributes[0].length.to_i > maxlength.to_i
-                maxlength = attributes[0].length.to_i
+              if attributes[0].length.to_i > snapmaxlength.to_i
+                snapmaxlength = attributes[0].length.to_i
+              end
+              if attributes[1].length.to_i > usedmaxlength.to_i
+                usedmaxlength = attributes[1].length.to_i
+              end
+              if attributes[2].length.to_i > availmaxlength.to_i
+                availmaxlength = attributes[2].length.to_i
+              end
+              if attributes[3].length.to_i > refermaxlength.to_i
+                refermaxlength = attributes[3].length.to_i
+              end
+              if attributes[4].length.to_i > pathmaxlength.to_i
+                pathmaxlength = attributes[4].length.to_i
               end
             end
             puts maxlength.to_s
