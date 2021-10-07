@@ -24,6 +24,7 @@ module VagrantPlugins
         end
 
         def execute(env)
+          @machine = env[:machine]
           if @main_args.include?('-h') || @main_args.include?('--help')
             # Print the help for all the vagrant-zones commands.
             return help
