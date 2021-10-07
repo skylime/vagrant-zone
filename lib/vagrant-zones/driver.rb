@@ -152,34 +152,8 @@ module VagrantPlugins
             File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == "yes"
             puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == "yes"
           when "zlogin"
-            run = "pfexec zadm  console #{name}"
-            Open3.popen3(run) do |i, o, e, th|
-              Thread.new {
-                while !i.closed? do
-                  input =Readline.readline("", true).strip 
-                  i.puts input
-                end
-              }
-            
-              t_err = Thread.new {
-                while !e.eof?  do
-                  putc e.readchar
-                end
-              }
-            
-              t_out = Thread.new {
-                while !o.eof?  do
-                  putc o.readchar
-                end
-              }
-            
-              Process::waitpid(th.pid) rescue nil 
-              # "rescue nil" is there in case process already ended.
-            
-              t_err.join
-              t_out.join
-            
-            end
+            run = "pfexec zadm console #{name}"
+            exec(run)
           end
 
         end
