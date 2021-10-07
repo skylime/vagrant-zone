@@ -98,6 +98,7 @@ module VagrantPlugins
 
       def console(machine, command, ip, port, detach, kill)
         name = machine.name
+        puts ip
         config = machine.provider_config
         if port.nil?
           if config.consoleport.nil?
