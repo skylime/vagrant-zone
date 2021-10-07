@@ -1026,6 +1026,7 @@ end          )
             end
           end
         when 'destroy'
+          puts dataset
           if dataset == "all"
             datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
