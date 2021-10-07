@@ -14,6 +14,7 @@ module VagrantPlugins
             end
             o.on('--port <port>', 'Specify port to listen on') do |p|
               options[:port] = p
+            end
             o.on('--detach <yes/no>', 'Run console server in background') do |p|
               options[:detach] = p
             end
@@ -24,7 +25,7 @@ module VagrantPlugins
 
           argv = parse_options(opts)
           return unless argv
-
+          
           unless argv.length <= 4
             @env.ui.info(opts.help)
             return
@@ -32,14 +33,14 @@ module VagrantPlugins
 
           puts options[:ip]
           options[:port] = nil unless options[:port] =~ /\d/
-
+          
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
             detach = "yes"
             detach = "no" unless options[:detach] == "yes"
             kill = "yes"
             kill = "no" unless options[:kill] == "yes"
-            driver.console(machine, 'vnc',options[:ip], options[:port], detach, kill)
+            driver.console(machine, 'vnc', options[:ip], options[:port], detach, kill)
           end
         end
       end
