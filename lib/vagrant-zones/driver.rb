@@ -968,6 +968,10 @@ end          )
       def zfs(machine, uiinfo, job, dataset, snapshot_name)
         name = machine.name
         puts dataset
+        puts dataset
+        puts dataset
+        puts dataset
+        puts snapshot_name
         ## get disks configurations
         datadir = machine.data_dir
         config = machine.provider_config
