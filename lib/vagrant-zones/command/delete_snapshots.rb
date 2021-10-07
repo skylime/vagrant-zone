@@ -20,11 +20,26 @@ module VagrantPlugins
           argv = parse_options(opts)
           return unless argv
 
+          
           unless argv.length <= 4
             @env.ui.info(opts.help)
             return
           end
 
+          if options[:dataset].nil?
+            @env.ui.info(opts.help)
+            return
+          end
+
+          if options[:snapshot_name].nil?
+            t = Time.new
+            dash = '-'
+            colon = ':'
+            datetime = t.year.to_s + dash + t.month.to_s + dash + t.day.to_s + dash + t.hour.to_s + colon + t.min.to_s + colon + t.sec.to_s
+            options[:snapshot_name] = datetime
+          end
+
+          
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
             driver.zfs(machine, @env.ui, 'destroy', options[:dataset], options[:snapshot_name])
