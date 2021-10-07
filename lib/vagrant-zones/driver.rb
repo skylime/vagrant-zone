@@ -986,6 +986,7 @@ end          )
           datasets.each_with_index do |disk,index|
             puts "\n  Disk Number: #{index}\n  Disk Path: #{disk}"
             zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk}")
+            zfssnapshots = []
             zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
             zfssnapshots << zfs_snapshots.split(/\n/)            
             pathmaxlength, refermaxlength, availmaxlength, usedmaxlength, snapmaxlength = 0
