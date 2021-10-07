@@ -41,11 +41,7 @@ module VagrantPlugins
             retryable(on: Errors::TimeoutError, tries: 300) do
               # If we're interrupted don't worry about waiting
               next if env[:interrupted]
-
-              loop do
-                break if env[:interrupted]
-                break if env[:machine].communicate.ready?
-              end
+              break if env[:machine].communicate.ready?
             end
           end
           ui.info(I18n.t('vagrant_zones.zone_gracefully_restarted'))
