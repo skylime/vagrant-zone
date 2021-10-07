@@ -9,6 +9,8 @@ require 'netaddr'
 require 'ipaddr'
 require 'vagrant/util/numeric'
 require 'pty'
+require "./scheduler.rb" 
+require 'io/console'
 require 'expect'
 require 'vagrant'
 require 'vagrant-zones/util/timer'
@@ -138,17 +140,51 @@ module VagrantPlugins
           case command
           when "webvnc"
             run = "pfexec zadm  webvnc #{netport} #{name}"
+            pid = spawn(run)
+            Process.wait pid if detach == "no"
+            Process.detach(pid) if detach == "yes"
+            time = Time.new.strftime("%Y-%m-%d-%H:%M:%S")
+            File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == "yes"
+            puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == "yes"
           when "vnc"
             run = "pfexec zadm  vnc #{netport} #{name}"
+            pid = spawn(run)
+            Process.wait pid if detach == "no"
+            Process.detach(pid) if detach == "yes"
+            time = Time.new.strftime("%Y-%m-%d-%H:%M:%S")
+            File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == "yes"
+            puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == "yes"
           when "zlogin"
             run = "pfexec zadm  console #{name}"
+            stime = 0.01 # let the fibers sleep for 10 ms
+            Fiber.set_scheduler(Scheduler.new)
+            r,w,pid = PTY.spawn("bash") 
+            f2=Fiber.new do # read char from STDIN and write to bash
+              loop do
+               inchar = STDIN.getch(min: 0, time: 0.5, intr: false)
+               w.write inchar  # write char to bash 
+               if inchar == "\x3" # ctrl-c
+                 puts "\nctrl-c detected, the ruby PTY session has ended"
+                 exit
+               end  
+               sleep stime
+              end
+             end
+             
+             f1=Fiber.new do # print output from bash
+             puts "Ruby PTY Session is started" 
+              loop do
+              if r.ready? # is the PTY master ready ? 
+                  print r.read(r.nread) # print all incoming chars from PTY in buffer
+              end
+              sleep stime
+              end
+             end
+             
+             f1.resume
+             f2.resume
           end
-          pid = spawn(run)
-          Process.wait pid if detach == "no"
-          Process.detach(pid) if detach == "yes"
-          time = Time.new.strftime("%Y-%m-%d-%H:%M:%S")
-          File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == "yes"
-          puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == "yes"
+
         end
       end
 
@@ -741,7 +777,7 @@ end          )
         config = machine.provider_config
         ## Detect if Virtualbox is Running
         ## Kernel, KVM, and Bhyve cannot run conncurently with Virtualbox:
-        ### https://forums.virtualbox.org/viewtopic.php?f=11&t=64652
+        ### https://illumos.topicbox-beta.com/groups/omnios-discuss/Tce3bbd08cace5349-M5fc864e9c1a7585b94a7c080/virtualbox-and-bhyve-at-the-same-time
         uiinfo.info(I18n.t('vagrant_zones.vbox_run_check'))
         result = execute(true, "#{@pfexec} VBoxManage list runningvms")
         raise Errors::VirtualBoxRunningConflictDetected if result.zero?
@@ -775,7 +811,6 @@ end          )
           end
 
           # Check whether OmniOS version is lower than r30
-
           cutoff_release = '1510380'
           cutoff_release = cutoff_release[0..-2].to_i
           uiinfo.info(I18n.t('vagrant_zones.bhyve_check') + cutoff_release.to_s)
@@ -807,7 +842,9 @@ end          )
         case config.brand
         when 'bhyve'
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, _zlogin_write, pid|
-            if zlogin_read.expect(/Last login: /)
+            bcheck = config.bcheck_string
+            bcheck = 'Last login: ' if config.bcheck_string.nil?
+            if zlogin_read.expect(/#{bcheck}/)
               uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access'))
               Timeout.timeout(config.setup_wait) do
                 loop do
@@ -815,7 +852,9 @@ end          )
                   break if responses[-1].to_s.match(/:~#/)
 
                   ## Code to try to login with username and password
-                  uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login')) if responses[-1].to_s.match(/login: /)
+                  almatchstring = config.almatchstring
+                  almatchstring = "login: " if config.almatchstring.nil?
+                  uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login')) if responses[-1].to_s.match(/almatchstring/)
                 end
               end
             end
