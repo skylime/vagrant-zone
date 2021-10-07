@@ -1055,6 +1055,7 @@ end          )
                     uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
                   end
                   if snapshot_name.to_s == 'all'
+                    puts snaps, spindex
                     execute(false, "#{@pfexec} zfs destroy #{snaps}") 
                     uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
                   end
