@@ -32,6 +32,8 @@ module VagrantPlugins
             return
           end
 
+          ip = nil unless options[:ip] =~ Resolv::IPv4::Regex ? true : false
+
           options[:port] = nil unless options[:port] =~ /\d/
 
           with_target_vms(argv, provider: :zone) do |machine|
@@ -40,7 +42,7 @@ module VagrantPlugins
             detach = "no" unless options[:detach] == "yes"
             kill = "yes"
             kill = "no" unless options[:kill] == "yes"
-            driver.console(machine, 'webvnc', nil unless options[:ip] =~ Resolv::IPv4::Regex ? true : false, options[:port], detach, kill)
+            driver.console(machine, 'webvnc',ip, options[:port], detach, kill)
           end
         end
       end
