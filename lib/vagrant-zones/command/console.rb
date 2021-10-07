@@ -46,6 +46,8 @@ module VagrantPlugins
               subargs = @sub_args unless @sub_args.inspect.nil?
               puts "Invoking command class: #{command_class} #{subargs.inspect} "
               
+              subargs = "--kill no" if @sub_args.inspect.nil?
+
               @logger.debug("Invoking command class: #{command_class} #{machine.provider_config.console.to_sym}")
               # Initialize and execute the command class
               command_class.new(subargs, @env).execute
