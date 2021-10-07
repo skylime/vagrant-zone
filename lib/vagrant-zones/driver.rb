@@ -993,7 +993,6 @@ end          )
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               if attributes[0].length.to_i > maxlength.to_i
                 maxlength = attributes[0].length.to_i
-                puts maxlength
               end
             end
             puts maxlength.to_s
