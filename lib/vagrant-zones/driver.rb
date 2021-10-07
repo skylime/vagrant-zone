@@ -116,9 +116,14 @@ module VagrantPlugins
           vmname = file_data[3]
           nport = file_data[4]
           if vmname == name
-            puts pid,cType,timeStarted,name,nport
+            puts pid
+            puts cType
+            puts timeStarted
+            puts name
+            puts nport
             puts "VM is running with PID: #{pid} since: #{timeStarted} as console type: #{cType} served at: #{nport}"
           end
+          puts kill
           if kill == 'yes'
             Process.kill "TERM", pid
             Process.detach pid
