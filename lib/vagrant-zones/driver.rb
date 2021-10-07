@@ -1047,7 +1047,7 @@ end          )
                   puts dindex
                   puts snapshot_name
                   puts spindex
-                  if snapshot_name.to_i == spindex
+                  if snapshot_name.to_i == spindex && !snapshot_name.to_s == 'all'
                     puts snaps, spindex
                     puts "test"
                     #execute(false, "#{@pfexec} zfs destroy #{snaps}") 
