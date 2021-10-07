@@ -1033,7 +1033,7 @@ end          )
               output = output.split(/\n/)
               puts output
               #zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
-              output.reverse.drop(1).reverse.each do |snaps, snapsindex|
+              output.reverse.drop(0).reverse.each do |snaps, snapsindex|
                 puts snaps
                 #execute(false, "#{@pfexec} zfs destroy  #{snaps}") 
               end
