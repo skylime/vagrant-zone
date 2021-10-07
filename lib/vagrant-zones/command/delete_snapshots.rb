@@ -37,7 +37,8 @@ module VagrantPlugins
           
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
-            driver.zfs(machine, @env.ui, 'destroy', options[:dataset], options[:snapshot_name])
+            subcommand = nil
+            driver.zfs(machine, @env.ui, 'destroy', options[:dataset], options[:snapshot_name], subcommand)
           end
         end
       end

@@ -965,7 +965,7 @@ end          )
       end
 
       # This helps us create ZFS Snapshots
-      def zfs(machine, uiinfo, job, dataset, snapshot_name)
+      def zfs(machine, uiinfo, job, dataset, snapshot_name, subcommand)
         name = machine.name
         ## get disks configurations
         datadir = machine.data_dir
@@ -1065,6 +1065,8 @@ end          )
         end
       when 'cron'
         if dataset == "all"
+            subcommanddata = snapshot_name
+            puts subcommanddata
             datasets.each do |disk|
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
             #execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}") 
