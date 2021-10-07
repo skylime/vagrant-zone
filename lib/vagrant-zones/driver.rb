@@ -991,7 +991,7 @@ end          )
             maxlength = 0
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
-              if attributes[0].to_i > maxlength.to_i
+              if attributes[0].length.to_i > maxlength.to_i
                 maxlength = attributes[0]
               end
             end
@@ -999,9 +999,6 @@ end          )
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               pathlength = attributes[0].length
-
-
-              puts "%-*s %s" % [maxlength, 'Pet name', 'Amount']
 
               if snapindex == 0
                 
