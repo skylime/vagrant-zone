@@ -98,19 +98,25 @@ module VagrantPlugins
 
       def console(machine, command, ip, port, detach, kill)
         name = machine.name
-        puts ip
+        
         config = machine.provider_config
+
+
+
         if port.nil?
           if config.consoleport.nil?
             netport = ''
           else
             netport = config.consoleport
           end
-        else
-          puts ip
-          ip = '127.0.0.1' if ip.nil?
-          netport = "#{ip}:#{port}"
         end
+        if ip.nil?
+          ip = '127.0.0.1' unless options[:ip] =~ Resolv::IPv4::Regex ? true : false
+        end
+        netport = "#{ip}:#{port}"
+
+
+
         puts detach
         pid = 0
         if(File.exist?('console.pid')) 

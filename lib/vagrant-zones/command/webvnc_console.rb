@@ -32,7 +32,7 @@ module VagrantPlugins
             return
           end
 
-
+          puts options[:ip]
           options[:port] = nil unless options[:port] =~ /\d/
 
           with_target_vms(argv, provider: :zone) do |machine|
