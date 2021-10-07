@@ -36,16 +36,31 @@ module VagrantPlugins
 
           with_target_vms(@main_args,provider: :zone) do |machine|
             puts machine.provider_config.console
- 
+
+            if machine.provider_config.console.nil?
+
+              command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
+              return help if !command_class || !@sub_command
+  
+              @logger.debug("Invoking command class: #{command_class} #{@sub_args.inspect}")
+  
+              # Initialize and execute the command class
+              command_class.new(@sub_args, @env).execute
+
+            else
+              puts @sub_args.inspect
+              puts @env.inspect
+              command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
+              @logger.debug("Invoking command class: #{command_class} #{@sub_args.inspect}")
+  
+              # Initialize and execute the command class
+              command_class.new(@sub_args, @env).execute
+
+            end
+
           end
 
-          command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
-          return help if !command_class || !@sub_command
 
-          @logger.debug("Invoking command class: #{command_class} #{@sub_args.inspect}")
-
-          # Initialize and execute the command class
-          command_class.new(@sub_args, @env).execute
 
 
 
