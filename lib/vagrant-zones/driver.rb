@@ -993,13 +993,12 @@ end          )
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               if attributes[0].length.to_i > maxlength.to_i
                 maxlength = attributes[0].to_i
+                puts maxlength
               end
             end
             puts maxlength.to_s
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
-              pathlength = attributes[0].length
-
               if snapindex == 0
                 
                 puts sprintf '%5s  %-*s  %10s  %8s  %5s    %5s', "#", maxlength, attributes[0], attributes[1], attributes[2], attributes[3], attributes[4]
