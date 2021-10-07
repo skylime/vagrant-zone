@@ -965,6 +965,9 @@ end          )
       # This helps us create ZFS Snapshots
       def zfs(machine, uiinfo, job, dataset, snapshot_name)
         name = machine.name
+        if dataset == "all"
+          print "SUCCESS"
+        end
         case job
         when 'list'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
