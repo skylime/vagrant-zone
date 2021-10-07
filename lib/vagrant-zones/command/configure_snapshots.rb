@@ -38,6 +38,10 @@ module VagrantPlugins
             options[:dataset] = 'all'
           end
 
+          if options[:frequency].nil?
+            options[:frequency] = 'default'
+          end
+
           return if options[:frequency] && options[:delete]
           return if options[:frequency] && options[:list]
           return if options[:frequency_retention] && options[:list]
@@ -47,7 +51,7 @@ module VagrantPlugins
 
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
-            subcommanddata =  [options[:frequency],options[:frequency_retention]] unless options[:delete] || options[:list]
+            subcommanddata = [options[:frequency],options[:frequency_retention]] unless options[:delete] && options[:list]
             subcommand = "frequency" unless options[:delete] || options[:list]
             subcommanddata =  options[:list] unless options[:delete] || options[:frequency]
             subcommand = "list" unless options[:delete] || options[:frequency]
