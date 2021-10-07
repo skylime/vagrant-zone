@@ -986,11 +986,10 @@ end          )
           datasets.each_with_index do |disk,index|
             puts "\n  Disk Number: #{index}\n  Disk Path: #{disk}"
             zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk}")
-            zfssnapshots = []
-            zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
-            zfssnapshots << zfs_snapshots.split(/\n/)            
+            zfssnapshots << zfs_snapshots.split(/\n/)
+            
             pathmaxlength, refermaxlength, availmaxlength, usedmaxlength, snapmaxlength = 0
-            zfssnapshots.each_with_index do |snapshot, snapindex|
+            zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               snapmaxlength = attributes[0].length.to_i if attributes[0].length.to_i > snapmaxlength.to_i
               usedmaxlength = attributes[1].length.to_i if attributes[1].length.to_i > usedmaxlength.to_i
@@ -998,7 +997,7 @@ end          )
               refermaxlength = attributes[3].length.to_i if attributes[3].length.to_i > refermaxlength.to_i
               pathmaxlength = attributes[4].length.to_i if attributes[4].length.to_i > pathmaxlength.to_i
             end
-            zfssnapshots.each_with_index do |snapshot, snapindex|
+            zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               if snapindex == 0
                 puts sprintf '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', "#",  snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3],pathmaxlength, attributes[4]
