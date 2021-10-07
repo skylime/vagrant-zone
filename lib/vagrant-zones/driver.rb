@@ -110,20 +110,11 @@ module VagrantPlugins
           pid = IO.readlines("console.pid")[0]
           cType = IO.readlines("console.pid")[1]
           timeStarted = IO.readlines("console.pid")[2]
-          
           vmname = IO.readlines("console.pid")[3]
-          puts vmname
-          puts name
           nport = IO.readlines("console.pid")[4]
           if vmname[name.to_s]
-            puts pid
-            puts cType
-            puts timeStarted
-            puts name
-            puts nport
             puts "VM is running with PID: #{pid} since: #{timeStarted} as console type: #{cType} served at: #{nport}"
           end
-          puts kill
           if kill == 'yes'
             Process.kill "TERM", pid.to_i
             Process.detach pid.to_i
@@ -143,7 +134,7 @@ module VagrantPlugins
           puts pid
           Process.detach(pid) if detach == "yes"
           File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{Time.new.strftime("%Y-%m-%d-%H:%M:%S")}\n#{name}\n#{netport}" }
-          puts "VM is running with PID: #{pid} as console type: #{cType} served at: #{nport}"
+          puts "VM is running with PID: #{pid} as console type: #{cType} served at: #{nport}" if detach == "yes"
         end
       end
 
