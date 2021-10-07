@@ -1027,8 +1027,10 @@ end          )
             end
           end
         when 'destroy'
+          puts dataset
           if dataset.to_s == "all"
             datasets.each do |disk|
+              puts test
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
               output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
               ## Never delete the source when doing all
