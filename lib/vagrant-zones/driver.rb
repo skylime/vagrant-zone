@@ -975,7 +975,8 @@ end          )
         datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{config.name}/#{bootconfigs['volume_name']}"
         datasets = []
         datasets << datasetroot
-        config.additional_disks.each do |disk|
+        
+        unless config.additional_disks.each do |disk|
           additionaldataset = "#{disk['array']}/#{disk['dataset']}/#{config.partition_id}--#{config.name}/#{disk['volume_name']}"
           datasets << additionaldataset
         end
