@@ -999,8 +999,13 @@ end          )
             snapshotrun += 1
           end
         when 'create'
-          uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
-          execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
+          if dataset == "all"
+            print "SUCCESS"
+              datasets.each do |disk|
+              uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
+              execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}")
+            end 
+          end
         when 'destroy'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
           execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}")
