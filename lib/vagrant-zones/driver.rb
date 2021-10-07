@@ -105,7 +105,7 @@ module VagrantPlugins
           netport = "#{ip}:#{port}"
         end
 
-
+        pid = 0
         if(File.exist?('console.pid')) 
           file = File.open("console.pid")
           file_data = file.readlines.map(&:chomp)
@@ -128,11 +128,11 @@ module VagrantPlugins
         else 
           puts command
           case command
-          when :webvnc
+          when "webvnc"
             run = "pfexec zadm  webvnc #{netport} #{name}"
-          when :vnc
+          when "vnc"
             run = "pfexec zadm  vnc #{netport} #{name}"
-          when :zlogin
+          when "zlogin"
             run = "pfexec zadm  console #{name}"
           end
           pid = spawn(run)
