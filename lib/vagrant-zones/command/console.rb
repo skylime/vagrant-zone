@@ -44,7 +44,7 @@ module VagrantPlugins
               @sub_command = machine.provider_config.console.to_sym  if @sub_command.nil?
               command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
               subargs = @sub_args unless @sub_args.nil?
-              puts @sub_args
+              puts @sub_args[0]
               p @sub_args
               subargs = '--kill no' if @sub_args.nil?
               puts subargs
