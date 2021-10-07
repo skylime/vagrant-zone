@@ -993,7 +993,7 @@ end          )
               
               #puts = "#{snapindex}\t\t#{}\t#{}\t\t#{attributes[3]}\t#{attributes[0]}"
 
-              sprintf  attributes[0], attributes[1], attributes[2], attributes[3], attributes[4]}
+              sprintf  attributes[0], attributes[1], attributes[2], attributes[3], attributes[4]
            
             end
           
