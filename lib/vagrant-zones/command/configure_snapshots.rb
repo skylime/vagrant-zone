@@ -51,18 +51,14 @@ module VagrantPlugins
 
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
-            subcommanddata = []
-            subcommanddata =  [options[:list]] unless options[:delete] || options[:frequency]
+            subcommanddata = options[:list] if options[:list]
+            subcommand = "list" if options[:list]
             
-            subcommand = "list" unless options[:delete] || options[:frequency]
-            subcommanddata =  options[:delete] unless options[:list] || options[:frequency]
-            subcommand = "delete" unless options[:list] || options[:frequency] || 
-            unless options[:delete] || options[:list]
-                subcommanddata = ["#{options[:frequency]}","#{options[:frequency_retention]}"]
-                puts subcommanddata
-                puts "test"
-                subcommand = "frequency" unless options[:delete] || options[:list]
-            end
+            subcommanddata =  options[:delete] if options[:delete]
+            subcommand = "delete" if options[:delete] 
+            
+            subcommanddata = ["#{options[:frequency]}","#{options[:frequency_retention]}"]
+            subcommand = "frequency" if options[:frequency]
             puts subcommanddata.inspect
             driver.zfs(machine, @env.ui, 'cron', options[:dataset], subcommanddata , subcommand)
           end
