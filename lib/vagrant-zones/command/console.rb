@@ -43,7 +43,7 @@ module VagrantPlugins
 
             else
               puts @sub_args[0].inspect
-              puts @env.inspect
+              puts @env[0].inspect
               command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
               @logger.debug("Invoking command class: #{command_class} #{@sub_args.inspect}")
   
