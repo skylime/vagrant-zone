@@ -20,12 +20,12 @@ module VagrantPlugins
             require File.expand_path('webvnc_console', __dir__)
             WebVNCConsole
           end
-          @env = env
+          @machine = env[:machine]
           super(argv, env)
         end
 
         def execute
-          @machine = @env[:machine]
+          machine = @machine
           if @main_args.include?('-h') || @main_args.include?('--help')
             # Print the help for all the vagrant-zones commands.
             return help
