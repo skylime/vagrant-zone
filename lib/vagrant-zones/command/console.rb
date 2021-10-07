@@ -7,6 +7,7 @@ module VagrantPlugins
       class Console < Vagrant.plugin('2', :command)
         def initialize(argv, env)
           @main_args, @sub_command, @sub_args = split_main_and_subcommand(argv)
+
           @subcommands = Vagrant::Registry.new
           @subcommands.register(:vnc) do
             require File.expand_path('vnc_console', __dir__)
@@ -24,33 +25,18 @@ module VagrantPlugins
         end
 
         def execute
-          machine = @machine
           if @main_args.include?('-h') || @main_args.include?('--help')
             # Print the help for all the vagrant-zones commands.
             return help
           end
 
           command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
-          
-          
-          with_target_vms(provider: :zone) do |machine|
-            config = machine.provider_config     
-            if config.console.nil
-              return help if !command_class || !@sub_command
+          #return help if !command_class || !@sub_command
 
-              @logger.debug("Invoking command class: #{command_class} #{@sub_args.inspect}")
+          @logger.debug("Invoking command class: #{command_class} #{@sub_args.inspect}")
 
-              # Initialize and execute the command class
-              command_class.new(@sub_args, @env).execute
-            else
-              config.console.nil
-
-              @logger.debug("Invoking command class: #{command_class} #{env[:machine].provider_config.console.inspect}")
-
-              # Initialize and execute the command class
-              command_class.new(config.console, @env).execute
-            end
-          end
+          # Initialize and execute the command class
+          command_class.new(@sub_args, @env).execute
         end
 
         def help
