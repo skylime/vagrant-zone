@@ -970,6 +970,7 @@ end          )
           
         ## get disks configurations
         datadir = machine.data_dir
+        config = machine.provider_config
         bootconfigs = config.boot[0]
         datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{config.name}/#{bootconfigs['volume_name']}"
         datasets = []
