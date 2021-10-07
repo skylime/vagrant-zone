@@ -33,7 +33,7 @@ module VagrantPlugins
           command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
           
           
-          with_target_vms(argv, provider: :zone) do |machine|
+          with_target_vms(provider: :zone) do |machine|
             config = machine.provider_config     
             if config.console.nil
               return help if !command_class || !@sub_command
