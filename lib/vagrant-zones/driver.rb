@@ -988,13 +988,26 @@ end          )
             zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk}")
             zfssnapshots = zfs_snapshots.split(/\n/)
             zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
+            maxlength = 0
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
-              
+              if attributes[0] > maxlength
+                maxlength = attributes[0]
+              end
+            end
+            puts maxlength
+            zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
+              attributes = snapshot.gsub(/\s+/m, ' ').strip.split
+              pathlength = attributes[0].length
+
+
+              puts "%-*s %s" % [maxlength, 'Pet name', 'Amount']
+
               if snapindex == 0
-                puts sprintf '%5s  %150s  %10s  %8s  %5s    %5s', "#", attributes[0], attributes[1], attributes[2], attributes[3], attributes[4]
+                
+                puts sprintf '%5s  %-*s  %10s  %8s  %5s    %5s', "#", maxlength, attributes[0], attributes[1], attributes[2], attributes[3], attributes[4]
               else
-                puts sprintf '%5s  %150s  %10s  %8s  %5s    %5s', snapindex - 1, attributes[0], attributes[1], attributes[2], attributes[3], attributes[4]
+                puts sprintf '%5s  %-*s  %10s  %8s  %5s    %5s', snapindex - 1, maxlength ,attributes[0], attributes[1], attributes[2], attributes[3], attributes[4]
               end
               output = {}
             end
