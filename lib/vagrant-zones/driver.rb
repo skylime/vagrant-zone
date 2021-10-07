@@ -995,7 +995,7 @@ end          )
 
               output = {Snapshot: attributes[0], Used: attributes[1],Available: attributes[2], Refer:attributes[3], Mount: attributes[4]}
               output.each do |key, value|
-                puts sprintf '%10s  %3s', key.to_s, value
+                sprintf '%10s  %3s', key.to_s, value
               end
             end
           
