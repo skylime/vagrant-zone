@@ -1066,6 +1066,14 @@ end          )
         when 'cron'
           if dataset == "all"
               puts subcommand
+              case subcommand
+              when /list/
+                puts  "We are supposed to list things now"
+              when /delete/
+                puts  "We are supposed to delete things now"
+              when /frequency/
+                puts  "We are supposed to configure things now"
+              end
               subcommanddata = snapshot_name
               puts subcommanddata
               datasets.each do |disk|
