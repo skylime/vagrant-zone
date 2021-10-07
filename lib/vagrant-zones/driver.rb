@@ -1043,9 +1043,9 @@ end          )
             ## Specify the Dataset by path
             execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") unless  datasets.include?(dataset)
             ## Specify the dataset by number
-            datasets.each_with_index do |disk,index|
-              puts "Disk: #{index}"
-              if dataset == index
+            datasets.each_with_index do |disk,dindex|
+              puts "Disk: #{dindex}"
+              if dataset == dindex
                 output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
                 output = output.split(/\n/)
                 output.each_with_index do |snaps, spindex|
@@ -1054,7 +1054,7 @@ end          )
                   #uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
                 end
 
-                print index
+                print dindex
                 execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}")
               end
             end
