@@ -26,7 +26,7 @@ module VagrantPlugins
           end
           @subcommands.register(:console) do
             require File.expand_path('console', __dir__)
-            Console(env)
+            Console
           end
           super(argv, env)
         end
@@ -43,7 +43,7 @@ module VagrantPlugins
           @logger.debug("Invoking command class: #{command_class} #{@sub_args.inspect}")
 
           # Initialize and execute the command class
-          command_class.new(@sub_args, @env).execute
+          command_class.new(@sub_args, @env).execute(env)
         end
 
         def help
