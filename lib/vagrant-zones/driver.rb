@@ -353,7 +353,7 @@ end             )
         
         datadir = machine.data_dir
         bootconfigs = config.boot[0]
-        datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{config.name}"
+        datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
         ## Create Boot Volume
         case config.brand
@@ -974,12 +974,12 @@ end          )
         bootconfigs = config.boot[0]
         puts bootconfigs[0].to_s
         puts "#{bootconfigs['array']}"
-        datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{config.name}/#{bootconfigs['volume_name']}"
+        datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{name}/#{bootconfigs['volume_name']}"
         datasets = []
         datasets << datasetroot.to_s
         unless config.additional_disks.nil?
           config.additional_disks.each do |disk|
-            additionaldataset = "#{disk['array']}/#{disk['dataset']}/#{config.partition_id}--#{config.name}/#{disk['volume_name']}"
+            additionaldataset = "#{disk['array']}/#{disk['dataset']}/#{config.partition_id}--#{name}/#{disk['volume_name']}"
             datasets << additionaldataset.to_s
           end
         end
