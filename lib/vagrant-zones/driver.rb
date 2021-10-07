@@ -132,7 +132,7 @@ module VagrantPlugins
           end
           pid = spawn(run)
           puts detach
-          Process.detach(pid) if detach == "yes"
+          #Process.detach(pid) if detach == "yes"
           File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{Time.new.strftime("%Y-%m-%d-%H:%M:%S")}\n#{name}\n#{netport}" }
           puts "VM is running with PID: #{pid} as console type: #{cType} served at: #{nport}" if detach == "yes"
         end
