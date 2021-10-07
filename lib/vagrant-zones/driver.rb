@@ -1002,7 +1002,7 @@ end          )
                 
                 puts sprintf '%5s  %-*s  %4s  %1s  %4s  %5s', "#", maxlength, attributes[0], attributes[1], attributes[2], attributes[3], attributes[4]
               else
-                puts sprintf '%5s  %-*s  %5s  %9s  %4s  %5s', snapindex - 1, maxlength ,attributes[0], attributes[1], attributes[2], attributes[3], attributes[4]
+                puts sprintf '%5s  %-*s  %5s  %4s  %4s  %5s', snapindex - 1, maxlength ,attributes[0], attributes[1], attributes[2], attributes[3], attributes[4]
               end
               output = {}
             end
