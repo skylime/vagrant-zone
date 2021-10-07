@@ -989,7 +989,6 @@ end          )
             zfssnapshots = zfs_snapshots.split(/\n/)
             puts "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tName"
             zfssnapshots.each_with_index do |snapshot, snapindex|
-              puts snapshot
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               
               #puts = "#{snapindex}\t\t#{}\t#{}\t\t#{attributes[3]}\t#{attributes[0]}"
