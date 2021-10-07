@@ -992,7 +992,6 @@ end          )
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               if attributes[0].length.to_i > maxlength.to_i
-                puts attributes[0].length
                 maxlength = attributes[0].length.to_i
                 puts maxlength
               end
