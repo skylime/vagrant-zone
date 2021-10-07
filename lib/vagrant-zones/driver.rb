@@ -994,9 +994,6 @@ end          )
               #puts = "#{snapindex}\t\t#{}\t#{}\t\t#{attributes[3]}\t#{attributes[0]}"
 
               sprintf '%10s  %3s', attributes[0], attributes[1], attributes[2], attributes[3], attributes[4]
-              output.each do |key, value|
-                puts sprintf '%10s  %3s', key.to_s, value
-              end
             end
           
 
