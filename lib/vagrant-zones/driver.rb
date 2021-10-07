@@ -988,7 +988,7 @@ end          )
             zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk}")
             snapshotrun = 0
             header = "Snapshot\tUsed\tAvailable\tRefer\tName"
-            zfssnapshots.each do |snapshot|
+            zfs_snapshots.each do |snapshot|
               puts snapshot
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               puts attributes.inspect
