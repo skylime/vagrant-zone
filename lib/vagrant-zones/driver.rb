@@ -987,7 +987,7 @@ end          )
             puts "Disk Number: #{index} Disk Path: #{disk}"
             zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk}")
             zfssnapshots = zfs_snapshots.split(/\n/)
-            puts "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tName"
+            Puts "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
             zfssnapshots.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               
@@ -995,7 +995,7 @@ end          )
 
               output = {Snapshot: attributes[0], Used: attributes[1],Available: attributes[2], Refer:attributes[3], Mount: attributes[4]}
               output.each do |key, value|
-                puts sprintf '%10s  %3s', key.to_s, value
+                puts sprintf '%3s  %3s', key.to_s, value
               end
             end
           
