@@ -35,7 +35,7 @@ module VagrantPlugins
           puts 
 
           with_target_vms(@main_args,provider: :zone) do |machine|
-            puts machine.name
+            puts machine.provider_config.console
  
           end
 
