@@ -43,7 +43,7 @@ module VagrantPlugins
 
             else
               puts @sub_command
-              puts @sub_command.to_sym
+              puts @sub_command
               puts machine.provider_config.console
               puts machine.provider_config.console.to_sym
               command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
