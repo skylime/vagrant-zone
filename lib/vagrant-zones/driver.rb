@@ -973,6 +973,7 @@ end          )
         config = machine.provider_config
         bootconfigs = config.boot
         datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{name}/#{bootconfigs['volume_name']}"
+        puts datasetroot
         datasets = []
         datasets << datasetroot.to_s
         unless config.additional_disks.nil?
