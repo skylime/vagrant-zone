@@ -984,7 +984,7 @@ end          )
         when 'list'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
           datasets.each_with_index do |disk,index|
-            puts "  Disk Number: #{index}\n\tDisk Path: #{disk}"
+            puts "  Disk Number: #{index}\n  Disk Path: #{disk}"
             zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk}")
             zfssnapshots = zfs_snapshots.split(/\n/)
             zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
