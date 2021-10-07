@@ -33,7 +33,7 @@ module VagrantPlugins
           end
 
           ip = nil unless options[:ip] =~ Resolv::IPv4::Regex ? true : false
-          puts options[:ip]
+          puts ip
           options[:port] = nil unless options[:port] =~ /\d/
 
           with_target_vms(argv, provider: :zone) do |machine|
