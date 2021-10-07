@@ -140,7 +140,7 @@ module VagrantPlugins
             Process.detach(pid) if detach == "yes"
             time = Time.new.strftime("%Y-%m-%d-%H:%M:%S")
             File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == "yes"
-            puts "VM is running with PID: #{pid.strip} as console type: #{command.strip} served at: #{netport.strip}" if detach == "yes"
+            puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == "yes"
           when "vnc"
             run = "pfexec zadm  vnc #{netport} #{name}"
             pid = spawn(run)
