@@ -1076,7 +1076,7 @@ end          )
                 puts subcommanddata
               end
               subcommanddata = snapshot_name
-              puts subcommanddata
+              puts subcommanddata.inspect
               datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
               #execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}") 
