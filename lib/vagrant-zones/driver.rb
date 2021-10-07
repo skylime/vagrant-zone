@@ -98,8 +98,13 @@ module VagrantPlugins
 
       def console(machine, command, ip, port, detach, kill)
         name = machine.name
+        config = machine.provider_config
         if port.nil?
-          netport = ''
+          if config.consoleport.nil?
+            netport = ''
+          else
+            netport = config.consoleport
+          end
         else
           ip = '127.0.0.1' if ip.nil?
           netport = "#{ip}:#{port}"
@@ -131,7 +136,6 @@ module VagrantPlugins
             run = "pfexec zadm  console #{name}"
           end
           pid = spawn(run)
-          puts detach
           Process.wait pid if detach == "no"
           Process.detach(pid) if detach == "yes"
           time = Time.new.strftime("%Y-%m-%d-%H:%M:%S")
