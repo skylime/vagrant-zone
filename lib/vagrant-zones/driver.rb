@@ -105,9 +105,9 @@ module VagrantPlugins
 
         if port.nil?
           if config.consoleport.nil?
-            netport = ''
+            port = ''
           else
-            netport = config.consoleport
+            port = config.consoleport
           end
         end
         if ip.nil?
