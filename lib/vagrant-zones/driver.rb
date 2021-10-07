@@ -121,7 +121,6 @@ module VagrantPlugins
             puts "Session Terminated"
           end
         else 
-          puts command
           case command
           when "webvnc"
             run = "pfexec zadm  webvnc #{netport} #{name}"
@@ -131,7 +130,6 @@ module VagrantPlugins
             run = "pfexec zadm  console #{name}"
           end
           pid = spawn(run)
-          puts pid
           Process.detach(pid) if detach == "yes"
           File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{Time.new.strftime("%Y-%m-%d-%H:%M:%S")}\n#{name}\n#{netport}" }
           puts "VM is running with PID: #{pid} as console type: #{cType} served at: #{nport}" if detach == "yes"
