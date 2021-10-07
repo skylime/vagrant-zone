@@ -1034,6 +1034,7 @@ end          )
               output.reverse.each do |snaps, snapsindex|
                 puts snaps
                 execute(false, "#{@pfexec} zfs destroy  #{snaps}") 
+                uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
               end
     
               
