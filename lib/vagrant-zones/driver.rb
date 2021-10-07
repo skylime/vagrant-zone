@@ -115,7 +115,7 @@ module VagrantPlugins
           puts vmname
           puts name
           nport = IO.readlines("console.pid")[4]
-          if vmname.match?(name)
+          if vmname[name]
             puts pid
             puts cType
             puts timeStarted
