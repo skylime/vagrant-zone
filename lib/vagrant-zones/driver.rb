@@ -986,6 +986,7 @@ end          )
           datasets.each_with_index do |disk,index|
             puts "Disk Number: #{index} Disk Path: #{disk}"
             zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk}")
+            puts zfs_snapshots
             zfssnapshots = zfs_snapshots.split(/\n/)
             snapshotrun = 0
             header = "Snapshot\tUsed\tAvailable\tRefer\tName"
