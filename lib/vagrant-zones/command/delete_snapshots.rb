@@ -31,7 +31,7 @@ module VagrantPlugins
           end
 
           if options[:snapshot_name].nil?
-            options[:dataset] = 'all'
+            options[:snapshot_name] = 'all'
           end
 
           
