@@ -31,12 +31,22 @@ module VagrantPlugins
           end
 
           command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
-          return help if !command_class || !@sub_command
+          
+          if env[:machine].provider_config.console.nil
+            return help if !command_class || !@sub_command
 
-          @logger.debug("Invoking command class: #{command_class} #{@sub_args.inspect}")
+            @logger.debug("Invoking command class: #{command_class} #{@sub_args.inspect}")
 
-          # Initialize and execute the command class
-          command_class.new(@sub_args, @env).execute
+            # Initialize and execute the command class
+            command_class.new(@sub_args, @env).execute
+          else
+            env[:machine].provider_config.console.nil
+
+            @logger.debug("Invoking command class: #{command_class} #{env[:machine].provider_config.console.inspect}")
+
+            # Initialize and execute the command class
+            command_class.new(env[:machine].provider_config.console, @env).execute
+          end
         end
 
         def help
