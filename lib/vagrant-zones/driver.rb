@@ -1066,6 +1066,7 @@ end          )
         when 'cron'
           if dataset == "all"
               subcommanddata = snapshot_name
+              puts subcommanddata
               case subcommand
               when /list/
                 puts  "We are supposed to list things now"
@@ -1075,7 +1076,6 @@ end          )
                 puts  "We are supposed to configure things now"
                 puts subcommanddata
               end
-              subcommanddata = snapshot_name
               puts subcommanddata.inspect
               datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
