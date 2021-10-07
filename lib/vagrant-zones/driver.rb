@@ -992,9 +992,9 @@ end          )
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               
               if snapindex == 0
-                puts sprintf '%10s  %7s  %5s  %5s  %5s  %5s', "#", attributes[1], attributes[2], attributes[3], attributes[4], attributes[0]
+                puts sprintf '%4s  %8s  %6s  %5s  %5s  %5s', "#", attributes[1], attributes[2], attributes[3], attributes[4], attributes[0]
               else
-                puts sprintf '%10s  %7s  %5s  %5s  %5s  %5s', snapindex - 1, attributes[1], attributes[2], attributes[3], attributes[4], attributes[0]
+                puts sprintf '%4s  %8s  %6s  %5s  %5s  %5s', snapindex - 1, attributes[1], attributes[2], attributes[3], attributes[4], attributes[0]
               end
               output = {}
               
