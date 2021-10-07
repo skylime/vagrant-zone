@@ -32,7 +32,7 @@ module VagrantPlugins
 
 
           
-          argv = parse_options(opts)
+          argv = parse_options(@main_args)
           puts argv.length
 
           command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
