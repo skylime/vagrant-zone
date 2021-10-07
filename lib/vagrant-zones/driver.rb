@@ -1040,7 +1040,7 @@ end          )
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
             ## Specify the dataset by number
             datasets.each_with_index do |disk,dindex|
-              if dataset.to_i == dindex.to_i
+              if dindex.to_i == dataset.to_i 
                 output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
                 output = output.split(/\n/).drop(1)
                 output.each_with_index do |snaps, spindex|
