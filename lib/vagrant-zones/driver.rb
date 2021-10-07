@@ -1005,6 +1005,9 @@ end          )
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
               execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}")
             end 
+          else 
+            uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
+            execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
           end
         when 'destroy'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
