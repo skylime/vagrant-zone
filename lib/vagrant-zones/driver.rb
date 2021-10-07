@@ -1030,14 +1030,13 @@ end          )
             datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
               output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
+              ## Never delete the source when doing all
               output = output.split(/\n/).drop(1)
               output.reverse.each do |snaps, snapsindex|
                 puts snaps
-                execute(false, "#{@pfexec} zfs destroy  #{snaps}") 
+                execute(false, "#{@pfexec} zfs destroy #{snaps}") 
                 uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
               end
-    
-              
             end 
           else 
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
@@ -1045,9 +1044,16 @@ end          )
             execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") unless  datasets.include?(dataset)
             ## Specify the dataset by number
             datasets.each_with_index do |disk,index|
-              puts index
+              puts "Disk: #{index}"
               if dataset == index
-                output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}@#{snapshot_name}")
+                output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
+                output = output.split(/\n/)
+                output.each_with_index do |snaps, spindex|
+                  puts "Snapshot: #{spindex}"
+                  #execute(false, "#{@pfexec} zfs destroy #{snaps}") 
+                  #uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
+                end
+
                 print index
                 execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}")
               end
