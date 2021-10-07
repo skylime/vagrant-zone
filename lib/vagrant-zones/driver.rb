@@ -1045,14 +1045,14 @@ end          )
                 output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
                 output = output.split(/\n/).drop(1)
                 output.each_with_index do |snaps, spindex|
+                  puts "\t#\tSnapshot"
                   if snapshot_name.to_i == spindex && snapshot_name.to_s != 'all'
-                    puts "\t#\tSnapshot"
+                    
                     puts "\t#{spindex}\t#{snaps}\t"
                     execute(false, "#{@pfexec} zfs destroy #{snaps}") 
                     uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
                   end
                   if snapshot_name.to_s == 'all'
-                    puts "\t#\tSnapshot"
                     puts "\t#{spindex}\t#{snaps}\t"
                     execute(false, "#{@pfexec} zfs destroy #{snaps}") 
                     uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
