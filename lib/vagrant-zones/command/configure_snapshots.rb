@@ -60,6 +60,7 @@ module VagrantPlugins
             if !options[:delete] && !options[:list]
                 subcommanddata = ["#{options[:frequency]}","#{options[:frequency_retention]}"]
                 puts subcommanddata
+                puts "test"
                 subcommand = "frequency" unless options[:delete] || options[:list]
             end
             puts subcommanddata.inspect
