@@ -1073,6 +1073,7 @@ end          )
                 puts  "We are supposed to delete things now"
               when /frequency/
                 puts  "We are supposed to configure things now"
+                puts subcommanddata
               end
               subcommanddata = snapshot_name
               puts subcommanddata
