@@ -9,7 +9,6 @@ require 'netaddr'
 require 'ipaddr'
 require 'vagrant/util/numeric'
 require 'pty'
-require "vagrant-zones/scheduler" 
 require 'io/console'
 require 'expect'
 require 'vagrant'
