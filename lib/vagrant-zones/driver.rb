@@ -134,8 +134,9 @@ module VagrantPlugins
           puts detach
           Process.wait pid if detach == "no"
           Process.detach(pid) if detach == "yes"
-          File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{Time.new.strftime("%Y-%m-%d-%H:%M:%S")}\n#{name}\n#{netport}" } if detach == "yes"
-          puts "VM is running with PID: #{pid} as console type: #{cType} served at: #{nport}" if detach == "yes"
+          time = Time.new.strftime("%Y-%m-%d-%H:%M:%S")
+          File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == "yes"
+          puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == "yes"
         end
       end
 
