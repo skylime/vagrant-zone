@@ -981,7 +981,7 @@ end          )
             datasets << additionaldataset
           end
         end
-        puts datasets
+        puts datasets.inspect
         if dataset == "all"
           print "SUCCESS"
 
