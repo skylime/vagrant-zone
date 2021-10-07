@@ -7,7 +7,7 @@ module VagrantPlugins
       class Console < Vagrant.plugin('2', :command)
         def initialize(argv, env)
           @main_args, @sub_command, @sub_args = split_main_and_subcommand(argv)
-
+          @machine = env[:machine]
           @subcommands = Vagrant::Registry.new
           @subcommands.register(:vnc) do
             require File.expand_path('vnc_console', __dir__)
@@ -32,7 +32,7 @@ module VagrantPlugins
 
           command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
           
-          if env[:machine].provider_config.console.nil
+          if @machine.provider_config.console.nil
             return help if !command_class || !@sub_command
 
             @logger.debug("Invoking command class: #{command_class} #{@sub_args.inspect}")
@@ -40,7 +40,7 @@ module VagrantPlugins
             # Initialize and execute the command class
             command_class.new(@sub_args, @env).execute
           else
-            env[:machine].provider_config.console.nil
+            @machine.provider_config.console.nil
 
             @logger.debug("Invoking command class: #{command_class} #{env[:machine].provider_config.console.inspect}")
 
