@@ -27,7 +27,7 @@ module VagrantPlugins
           end
 
           if options[:dataset].nil?
-            @env.ui.info(opts.help)
+            options[:dataset] = 'all'
             return
           end
 
