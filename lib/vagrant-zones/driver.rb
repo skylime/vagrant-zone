@@ -79,7 +79,7 @@ module VagrantPlugins
           command = 'sudo shutdown -r'
           ssh_run_command(machine, command)
         when 'shutdown'
-          command = 'sudo shutdown -h now'
+          command = 'sudo init 0'
           ssh_run_command(machine, command)
         else
           puts 'No Command specified'
