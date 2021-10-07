@@ -38,20 +38,24 @@ module VagrantPlugins
             options[:dataset] = 'all'
           end
 
+
+          @env.ui.info(opts.help) if options[:frequency] && options[:delete]
+          @env.ui.info(opts.help) if options[:frequency] && options[:list]
+          return if options[:frequency] && options[:delete]
+          return if options[:frequency] && options[:list]
+          
           if options[:frequency].nil?
             options[:frequency] = 'default'
           end
 
-          @env.ui.info(opts.help) if options[:frequency] && options[:delete]
-          @env.ui.info(opts.help) if options[:frequency] && options[:list]
+
           @env.ui.info(opts.help) if options[:frequency_retention] && options[:list]
           @env.ui.info(opts.help) if options[:frequency_retention] && options[:delete]
           @env.ui.info(opts.help) if options[:list] && options[:delete]
-          #return if options[:frequency] && options[:delete]
-          #return if options[:frequency] && options[:list]
-          #return if options[:frequency_retention] && options[:list]
-          #return if options[:frequency_retention] && options[:delete]
-          #return if options[:list] && options[:delete]
+
+          return if options[:frequency_retention] && options[:list]
+          return if options[:frequency_retention] && options[:delete]
+          return if options[:list] && options[:delete]
 
 
           with_target_vms(argv, provider: :zone) do |machine|
