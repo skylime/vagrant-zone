@@ -28,12 +28,8 @@ module VagrantPlugins
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
             retryable(on: Errors::TimeoutError, tries: 300) do
               # If we're interrupted don't worry about waiting
-              next if env[:interrupted]
-
-              loop do
-                break if env[:interrupted]
-                break unless env[:machine].communicate.ready?
-              end
+              break if env[:interrupted]
+              break unless env[:machine].communicate.ready?
             end
           end
           ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete'))
@@ -41,8 +37,8 @@ module VagrantPlugins
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
             retryable(on: Errors::TimeoutError, tries: 300) do
               # If we're interrupted don't worry about waiting
-              next if env[:interrupted]
               vm_state = 'installed'
+              next if env[:interrupted]
               break if spawn("pfexec zoneadm -z #{name} list -p | awk -F: '{ print $3 }'") == vm_state
             end
           end
