@@ -1045,7 +1045,7 @@ end          )
             puts "something"
             execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") unless  datasets.include?("#{dataset}@#{snapshot_name}")
             ## Specify the dataset by number
-            
+            puts "something"
             datasets.each_with_index do |disk,dindex|
               puts dindex
               if dataset.to_i == dindex
