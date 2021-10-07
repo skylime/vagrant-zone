@@ -972,12 +972,12 @@ end          )
         datadir = machine.data_dir
         config = machine.provider_config
         bootconfigs = config.boot[0]
-        datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{config.name}/#{bootconfigs['volume_name']}"
+        datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{config.name}/#{bootconfigs['volume_name']}".to_s
         datasets = []
         datasets << datasetroot
         unless config.additional_disks.nil?
           config.additional_disks.each do |disk|
-            additionaldataset = "#{disk['array']}/#{disk['dataset']}/#{config.partition_id}--#{config.name}/#{disk['volume_name']}"
+            additionaldataset = "#{disk['array']}/#{disk['dataset']}/#{config.partition_id}--#{config.name}/#{disk['volume_name']}".to_s
             datasets << additionaldataset
           end
         end
