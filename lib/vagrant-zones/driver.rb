@@ -99,11 +99,7 @@ module VagrantPlugins
 
       def console(machine, command, ip, port, detach, kill)
         name = machine.name
-        
         config = machine.provider_config
-
-
-
         if port.nil?
           if config.consoleport.nil?
             port = ''
@@ -153,7 +149,6 @@ module VagrantPlugins
             run = "pfexec zadm console #{name}"
             exec(run)
           end
-
         end
       end
 
