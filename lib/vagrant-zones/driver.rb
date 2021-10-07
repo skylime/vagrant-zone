@@ -106,6 +106,7 @@ module VagrantPlugins
             netport = config.consoleport
           end
         else
+          puts ip
           ip = '127.0.0.1' if ip.nil?
           netport = "#{ip}:#{port}"
         end
