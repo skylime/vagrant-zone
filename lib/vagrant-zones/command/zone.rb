@@ -26,7 +26,7 @@ module VagrantPlugins
           end
           @subcommands.register(:console) do
             require File.expand_path('console', __dir__)
-            Console
+            Console(env)
           end
           super(argv, env)
         end
