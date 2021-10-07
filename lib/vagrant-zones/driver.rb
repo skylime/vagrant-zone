@@ -1026,16 +1026,25 @@ end          )
             end
           end
         when 'destroy'
-          uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
-          ## Specify the Dataset by path
-          execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") unless  datasets.include?(dataset)
-          ## Specify the dataset by number
-          datasets.each_with_index do |disk,index|
-            puts index
-            if dataset == index
+          if dataset == "all"
+            datasets.each do |disk|
+              uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
               output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{dataset}@#{snapshot_name}")
-              print output
-              execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
+              
+              execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") unless  datasets.include?(dataset)
+            end 
+          else 
+            uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
+            ## Specify the Dataset by path
+            execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") unless  datasets.include?(dataset)
+            ## Specify the dataset by number
+            datasets.each_with_index do |disk,index|
+              puts index
+              if dataset == index
+                output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}@#{snapshot_name}")
+                print output
+                execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
+              end
             end
           end
         end
