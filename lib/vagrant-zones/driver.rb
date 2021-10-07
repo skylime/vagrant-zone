@@ -104,7 +104,7 @@ module VagrantPlugins
           ip = '127.0.0.1' if ip.nil?
           netport = "#{ip}:#{port}"
         end
-
+        puts kill
         pid = 0
         if(File.exist?('console.pid')) 
           pid = IO.readlines("console.pid")[0]
