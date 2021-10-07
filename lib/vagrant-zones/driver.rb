@@ -1044,6 +1044,7 @@ end          )
             ## Specify the dataset by number
             datasets.each_with_index do |disk,dindex|
               if dataset.to_i == dindex
+                puts dataset
                 output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
                 output = output.split(/\n/).drop(1)
                 output.each_with_index do |snaps, spindex|
