@@ -38,7 +38,6 @@ module VagrantPlugins
           command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
 
           subargs = @sub_args unless @sub_args.nil?  
-          subargs = ["--dataset", "all"] unless @sub_args.nil?
           @logger.debug("Invoking command class: #{command_class} #{subargs.inspect}")
 
 
