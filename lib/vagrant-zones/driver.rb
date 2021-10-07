@@ -995,7 +995,7 @@ end          )
                 maxlength = attributes[0].to_i
               end
             end
-            puts maxlength.to)s
+            puts maxlength.to_s
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               pathlength = attributes[0].length
