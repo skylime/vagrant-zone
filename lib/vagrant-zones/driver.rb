@@ -967,7 +967,6 @@ end          )
       # This helps us create ZFS Snapshots
       def zfs(machine, uiinfo, job, dataset, snapshot_name)
         name = machine.name
-        puts  machine.name
         ## get disks configurations
         datadir = machine.data_dir
         config = machine.provider_config
@@ -982,10 +981,6 @@ end          )
           end
         end
         puts datasets
-        if dataset == "all"
-          print "SUCCESS"
-
-        end
         case job
         when 'list'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
@@ -1000,8 +995,15 @@ end          )
             snapshotrun += 1
           end
         when 'create'
-          uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
-          execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
+          if dataset == "all"
+            datasets.each do |disk|
+              uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
+              execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}")
+            else
+              uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
+              execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
+            end 
+          end
         when 'destroy'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
           execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}")
