@@ -25,13 +25,14 @@ module VagrantPlugins
             return
           end
 
-          options[:ip] = '127.0.0.1' if options[:ip].nil?
-          options[:ip] = '127.0.0.1' unless options[:ip] =~ Resolv::IPv4::Regex ? true : false
-          options[:port] = nil if options[:port].nil?
+          puts options[:ip]
           options[:port] = nil unless options[:port] =~ /\d/
+          
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
-            driver.console(machine, 'zlogin', options[:ip], options[:port])
+            detach = "no"
+            kill = "no"
+            driver.console(machine, 'zlogin', options[:ip], options[:port], detach, kill)
           end
         end
       end
