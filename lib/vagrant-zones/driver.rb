@@ -1062,29 +1062,29 @@ end          )
             ## Specify the Dataset by path
             execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") if datasets.include?("#{dataset.to_s}@#{snapshot_name}")
           end
-        end
-      when 'cron'
-        if dataset == "all"
-            subcommanddata = snapshot_name
-            puts subcommanddata
-            datasets.each do |disk|
-            uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-            #execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}") 
-          end 
-        else 
-          uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
-          ## Specify the Dataset by path
-          execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") unless  datasets.include?(dataset)
-          ## Specify the dataset by number
-          datasets.each_with_index do |disk,index|
-            if dataset == index
+        
+        when 'cron'
+          if dataset == "all"
+              subcommanddata = snapshot_name
+              puts subcommanddata
+              datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-              #execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
+              #execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}") 
+            end 
+          else 
+            uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
+            ## Specify the Dataset by path
+            execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") unless  datasets.include?(dataset)
+            ## Specify the dataset by number
+            datasets.each_with_index do |disk,index|
+              if dataset == index
+                uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
+                #execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
+              end
             end
           end
         end
       end
-
       # Halts the Zone, first via shutdown command, then a halt.
       def halt(machine, uiinfo)
         name = machine.name
