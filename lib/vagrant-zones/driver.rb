@@ -154,33 +154,33 @@ module VagrantPlugins
             puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == "yes"
           when "zlogin"
             run = "pfexec zadm  console #{name}"
-            stime = 0.01 # let the fibers sleep for 10 ms
-            Fiber.set_scheduler(Scheduler.new)
-            r,w,pid = PTY.spawn("bash") 
-            f2=Fiber.new do # read char from STDIN and write to bash
-              loop do
-               inchar = STDIN.getch(min: 0, time: 0.5, intr: false)
-               w.write inchar  # write char to bash 
-               if inchar == "\x3" # ctrl-c
-                 puts "\nctrl-c detected, the ruby PTY session has ended"
-                 exit
-               end  
-               sleep stime
-              end
-             end
-             
-             f1=Fiber.new do # print output from bash
-             puts "Ruby PTY Session is started" 
-              loop do
-              if r.ready? # is the PTY master ready ? 
-                  print r.read(r.nread) # print all incoming chars from PTY in buffer
-              end
-              sleep stime
-              end
-             end
-             
-             f1.resume
-             f2.resume
+            Open3.popen3(run) do |i, o, e, th|
+              Thread.new {
+                while !i.closed? do
+                  input =Readline.readline("", true).strip 
+                  i.puts input
+                end
+              }
+            
+              t_err = Thread.new {
+                while !e.eof?  do
+                  putc e.readchar
+                end
+              }
+            
+              t_out = Thread.new {
+                while !o.eof?  do
+                  putc o.readchar
+                end
+              }
+            
+              Process::waitpid(th.pid) rescue nil 
+              # "rescue nil" is there in case process already ended.
+            
+              t_err.join
+              t_out.join
+            
+            end
           end
 
         end
