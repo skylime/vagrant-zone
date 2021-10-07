@@ -107,14 +107,11 @@ module VagrantPlugins
 
         pid = 0
         if(File.exist?('console.pid')) 
-          file_data = File.read("console.pid").split
-          puts file_data
-          ## PID ConsoleType TimeStarted VMName Netport
-          pid = file_data[0]
-          cType = file_data[1]
-          timeStarted = file_data[2]
-          vmname = file_data[3]
-          nport = file_data[4]
+          pid = IO.readlines("console.pid")[0]
+          cType = IO.readlines("console.pid")[1]
+          timeStarted = IO.readlines("console.pid")[2]
+          vmname = IO.readlines("console.pid")[3]
+          nport = IO.readlines("console.pid")[4]
           if vmname == name
             puts pid
             puts cType
