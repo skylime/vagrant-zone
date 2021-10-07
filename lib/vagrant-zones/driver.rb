@@ -107,8 +107,7 @@ module VagrantPlugins
 
         pid = 0
         if(File.exist?('console.pid')) 
-          file = File.open("console.pid")
-          file_data = file.readlines.map(&:chomp)
+          file_data = File.read("console.pid").split
           puts file_data
           ## PID ConsoleType TimeStarted VMName Netport
           pid = file_data[0]
