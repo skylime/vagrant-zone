@@ -43,7 +43,7 @@ module VagrantPlugins
               # If we're interrupted don't worry about waiting
               next if env[:interrupted]
               vm_state = 'installed'
-              break if execute(false, "pfexec zoneadm -z #{name} list -p | awk -F: '{ print $3 }'") == vm_state
+              break if spawn("pfexec zoneadm -z #{name} list -p | awk -F: '{ print $3 }'") == vm_state
             end
           end
           @driver.halt(@machine, env[:ui])
