@@ -353,7 +353,7 @@ end             )
         
         datadir = machine.data_dir
         bootconfigs = config.boot[0]
-        datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{name}"
+        datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
         ## Create Boot Volume
         case config.brand
@@ -391,7 +391,7 @@ end             )
         return if config.additional_disks.nil?
 
         config.additional_disks.each do |disk|
-          dataset = "#{disk['array']}/#{disk['dataset']}/#{config.partition_id}--#{config.name}/#{disk['volume_name']}"
+          dataset = "#{disk['array']}/#{disk['dataset']}/#{config.name}/#{disk['volume_name']}"
           cinfo = ",#{disk['size']}, #{dataset}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
           execute(false, "#{@pfexec} zfs create -V #{disk['size']} #{dataset}")
@@ -617,7 +617,7 @@ end         )
           diskrun = 0
           disks.each do |disk|
             diskname = 'disk'
-            dset = "#{disk['array']}/#{disk['dataset']}/#{config.partition_id}--#{config.name}/#{disk['volume_name']}"
+            dset = "#{disk['array']}/#{disk['dataset']}/#{config.name}/#{disk['volume_name']}"
             cinfo = "#{disk['size']}, #{dset}"
             uiinfo.info(I18n.t('vagrant_zones.setting_additional_disks_configurations') + cinfo)
             diskname += diskrun.to_s if diskrun.positive?
@@ -972,13 +972,12 @@ end          )
         datadir = machine.data_dir
         config = machine.provider_config
         bootconfigs = config.boot
-        datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{name}/#{bootconfigs['volume_name']}"
-        puts name
+        datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}/#{bootconfigs['volume_name']}"
         datasets = []
         datasets << datasetroot.to_s
         unless config.additional_disks.nil?
           config.additional_disks.each do |disk|
-            additionaldataset = "#{disk['array']}/#{disk['dataset']}/#{config.partition_id}--#{name}/#{disk['volume_name']}"
+            additionaldataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
             datasets << additionaldataset.to_s
           end
         end
