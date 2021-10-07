@@ -116,7 +116,7 @@ module VagrantPlugins
             puts "VM is running with PID: #{pid} since: #{timeStarted} as console type: #{cType} served at: #{nport}"
           end
           if kill == 'yes'
-            File.delete('console.pid') if File.exist?(p'console.pid')
+            File.delete('console.pid') if File.exist?('console.pid')
             Process.kill "TERM", pid.to_i
             Process.detach pid.to_i
             puts "Session Terminated"
