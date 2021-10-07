@@ -1065,6 +1065,7 @@ end          )
         
         when 'cron'
           if dataset == "all"
+              puts subcommand
               subcommanddata = snapshot_name
               puts subcommanddata
               datasets.each do |disk|
