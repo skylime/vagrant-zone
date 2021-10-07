@@ -986,13 +986,13 @@ end          )
           datasets.each_with_index do |disk,index|
             puts "Disk Number: #{index} Disk Path: #{disk}"
             zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk}")
+            zfssnapshots = zfs_snapshots.split(/\n/)
             snapshotrun = 0
             header = "Snapshot\tUsed\tAvailable\tRefer\tName"
-            zfs_snapshots.each do |snapshot|
+            zfssnapshots.each do |snapshot|
               puts snapshot
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
-              puts attributes.inspect
-              puts "Drive Mounted at: #{header} #{attributes[4]}" if !attributes[4].nil? && attributes[4] != '-'
+              puts "Drive Mounted at: #{header} #{attributes[4]}" 
               # data = "##{snapshotrun}\t\t#{attributes[1]}\t#{attributes[2]}\t\t#{attributes[3]}\t#{attributes[0]}"
               snapshotrun += 1
             end
