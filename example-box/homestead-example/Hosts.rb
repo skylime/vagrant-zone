@@ -76,7 +76,6 @@ class Hosts
                   vm.cdroms                               = host['cdroms']
                   vm.additional_disks                     = host['additional_disks']
                   vm.boot                                 = host['boot']
-                  vm.boot 
           end
   
           # Register shared folders
