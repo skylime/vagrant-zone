@@ -1032,7 +1032,7 @@ end          )
               output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
               puts output
               #zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
-              output.reverse.drop(1).reverse.each do |snaps, snapsindex|
+              output.reverse.reverse.each do |snaps, snapsindex|
                 puts snaps
                 #execute(false, "#{@pfexec} zfs destroy  #{snaps}") 
               end
