@@ -971,7 +971,6 @@ end          )
         ## get disks configurations
         datadir = machine.data_dir
         config = machine.provider_config
-        puts config.boot[0]
         bootconfigs = config.boot
         datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{name}/#{bootconfigs['volume_name']}"
         datasets = []
@@ -982,7 +981,7 @@ end          )
             datasets << additionaldataset.to_s
           end
         end
-        puts datasets.inspect
+        puts datasets
         if dataset == "all"
           print "SUCCESS"
 
