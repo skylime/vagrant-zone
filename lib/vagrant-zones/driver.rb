@@ -994,12 +994,12 @@ end          )
               if snapindex == 0
                 puts "\t\t\t#{attributes[0]}\t#{attributes[1]}\t\t#{attributes[2]}\t#{attributes[3]}\t#{attributes[4]}"
               else
-                
+                puts "#{snapindex - 1}\t\t#{attributes[1]}\t#{attributes[2]}\t\t#{attributes[3]}\t#{attributes[0]}"
               end
-              output = {Snapshot: attributes[0], Used: attributes[1],Available: attributes[2], Refer:attributes[3], Mount: attributes[4]}
-              output.each do |key, value|
-                sprintf '%10s  %3s', key.to_s, value
-              end
+              output = {}
+              
+                puts sprintf '%10s  %3s %3s %3s %3s', Snapshot: attributes[0], Used: attributes[1],Available: attributes[2], Refer:attributes[3], Mount: attributes[4]
+              
             end
           
 
