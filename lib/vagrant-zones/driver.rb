@@ -1061,7 +1061,7 @@ end          )
               end
             end
             ## Specify the Dataset by path
-            execute(false, "#{@pfexec} zfs destroy  #{disk}@#{snapshot_name}") if datasets.include?("#{dataset}@#{snapshot_name}")
+            execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") if datasets.include?("#{dataset}@#{snapshot_name}")
           end
         end
       end
