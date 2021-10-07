@@ -94,7 +94,7 @@ module VagrantPlugins
         port = sshport(machine).to_s
         port = 22 if sshport(machine).to_s.nil?
         puts "#{password} not used for this connection at this time"
-        execute(false, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  '#{command}' ")
+        execute(true, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  '#{command}' ")
       end
 
       def console(machine, command, ip, port, detach, kill)
