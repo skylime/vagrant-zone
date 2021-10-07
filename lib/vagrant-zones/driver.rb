@@ -983,10 +983,7 @@ end          )
         puts datasets
         if dataset == "all"
           print "SUCCESS"
-          datasets.each do |disk|
-            uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
-            execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}")
-          end 
+
         end
         case job
         when 'list'
