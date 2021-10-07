@@ -1007,14 +1007,13 @@ end          )
                 pathmaxlength = attributes[4].length.to_i
               end
             end
-            puts maxlength.to_s
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               if snapindex == 0
                 
-                puts sprintf '%5s  %-*s  %4s  %1s  %4s  %5s', "#", maxlength, attributes[0], attributes[1], attributes[2], attributes[3], attributes[4]
+                puts sprintf '%5s  %-*s  %-*s  %-*s  %-*s  %-*s', "#", snapmaxlength, attributes[0], attributes[1], attributes[2], attributes[3], attributes[4]
               else
-                puts sprintf '%5s  %-*s  %5s  %8s  %4s  %5s', snapindex - 1, maxlength ,attributes[0], attributes[1], attributes[2], attributes[3], attributes[4]
+                puts sprintf '%5s  %-*s  %-*s  %-*s  %-*s  %-*s', snapindex - 1, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3],pathmaxlength, attributes[4]
               end
               output = {}
             end
