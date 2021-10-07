@@ -9,7 +9,7 @@ require 'netaddr'
 require 'ipaddr'
 require 'vagrant/util/numeric'
 require 'pty'
-require "./scheduler.rb" 
+require "scheduler.rb" 
 require 'io/console'
 require 'expect'
 require 'vagrant'
