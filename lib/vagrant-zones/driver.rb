@@ -129,7 +129,6 @@ module VagrantPlugins
             Process.detach pid
             puts "Session Terminated"
           end
-          file.close
         else 
           puts command
           case command
