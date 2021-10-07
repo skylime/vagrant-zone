@@ -1033,7 +1033,7 @@ end          )
               output = output.split(/\n/).drop(1)
               output.reverse.each do |snaps, snapsindex|
                 puts snaps
-                #execute(false, "#{@pfexec} zfs destroy  #{snaps}") 
+                execute(false, "#{@pfexec} zfs destroy  #{snaps}") 
               end
     
               
