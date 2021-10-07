@@ -991,21 +991,11 @@ end          )
             pathmaxlength, refermaxlength, availmaxlength, usedmaxlength, snapmaxlength = 0
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
-              if attributes[0].length.to_i > snapmaxlength.to_i
-                snapmaxlength = attributes[0].length.to_i
-              end
-              if attributes[1].length.to_i > usedmaxlength.to_i
-                usedmaxlength = attributes[1].length.to_i
-              end
-              if attributes[2].length.to_i > availmaxlength.to_i
-                availmaxlength = attributes[2].length.to_i
-              end
-              if attributes[3].length.to_i > refermaxlength.to_i
-                refermaxlength = attributes[3].length.to_i
-              end
-              if attributes[4].length.to_i > pathmaxlength.to_i
-                pathmaxlength = attributes[4].length.to_i
-              end
+              snapmaxlength = attributes[0].length.to_i if attributes[0].length.to_i > snapmaxlength.to_i
+              usedmaxlength = attributes[1].length.to_i if attributes[1].length.to_i > usedmaxlength.to_i
+              availmaxlength = attributes[2].length.to_i if attributes[2].length.to_i > availmaxlength.to_i
+              refermaxlength = attributes[3].length.to_i if attributes[3].length.to_i > refermaxlength.to_i
+              pathmaxlength = attributes[4].length.to_i if attributes[4].length.to_i > pathmaxlength.to_i
             end
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
