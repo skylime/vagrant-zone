@@ -984,7 +984,7 @@ end          )
         when 'list'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
           datasets.each_with_index do |disk,index|
-            puts "Disk Number: #{index} Disk Path: #{disk}"
+            puts "\n\tDisk Number: #{index} Disk Path: #{disk}"
             zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk}")
             zfssnapshots = zfs_snapshots.split(/\n/)
             zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
@@ -1000,15 +1000,12 @@ end          )
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               if snapindex == 0
-                
-                puts sprintf '%5s  %-*s  %-*s  %-*s  %-*s  %-*s', "#",  snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3],pathmaxlength, attributes[4]
+                puts sprintf '%10s  %-*s  %-*s  %-*s  %-*s  %-*s', "#",  snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3],pathmaxlength, attributes[4]
               else
-                puts sprintf '%5s  %-*s  %-*s  %-*s  %-*s  %-*s', snapindex - 1, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3],pathmaxlength, attributes[4]
+                puts sprintf '%10s  %-*s  %-*s  %-*s  %-*s  %-*s', snapindex - 1, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3],pathmaxlength, attributes[4]
               end
               output = {}
             end
-          
-
           end
         when 'create'
           if dataset == "all"
