@@ -126,7 +126,7 @@ module VagrantPlugins
           puts kill
           if kill == 'yes'
             Process.kill "TERM", pid.to_i
-            Process.detach pid
+            Process.detach pid.to_i
             puts "Session Terminated"
           end
         else 
