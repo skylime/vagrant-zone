@@ -48,8 +48,6 @@ class Hosts
                   vm.vagrant_cloud_creator                = host['cloud_creator']
                   vm.autoboot                             = host['autostart']
                   vm.partition_id                         = host['partition_id']
-                  vm.zonepath                             = "#{host['zonepath']}/#{host['partition_id']}--#{host['name']}"
-                  vm.zonepathsize                         = host['rootdisksize']
                   vm.setup_wait                           = host['setup_wait']
                   vm.memory                               = host['memory']
                   vm.cpus                                 = host['simple_vcpu_conf']
@@ -78,6 +76,7 @@ class Hosts
                   vm.cdroms                               = host['cdroms']
                   vm.additional_disks                     = host['additional_disks']
                   vm.boot                                 = host['boot']
+                  vm.boot 
           end
   
           # Register shared folders

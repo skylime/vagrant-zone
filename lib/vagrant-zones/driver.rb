@@ -356,20 +356,29 @@ end             )
       # This helps us create all the datasets for the zone
       def create_dataset(machine, uiinfo)
         config  = machine.provider_config
-        dataset = "#{config.zonepath.delete_prefix('/')}/boot"
+        name = machine.name
+        
         datadir = machine.data_dir
-        datasetroot = config.zonepath.delete_prefix('/').to_s
+        bootconfigs = config.boot[0]
+        bootconfigs['array']
+        bootconfigs['dataset']
+        bootconfigs['volume_name']
+        
+        datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{config.partition_id}--#{config.name}"
+
+
+        dataset = "#{datasetpath}/boot"
         ## Create Boot Volume
         case config.brand
         when 'lx'
           uiinfo.info(I18n.t('vagrant_zones.lx_zone_dataset') + dataset)
           execute(false, "#{@pfexec} zfs create -o zoned=on -p #{dataset}")
         when 'bhyve'
-          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_root') + datasetroot)
-          execute(false, "#{@pfexec} zfs create #{datasetroot}")
-          cinfo = "#{config.zonepathsize}, #{dataset}"
+          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_root') + datasetpath)
+          execute(false, "#{@pfexec} zfs create #{datasetpath}")
+          cinfo = "#{bootconfigs['size']}, #{dataset}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot') + cinfo)
-          execute(false, "#{@pfexec} zfs create -V #{config.zonepathsize} #{dataset}")
+          execute(false, "#{@pfexec} zfs create -V #{bootconfigs['size']} #{dataset}")
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + dataset)
           commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss')} | #{@pfexec} zfs recv -u -v -F #{dataset} "
           Util::Subprocess.new commandtransfer do |_stdout, stderr, _thread|
