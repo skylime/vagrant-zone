@@ -18,7 +18,7 @@ module VagrantPlugins
         def call(env)
           @machine = env[:machine]
           @driver  = @machine.provider.driver
-          name = machine.name
+          name = @machine.name
           ui = env[:ui]
 
           ui.info(I18n.t('vagrant_zones.graceful_shutdown_started'))
