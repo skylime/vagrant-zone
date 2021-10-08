@@ -88,9 +88,9 @@ module VagrantPlugins
             # Support zss format only for now, use other images and convert later
             puts image_url unless image_url.nil?
             #  if box_format.nil?
-            #if box_format.nil?
+            # if box_format.nil?
             #  raise Errors::NoBoxFormatSet
-            #end
+            # end
 
             box_format = env[:machine].box.metadata['format'] unless env[:machine].box.metadata['format'].nil?
 
