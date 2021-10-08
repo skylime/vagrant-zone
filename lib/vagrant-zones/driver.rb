@@ -9,7 +9,6 @@ require 'netaddr'
 require 'ipaddr'
 require 'vagrant/util/numeric'
 require 'pty'
-require 'io/console'
 require 'expect'
 require 'vagrant'
 require 'vagrant-zones/util/timer'
@@ -101,51 +100,49 @@ module VagrantPlugins
         name = machine.name
         config = machine.provider_config
         if port.nil?
-          if config.consoleport.nil?
-            port = ''
-          else
-            port = config.consoleport
-          end
+          port = if config.consoleport.nil?
+                   ''
+                 else
+                  config.consoleport
+                 end
         end
-        if ip.nil?
-          ip = '0.0.0.0' unless ip =~ Resolv::IPv4::Regex ? true : false
-        end
+        ip = unless ip =~ Resolv::IPv4::Regex ? true : false
+                   '0.0.0.0'
+             end
         netport = "#{ip}:#{port}"
         pid = 0
-        if(File.exist?('console.pid')) 
-          pid = IO.readlines("console.pid")[0].strip
-          cType = IO.readlines("console.pid")[1].strip
-          timeStarted = IO.readlines("console.pid")[2].strip
-          vmname = IO.readlines("console.pid")[3].strip
-          nport = IO.readlines("console.pid")[4].strip
-          if vmname[name.to_s]
-            puts "VM is running with PID: #{pid} since: #{timeStarted} as console type: #{cType} served at: #{nport}"
-          end
+        if (File.exist?('console.pid'))
+          pid = IO.readlines('console.pid')[0].strip
+          cType = IO.readlines('console.pid')[1].strip
+          timeStarted = IO.readlines('console.pid')[2].strip
+          vmname = IO.readlines('console.pid')[3].strip
+          nport = IO.readlines('console.pid')[4].strip
+          puts "VM is running with PID: #{pid} since: #{timeStarted} as console type: #{cType} served at: #{nport}" if vmname[name.to_s]
           if kill == 'yes'
             File.delete('console.pid') if File.exist?('console.pid')
-            Process.kill "TERM", pid.to_i
+            Process.kill 'TERM', pid.to_i
             Process.detach pid.to_i
-            puts "Session Terminated"
+            puts 'Session Terminated'
           end
-        else 
+        else
           case command
-          when "webvnc"
+          when 'webvnc'
             run = "pfexec zadm  webvnc #{netport} #{name}"
             pid = spawn(run)
-            Process.wait pid if detach == "no"
-            Process.detach(pid) if detach == "yes"
-            time = Time.new.strftime("%Y-%m-%d-%H:%M:%S")
-            File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == "yes"
-            puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == "yes"
-          when "vnc"
+            Process.wait pid if detach == 'no'
+            Process.detach(pid) if detach == 'yes'
+            time = Time.new.strftime('%Y-%m-%d-%H:%M:%S')
+            File.open('console.pid', "w") { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == 'yes'
+            puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
+          when 'vnc'
             run = "pfexec zadm  vnc #{netport} #{name}"
             pid = spawn(run)
-            Process.wait pid if detach == "no"
-            Process.detach(pid) if detach == "yes"
-            time = Time.new.strftime("%Y-%m-%d-%H:%M:%S")
-            File.open("console.pid", "w") { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == "yes"
-            puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == "yes"
-          when "zlogin"
+            Process.wait pid if detach == 'no'
+            Process.detach(pid) if detach == 'yes'
+            time = Time.new.strftime('%Y-%m-%d-%H:%M:%S')
+            File.open('console.pid', "w") { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == 'yes'
+            puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
+          when 'zlogin'
             run = "pfexec zadm console #{name}"
             exec(run)
           end
@@ -241,7 +238,7 @@ module VagrantPlugins
         end
         machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
-          puts "How Far down do you wanna go"
+
           ip = opts[:ip].to_s
           defrouter = opts[:gateway].to_s
           allowed_address = "#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
@@ -262,10 +259,10 @@ module VagrantPlugins
             end
           end
           nictype = if opts[:nictype].nil?
-            'external'
-          else
-            opts[:nictype]
-          end
+                      'external'
+                    else
+                      opts[:nictype]
+                    end
           nic_type = case nictype
                      when /external/
                        'e'
@@ -348,7 +345,7 @@ end             )
 
       # This helps us create all the datasets for the zone
       def create_dataset(machine, uiinfo)
-        config  = machine.provider_config
+        config = machine.provider_config
         name = machine.name
         
         datadir = machine.data_dir
@@ -448,7 +445,7 @@ end             )
             @network = NetAddr.parse_net(cinfo)
             @defrouter = opts[:gateway]
           end
-          #execute(false, "#{@pfexec} zonecfg -z #{name} \"create ; set  zonepath=/rpool/zones/#{name}/path\"")
+          # execute(false, "#{@pfexec} zonecfg -z #{name} \"create ; set  zonepath=/rpool/zones/#{name}/path\"")
           attr = %(create
 set zonepath=#{config.zonepath}/path
 set brand=#{config.brand}
