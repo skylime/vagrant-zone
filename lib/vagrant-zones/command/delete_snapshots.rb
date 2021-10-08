@@ -20,21 +20,13 @@ module VagrantPlugins
           argv = parse_options(opts)
           return unless argv
 
-          
           unless argv.length <= 4
             @env.ui.info(opts.help)
             return
           end
 
-          if options[:dataset].nil?
-            options[:dataset] = 'all'
-          end
-
-          if options[:snapshot_name].nil?
-            options[:snapshot_name] = 'all'
-          end
-
-          
+          options[:dataset] = 'all' if options[:dataset].nil?
+          options[:snapshot_name] = 'all' if options[:snapshot_name].nil?
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
             subcommand = nil

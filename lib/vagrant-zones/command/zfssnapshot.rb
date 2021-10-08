@@ -33,13 +33,12 @@ module VagrantPlugins
             # Print the help for all the vagrant-zones commands.
             return help
           end
-          
-          command_class = @subcommands.get("create".to_sym) if @sub_command.nil?
+
+          command_class = @subcommands.get(:create) if @sub_command.nil?
           command_class = @subcommands.get(@sub_command.to_sym) if @sub_command
 
-          subargs = @sub_args unless @sub_args.nil?  
+          subargs = @sub_args unless @sub_args.nil?
           @logger.debug("Invoking command class: #{command_class} #{subargs.inspect}")
-
 
           # Initialize and execute the command class
           command_class.new(subargs, @env).execute
