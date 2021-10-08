@@ -12,16 +12,16 @@ module VagrantPlugins
             o.on('--dataset SNAPSHOTPATH', 'Specify path to enable snapshots on') do |p|
               options[:dataset] = p
             end
-            o.on('--frequency <hourly/daily/weekly/montly/default>', 'Set a policy with one of the available optional frequencies') do |p|
+            o.on('--frequency <hourly/daily/weekly/montly/default>', 'Set a policy with one of the available optional frequencies, cannot use with the delete or list option') do |p|
               options[:frequency] = p
             end
-            o.on('--frequency_retention <#> ', 'Number of snapshots to take for the frequency policy') do |p|
+            o.on('--frequency_retention <#> ', 'Number of snapshots to take for the frequency policy, cannot use with the delete or list option') do |p|
               options[:frequency_retention] = p
             end
-            o.on('--delete  <hourly/daily/weekly/montly/all>', 'Delete frequency policy') do |p|
+            o.on('--delete  <hourly/daily/weekly/montly/all>', 'Delete frequency policy, cannot use with the frequency or frequency_retention option') do |p|
               options[:delete] = p
             end
-            o.on('--list  <hourly/daily/weekly/montly/all>', 'Show Cron Policies') do |p|
+            o.on('--list  <hourly/daily/weekly/montly/all>', 'Show Cron Policies, cannot use with the frequency or frequency_retention option') do |p|
               options[:list] = p
             end
           end
@@ -38,26 +38,20 @@ module VagrantPlugins
             options[:dataset] = 'all'
           end
 
-
-          @env.ui.info(opts.help) if options[:frequency] && options[:delete]
-          @env.ui.info(opts.help) if options[:frequency] && options[:list]
-          return if options[:frequency] && options[:delete]
-          return if options[:frequency] && options[:list]
-          
           if options[:frequency].nil?
             options[:frequency] = 'default'
           end
 
-
+          @env.ui.info(opts.help) if options[:frequency] && options[:delete]
+          @env.ui.info(opts.help) if options[:frequency] && options[:list]
           @env.ui.info(opts.help) if options[:frequency_retention] && options[:list]
           @env.ui.info(opts.help) if options[:frequency_retention] && options[:delete]
           @env.ui.info(opts.help) if options[:list] && options[:delete]
-
+          return if options[:frequency] && options[:delete]
+          return if options[:frequency] && options[:list]
           return if options[:frequency_retention] && options[:list]
           return if options[:frequency_retention] && options[:delete]
           return if options[:list] && options[:delete]
-
-
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
             subcommanddata = [options[:list]] if options[:list]
