@@ -350,6 +350,7 @@ end             )
         
         datadir = machine.data_dir
         bootconfigs = config.boot[0]
+        puts bootconfigs
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
         ## Create Boot Volume
