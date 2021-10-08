@@ -20,15 +20,12 @@ module VagrantPlugins
           argv = parse_options(opts)
           return unless argv
 
-          
           unless argv.length <= 4
             @env.ui.info(opts.help)
             return
           end
 
-          if options[:dataset].nil?
-            options[:dataset] = 'all'
-          end
+          options[:dataset] = 'all' if options[:dataset].nil?
 
           if options[:snapshot_name].nil?
             t = Time.new

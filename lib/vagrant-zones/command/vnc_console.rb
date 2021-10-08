@@ -25,21 +25,19 @@ module VagrantPlugins
 
           argv = parse_options(opts)
           return unless argv
-          
+
           unless argv.length <= 4
             @env.ui.info(opts.help)
             return
           end
 
-          puts options[:ip]
           options[:port] = nil unless options[:port] =~ /\d/
-          
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
-            detach = "yes"
-            detach = "no" unless options[:detach] == "yes"
-            kill = "yes"
-            kill = "no" unless options[:kill] == "yes"
+            detach = 'yes'
+            detach = 'no' unless options[:detach] == 'yes'
+            kill = 'yes'
+            kill = 'no' unless options[:kill] == 'yes'
             driver.console(machine, 'vnc', options[:ip], options[:port], detach, kill)
           end
         end

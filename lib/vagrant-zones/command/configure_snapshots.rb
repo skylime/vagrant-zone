@@ -20,7 +20,7 @@ module VagrantPlugins
             o.on('--frequency_retention <#> ', frequency_retentionmsg) do |p|
               options[:frequency_retention] = p
             end
-            deletemsg =  'Delete frequency policy, cannot use with the frequency or frequency_retention option'
+            deletemsg = 'Delete frequency policy, cannot use with the frequency or frequency_retention option'
             o.on('--delete  <hourly/daily/weekly/montly/all>', deletemsg) do |p|
               options[:delete] = p
             end
@@ -56,7 +56,7 @@ module VagrantPlugins
             driver = machine.provider.driver
             subcommanddata = [options[:list].to_s] if options[:list]
             subcommand = 'list' if options[:list]
-            subcommanddata =  [options[:delete].to_s] if options[:delete]
+            subcommanddata = [options[:delete].to_s] if options[:delete]
             subcommand = 'delete' if options[:delete]
             subcommanddata = [options[:frequency].to_s, options[:frequency_retention].to_s]
             subcommand = 'frequency' if options[:frequency]
