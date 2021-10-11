@@ -997,7 +997,7 @@ end          )
               if snapindex.zero?
                 puts sprintf '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', '#',  snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
               else
-                puts sprintf '%8s  %-*s  %-*<snapmaxlength>s  %-*s  %-*s  %-*s', snapindex - 2, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
+                puts sprintf '%8s  %<snapmaxlength>-*s  %-*s  %-*s  %-*s  %-*s', snapindex - 2, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
               end
               output = {}
             end
