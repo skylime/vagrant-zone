@@ -823,7 +823,7 @@ end          )
 
                   ## Code to try to login with username and password
                   almatchstring = config.almatchstring
-                  almatchstring = "login: " if config.almatchstring.nil?
+                  almatchstring = 'login: ' if config.almatchstring.nil?
                   uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login')) if responses[-1].to_s.match(/#{almatchstring}/)
                 end
               end
@@ -995,9 +995,9 @@ end          )
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               if snapindex.zero?
-                puts sprintf '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', "#",  snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
+                puts sprintf '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', '#',  snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
               else
-                puts sprintf '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', snapindex - 2, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
+                puts sprintf '%8s  %<snapmaxlength>-*s  %<snapmaxlength>-*s  %-*s  %-*s  %-*s', snapindex - 2, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
               end
               output = {}
             end
@@ -1042,7 +1042,7 @@ end          )
                 output.each_with_index do |snaps, spindex|
                   if snapshot_name.to_i == spindex && snapshot_name.to_s != 'all'
                     puts "\t#{spindex}\t#{snaps}\t"
-                    execute(false, "#{@pfexec} zfs destroy #{snaps}") 
+                    execute(false, "#{@pfexec} zfs destroy #{snaps}")
                     uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
                   end
                   if snapshot_name.to_s == 'all'
