@@ -107,17 +107,17 @@ module VagrantPlugins
                  end
         end
         ip = unless ip =~ Resolv::IPv4::Regex ? true : false
-                   '0.0.0.0'
+              '0.0.0.0'
              end
         netport = "#{ip}:#{port}"
         pid = 0
-        if (File.exist?('console.pid'))
-          pid = IO.readlines('console.pid')[0].strip
-          cType = IO.readlines('console.pid')[1].strip
-          timeStarted = IO.readlines('console.pid')[2].strip
-          vmname = IO.readlines('console.pid')[3].strip
-          nport = IO.readlines('console.pid')[4].strip
-          puts "VM is running with PID: #{pid} since: #{timeStarted} as console type: #{cType} served at: #{nport}" if vmname[name.to_s]
+        if File.exist?('console.pid')
+          pid = File.readlines('console.pid')[0].strip
+          ctype = File.readlines('console.pid')[1].strip
+          time_started = File.readlines('console.pid')[2].strip
+          vmname = File.readlines('console.pid')[3].strip
+          nport = File.readlines('console.pid')[4].strip
+          puts "VM is running with PID: #{pid} since: #{time_started} as console type: #{ctype} served at: #{nport}" if vmname[name.to_s]
           if kill == 'yes'
             File.delete('console.pid') if File.exist?('console.pid')
             Process.kill 'TERM', pid.to_i
@@ -132,7 +132,7 @@ module VagrantPlugins
             Process.wait pid if detach == 'no'
             Process.detach(pid) if detach == 'yes'
             time = Time.new.strftime('%Y-%m-%d-%H:%M:%S')
-            File.open('console.pid', "w") { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == 'yes'
+            File.open('console.pid', 'w') { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == 'yes'
             puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
           when 'vnc'
             run = "pfexec zadm  vnc #{netport} #{name}"
@@ -140,7 +140,7 @@ module VagrantPlugins
             Process.wait pid if detach == 'no'
             Process.detach(pid) if detach == 'yes'
             time = Time.new.strftime('%Y-%m-%d-%H:%M:%S')
-            File.open('console.pid', "w") { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == 'yes'
+            File.open('console.pid', 'w') { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == 'yes'
             puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
           when 'zlogin'
             run = "pfexec zadm console #{name}"
@@ -170,8 +170,6 @@ module VagrantPlugins
           '4'
         when /other/
           '5'
-        else
-          '3'
         end
       end
 
@@ -350,7 +348,6 @@ end             )
         
         datadir = machine.data_dir
         bootconfigs = config.boot
-        puts config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
         ## Create Boot Volume
@@ -827,7 +824,7 @@ end          )
                   ## Code to try to login with username and password
                   almatchstring = config.almatchstring
                   almatchstring = "login: " if config.almatchstring.nil?
-                  uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login')) if responses[-1].to_s.match(/almatchstring/)
+                  uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login')) if responses[-1].to_s.match(/#{almatchstring}/)
                 end
               end
             end
@@ -936,17 +933,17 @@ end          )
       def firmware(machine)
         config = machine.provider_config
         ft = case config.firmware_type
-        when /compatability/
-          'BHYVE_RELEASE_CSM'
-        when /UEFI/
-          'BHYVE_RELEASE'
-        when /BIOS/
-          'BHYVE_CSM'
-        when /BHYVE_DEBUG/
-          'UEFI_DEBUG'
-        when /BHYVE_RELEASE_CSM/
-          'BIOS_DEBUG'
-        end
+             when /compatability/
+               'BHYVE_RELEASE_CSM'
+             when /UEFI/
+               'BHYVE_RELEASE'
+             when /BIOS/
+               'BHYVE_CSM'
+             when /BHYVE_DEBUG/
+               'UEFI_DEBUG'
+             when /BHYVE_RELEASE_CSM/
+               'BIOS_DEBUG'
+             end
         ft.to_s
       end
 
@@ -966,7 +963,6 @@ end          )
       def zfs(machine, uiinfo, job, dataset, snapshot_name, subcommand)
         name = machine.name
         ## get disks configurations
-        datadir = machine.data_dir
         config = machine.provider_config
         bootconfigs = config.boot
         datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}/#{bootconfigs['volume_name']}"
@@ -981,7 +977,7 @@ end          )
         case job
         when 'list'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
-          datasets.each_with_index do |disk,index|
+          datasets.each_with_index do |disk, index|
             puts "\n  Disk Number: #{index}\n  Disk Path: #{disk}"
             zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk}")
             zfssnapshots = zfs_snapshots.split(/\n/)
@@ -998,8 +994,8 @@ end          )
             end
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
-              if snapindex == 0
-                puts sprintf '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', "#",  snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3],pathmaxlength, attributes[4]
+              if snapindex.zero?
+                puts sprintf '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', "#",  snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
               else
                 puts sprintf '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', snapindex - 2, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3],pathmaxlength, attributes[4]
               end
@@ -1008,33 +1004,33 @@ end          )
           end
         when 'create'
           if dataset == "all"
-              datasets.each do |disk|
+            datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
               execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}") 
-            end 
+            end
           else 
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
             ## Specify the Dataset by path
             execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") unless  datasets.include?(dataset)
             ## Specify the dataset by number
-            datasets.each_with_index do |disk,index|
+            datasets.each_with_index do |disk, index|
               if dataset == index
                 execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
               end
             end
           end
         when 'destroy'
-          if dataset.to_s == "all"
+          if dataset.to_s == 'all'
             datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
               output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
               ## Never delete the source when doing all
               output = output.split(/\n/).drop(1)
               output.reverse.each do |snaps, snapsindex|
-                execute(false, "#{@pfexec} zfs destroy #{snaps}") 
+                execute(false, "#{@pfexec} zfs destroy #{snaps}")
                 uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
               end
-            end 
+            end
           else 
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
             ## Specify the dataset by number
@@ -1051,34 +1047,34 @@ end          )
                   end
                   if snapshot_name.to_s == 'all'
                     puts "\t#{spindex}\t#{snaps}\t"
-                    execute(false, "#{@pfexec} zfs destroy #{snaps}") 
+                    execute(false, "#{@pfexec} zfs destroy #{snaps}")
                     
                   end
                 end
               end
             end
             ## Specify the Dataset by path
-            execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") if datasets.include?("#{dataset.to_s}@#{snapshot_name}")
+            execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") if datasets.include?("#{dataset}@#{snapshot_name}")
           end
         
         when 'cron'
-          if dataset == "all"
-              subcommanddata = snapshot_name
+          if dataset == 'all'
+            subcommanddata = snapshot_name
+            puts subcommanddata
+            case subcommand
+            when /list/
+              puts  'We are supposed to list things now'
+            when /delete/
+              puts  'We are supposed to delete things now'
+            when /frequency/
+              puts  'We are supposed to configure things now'
               puts subcommanddata
-              case subcommand
-              when /list/
-                puts  "We are supposed to list things now"
-              when /delete/
-                puts  "We are supposed to delete things now"
-              when /frequency/
-                puts  "We are supposed to configure things now"
-                puts subcommanddata
-              end
-              puts subcommanddata.inspect
-              datasets.each do |disk|
+            end
+            puts subcommanddata.inspect
+            datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-              #execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}") 
-            end 
+              #execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}")
+            end
           else 
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
             ## Specify the Dataset by path
@@ -1087,7 +1083,7 @@ end          )
             datasets.each_with_index do |disk,index|
               if dataset == index
                 uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-                #execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
+                # execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
               end
             end
           end
