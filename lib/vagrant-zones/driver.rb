@@ -997,21 +997,21 @@ end          )
               if snapindex.zero?
                 puts sprintf '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', "#",  snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
               else
-                puts sprintf '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', snapindex - 2, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3],pathmaxlength, attributes[4]
+                puts sprintf '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', snapindex - 2, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
               end
               output = {}
             end
           end
         when 'create'
-          if dataset == "all"
+          if dataset == 'all'
             datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
-              execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}") 
+              execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}")
             end
-          else 
+          else
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
             ## Specify the Dataset by path
-            execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") unless  datasets.include?(dataset)
+            execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") unless datasets.include?(dataset)
             ## Specify the dataset by number
             datasets.each_with_index do |disk, index|
               if dataset == index
@@ -1031,11 +1031,11 @@ end          )
                 uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
               end
             end
-          else 
+          else
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
             ## Specify the dataset by number
-            datasets.each_with_index do |disk,dindex|
-              if dindex.to_i == dataset.to_i 
+            datasets.each_with_index do |disk, dindex|
+              if dindex.to_i == dataset.to_i
                 output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
                 output = output.split(/\n/).drop(1)
                 puts "\t#\tSnapshot"
@@ -1048,7 +1048,6 @@ end          )
                   if snapshot_name.to_s == 'all'
                     puts "\t#{spindex}\t#{snaps}\t"
                     execute(false, "#{@pfexec} zfs destroy #{snaps}")
-                    
                   end
                 end
               end
@@ -1056,7 +1055,7 @@ end          )
             ## Specify the Dataset by path
             execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") if datasets.include?("#{dataset}@#{snapshot_name}")
           end
-        
+
         when 'cron'
           if dataset == 'all'
             subcommanddata = snapshot_name
@@ -1073,14 +1072,14 @@ end          )
             puts subcommanddata.inspect
             datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-              #execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}")
+              # execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}")
             end
-          else 
+          else
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
             ## Specify the Dataset by path
-            execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") unless  datasets.include?(dataset)
+            execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") unless datasets.include?(dataset)
             ## Specify the dataset by number
-            datasets.each_with_index do |disk,index|
+            datasets.each_with_index do |disk, index|
               if dataset == index
                 uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
                 # execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
@@ -1089,6 +1088,7 @@ end          )
           end
         end
       end
+
       # Halts the Zone, first via shutdown command, then a halt.
       def halt(machine, uiinfo)
         name = machine.name
