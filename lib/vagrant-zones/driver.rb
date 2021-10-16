@@ -103,12 +103,10 @@ module VagrantPlugins
           port = if config.consoleport.nil?
                    ''
                  else
-                  config.consoleport
+                   config.consoleport
                  end
         end
-        ip = unless ip =~ Resolv::IPv4::Regex ? true : false
-              '0.0.0.0'
-             end
+        ip = ('0.0.0.0' unless ip =~ Resolv::IPv4::Regex ? true : false)
         netport = "#{ip}:#{port}"
         pid = 0
         if File.exist?('console.pid')
@@ -345,7 +343,7 @@ end             )
       def create_dataset(machine, uiinfo)
         config = machine.provider_config
         name = machine.name
-        
+
         datadir = machine.data_dir
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
@@ -824,7 +822,9 @@ end          )
                   ## Code to try to login with username and password
                   almatchstring = config.almatchstring
                   almatchstring = 'login: ' if config.almatchstring.nil?
-                  uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login')) if responses[-1].to_s.match(/#{almatchstring}/)
+                  if responses[-1].to_s.match(/#{almatchstring}/)
+                    uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login'))
+                  end
                 end
               end
             end
@@ -995,7 +995,7 @@ end          )
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               if snapindex.zero?
-               puts format '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', '#',  snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4] 
+                puts format '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', '#', snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
               else
                 puts format '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', snapindex - 2, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
               end
@@ -1014,9 +1014,7 @@ end          )
             execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") unless datasets.include?(dataset)
             ## Specify the dataset by number
             datasets.each_with_index do |disk, index|
-              if dataset == index
-                execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
-              end
+              execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") if dataset == index
             end
           end
         when 'destroy'
