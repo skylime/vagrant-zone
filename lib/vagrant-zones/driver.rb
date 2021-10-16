@@ -994,7 +994,7 @@ end          )
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               if snapindex.zero?
                 #puts format '%8s  %<snap>-*s', '#', snapmaxlength, snap: attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
-                puts format '%8s  %<snap>-*s  %-*s  %-*s  %-*s  %-*s', '#', snap: attributes[0], snapmaxlength,  usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
+                puts format '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', '#', snapmaxlength, attributes[0],  usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
               else
                 puts format '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', snapindex - 2, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
               end
