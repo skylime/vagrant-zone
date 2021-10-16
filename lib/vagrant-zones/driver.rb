@@ -983,19 +983,19 @@ end          )
             zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
             pml, rml, aml, uml, sml = 0
             zfssnapshots.reverse.each do |snapshot|
-              attributes = snapshot.gsub(/\s+/m, ' ').strip.split
-              sml = attributes[0].length.to_i if attributes[0].length.to_i > sml.to_i
-              uml = attributes[1].length.to_i if attributes[1].length.to_i > uml.to_i
-              aml = attributes[2].length.to_i if attributes[2].length.to_i > aml.to_i
-              rml = attributes[3].length.to_i if attributes[3].length.to_i > rml.to_i
-              pml = attributes[4].length.to_i if attributes[4].length.to_i > pml.to_i
+              ar = snapshot.gsub(/\s+/m, ' ').strip.split
+              sml = ar[0].length.to_i if ar[0].length.to_i > sml.to_i
+              uml = ar[1].length.to_i if ar[1].length.to_i > uml.to_i
+              aml = ar[2].length.to_i if ar[2].length.to_i > aml.to_i
+              rml = ar[3].length.to_i if ar[3].length.to_i > rml.to_i
+              pml = ar[4].length.to_i if ar[4].length.to_i > pml.to_i
             end
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
-              attributes = snapshot.gsub(/\s+/m, ' ').strip.split
+              ar = snapshot.gsub(/\s+/m, ' ').strip.split
               if snapindex.zero?
-                puts format "%<sym>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", sym: '#', s: attributes[0], u: attributes[1], a: attributes[2], r: attributes[3], p: attributes[4]
+                puts format "%<sym>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
               else
-                puts format "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", si: snapindex - 2, s: attributes[0], u: attributes[1], a: attributes[2], r: attributes[3], p: attributes[4]
+                puts format "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", si: snapindex - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
               end
               output = {}
             end
