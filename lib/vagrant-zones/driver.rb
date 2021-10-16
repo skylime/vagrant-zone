@@ -1020,7 +1020,7 @@ end          )
               output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
               ## Never delete the source when doing all
               output = output.split(/\n/).drop(1)
-              output.reverse.each do |snaps, snapsindex|
+              output.reverse.each do |snaps|
                 execute(false, "#{@pfexec} zfs destroy #{snaps}")
                 uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
               end
