@@ -1012,6 +1012,7 @@ end          )
             datasets.each_with_index do |_disk, index|
               puts index
               puts dataset
+              puts snapshot_name
               execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") if dataset == index
             end
           end
