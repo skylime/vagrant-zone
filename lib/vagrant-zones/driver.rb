@@ -1007,11 +1007,11 @@ end          )
           else
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
             ## Specify the Dataset by path
-            execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") unless datasets.include?(dataset)
+            execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") if datasets.include?(dataset)
             ## Specify the dataset by number
-            #datasets.each_with_index do |_disk, index|
-            #  execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") if dataset == index
-            #end
+            datasets.each_with_index do |_disk, index|
+              execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") if dataset == index
+            end
           end
         when 'destroy'
           if dataset.to_s == 'all'
