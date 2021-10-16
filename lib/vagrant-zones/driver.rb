@@ -1013,7 +1013,7 @@ end          )
               puts index
               puts dataset
               puts snapshot_name
-              execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") if dataset == index
+              execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") if dataset.to_i == index.to_i
             end
           end
         when 'destroy'
