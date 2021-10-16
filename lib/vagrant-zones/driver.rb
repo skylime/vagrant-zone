@@ -968,12 +968,9 @@ end          )
         datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}/#{bootconfigs['volume_name']}"
         datasets = []
         datasets << datasetroot.to_s
-        
-        unless config.additional_disks.nil?
-          config.additional_disks&.each do |disk|
-            additionaldataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
-            datasets << additionaldataset.to_s
-          end
+        config.additional_disks&.each do |disk|
+          additionaldataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
+          datasets << additionaldataset.to_s
         end
         case job
         when 'list'
