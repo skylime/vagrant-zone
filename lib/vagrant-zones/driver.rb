@@ -1010,10 +1010,6 @@ end          )
             execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") if datasets.include?(dataset)
             ## Specify the dataset by number
             datasets.each_with_index do |disk, index|
-              puts index
-              puts dataset
-              puts snapshot_name
-              puts "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}"
               execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}") if dataset.to_i == index.to_i
             end
           end
