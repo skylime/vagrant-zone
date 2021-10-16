@@ -982,7 +982,7 @@ end          )
             zfssnapshots = zfssnapshots.reverse
             zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
             pathmaxlength, refermaxlength, availmaxlength, usedmaxlength, snapmaxlength = 0
-            zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
+            zfssnapshots.reverse.each do |snapshot|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               snapmaxlength = attributes[0].length.to_i if attributes[0].length.to_i > snapmaxlength.to_i
               usedmaxlength = attributes[1].length.to_i if attributes[1].length.to_i > usedmaxlength.to_i
