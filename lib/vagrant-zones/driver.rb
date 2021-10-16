@@ -993,9 +993,9 @@ end          )
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               if snapindex.zero?
-                puts format "%<symbol>5s %<snap>-#{sml}s %<used>-#{uml}s %<avail>-#{aml}s %<refer>-#{rml}s %<path>-#{pml}s", symbol: '#', snap: attributes[0], used: attributes[1], avail: attributes[2], refer: attributes[3], path: attributes[4]
+                puts format "%<sym>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", sym: '#', s: attributes[0], u: attributes[1], a: attributes[2], r: attributes[3], p: attributes[4]
               else
-                puts format "%<snapindex>5s %<snap>-#{sml}s %<used>-#{uml}s %<avail>-#{aml}s %<refer>-#{rml}s %<path>-#{pml}s", snapindex: snapindex - 2, snap: attributes[0], used: attributes[1], avail: attributes[2], refer: attributes[3], path: attributes[4]
+                puts format "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", si: snapindex - 2, s: attributes[0], u: attributes[1], a: attributes[2], r: attributes[3], p: attributes[4]
               end
               output = {}
             end
