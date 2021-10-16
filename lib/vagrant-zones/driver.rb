@@ -820,9 +820,9 @@ end          )
                   break if responses[-1].to_s.match(/:~#/)
 
                   ## Code to try to login with username and password
-                  almatchstring = config.almatchstring
-                  almatchstring = 'login: ' if config.almatchstring.nil?
-                  uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login')) if responses[-1].to_s.match(/#{almatchstring}/)
+                  almatch = config.almatchstring
+                  almatch = 'login: ' if config.almatchstring.nil?
+                  uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login')) if responses[-1].to_s.match(/#{almatch}/)
                 end
               end
             end
