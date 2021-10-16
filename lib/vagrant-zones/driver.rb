@@ -969,10 +969,12 @@ end          )
         datasets = []
         datasets << datasetroot.to_s
         
-          config.additional_disks.each do |disk|
+        unless config.additional_disks.nil?
+          config.additional_disks&.each do |disk|
             additionaldataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
             datasets << additionaldataset.to_s
           end
+        end
         case job
         when 'list'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
