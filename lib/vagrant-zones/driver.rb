@@ -995,7 +995,6 @@ end          )
               else
                 puts format "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", si: si - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
               end
-              output = {}
             end
           end
         when 'create'
@@ -1009,7 +1008,7 @@ end          )
             ## Specify the Dataset by path
             execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") unless datasets.include?(dataset)
             ## Specify the dataset by number
-            datasets.each_with_index do |disk, index|
+            datasets.each_with_index do |index|
               execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") if dataset == index
             end
           end
