@@ -1009,7 +1009,7 @@ end          )
             ## Specify the Dataset by path
             execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") unless datasets.include?(dataset)
             ## Specify the dataset by number
-            datasets.each_with_index do |index|
+            datasets.each_with_index do |_disk, index|
               execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") if dataset == index
             end
           end
