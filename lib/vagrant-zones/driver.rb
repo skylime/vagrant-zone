@@ -993,7 +993,7 @@ end          )
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               if snapindex.zero?
-                puts format '%<snap>-*2$s', snap: attributes[0]
+                puts format '%<snap>-*2$<snapmaxlength>s', snap: attributes[0], snapmaxlength: snapmaxlength
                 #puts format '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', '#', snapmaxlength, attributes[0],  usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
               else
                 puts format '%8s  %-*s  %-*s  %-*s  %-*s  %-*s', snapindex - 2, snapmaxlength, attributes[0], usedmaxlength, attributes[1], availmaxlength, attributes[2], refermaxlength, attributes[3], pathmaxlength, attributes[4]
