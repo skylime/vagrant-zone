@@ -976,7 +976,7 @@ end          )
           datasets.each_with_index do |disk, index|
             puts "\n  Disk Number: #{index}\n  Disk Path: #{disk}"
             zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk}")
-            next if zfs_snapshots.nil?
+            break if zfs_snapshots.nil?
 
             zfssnapshots = zfs_snapshots.split(/\n/)
             zfssnapshots = zfssnapshots.reverse
