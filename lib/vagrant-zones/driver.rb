@@ -981,21 +981,21 @@ end          )
             zfssnapshots = zfs_snapshots.split(/\n/)
             zfssnapshots = zfssnapshots.reverse
             zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
-            pathmaxlength, refermaxlength, availmaxlength, usedmaxlength, snapmaxlength = 0
+            pml, rml, aml, uml, sml = 0
             zfssnapshots.reverse.each do |snapshot|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
-              snapmaxlength = attributes[0].length.to_i if attributes[0].length.to_i > snapmaxlength.to_i
-              usedmaxlength = attributes[1].length.to_i if attributes[1].length.to_i > usedmaxlength.to_i
-              availmaxlength = attributes[2].length.to_i if attributes[2].length.to_i > availmaxlength.to_i
-              refermaxlength = attributes[3].length.to_i if attributes[3].length.to_i > refermaxlength.to_i
-              pathmaxlength = attributes[4].length.to_i if attributes[4].length.to_i > pathmaxlength.to_i
+              sml = attributes[0].length.to_i if attributes[0].length.to_i > sml.to_i
+              uml = attributes[1].length.to_i if attributes[1].length.to_i > uml.to_i
+              aml = attributes[2].length.to_i if attributes[2].length.to_i > aml.to_i
+              rml = attributes[3].length.to_i if attributes[3].length.to_i > rml.to_i
+              pml = attributes[4].length.to_i if attributes[4].length.to_i > pml.to_i
             end
             zfssnapshots.reverse.each_with_index do |snapshot, snapindex|
               attributes = snapshot.gsub(/\s+/m, ' ').strip.split
               if snapindex.zero?
-                puts format "%<symbol>5s %<snap>-#{snapmaxlength}s %<used>-#{usedmaxlength}s %<avail>-#{availmaxlength}s %<refer>-#{refermaxlength}s %<path>-#{pathmaxlength}s", symbol: '#', snap: attributes[0], used: attributes[1], avail: attributes[2], refer: attributes[3], path: attributes[4]
+                puts format "%<symbol>5s %<snap>-#{sml}s %<used>-#{uml}s %<avail>-#{aml}s %<refer>-#{rml}s %<path>-#{pml}s", symbol: '#', snap: attributes[0], used: attributes[1], avail: attributes[2], refer: attributes[3], path: attributes[4]
               else
-                puts format "%<snapindex>5s %<snap>-#{snapmaxlength}s %<used>-#{usedmaxlength}s %<avail>-#{availmaxlength}s %<refer>-#{refermaxlength}s %<path>-#{pathmaxlength}s", snapindex: snapindex - 2,  snap: attributes[0], used: attributes[1], avail: attributes[2], refer: attributes[3], path: attributes[4]
+                puts format "%<snapindex>5s %<snap>-#{sml}s %<used>-#{uml}s %<avail>-#{aml}s %<refer>-#{rml}s %<path>-#{pml}s", snapindex: snapindex - 2, snap: attributes[0], used: attributes[1], avail: attributes[2], refer: attributes[3], path: attributes[4]
               end
               output = {}
             end
