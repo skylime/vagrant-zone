@@ -1094,8 +1094,7 @@ end          )
               when 'monthly'
                 monthly = job if job[/#{machine.name}/]
               end 
-              if options[:list]
-                
+              if options[:list]                
                 if options[:list] == 'all'
                   puts options[:list]
                   puts hourly unless hourly.nil?
@@ -1142,7 +1141,7 @@ end          )
                     dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
                     weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
                     monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
-                    puts hourlycron unless hourly
+                    puts hourlycron unless hourly 
                     puts dailycron unless daily
                     puts weeklycron unless weekly
                     puts monthlycron unless monthly
@@ -1150,7 +1149,7 @@ end          )
 
                 else
                   puts hourly if  options[:set_frequency] == 'hourly' 
-                  puts daily if options[:set_frequency] == 'daily' 
+                  puts daily if options[:set_frequency] == 'daily' && daily.nil?
                   puts weekly if  options[:set_frequency] == 'weekly'
                   puts monthly if options[:set_frequency] == 'monthly' 
                 end
