@@ -1062,17 +1062,17 @@ end          )
           crons = execute(false, "#{@pfexec} crontab -l").split("\n")
           ## Strip solaris Header
           header = crons.first(28)
-          puts
-          puts header
-          puts "----------------------------------------------------------"
+          # puts
+          # puts header
+          # puts "----------------------------------------------------------"
           crons = crons.drop(28)
           ### Strip System Crons
           syscrons = crons.first(3)
           crons = crons.drop(3)
           puts
-          puts syscrons
-          puts "----------------------------------------------------------"
-          puts crons
+          # puts syscrons
+          # puts "----------------------------------------------------------"
+          # puts crons
           snapshooter = '/opt/vagrant/bin/Snapshooter.sh'
           hourlytrn = 24
           dailytrn = 8
@@ -1087,7 +1087,7 @@ end          )
           # options[:list] = 'all' if options[:list].nil?
           datasets.each do |disk|
              uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-             puts disk
+             # puts disk
              hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{hourlytrn} #{disk}  # #{machine.name}"
              dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{dailytrn} #{disk}  # #{machine.name}"
              weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
