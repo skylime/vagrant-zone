@@ -1068,7 +1068,6 @@ end          )
             puts data[:subcommand]
           end
           if options[:dataset] == 'all'
-            subcommanddata = data[:subcommanddata]
             datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
               puts disk
