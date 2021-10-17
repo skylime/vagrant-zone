@@ -1087,7 +1087,7 @@ end          )
           # options[:list] = 'all' if options[:list].nil?
           datasets.each do |disk|
              uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-             # puts disk
+              puts disk
              hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{hourlytrn} #{disk}  # #{machine.name}"
              dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{dailytrn} #{disk}  # #{machine.name}"
              weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
@@ -1105,7 +1105,6 @@ end          )
                 monthly = job if job[/#{machine.name}/]
               end 
               if options[:list]
-                puts options[:list]
                 if options[:list] == 'all'
                   puts hourly unless hourly.nil?
                   puts daily unless daily.nil?
@@ -1118,7 +1117,6 @@ end          )
                   puts monthly if options[:list] == 'monthly' 
                 end
               elsif options[:delete]
-                puts options[:delete]
                 if options[:delete] == 'all'
                   puts hourly unless hourly.nil?
                   puts daily unless daily.nil?
