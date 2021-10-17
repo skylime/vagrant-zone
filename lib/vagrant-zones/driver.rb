@@ -1089,10 +1089,6 @@ end          )
 
              crons.each do |job|
               next if job.empty?
-              
-              puts job.inspect
-              puts
-              puts
               name = machine.name
               case job[/#{rtnregex}/, 1]
               when 'hourly'
