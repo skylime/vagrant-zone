@@ -1130,7 +1130,19 @@ end          )
                   puts weekly if  options[:delete] == 'weekly'
                   puts monthly if options[:delete] == 'monthly' 
                 end
-              elsif options[:frequency] && (options[:delete].nil? || options[:list].nil?)
+              elsif options[:frequency] 
+                puts options[:frequency]
+                if options[:frequency] == 'all'
+                  puts hourly unless hourly.nil?
+                  puts daily unless daily.nil?
+                  puts weekly unless weekly.nil?
+                  puts monthly unless monthly.nil?
+                else
+                  puts hourly if  options[:frequency] == 'hourly' 
+                  puts daily if options[:frequency] == 'daily' 
+                  puts weekly if  options[:frequency] == 'weekly'
+                  puts monthly if options[:frequency] == 'monthly' 
+                end
               end
             end
           end
