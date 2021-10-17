@@ -977,8 +977,9 @@ end          )
             puts "\n  Disk Number: #{index}\n  Disk Path: #{disk}"
             zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk} || true")
             break if zfs_snapshots.nil?
-            unless options[:dataset].nil? 
-              selectdataset = options[:dataset] 
+
+            unless options[:dataset].nil?
+              selectdataset = options[:dataset]
               next unless selectdataset.to_i == index
 
             end
