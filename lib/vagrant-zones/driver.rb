@@ -1134,8 +1134,10 @@ end          )
                 puts options[:set_frequency]
                 puts options[:set_frequency_rtn]
                 if options[:set_frequency] == 'all'
-                #  unless options[:set_frequency_rtn].nil?
-                #
+                  if options[:set_frequency_rtn] == 'default'
+                    puts options[:set_frequency_rtn]
+                    
+                  end
                 #
                 #
                 #
