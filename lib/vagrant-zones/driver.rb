@@ -1081,11 +1081,6 @@ end          )
           datasets.each do |disk|
              uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
              puts disk
-             hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{hourlytrn} #{disk}  # #{machine.name}"
-             dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{dailytrn} #{disk}  # #{machine.name}"
-             weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
-             monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk}  # #{machine.name}"
-
              crons.each do |job|
               next if job.empty?
               name = machine.name
@@ -1130,23 +1125,29 @@ end          )
               elsif options[:set_frequency] 
                 if options[:set_frequency] == 'all'
                   if options[:set_frequency_rtn] == 'defaults'
+                    hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{hourlytrn} #{disk}  # #{machine.name}"
+                    dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{dailytrn} #{disk}  # #{machine.name}"
+                    weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
+                    monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk}  # #{machine.name}"
+       
                     puts options[:set_frequency_rtn]
                     puts hourlycron unless hourly
                     puts dailycron unless daily
                     puts weeklycron unless weekly
                     puts monthlycron unless monthly
+
+                  else
+                    puts options[:set_frequency_rtn]
+                    hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
+                    dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
+                    weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
+                    monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
+                    puts hourlycron unless hourly
+                    puts dailycron unless daily
+                    puts weeklycron unless weekly
+                    puts monthlycron unless monthly
                   end
-                #
-                #
-                #
-                #
-                #
-                #
-                #
-                  puts hourly unless hourly.nil?
-                  puts daily unless daily.nil?
-                  puts weekly unless weekly.nil?
-                  puts monthly unless monthly.nil?
+
                 else
                   puts hourly if  options[:set_frequency] == 'hourly' 
                   puts daily if options[:set_frequency] == 'daily' 
