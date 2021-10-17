@@ -1062,17 +1062,11 @@ end          )
           crons = execute(false, "#{@pfexec} crontab -l").split("\n")
           ## Strip solaris Header
           header = crons.first(28)
-          # puts
-          # puts header
-          # puts "----------------------------------------------------------"
           crons = crons.drop(28)
           ### Strip System Crons
           syscrons = crons.first(3)
           crons = crons.drop(3)
           puts
-          # puts syscrons
-          # puts "----------------------------------------------------------"
-          # puts crons
           snapshooter = '/opt/vagrant/bin/Snapshooter.sh'
           hourlytrn = 24
           dailytrn = 8
@@ -1096,6 +1090,9 @@ end          )
              crons.each do |job|
               next if job.nil?
               puts job
+              puts
+              puts
+              
               name = machine.name
               case job[/#{rtnregex}/, 1]
               when 'hourly'
