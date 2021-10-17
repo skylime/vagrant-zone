@@ -1068,7 +1068,7 @@ end          )
 
 
           crons = execute(false, "#{@pfexec} crontab -l").gsub(/(^#.+)/, '')
-          puts crons
+          puts crons.gsub(/(^#.+)/, '')
           #if options[:list]
           #  set cron for vm X using X
           #end
