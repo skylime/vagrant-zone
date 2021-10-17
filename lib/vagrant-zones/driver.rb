@@ -1089,6 +1089,7 @@ end          )
 
              crons.each do |job|
               puts job.inspect
+              next if job.nil?
               puts
               puts
               name = machine.name
