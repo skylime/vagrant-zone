@@ -1093,9 +1093,10 @@ end          )
           #weekly = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
           #monthly = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk}  # #{machine.name}"
           # 
+          #ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
           crons.each do |job|
-            puts job[/rtnregex/, 1]
-            case job[/rtnregex/, 1]
+            puts job[/#{rtnregex}/, 1]
+            case job[/#{rtnregex}/, 1]
             when 'hourly'
               hourly = job if job.include? machine.name
             when 'daily'
