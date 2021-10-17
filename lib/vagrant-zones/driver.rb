@@ -1059,14 +1059,6 @@ end          )
 
         when 'cron'
 
-          #options[:dataset] = 'all' if options[:dataset].nil?
-          #options[:frequency] = 'default' if options[:frequency].nil?
-          #options[:frequency_rtnmsg] = 'default' if options[:frequency_rtnmsg].nil?
-          #options[:frequency_rtnmsg] = 'default' if options[:frequency_rtnmsg].nil?
-          #options[:delete] = 'all' if options[:delete].nil?
-          #options[:list] = 'all' if options[:list].nil?
-
-
           crons = execute(false, "#{@pfexec} crontab -l").split("\n")
           ## Strip solaris Header
           header = crons.first(28)
@@ -1087,31 +1079,40 @@ end          )
           weeklytrn = 5
           monthlytrn = 1
           rtnregex = '-p (weekly|monthly|daily|hourly)'
-          # for loop for each disk in config
-          #hourly = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{hourlytrn} #{disk}  # #{machine.name}"
-          #daily = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{dailytrn} #{disk}  # #{machine.name}"
-          #weekly = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
-          #monthly = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk}  # #{machine.name}"
-          # 
-          #ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
-          crons.each do |job|
-            puts job[/#{rtnregex}/, 1]
-            name = machine.name
-            case job[/#{rtnregex}/, 1]
-            when 'hourly'
-              hourly = job if job[/#{machine.name}/]
-            when 'daily'
-              daily = job if job[/#{machine.name}/]
-            when 'weekly'
-              weekly = job if job[/#{machine.name}/]
-            when 'monthly'
-              monthly = job if job[/#{machine.name}/]
-            end 
-            puts hourly unless hourly.nil?
-            puts daily unless daily.nil?
-            puts weekly unless weekly.nil?
-            puts monthly unless monthly.nil?
+          options[:dataset] = 'all' if options[:dataset].nil?
+          # options[:frequency] = 'default' if options[:frequency].nil?
+          # options[:frequency_rtnmsg] = 'default' if options[:frequency_rtnmsg].nil?
+          # options[:frequency_rtnmsg] = 'default' if options[:frequency_rtnmsg].nil?
+          # options[:delete] = 'all' if options[:delete].nil?
+          # options[:list] = 'all' if options[:list].nil?
+          if options[:dataset].to_s == 'all'
+            datasets.each do |disk|
+               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
+               puts disk
+               hourly = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{hourlytrn} #{disk}  # #{machine.name}"
+               daily = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{dailytrn} #{disk}  # #{machine.name}"
+               weekly = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
+               monthly = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk}  # #{machine.name}"
+               crons.each do |job|
+                name = machine.name
+                case job[/#{rtnregex}/, 1]
+                when 'hourly'
+                  hourly = job if job[/#{machine.name}/]
+                when 'daily'
+                  daily = job if job[/#{machine.name}/]
+                when 'weekly'
+                  weekly = job if job[/#{machine.name}/]
+                when 'monthly'
+                  monthly = job if job[/#{machine.name}/]
+                end 
+                puts hourly unless hourly.nil?
+                puts daily unless daily.nil?
+                puts weekly unless weekly.nil?
+                puts monthly unless monthly.nil?
+              end
+            end
           end
+
           #  when list
           #     puts hourly unless hourly.nil?
           #     puts daily unless daily.nil?
