@@ -1031,7 +1031,7 @@ end          )
                 uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
               end
             end
-          else 
+          else
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
             ## Specify the dataset by number
             datasets.each_with_index do |disk, dindex|
@@ -1056,21 +1056,20 @@ end          )
           end
 
         when 'cron'
+          case data[:subcommand]
+          when /list/
+            puts  'We are supposed to list all crons now'
+          when /delete/
+            puts  'We are supposed to delete all crons now'
+          when /frequency/
+            puts  'We are supposed to configure all crons now'
+            puts data[:subcommand]
+          end
           if options[:dataset] == 'all'
             subcommanddata = data[:subcommanddata]
-            puts subcommanddata
-            case data[:subcommand]
-            when /list/
-              puts  'We are supposed to list things now'
-            when /delete/
-              puts  'We are supposed to delete things now'
-            when /frequency/
-              puts  'We are supposed to configure things now'
-              puts subcommanddata
-            end
-            puts subcommanddata.inspect
             datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
+              puts disk
               # execute(false, "#{@pfexec} zfs snapshot #{disk}@#{options[:snapshot_name]}")
             end
           else
@@ -1081,6 +1080,7 @@ end          )
             datasets.each_with_index do |disk, index|
               if options[:dataset].to_i == index
                 uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
+                puts  "We are supposed to configure crons now for #{disk}"
                 # execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{options[:snapshot_name]}")
               end
             end
