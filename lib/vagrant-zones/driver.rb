@@ -1082,7 +1082,6 @@ end          )
           puts "----------------------------------------------------------"
           puts crons
 
-
           #if options[:list]
           #  set cron for vm X using X
           #end
