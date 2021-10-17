@@ -960,7 +960,7 @@ end          )
       end
 
       # This helps us create ZFS Snapshots
-      def zfs(machine, uiinfo, job, options, data)
+      def zfs(machine, uiinfo, job, options)
         name = machine.name
         ## get disks configurations
         config = machine.provider_config
@@ -1058,34 +1058,45 @@ end          )
           end
 
         when 'cron'
-          case data[:subcommand]
-          when /list/
-            puts  'We are supposed to list all crons now'
-          when /delete/
-            puts  'We are supposed to delete all crons now'
-          when /frequency/
-            puts  'We are supposed to configure all crons now'
-            puts data[:subcommand]
-          end
-          if options[:dataset] == 'all'
-            datasets.each do |disk|
-              uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-              puts disk
-              # execute(false, "#{@pfexec} zfs snapshot #{disk}@#{options[:snapshot_name]}")
-            end
-          else
-            uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
-            ## Specify the Dataset by path
-            execute(false, "#{@pfexec} zfs snapshot #{options[:dataset]}@#{options[:snapshot_name]}") unless datasets.include?(options[:dataset])
-            ## Specify the dataset by number
-            datasets.each_with_index do |disk, index|
-              next unless options[:dataset].to_i == index
 
-              uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-              puts "We are supposed to configure crons now for #{disk}"
-              # execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{options[:snapshot_name]}")
-            end
-          end
+          #options[:dataset] = 'all' if options[:dataset].nil?
+          #options[:frequency] = 'default' if options[:frequency].nil?
+          #options[:frequency_rtnmsg] = 'default' if options[:frequency_rtnmsg].nil?
+          #options[:frequency_rtnmsg] = 'default' if options[:frequency_rtnmsg].nil?
+          #options[:delete] = 'all' if options[:delete].nil?
+          #options[:list] = 'all' if options[:list].nil?
+
+
+          crons = execute(false, "#{@pfexec} crontab -l").gsub(/(^#.+)/, '')
+          puts crons
+          #if options[:list]
+          #  set cron for vm X using X
+          #end
+          ## Gather all Crons for VM
+          ## determine if user is trying to delete, create or list crons
+          ## if user is trying to list
+          ## if user is trying to create
+          ## if user is trying to delete
+
+          ## if options[:dataset] == 'all'
+          ##   datasets.each do |disk|
+          ##     uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
+          ##     puts disk
+          ##     # execute(false, "#{@pfexec} zfs snapshot #{disk}@#{options[:snapshot_name]}")
+          ##   end
+          ## else
+          ##   uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
+          ##   ## Specify the Dataset by path
+          ##   execute(false, "#{@pfexec} zfs snapshot #{options[:dataset]}@#{options[:snapshot_name]}") unless datasets.include?(options[:dataset])
+          ##   ## Specify the dataset by number
+          ##   datasets.each_with_index do |disk, index|
+          ##     next unless options[:dataset].to_i == index
+## 
+          ##     uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
+          ##     puts "We are supposed to configure crons now for #{disk}"
+          ##     # execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{options[:snapshot_name]}")
+          ##   end
+          ## end
         end
       end
 
