@@ -61,7 +61,7 @@ module VagrantPlugins
             subcommanddata = [options[:frequency].to_s, options[:frequency_retention].to_s]
             subcommand = 'frequency' if options[:frequency]
             puts subcommanddata.inspect
-            data =  {subcommand: subcommand, subcommanddata:  subcommanddata}
+            data = { subcommand: subcommand, subcommanddata:  subcommanddata }
             driver.zfs(machine, @env.ui, 'cron', options, data)
           end
         end
