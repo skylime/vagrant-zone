@@ -1079,11 +1079,10 @@ end          )
             execute(false, "#{@pfexec} zfs snapshot #{options[:dataset]}@#{options[:snapshot_name]}") unless datasets.include?(options[:dataset])
             ## Specify the dataset by number
             datasets.each_with_index do |disk, index|
-              if options[:dataset].to_i == index
-                uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-                puts  "We are supposed to configure crons now for #{disk}"
-                # execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{options[:snapshot_name]}")
-              end
+              next unless options[:dataset].to_i == index
+              uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
+              puts "We are supposed to configure crons now for #{disk}"
+              # execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{options[:snapshot_name]}")
             end
           end
         end
