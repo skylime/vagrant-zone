@@ -980,8 +980,8 @@ end          )
             unless options[:dataset].nil? 
               selectdataset = options[:dataset] 
               next unless selectdataset.to_i == index
+
             end
-            
             zfssnapshots = zfs_snapshots.split(/\n/)
             zfssnapshots = zfssnapshots.reverse
             zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
