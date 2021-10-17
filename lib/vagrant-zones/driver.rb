@@ -1067,8 +1067,8 @@ end          )
           #options[:list] = 'all' if options[:list].nil?
 
 
-          crons = execute(false, "#{@pfexec} crontab -l").gsub(/(^#.+)/, '').gsub(/(^#)/, '')
-          puts crons.gsub(/(^#.+)/, '')
+          crons = execute(false, "#{@pfexec} crontab -l").gsub(/(^#.+)/, '').gsub(/(^#)/, '').strip
+          puts crons
           #if options[:list]
           #  set cron for vm X using X
           #end
