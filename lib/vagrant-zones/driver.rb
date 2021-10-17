@@ -1088,7 +1088,7 @@ end          )
              monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk}  # #{machine.name}"
 
              crons.each do |job|
-              next if job.nil?
+              next if job == ""
               
               puts job.inspect
               puts
