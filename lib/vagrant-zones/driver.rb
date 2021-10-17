@@ -1087,7 +1087,8 @@ end          )
           # options[:list] = 'all' if options[:list].nil?
           datasets.each do |disk|
              uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-              puts disk
+             puts disk
+             puts "test"
              hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{hourlytrn} #{disk}  # #{machine.name}"
              dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{dailytrn} #{disk}  # #{machine.name}"
              weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
