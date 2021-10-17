@@ -1068,7 +1068,7 @@ end          )
 
 
           crons = execute(false, "#{@pfexec} crontab -l").split("\n")
-          puts crons.inspect
+          puts crons.inspect.drop(28)
           #if options[:list]
           #  set cron for vm X using X
           #end
