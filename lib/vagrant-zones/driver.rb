@@ -1131,8 +1131,6 @@ end          )
                   puts monthly if options[:delete] == 'monthly' 
                 end
               elsif options[:set_frequency] 
-                puts options[:set_frequency]
-                puts options[:set_frequency_rtn]
                 if options[:set_frequency] == 'all'
                   if options[:set_frequency_rtn] == 'default'
                     puts options[:set_frequency_rtn]
