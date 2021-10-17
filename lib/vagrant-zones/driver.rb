@@ -96,7 +96,9 @@ module VagrantPlugins
         execute(true, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  '#{command}' ")
       end
 
-      def console(machine, command, ip, port, detach, kill)
+      def console(machine, command, ip, port, exit)
+        detach = exit[:detach]
+        detach = exit[:kill]
         name = machine.name
         config = machine.provider_config
         if port.nil?
