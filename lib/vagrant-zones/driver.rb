@@ -958,7 +958,7 @@ end          )
       end
 
       # This helps us create ZFS Snapshots
-      def zfs(machine, uiinfo, job, dataset, data)
+      def zfs(machine, uiinfo, job, options, data)
         name = machine.name
         ## get disks configurations
         config = machine.provider_config
