@@ -1105,6 +1105,7 @@ end          )
                 monthly = job if job[/#{machine.name}/]
               end 
               if options[:list]
+                puts options[:list]
                 if options[:list] == 'all'
                   puts hourly unless hourly.nil?
                   puts daily unless daily.nil?
@@ -1117,6 +1118,7 @@ end          )
                   puts monthly if options[:list] == 'monthly' 
                 end
               elsif options[:delete]
+                puts options[:delete]
                 if options[:delete] == 'all'
                   puts hourly unless hourly.nil?
                   puts daily unless daily.nil?
