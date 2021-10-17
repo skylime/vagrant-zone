@@ -1130,9 +1130,12 @@ end          )
                 end
               elsif options[:set_frequency] 
                 if options[:set_frequency] == 'all'
-                  if options[:set_frequency_rtn] == 'default'
+                  if options[:set_frequency_rtn] == 'defaults'
                     puts options[:set_frequency_rtn]
-                    
+                    puts hourlycron unless hourly
+                    puts dailycron unless daily
+                    puts weeklycron unless weekly
+                    puts monthlycron unless monthly
                   end
                 #
                 #
