@@ -1080,9 +1080,9 @@ end          )
           monthlytrn = 1
           rtnregex = '-p (weekly|monthly|daily|hourly)'
           options[:dataset] = 'all' if options[:dataset].nil?
-          # options[:frequency] = 'default' if options[:frequency].nil?
-          # options[:frequency_rtnmsg] = 'default' if options[:frequency_rtnmsg].nil?
-          # options[:frequency_rtnmsg] = 'default' if options[:frequency_rtnmsg].nil?
+          options[:set_frequency_rtn] = 'default' if options[:set_frequency_rtn].nil?
+          # options[:set_frequency] = 'default' if options[:set_frequency].nil?
+          # 
           # options[:delete] = 'all' if options[:delete].nil?
           # options[:list] = 'all' if options[:list].nil?
           datasets.each do |disk|
@@ -1130,18 +1130,28 @@ end          )
                   puts weekly if  options[:delete] == 'weekly'
                   puts monthly if options[:delete] == 'monthly' 
                 end
-              elsif options[:frequency] 
-                puts options[:frequency]
-                if options[:frequency] == 'all'
+              elsif options[:set_frequency] 
+                puts options[:set_frequency]
+                puts options[:set_frequency_rtn]
+                if options[:set_frequency] == 'all'
+                #  unless options[:set_frequency_rtn].nil?
+                #
+                #
+                #
+                #
+                #
+                #
+                #
+                #
                   puts hourly unless hourly.nil?
                   puts daily unless daily.nil?
                   puts weekly unless weekly.nil?
                   puts monthly unless monthly.nil?
                 else
-                  puts hourly if  options[:frequency] == 'hourly' 
-                  puts daily if options[:frequency] == 'daily' 
-                  puts weekly if  options[:frequency] == 'weekly'
-                  puts monthly if options[:frequency] == 'monthly' 
+                  puts hourly if  options[:set_frequency] == 'hourly' 
+                  puts daily if options[:set_frequency] == 'daily' 
+                  puts weekly if  options[:set_frequency] == 'weekly'
+                  puts monthly if options[:set_frequency] == 'monthly' 
                 end
               end
             end

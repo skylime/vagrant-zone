@@ -12,13 +12,13 @@ module VagrantPlugins
             o.on('--dataset SNAPSHOTPATH', 'Specify path to enable snapshots on') do |p|
               options[:dataset] = p
             end
-            frequencymessage = 'Set a policy with one of the available optional frequencies'
-            o.on('--frequency <hourly/daily/weekly/monthly/default>', frequencymessage) do |p|
-              options[:frequency] = p
+            frequencymsg = 'Set a policy with one of the available optional frequencies'
+            o.on('--frequency <hourly/daily/weekly/monthly/default>', frequencymsg) do |p|
+              options[:set_frequency] = p
             end
             frequency_rtnmsg = 'Number of snapshots to take for the frequency policy'
             o.on('--frequency_rtn <#>/default ', frequency_rtnmsg) do |p|
-              options[:frequency_rtn] = p
+              options[:set_frequency_rtn] = p
             end
             deletemsg = 'Delete frequency policy'
             o.on('--delete  <hourly/daily/weekly/monthly/all>', deletemsg) do |p|
