@@ -1093,6 +1093,7 @@ end          )
              weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
              monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk}  # #{machine.name}"
              crons.each do |job|
+              puts job
               name = machine.name
               case job[/#{rtnregex}/, 1]
               when 'hourly'
