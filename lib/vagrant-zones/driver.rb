@@ -1112,10 +1112,10 @@ end          )
                   puts weekly unless weekly.nil?
                   puts monthly unless monthly.nil?
                 else
-                  puts hourly unless hourly.nil? || ( options[:frequency_rtn] == 'hourly' )
-                  puts daily unless daily.nil? || ( options[:frequency_rtn] == 'daily' )
-                  puts weekly unless weekly.nil? || ( options[:frequency_rtn] == 'weekly' )
-                  puts monthly unless monthly.nil? || ( options[:frequency_rtn] == 'monthly' )
+                  puts hourly unless  options[:frequency_rtn] == 'hourly' 
+                  puts daily unless options[:frequency_rtn] == 'daily' 
+                  puts weekly unless  options[:frequency_rtn] == 'weekly'
+                  puts monthly unless options[:frequency_rtn] == 'monthly' 
                 end
               elsif options[:delete] == 'all'
                 puts hourly unless hourly.nil?
