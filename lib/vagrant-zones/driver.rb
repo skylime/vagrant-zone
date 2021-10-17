@@ -1092,6 +1092,7 @@ end          )
              dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{dailytrn} #{disk}  # #{machine.name}"
              weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
              monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk}  # #{machine.name}"
+             crons = crons.strip()
              crons.each do |job|
               next if job.nil?
               puts job
