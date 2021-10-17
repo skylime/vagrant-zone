@@ -1074,7 +1074,6 @@ end          )
           monthlytrn = 1
           rtnregex = '-p (weekly|monthly|daily|hourly)'
           options[:dataset] = 'all' if options[:dataset].nil?
-          options[:set_frequency_rtn] = 'default' if options[:set_frequency_rtn].nil?
           # options[:set_frequency] = 'default' if options[:set_frequency].nil?
           # 
           # options[:delete] = 'all' if options[:delete].nil?
