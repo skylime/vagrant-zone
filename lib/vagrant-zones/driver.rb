@@ -1148,10 +1148,29 @@ end          )
                   end
 
                 else
-                  puts hourlycron if  options[:set_frequency] == 'hourly' && hourly.nil?
-                  puts dailycron if options[:set_frequency] == 'daily' && daily.nil?
-                  puts weeklycron if  options[:set_frequency] == 'weekly' && weekly.nil?
-                  puts monthlycron if options[:set_frequency] == 'monthly' && monthly.nil?
+                  if options[:set_frequency_rtn] == 'defaults'
+                    hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{hourlytrn} #{disk}  # #{machine.name}"
+                    dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{dailytrn} #{disk}  # #{machine.name}"
+                    weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
+                    monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk}  # #{machine.name}"
+       
+                    puts options[:set_frequency_rtn]
+                    puts hourlycron unless hourly
+                    puts dailycron unless daily
+                    puts weeklycron unless weekly
+                    puts monthlycron unless monthly
+
+                  else
+                    puts options[:set_frequency_rtn]
+                    hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
+                    dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
+                    weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
+                    monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
+                    puts hourlycron unless hourly 
+                    puts dailycron unless daily
+                    puts weeklycron unless weekly
+                    puts monthlycron unless monthly
+                  end
                 end
               end
             end
