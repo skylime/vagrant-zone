@@ -1096,16 +1096,16 @@ end          )
           #ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
           crons.each do |job|
             puts job[/#{rtnregex}/, 1]
-            puts machine.name
+            name = machine.name
             case job[/#{rtnregex}/, 1]
             when 'hourly'
-              hourly = job if job.include? machine.name
+              hourly = job if job[/#{machine.name}/]
             when 'daily'
-              daily = job if job.include? machine.name
+              daily = job if job[/#{machine.name}/]
             when 'weekly'
-              weekly = job if job.include? machine.name
+              weekly = job if job[/#{machine.name}/]
             when 'monthly'
-              monthly = job if job.include? machine.name
+              monthly = job if job[/#{machine.name}/]
             end 
             puts hourly unless hourly.nil?
             puts daily unless daily.nil?
