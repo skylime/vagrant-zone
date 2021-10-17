@@ -1075,7 +1075,7 @@ end          )
           puts "----------------------------------------------------------"
           crons = crons.drop(28)
           ### Strip System Crons
-          syscrons = ocrons.first(3)
+          syscrons = crons.first(3)
           crons = crons.drop(3)
           puts
           puts syscrons
