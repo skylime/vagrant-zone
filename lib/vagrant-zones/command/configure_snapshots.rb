@@ -17,8 +17,8 @@ module VagrantPlugins
               options[:frequency] = p
             end
             frequency_rtnmsg = 'Number of snapshots to take for the frequency policy'
-            o.on('--frequency_retention <#>/default ', frequency_rtnmsg) do |p|
-              options[:frequency_retention] = p
+            o.on('--frequency_rtn <#>/default ', frequency_rtnmsg) do |p|
+              options[:frequency_rtn] = p
             end
             deletemsg = 'Delete frequency policy'
             o.on('--delete  <hourly/daily/weekly/monthly/all>', deletemsg) do |p|
