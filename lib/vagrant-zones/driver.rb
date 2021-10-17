@@ -1148,10 +1148,10 @@ end          )
                   end
 
                 else
-                  puts hourly if  options[:set_frequency] == 'hourly' 
-                  puts daily if options[:set_frequency] == 'daily' && daily.nil?
-                  puts weekly if  options[:set_frequency] == 'weekly'
-                  puts monthly if options[:set_frequency] == 'monthly' 
+                  puts hourlycron if  options[:set_frequency] == 'hourly' && hourly.nil?
+                  puts dailycron if options[:set_frequency] == 'daily' && daily.nil?
+                  puts weeklycron if  options[:set_frequency] == 'weekly' && weekly.nil?
+                  puts monthlycron if options[:set_frequency] == 'monthly' && monthly.nil?
                 end
               end
             end
