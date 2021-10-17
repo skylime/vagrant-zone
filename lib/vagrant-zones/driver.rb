@@ -1068,7 +1068,21 @@ end          )
 
 
           crons = execute(false, "#{@pfexec} crontab -l").split("\n")
-          puts crons.drop(28)
+          ## Strip solaris Header
+          header = crons.first(28)
+          puts
+          puts header
+          puts "----------------------------------------------------------"
+          crons = crons.drop(28)
+          ### Strip System Crons
+          syscrons = ocrons.first(3)
+          crons = crons.drop(3)
+          puts
+          puts syscrons
+          puts "----------------------------------------------------------"
+          puts crons
+
+
           #if options[:list]
           #  set cron for vm X using X
           #end
