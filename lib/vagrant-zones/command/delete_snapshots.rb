@@ -29,8 +29,8 @@ module VagrantPlugins
           options[:snapshot_name] = 'all' if options[:snapshot_name].nil?
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
-            subcommand = nil
-            driver.zfs(machine, @env.ui, 'destroy', options[:dataset], options[:snapshot_name], subcommand)
+            data =  {subcommand: nil, subcommanddata: nil}
+            driver.zfs(machine, @env.ui, 'destroy', options, data)
           end
         end
       end

@@ -13,7 +13,7 @@ module VagrantPlugins
               options[:dataset] = p
             end
             frequencymessage = 'Set a policy with one of the available optional frequencies, cannot use with the delete or list option'
-            o.on('--frequency <hourly/daily/weekly/montly/default>', frequencymessage) do |p|
+            o.on('--frequency <hourly/daily/weekly/monthly/default>', frequencymessage) do |p|
               options[:frequency] = p
             end
             frequency_retentionmsg = 'Number of snapshots to take for the frequency policy, cannot use with the delete or list option'
@@ -21,11 +21,11 @@ module VagrantPlugins
               options[:frequency_retention] = p
             end
             deletemsg = 'Delete frequency policy, cannot use with the frequency or frequency_retention option'
-            o.on('--delete  <hourly/daily/weekly/montly/all>', deletemsg) do |p|
+            o.on('--delete  <hourly/daily/weekly/monthly/all>', deletemsg) do |p|
               options[:delete] = p
             end
             listmsg = 'Show Cron Policies, cannot use with the frequency or frequency_retention option'
-            o.on('--list  <hourly/daily/weekly/montly/all>', listmsg) do |p|
+            o.on('--list  <hourly/daily/weekly/monthly/all>', listmsg) do |p|
               options[:list] = p
             end
           end
@@ -61,7 +61,8 @@ module VagrantPlugins
             subcommanddata = [options[:frequency].to_s, options[:frequency_retention].to_s]
             subcommand = 'frequency' if options[:frequency]
             puts subcommanddata.inspect
-            driver.zfs(machine, @env.ui, 'cron', options[:dataset], subcommanddata, subcommand)
+            data =  {subcommand: subcommand, subcommanddata:  subcommanddata}
+            driver.zfs(machine, @env.ui, 'cron', options, data)
           end
         end
       end

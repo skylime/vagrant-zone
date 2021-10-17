@@ -37,8 +37,8 @@ module VagrantPlugins
 
           with_target_vms(argv, provider: :zone) do |machine|
             driver = machine.provider.driver
-            subcommand = nil
-            driver.zfs(machine, @env.ui, 'create', options[:dataset], options[:snapshot_name], subcommand)
+            data =  {subcommand: nil, subcommanddata: nil}
+            driver.zfs(machine, @env.ui, 'create', options, data)
           end
         end
       end

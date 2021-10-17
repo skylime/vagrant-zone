@@ -958,7 +958,7 @@ end          )
       end
 
       # This helps us create ZFS Snapshots
-      def zfs(machine, uiinfo, job, dataset, snapshot_name, subcommand)
+      def zfs(machine, uiinfo, job, dataset, data)
         name = machine.name
         ## get disks configurations
         config = machine.provider_config
@@ -1000,22 +1000,22 @@ end          )
             end
           end
         when 'create'
-          if dataset == 'all'
+          if options[:dataset] == 'all'
             datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
-              execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}")
+              execute(false, "#{@pfexec} zfs snapshot #{disk}@#{options[:snapshot_name]}")
             end
           else
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
             ## Specify the Dataset by path
-            execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") if datasets.include?(dataset)
+            execute(false, "#{@pfexec} zfs snapshot #{options[:dataset]}@#{options[:snapshot_name]}") if datasets.include?(options[:dataset])
             ## Specify the dataset by number
             datasets.each_with_index do |disk, index|
-              execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}") if dataset.to_i == index.to_i
+              execute(false, "#{@pfexec} zfs snapshot #{disk}@#{options[:snapshot_name]}") if options[:dataset].to_i == index.to_i
             end
           end
         when 'destroy'
-          if dataset.to_s == 'all'
+          if options[:dataset].to_s == 'all'
             datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
               output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
@@ -1030,17 +1030,17 @@ end          )
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
             ## Specify the dataset by number
             datasets.each_with_index do |disk, dindex|
-              if dindex.to_i == dataset.to_i
+              if dindex.to_i == options[:dataset].to_i
                 output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
                 output = output.split(/\n/).drop(1)
                 puts "\t#\tSnapshot"
                 output.each_with_index do |snaps, spindex|
-                  if snapshot_name.to_i == spindex && snapshot_name.to_s != 'all'
+                  if options[:snapshot_name].to_i == spindex && options[:snapshot_name].to_s != 'all'
                     puts "\t#{spindex}\t#{snaps}\t"
                     execute(false, "#{@pfexec} zfs destroy #{snaps}")
                     uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
                   end
-                  if snapshot_name.to_s == 'all'
+                  if options[:snapshot_name].to_s == 'all'
                     puts "\t#{spindex}\t#{snaps}\t"
                     execute(false, "#{@pfexec} zfs destroy #{snaps}")
                   end
@@ -1048,14 +1048,14 @@ end          )
               end
             end
             ## Specify the Dataset by path
-            execute(false, "#{@pfexec} zfs destroy  #{dataset}@#{snapshot_name}") if datasets.include?("#{dataset}@#{snapshot_name}")
+            execute(false, "#{@pfexec} zfs destroy  #{options[:dataset]}@#{options[:snapshot_name]}") if datasets.include?("#{options[:dataset]}@#{options[:snapshot_name]}")
           end
 
         when 'cron'
-          if dataset == 'all'
-            subcommanddata = snapshot_name
+          if options[:dataset] == 'all'
+            subcommanddata = data[:subcommanddata]
             puts subcommanddata
-            case subcommand
+            case data[:subcommand]
             when /list/
               puts  'We are supposed to list things now'
             when /delete/
@@ -1067,17 +1067,17 @@ end          )
             puts subcommanddata.inspect
             datasets.each do |disk|
               uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-              # execute(false, "#{@pfexec} zfs snapshot #{disk}@#{snapshot_name}")
+              # execute(false, "#{@pfexec} zfs snapshot #{disk}@#{options[:snapshot_name]}")
             end
           else
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
             ## Specify the Dataset by path
-            execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}") unless datasets.include?(dataset)
+            execute(false, "#{@pfexec} zfs snapshot #{options[:dataset]}@#{options[:snapshot_name]}") unless datasets.include?(options[:dataset])
             ## Specify the dataset by number
             datasets.each_with_index do |disk, index|
-              if dataset == index
+              if options[:dataset].to_i == index
                 uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-                # execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{snapshot_name}")
+                # execute(false, "#{@pfexec} zfs snapshot #{dataset}@#{options[:snapshot_name]}")
               end
             end
           end
