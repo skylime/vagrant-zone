@@ -970,6 +970,7 @@ end          )
           additionaldataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
           datasets << additionaldataset.to_s
         end
+        puts datasets
         case job
         when 'list'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
