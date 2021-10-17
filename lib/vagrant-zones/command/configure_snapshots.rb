@@ -13,11 +13,11 @@ module VagrantPlugins
               options[:dataset] = p
             end
             frequencymsg = 'Set a policy with one of the available optional frequencies'
-            o.on('--frequency <hourly/daily/weekly/monthly/default>', frequencymsg) do |p|
+            o.on('--set_frequency <hourly/daily/weekly/monthly/default>', frequencymsg) do |p|
               options[:set_frequency] = p
             end
             frequency_rtnmsg = 'Number of snapshots to take for the frequency policy'
-            o.on('--frequency_rtn <#>/default ', frequency_rtnmsg) do |p|
+            o.on('--set_frequency_rtn <#>/default ', frequency_rtnmsg) do |p|
               options[:set_frequency_rtn] = p
             end
             deletemsg = 'Delete frequency policy'
