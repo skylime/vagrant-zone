@@ -1096,6 +1096,7 @@ end          )
           #ip = responses[-1][0].rstrip.gsub(/\e\[\?2004l/, '').lstrip
           crons.each do |job|
             puts job[/#{rtnregex}/, 1]
+            puts machine.name
             case job[/#{rtnregex}/, 1]
             when 'hourly'
               hourly = job if job.include? machine.name
