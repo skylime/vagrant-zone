@@ -1155,6 +1155,7 @@ end          )
                     monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk}  # #{machine.name}"
        
                     puts options[:set_frequency_rtn]
+                    puts options[:set_frequency]
                     puts hourlycron unless hourly
                     puts dailycron unless daily
                     puts weeklycron unless weekly
@@ -1162,14 +1163,15 @@ end          )
 
                   else
                     puts options[:set_frequency_rtn]
+                    puts options[:set_frequency]
                     hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
                     dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
                     weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
                     monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
-                    puts hourlycron unless hourly 
-                    puts dailycron unless daily
-                    puts weeklycron unless weekly
-                    puts monthlycron unless monthly
+                    puts hourlycron if hourly.nil? && options[:set_frequency] == 'hourly'
+                    puts dailycron if daily.nil? && options[:set_frequency] == 'daily'
+                    puts weeklycron if weekly.nil? && options[:set_frequency] == 'weekly'
+                    puts monthlycron if monthly.nil? && options[:set_frequency] == 'monthly'
                   end
                 end
               end
