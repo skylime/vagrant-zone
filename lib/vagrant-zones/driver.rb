@@ -1031,24 +1031,22 @@ end          )
                 uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
               end
             end
-          else
+          else 
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
             ## Specify the dataset by number
             datasets.each_with_index do |disk, dindex|
-              if dindex.to_i == options[:dataset].to_i
-                output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
-                output = output.split(/\n/).drop(1)
-                puts "\t#\tSnapshot"
-                output.each_with_index do |snaps, spindex|
-                  if options[:snapshot_name].to_i == spindex && options[:snapshot_name].to_s != 'all'
-                    puts "\t#{spindex}\t#{snaps}\t"
-                    execute(false, "#{@pfexec} zfs destroy #{snaps}")
-                    uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
-                  end
-                  if options[:snapshot_name].to_s == 'all'
-                    puts "\t#{spindex}\t#{snaps}\t"
-                    execute(false, "#{@pfexec} zfs destroy #{snaps}")
-                  end
+              next unless dindex.to_i == options[:dataset].to_i
+              output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
+              output = output.split(/\n/).drop(1)
+              output.each_with_index do |snaps, spindex|
+                if options[:snapshot_name].to_i == spindex && options[:snapshot_name].to_s != 'all'
+                  puts "\t#{spindex}\t#{snaps}\t"
+                  execute(false, "#{@pfexec} zfs destroy #{snaps}")
+                  uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
+                end
+                if options[:snapshot_name].to_s == 'all'
+                  puts "\t#{spindex}\t#{snaps}\t"
+                  execute(false, "#{@pfexec} zfs destroy #{snaps}")
                 end
               end
             end
