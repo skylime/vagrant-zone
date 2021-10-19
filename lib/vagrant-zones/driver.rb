@@ -1121,7 +1121,7 @@ end          )
               if options[:delete] == 'all'
 
                 string = " -p hourly -r -n 24 #{disk}"
-                puts cronjobs[:hourly] if cronjobs[:hourly].nil?
+                puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
                 puts string
                 puts cronjobs[:daily] unless cronjobs[:daily].nil?
                 puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
