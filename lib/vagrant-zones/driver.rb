@@ -1138,14 +1138,10 @@ end          )
                 setcron = "{ #{@pfexec} crontab -l; echo '#{monthlycron}'; } | #{@pfexec} crontab" if cronjobs[:monthly].nil?
                 puts setcron if cronjobs[:monthly].nil?
           elsif options[:set_frequency]
-                if options[:set_frequency_rtn].nil? || options[:set_frequency_rtn] == 'defaults'
-                  puts "Much extra let's move it"
-                else
-                  hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}"
-                  dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}"
-                  weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}"
-                  monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}"
-                end
+                hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}" unless options[:set_frequency_rtn].nil? || options[:set_frequency_rtn] == 'defaults'
+                dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}" unless options[:set_frequency_rtn].nil? || options[:set_frequency_rtn] == 'defaults'
+                weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}" unless options[:set_frequency_rtn].nil? || options[:set_frequency_rtn] == 'defaults'
+                monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}" unless options[:set_frequency_rtn].nil? || options[:set_frequency_rtn] == 'defaults'
                 setcron = "{ #{@pfexec} crontab -l; echo '#{hourlycron}'; } | #{@pfexec} crontab" if cronjobs[:hourly].nil? && options[:set_frequency] == 'hourly'
                 setcron = "{ #{@pfexec} crontab -l; echo '#{dailycron}'; } | #{@pfexec} crontab" if cronjobs[:daily].nil? && options[:set_frequency] == 'daily'
                 setcron = "{ #{@pfexec} crontab -l; echo '#{weeklycron}'; } | #{@pfexec} crontab" if cronjobs[:weekly].nil? && options[:set_frequency] == 'weekly'
