@@ -1119,10 +1119,15 @@ end          )
             elsif options[:delete]
               puts options[:delete]
               if options[:delete] == 'all'
-                puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
+
+                string = " -p hourly -r -n 24 #{disk}"
+                puts cronjobs[:hourly] if cronjobs[:hourly].nil?
+                puts string
                 puts cronjobs[:daily] unless cronjobs[:daily].nil?
                 puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
                 puts cronjobs[:monthly] unless cronjobs[:monthly].nil?
+                
+                removecron = "{ #{@pfexec} crontab -l | grep -v '#{string}'  | #{@pfexec} crontab }" unless cronjobs[:hourly].nil? 
               else
                 puts cronjobs[:hourly] if  options[:delete] == 'hourly' 
                 puts cronjobs[:daily] if options[:delete] == 'daily' 
