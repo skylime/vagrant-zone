@@ -1149,7 +1149,7 @@ end          )
                   setcron = "{ #{@pfexec} crontab -l; echo '#{weeklycron}'; } | #{@pfexec} crontab" if cronjobs[:weekly].nil? && options[:set_frequency] == 'weekly'
                   puts setcron if cronjobs[:weekly].nil? && options[:set_frequency] == 'weekly'
                   setcron = "{ #{@pfexec} crontab -l; echo '#{monthlycron}'; } | #{@pfexec} crontab" if cronjobs[:monthly].nil? && options[:set_frequency] == 'monthly'
-                  puts setcron unleifss cronjobs[:monthly].nil? && options[:set_frequency] == 'monthly'
+                  puts setcron if cronjobs[:monthly].nil? && options[:set_frequency] == 'monthly'
                 else
                   hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
                   dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
