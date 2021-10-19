@@ -1144,7 +1144,7 @@ end          )
                 if options[:set_frequency_rtn]
 
                   puts options[:set_frequency_rtn]
-                  puts hourlycron unless cronjobs[:hourly] && options[:set_frequency_rtn] == 'defaults'
+                  puts hourlycron unless cronjobs[:hourly] && options[:set_frequency_rtn] != 'defaults'
                   puts dailycron unless cronjobs[:daily]
                   puts weeklycron unless cronjobs[:weekly]
                   puts monthlycron unless cronjobs[:monthly]
