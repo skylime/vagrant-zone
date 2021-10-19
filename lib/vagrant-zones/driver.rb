@@ -1103,7 +1103,7 @@ end          )
 
             end
 
-            puts cronjobs[:hourly] unless cronjobs[hourly].nil?
+            puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
             #puts daily unless daily.nil?
             #puts weekly unless weekly.nil?
             #puts monthly unless monthly.nil?
