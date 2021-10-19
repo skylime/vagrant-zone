@@ -1142,14 +1142,14 @@ end          )
             elsif options[:set_frequency]
               if options[:set_frequency] == 'all'
                 if options[:set_frequency_rtn].nil? || options[:set_frequency_rtn] == 'defaults'
-                  setcron = "{ #{@pfexec} crontab -l; echo '#{hourlycron}'; } | #{@pfexec} crontab" unless cronjobs[:hourly] && options[:set_frequency] == 'hourly'
-                  puts setcron 
-                  setcron = "{ #{@pfexec} crontab -l; echo '#{dailycron}'; } | #{@pfexec} crontab" unless cronjobs[:daily] && options[:set_frequency] == 'daily'
-                  puts setcron
-                  setcron = "{ #{@pfexec} crontab -l; echo '#{weeklycron}'; } | #{@pfexec} crontab" unless cronjobs[:weekly] && options[:set_frequency] == 'weekly'
-                  puts setcron
-                  setcron = "{ #{@pfexec} crontab -l; echo '#{monthlycron}'; } | #{@pfexec} crontab" unless cronjobs[:monthly] && options[:set_frequency] == 'monthly'
-                  puts setcron 
+                  setcron = "{ #{@pfexec} crontab -l; echo '#{hourlycron}'; } | #{@pfexec} crontab" unless cronjobs[:hourly].nil? 
+                  puts setcron unless cronjobs[:hourly].nil? 
+                  setcron = "{ #{@pfexec} crontab -l; echo '#{dailycron}'; } | #{@pfexec} crontab" unless cronjobs[:daily].nil?
+                  puts setcron unless cronjobs[:daily].nil? 
+                  setcron = "{ #{@pfexec} crontab -l; echo '#{weeklycron}'; } | #{@pfexec} crontab" unless cronjobs[:weekly].nil?
+                  puts setcron unless cronjobs[:weekly].nil? 
+                  setcron = "{ #{@pfexec} crontab -l; echo '#{monthlycron}'; } | #{@pfexec} crontab" unless cronjobs[:monthly].nil?
+                  puts setcron  unless cronjobs[:monthly].nil? 
                 else
                   hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
                   dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
