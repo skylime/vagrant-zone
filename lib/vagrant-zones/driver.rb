@@ -1141,7 +1141,7 @@ end          )
               end
             elsif options[:set_frequency]
               if options[:set_frequency] == 'all'
-                if options[:set_frequency_rtn]
+                if options[:set_frequency_rtn] && options[:set_frequency_rtn] != 'defaults'
 
                   puts options[:set_frequency_rtn]
                   puts hourlycron unless cronjobs[:hourly] 
