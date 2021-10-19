@@ -1129,8 +1129,8 @@ end          )
                 puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
                 puts cronjobs[:monthly] unless cronjobs[:monthly].nil?
                 
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{string}'  | #{@pfexec} crontab }"   unless cronjobs[:hourly].nil?
-                puts removecron  unless cronjobs[:hourly].nil?
+                removecron = "{ #{@pfexec} crontab -l | grep -v '#{string}'  | #{@pfexec} crontab }"   unless cronjobs[:daily].nil?
+                puts removecron  unless cronjobs[:daily].nil?
               else
                 puts cronjobs[:hourly] if  options[:delete] == 'hourly' 
                 puts cronjobs[:daily] if options[:delete] == 'daily' 
