@@ -1066,10 +1066,6 @@ end          )
           monthlytrn = 1
           rtnregex = '-p (weekly|monthly|daily|hourly)'
           options[:dataset] = 'all' if options[:dataset].nil?
-          # options[:set_frequency] = 'default' if options[:set_frequency].nil?
-          # 
-          # options[:delete] = 'all' if options[:delete].nil?
-          # options[:list] = 'all' if options[:list].nil?
           datasets.each do |disk|
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
             puts disk
