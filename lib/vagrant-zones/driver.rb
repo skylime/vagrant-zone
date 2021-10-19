@@ -1082,7 +1082,10 @@ end          )
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
             puts disk
             cronjobs = {}
-            
+            hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{hourlytrn} #{disk}  # #{machine.name}"
+            dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{dailytrn} #{disk}  # #{machine.name}"
+            weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
+            monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk}  # #{machine.name}"
             crons.each do |job|
               next if job.empty?
               name = machine.name
@@ -1139,14 +1142,10 @@ end          )
               end
             elsif options[:set_frequency] 
               if options[:set_frequency] == 'all'
-                if options[:set_frequency_rtn] == 'defaults'
-                  hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{hourlytrn} #{disk}  # #{machine.name}"
-                  dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{dailytrn} #{disk}  # #{machine.name}"
-                  weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
-                  monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk}  # #{machine.name}"
-     
+                if options[:set_frequency_rtn]
+
                   puts options[:set_frequency_rtn]
-                  puts hourlycron unless cronjobs[:hourly]
+                  puts hourlycron unless cronjobs[:hourly] && options[:set_frequency_rtn] == 'defaults'
                   puts dailycron unless cronjobs[:daily]
                   puts weeklycron unless cronjobs[:weekly]
                   puts monthlycron unless cronjobs[:monthly]
@@ -1163,10 +1162,6 @@ end          )
                 end
               else
                 if options[:set_frequency_rtn] == 'defaults'
-                  hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{hourlytrn} #{disk}  # #{machine.name}"
-                  dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{dailytrn} #{disk}  # #{machine.name}"
-                  weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
-                  monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk}  # #{machine.name}"
                   setcron = "{ #{@pfexec} crontab -l; echo '#{hourlycron}'; } | #{@pfexec} crontab" if cronjobs[:hourly].nil? && options[:set_frequency] == 'hourly'
                   setcron = "{ #{@pfexec} crontab -l; echo '#{dailycron}'; } | #{@pfexec} crontab" if cronjobs[:daily].nil? && options[:set_frequency] == 'daily'
                   setcron = "{ #{@pfexec} crontab -l; echo '#{weeklycron}'; } | #{@pfexec} crontab" if cronjobs[:weekly].nil? && options[:set_frequency] == 'weekly'
