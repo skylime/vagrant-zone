@@ -1102,8 +1102,7 @@ end          )
               when 'monthly'
                 monthly = job if job[/#{machine.name}/]
                 cronjobs.merge!(monthly: monthly)
-              end 
-
+              end
             end
 
             if options[:list]                
@@ -1140,7 +1139,7 @@ end          )
                 puts cronjobs[:weekly] if  options[:delete] == 'weekly'
                 puts cronjobs[:monthly] if options[:delete] == 'monthly' 
               end
-            elsif options[:set_frequency] 
+            elsif options[:set_frequency]
               if options[:set_frequency] == 'all'
                 if options[:set_frequency_rtn]
 
