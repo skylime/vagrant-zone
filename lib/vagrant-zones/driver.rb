@@ -1119,10 +1119,10 @@ end          )
             elsif options[:delete]
               puts options[:delete]
               if options[:delete] == 'all'
-                puts cronjobs[:hourly] unless hourly.nil?
-                puts cronjobs[:daily] unless daily.nil?
-                puts cronjobs[:weekly] unless weekly.nil?
-                puts cronjobs[:monthly] unless monthly.nil?
+                puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
+                puts cronjobs[:daily] unless cronjobs[:daily].nil?
+                puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
+                puts cronjobs[:monthly] unless cronjobs[:monthly].nil?
               else
                 puts cronjobs[:hourly] if  options[:list] == 'hourly' 
                 puts cronjobs[:daily] if options[:list] == 'daily' 
