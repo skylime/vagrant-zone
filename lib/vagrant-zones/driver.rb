@@ -1104,7 +1104,6 @@ end          )
                 cronjobs.merge!(monthly: monthly)
               end
             end
-
             if options[:list]                
               if options[:list] == 'all'
                 puts options[:list]
@@ -1119,20 +1118,26 @@ end          )
                 puts cronjobs[:monthly] if options[:list] == 'monthly' 
               end
             elsif options[:delete]
-              puts options[:delete]
               if options[:delete] == 'all'
-
                 string = "0  0  *  *  0-5  /opt/vagrant/bin/Snapshooter.sh -p daily -r -n 1 Array-1/zones/0002--testv3.prominic.work/boot  # 0002--testv3.prominic.work"
-                #puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
-                #puts string
-                string = cronjobs[:daily].gsub(/\*/, '\*') unless cronjobs[:daily].nil?
-                #puts string
+
+
+                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:hourly].gsub(/\*/, '\*')}'  | #{@pfexec} crontab }" unless cronjobs[:hourly].nil?
+                puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
+                puts removecron  unless cronjobs[:hourly].nil?
+
+                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:daily].gsub(/\*/, '\*')}'  | #{@pfexec} crontab }" unless cronjobs[:daily].nil?
                 puts cronjobs[:daily] unless cronjobs[:daily].nil?
-                puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
-                puts cronjobs[:monthly] unless cronjobs[:monthly].nil?
-                
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{string}'  | #{@pfexec} crontab }"   unless cronjobs[:daily].nil?
                 puts removecron  unless cronjobs[:daily].nil?
+
+                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:weekly].gsub(/\*/, '\*')}'  | #{@pfexec} crontab }"   unless cronjobs[:weekly].nil?
+                puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
+                puts removecron  unless cronjobs[:weekly].nil?
+                
+                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:monthly].gsub(/\*/, '\*')}'  | #{@pfexec} crontab }" unless cronjobs[:monthly].nil?
+                puts cronjobs[:monthly] unless cronjobs[:monthly].nil? 
+                puts removecron  unless cronjobs[:monthly].nil?
+                
               else
                 puts cronjobs[:hourly] if  options[:delete] == 'hourly' 
                 puts cronjobs[:daily] if options[:delete] == 'daily' 
