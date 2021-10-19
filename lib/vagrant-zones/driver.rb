@@ -1124,10 +1124,10 @@ end          )
                 puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
                 puts cronjobs[:monthly] unless cronjobs[:monthly].nil?
               else
-                puts cronjobs[:hourly] if  options[:list] == 'hourly' 
-                puts cronjobs[:daily] if options[:list] == 'daily' 
-                puts cronjobs[:weekly] if  options[:list] == 'weekly'
-                puts cronjobs[:monthly] if options[:list] == 'monthly' 
+                puts cronjobs[:hourly] if  options[:delete] == 'hourly' 
+                puts cronjobs[:daily] if options[:delete] == 'daily' 
+                puts cronjobs[:weekly] if  options[:delete] == 'weekly'
+                puts cronjobs[:monthly] if options[:delete] == 'monthly' 
               end
             end
             #elsif options[:set_frequency] 
