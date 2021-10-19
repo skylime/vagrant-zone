@@ -1121,10 +1121,10 @@ end          )
               if options[:delete] == 'all'
 
                 string = "0  0  *  *  0-5  /opt/vagrant/bin/Snapshooter.sh -p daily -r -n 1 Array-1/zones/0002--testv3.prominic.work/boot  # 0002--testv3.prominic.work"
-                puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
-                puts string
+                #puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
+                #puts string
                 string = string.gsub(/\*/, '\*')
-                puts string
+                #puts string
                 puts cronjobs[:daily] unless cronjobs[:daily].nil?
                 puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
                 puts cronjobs[:monthly] unless cronjobs[:monthly].nil?
