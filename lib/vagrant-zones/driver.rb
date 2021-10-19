@@ -1091,16 +1091,16 @@ end          )
               name = machine.name
               case job[/#{rtnregex}/, 1]
               when 'hourly'
-                hourly = job if job[/#{machine.name}/]
+                hourly = job if job[/#{machine.name}/] && job[/#{disk}/]
                 cronjobs.merge!(hourly: hourly)
               when 'daily'
-                daily = job if job[/#{machine.name}/]
+                daily = job if job[/#{machine.name}/] && job[/#{disk}/]
                 cronjobs.merge!(daily: daily)
               when 'weekly'
-                weekly = job if job[/#{machine.name}/]
+                weekly = job if job[/#{machine.name}/] && job[/#{disk}/]
                 cronjobs.merge!(weekly: weekly)
               when 'monthly'
-                monthly = job if job[/#{machine.name}/]
+                monthly = job if job[/#{machine.name}/] && job[/#{disk}/]
                 cronjobs.merge!(monthly: monthly)
               end
             end
