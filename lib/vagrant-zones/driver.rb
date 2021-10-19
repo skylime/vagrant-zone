@@ -93,7 +93,7 @@ module VagrantPlugins
         port = sshport(machine).to_s
         port = 22 if sshport(machine).to_s.nil?
         puts "#{password} not used for this connection at this time"
-        execute(true, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip}  '#{command}' ")
+        execute(true, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' ")
       end
 
       def console(machine, command, ip, port, exit)
@@ -127,7 +127,7 @@ module VagrantPlugins
         else
           case command
           when 'webvnc'
-            run = "pfexec zadm  webvnc #{netport} #{name}"
+            run = "pfexec zadm webvnc #{netport} #{name}"
             pid = spawn(run)
             Process.wait pid if detach == 'no'
             Process.detach(pid) if detach == 'yes'
@@ -135,7 +135,7 @@ module VagrantPlugins
             File.open('console.pid', 'w') { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == 'yes'
             puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
           when 'vnc'
-            run = "pfexec zadm  vnc #{netport} #{name}"
+            run = "pfexec zadm vnc #{netport} #{name}"
             pid = spawn(run)
             Process.wait pid if detach == 'no'
             Process.detach(pid) if detach == 'yes'
@@ -198,7 +198,7 @@ module VagrantPlugins
           if opts[:dhcp] && opts[:managed] && adaptertype.to_s == 'public_network'
             vnic_name = "vnic#{nic_type}#{vtype(machine)}_#{config.partition_id}_#{opts[:nic_number]}"
             PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-              command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1  | awk '{ print $2 }'  | cut -f1 -d\"/\" \n"
+              command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1 | awk '{ print $2 }' | cut -f1 -d\"/\" \n"
               zlogin_read.expect(/\n/) { zlogin_write.printf(command) }
               Timeout.timeout(config.clean_shutdown_time) do
                 loop do
@@ -232,7 +232,7 @@ module VagrantPlugins
         if state == 'setup'
           ## Remove old installer netplan config
           uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
-          zlogin(machine, 'rm -rf  /etc/netplan/*.yaml')
+          zlogin(machine, 'rm -rf /etc/netplan/*.yaml')
         end
         machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
@@ -399,7 +399,7 @@ end             )
         uiinfo.info(I18n.t('vagrant_zones.delete_disks'))
         ## Check if Boot Dataset exists
         zp = config.zonepath.delete_prefix('/').to_s
-        dataset_boot_exists = execute(false, "#{@pfexec} zfs list | grep  #{zp}/boot |  awk '{ print $1 }' || true")
+        dataset_boot_exists = execute(false, "#{@pfexec} zfs list | grep #{zp}/boot | awk '{ print $1 }' || true")
         ## If boot Dataset exists, delete it
         if dataset_boot_exists == "#{zp}/boot"
           ## Destroy Additional Disks
@@ -409,7 +409,7 @@ end             )
               addataset = "#{disk['array']}#{disk['path']}"
               cinfo = "#{disk['size']}, #{addataset}"
               uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo)
-              dataset_exists = execute(false, "#{@pfexec} zfs list | grep  #{addataset} |  awk '{ print $1 }' || true")
+              dataset_exists = execute(false, "#{@pfexec} zfs list | grep #{addataset} | awk '{ print $1 }' || true")
               execute(false, "#{@pfexec} zfs destroy -r #{addataset}") if dataset_exists == addataset
             end
           end
@@ -422,7 +422,7 @@ end             )
         end
         ## Check if root dataset exists
         uiinfo.info(I18n.t('vagrant_zones.destroy_dataset') + zp)
-        dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep  #{zp} |  awk '{ print $1 }' | grep -v path  || true")
+        dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep #{zp} | awk '{ print $1 }' | grep -v path || true")
         execute(false, "#{@pfexec} zfs destroy -r #{zp}") if dataset_root_exists == zp.to_s
       end
 
@@ -443,7 +443,7 @@ end             )
             @network = NetAddr.parse_net(cinfo)
             @defrouter = opts[:gateway]
           end
-          # execute(false, "#{@pfexec} zonecfg -z #{name} \"create ; set  zonepath=/rpool/zones/#{name}/path\"")
+          # execute(false, "#{@pfexec} zonecfg -z #{name} \"create ; set zonepath=/rpool/zones/#{name}/path\"")
           attr = %(create
 set zonepath=#{config.zonepath}/path
 set brand=#{config.brand}
@@ -645,7 +645,7 @@ end         )
                    end
 
             port += ',wait' if config.console_onboot
-            cinfo = "Console type: #{console},  Port: #{port}"
+            cinfo = "Console type: #{console}, Port: #{port}"
             uiinfo.info(I18n.t('vagrant_zones.setting_console_access') + cinfo)
             console_attr = %(add attr
     set name=#{console}
@@ -771,12 +771,12 @@ end          )
           uiinfo.info(I18n.t('vagrant_zones.illumos_check'))
         when 'bhyve'
           ## https://man.omnios.org/man5/bhyve
-          ## Check for  bhhwcompat
-          result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
+          ## Check for bhhwcompat
+          result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat ; echo $?")
           if result == 1
             bhhwcompaturl = 'https://downloads.omnios.org/misc/bhyve/bhhwcompat'
-            execute(true, "#{@pfexec} curl -o /usr/sbin/bhhwcompat #{bhhwcompaturl}  && #{@pfexec} chmod +x /usr/sbin/bhhwcompat")
-            result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat  ; echo $?")
+            execute(true, "#{@pfexec} curl -o /usr/sbin/bhhwcompat #{bhhwcompaturl} && #{@pfexec} chmod +x /usr/sbin/bhhwcompat")
+            result = execute(true, "#{@pfexec} test -f /usr/sbin/bhhwcompat ; echo $?")
             raise Errors::MissingCompatCheckTool if result.zero?
           end
 
@@ -841,7 +841,7 @@ end          )
             zlogincommand(machine, "curl #{key_url} -O /home/vagrant/.ssh/authorized_keys")
 
             id_rsa = 'https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant'
-            command = "#{@pfexec} curl #{id_rsa}  -O id_rsa"
+            command = "#{@pfexec} curl #{id_rsa} -O id_rsa"
             Util::Subprocess.new command do |_stdout, stderr, _thread|
               uiinfo.rewriting do |ui|
                 ui.clear_line
@@ -859,7 +859,7 @@ end          )
       # This checks if the user exists on the VM, usually for LX zones
       def user_exists?(machine, user = 'vagrant')
         name = machine.name
-        ret  = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
+        ret = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
         return true if ret.zero?
 
         false
@@ -907,7 +907,7 @@ end          )
         if config.vagrant_user_private_key_path.to_s.nil?
           id_rsa = 'https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant'
           file = './id_rsa'
-          command = "#{@pfexec} curl #{id_rsa}  -O #{file}"
+          command = "#{@pfexec} curl #{id_rsa} -O #{file}"
           Util::Subprocess.new command do |_stdout, stderr, _thread|
             uiinfo.rewriting do |ui|
               ui.clear_line
@@ -976,7 +976,7 @@ end          )
         when 'list'
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
           datasets.each_with_index do |disk, index|
-            puts "\n  Disk Number: #{index}\n  Disk Path: #{disk}"
+            puts "\n Disk Number: #{index}\n Disk Path: #{disk}"
             zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk} || true")
             break if zfs_snapshots.nil?
 
@@ -1054,11 +1054,9 @@ end          )
               end
             end
             ## Specify the Dataset by path
-            execute(false, "#{@pfexec} zfs destroy  #{options[:dataset]}@#{options[:snapshot_name]}") if datasets.include?("#{options[:dataset]}@#{options[:snapshot_name]}")
+            execute(false, "#{@pfexec} zfs destroy #{options[:dataset]}@#{options[:snapshot_name]}") if datasets.include?("#{options[:dataset]}@#{options[:snapshot_name]}")
           end
-
         when 'cron'
-
           crons = execute(false, "#{@pfexec} crontab -l").split("\n")
           ## Strip solaris Header
           header = crons.first(28)
@@ -1082,10 +1080,10 @@ end          )
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
             puts disk
             cronjobs = {}
-            hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{hourlytrn} #{disk}  # #{machine.name}"
-            dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{dailytrn} #{disk}  # #{machine.name}"
-            weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk}  # #{machine.name}"
-            monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk}  # #{machine.name}"
+            hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{hourlytrn} #{disk} # #{machine.name}"
+            dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{dailytrn} #{disk} # #{machine.name}"
+            weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{weeklytrn} #{disk} # #{machine.name}"
+            monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{monthlytrn} #{disk} # #{machine.name}"
             crons.each do |job|
               next if job.empty?
               name = machine.name
@@ -1104,7 +1102,7 @@ end          )
                 cronjobs.merge!(monthly: monthly)
               end
             end
-            if options[:list]                
+            if options[:list]
               if options[:list] == 'all'
                 puts options[:list]
                 puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
@@ -1112,27 +1110,27 @@ end          )
                 puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
                 puts cronjobs[:monthly] unless cronjobs[:monthly].nil?
               else
-                puts cronjobs[:hourly] if  options[:list] == 'hourly' 
+                puts cronjobs[:hourly] if options[:list] == 'hourly' 
                 puts cronjobs[:daily] if options[:list] == 'daily' 
-                puts cronjobs[:weekly] if  options[:list] == 'weekly'
+                puts cronjobs[:weekly] if options[:list] == 'weekly'
                 puts cronjobs[:monthly] if options[:list] == 'monthly' 
               end
             elsif options[:delete]
               removecron = ""
               if options[:delete] == 'all'
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:hourly].gsub(/\*/, '\*')}'  | #{@pfexec} crontab }" unless cronjobs[:hourly].nil?
-                puts removecron  unless cronjobs[:hourly].nil?
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:daily].gsub(/\*/, '\*')}'  | #{@pfexec} crontab }" unless cronjobs[:daily].nil?
-                puts removecron  unless cronjobs[:daily].nil?
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:weekly].gsub(/\*/, '\*')}'  | #{@pfexec} crontab }" unless cronjobs[:weekly].nil?
-                puts removecron  unless cronjobs[:weekly].nil?
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:monthly].gsub(/\*/, '\*')}'  | #{@pfexec} crontab }" unless cronjobs[:monthly].nil?
-                puts removecron  unless cronjobs[:monthly].nil?
+                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" unless cronjobs[:hourly].nil?
+                puts removecron unless cronjobs[:hourly].nil?
+                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" unless cronjobs[:daily].nil?
+                puts removecron unless cronjobs[:daily].nil?
+                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" unless cronjobs[:weekly].nil?
+                puts removecron unless cronjobs[:weekly].nil?
+                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" unless cronjobs[:monthly].nil?
+                puts removecron unless cronjobs[:monthly].nil?
               else
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:hourly].gsub(/\*/, '\*')}'  | #{@pfexec} crontab }" if cronjobs[:hourly] && options[:delete] == 'hourly' 
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:daily].gsub(/\*/, '\*')}'  | #{@pfexec} crontab }" if cronjobs[:daily] && options[:delete] == 'daily'
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:weekly].gsub(/\*/, '\*')}'  | #{@pfexec} crontab }" if cronjobs[:weekly] && options[:delete] == 'weekly'
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:monthly].gsub(/\*/, '\*')}'  | #{@pfexec} crontab }" if cronjobs[:monthly] && options[:delete] == 'monthly' 
+                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" if cronjobs[:hourly] && options[:delete] == 'hourly' 
+                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" if cronjobs[:daily] && options[:delete] == 'daily'
+                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" if cronjobs[:weekly] && options[:delete] == 'weekly'
+                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" if cronjobs[:monthly] && options[:delete] == 'monthly' 
                 puts removecron
               end
             elsif options[:set_frequency]
@@ -1145,12 +1143,12 @@ end          )
                   setcron = "{ #{@pfexec} crontab -l; echo '#{weeklycron}'; } | #{@pfexec} crontab" if cronjobs[:weekly].nil?
                   puts setcron if cronjobs[:weekly].nil?
                   setcron = "{ #{@pfexec} crontab -l; echo '#{monthlycron}'; } | #{@pfexec} crontab" if cronjobs[:monthly].nil?
-                  puts setcron  if cronjobs[:monthly].nil?
+                  puts setcron if cronjobs[:monthly].nil?
                 else
-                  hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
-                  dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
-                  weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
-                  monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
+                  hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}"
+                  dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}"
+                  weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}"
+                  monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}"
                   setcron = "{ #{@pfexec} crontab -l; echo '#{hourlycron}'; } | #{@pfexec} crontab" if cronjobs[:hourly].nil?
                   puts setcron if cronjobs[:hourly].nil?
                   setcron = "{ #{@pfexec} crontab -l; echo '#{dailycron}'; } | #{@pfexec} crontab" if cronjobs[:daily].nil?
@@ -1168,10 +1166,10 @@ end          )
                   setcron = "{ #{@pfexec} crontab -l; echo '#{monthlycron}'; } | #{@pfexec} crontab" if cronjobs[:monthly].nil? && options[:set_frequency] == 'monthly'
                   puts setcron
                 else
-                  hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
-                  dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
-                  weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
-                  monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{options[:set_frequency_rtn]} #{disk}  # #{machine.name}"
+                  hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}"
+                  dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}"
+                  weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}"
+                  monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}"
                   setcron = "{ #{@pfexec} crontab -l; echo '#{hourlycron}'; } | #{@pfexec} crontab" if cronjobs[:hourly].nil? && options[:set_frequency] == 'hourly'
                   setcron = "{ #{@pfexec} crontab -l; echo '#{dailycron}'; } | #{@pfexec} crontab" if cronjobs[:daily].nil? && options[:set_frequency] == 'daily'
                   setcron = "{ #{@pfexec} crontab -l; echo '#{weeklycron}'; } | #{@pfexec} crontab" if cronjobs[:weekly].nil? && options[:set_frequency] == 'weekly'
