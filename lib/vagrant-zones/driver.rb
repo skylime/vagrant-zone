@@ -1111,27 +1111,26 @@ end          )
                 puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
                 puts cronjobs[:monthly] unless cronjobs[:monthly].nil?
               else
-                puts options[:list]
+                puts cronjobs[:hourly] if  options[:list] == 'hourly' 
+                puts cronjobs[:daily] if options[:list] == 'daily' 
+                puts cronjobs[:weekly] if  options[:list] == 'weekly'
+                puts cronjobs[:monthly] if options[:list] == 'monthly' 
+              end
+            elsif options[:delete]
+              puts options[:delete]
+              if options[:delete] == 'all'
+                puts cronjobs[:hourly] unless hourly.nil?
+                puts cronjobs[:daily] unless daily.nil?
+                puts cronjobs[:weekly] unless weekly.nil?
+                puts cronjobs[:monthly] unless monthly.nil?
+              else
                 puts cronjobs[:hourly] if  options[:list] == 'hourly' 
                 puts cronjobs[:daily] if options[:list] == 'daily' 
                 puts cronjobs[:weekly] if  options[:list] == 'weekly'
                 puts cronjobs[:monthly] if options[:list] == 'monthly' 
               end
             end
-              #elsif options[:delete]
-            #  puts options[:delete]
-            #  if options[:delete] == 'all'
-            #    puts hourly unless hourly.nil?
-            #    puts daily unless daily.nil?
-            #    puts weekly unless weekly.nil?
-            #    puts monthly unless monthly.nil?
-            #  else
-            #    puts hourly if  options[:delete] == 'hourly' 
-            #    puts daily if options[:delete] == 'daily' 
-            #    puts weekly if  options[:delete] == 'weekly'
-            #    puts monthly if options[:delete] == 'monthly' 
-            #  end
-                        #elsif options[:set_frequency] 
+            #elsif options[:set_frequency] 
             #  if options[:set_frequency] == 'all'
             #    if options[:set_frequency_rtn] == 'defaults'
             #      hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{hourlytrn} #{disk}  # #{machine.name}"
