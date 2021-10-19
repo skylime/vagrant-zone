@@ -1081,25 +1081,32 @@ end          )
           datasets.each do |disk|
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
             puts disk
+            cronjobs = {}
+            
             crons.each do |job|
               next if job.empty?
               name = machine.name
               case job[/#{rtnregex}/, 1]
               when 'hourly'
                 hourly = job if job[/#{machine.name}/]
+                cronjobs.merge!(hourly: hourly)
               when 'daily'
                 daily = job if job[/#{machine.name}/]
+                cronjobs.merge!(daily: daily)
               when 'weekly'
                 weekly = job if job[/#{machine.name}/]
+                cronjobs.merge!(weekly: weekly)
               when 'monthly'
                 monthly = job if job[/#{machine.name}/]
+                cronjobs.merge!(monthly: monthly)
               end 
+
             end
 
-            puts hourly unless hourly.nil?
-            puts daily unless daily.nil?
-            puts weekly unless weekly.nil?
-            puts monthly unless monthly.nil?
+            puts cronjobs.hourly unless hourly.nil?
+            #puts daily unless daily.nil?
+            #puts weekly unless weekly.nil?
+            #puts monthly unless monthly.nil?
 
             #if options[:list]                
             #  if options[:list] == 'all'
