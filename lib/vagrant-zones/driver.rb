@@ -456,7 +456,7 @@ end             )
           end
           # execute(false, "#{@pfexec} zonecfg -z #{name} \"create ; set zonepath=/rpool/zones/#{name}/path\"")
           attr = %(create
-set zonepath=#{datasetpath}/path
+set zonepath=/#{datasetpath}/path
 set brand=#{config.brand}
 set autoboot=#{config.autoboot}
 add attr
@@ -513,7 +513,7 @@ add attr
   set value=#{config.netif}
 end
 add device
-  set match=/dev/zvol/rdsk#{datasetroot}
+  set match=/dev/zvol/rdsk/#{datasetroot}
 end
 add attr
   set name=bootdisk
