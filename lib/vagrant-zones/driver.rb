@@ -393,15 +393,22 @@ end             )
         end
       end
 
-      # This helps us set delete any associated datasets of the zone
+      # This helps us delete any associated datasets of the zone
       def delete_dataset(machine, uiinfo)
         config = machine.provider_config
+        
+        datadir = machine.data_dir
+        bootconfigs = config.boot
+        datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
+        datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
+
+
         uiinfo.info(I18n.t('vagrant_zones.delete_disks'))
         ## Check if Boot Dataset exists
-        zp = config.zonepath.delete_prefix('/').to_s
-        dataset_boot_exists = execute(false, "#{@pfexec} zfs list | grep #{zp}/boot | awk '{ print $1 }' || true")
+        zp = datasetpath.delete_prefix('/').to_s
+        dataset_boot_exists = execute(false, "#{@pfexec} zfs list | grep #{datasetroot} | awk '{ print $1 }' || true")
         ## If boot Dataset exists, delete it
-        if dataset_boot_exists == "#{zp}/boot"
+        if dataset_boot_exists == "#{datasetroot}"
           ## Destroy Additional Disks
           unless  config.additional_disks.nil?
             disks = config.additional_disks
@@ -414,8 +421,8 @@ end             )
             end
           end
           ## Destroy Boot dataset
-          uiinfo.info(I18n.t('vagrant_zones.destroy_dataset') + "#{zp}/boot")
-          execute(false, "#{@pfexec} zfs destroy -r #{zp}/boot")
+          uiinfo.info(I18n.t('vagrant_zones.destroy_dataset') + "#{datasetroot}")
+          execute(false, "#{@pfexec} zfs destroy -r #{datasetroot}")
 
         else
           uiinfo.info(I18n.t('vagrant_zones.dataset_nil'))
@@ -431,6 +438,10 @@ end             )
         name = @machine.name
         ## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console
         config = machine.provider_config
+        datadir = machine.data_dir
+        bootconfigs = config.boot
+        datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
+        datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
         attr = ''
         case config.brand
         when 'lx'
@@ -445,7 +456,7 @@ end             )
           end
           # execute(false, "#{@pfexec} zonecfg -z #{name} \"create ; set zonepath=/rpool/zones/#{name}/path\"")
           attr = %(create
-set zonepath=#{config.zonepath}/path
+set zonepath=#{datasetpath}/path
 set brand=#{config.brand}
 set autoboot=#{config.autoboot}
 add attr
@@ -459,7 +470,7 @@ add capped-memory
   set locked=#{config.memory}
 end
 add dataset
-  set name=#{config.zonepath.delete_prefix('/')}/boot
+  set name=#{datasetroot}
 end
 set max-lwps=2000
         )
@@ -467,7 +478,7 @@ set max-lwps=2000
           ## General Configuration
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
           attr = %(create
-set zonepath=#{config.zonepath}/path
+set zonepath=#{datasetpath}/path
 set brand=#{config.brand}
 set autoboot=#{config.autoboot}
 set ip-type=exclusive
@@ -502,12 +513,12 @@ add attr
   set value=#{config.netif}
 end
 add device
-  set match=/dev/zvol/rdsk#{config.zonepath}/boot
+  set match=/dev/zvol/rdsk#{datasetroot}
 end
 add attr
   set name=bootdisk
   set type=string
-  set value=#{config.zonepath.delete_prefix('/')}/boot
+  set value=#{datasetroot.delete_prefix('/')}
 end
 add attr
   set name=type
