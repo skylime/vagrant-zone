@@ -822,7 +822,7 @@ end          )
         responses = []
         case config.brand
         when 'bhyve'
-          PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, _zlogin_write, pid|
+          PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             bcheck = config.bcheck_string
             puts "Checking for the string: #{bcheck}"
             bcheck = 'Last login: ' if config.bcheck_string.nil?
