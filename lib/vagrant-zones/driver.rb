@@ -825,6 +825,7 @@ end          )
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             bcheck = config.bcheck_string
             puts "Checking for the string: #{bcheck}"
+            puts "Checking for the string: #{config.bcheck_string}"
             bcheck = 'Last login: ' if config.bcheck_string.nil?
             zlogin_write.printf("\n")
             if zlogin_read.expect(/#{bcheck}/) 
