@@ -396,7 +396,7 @@ end             )
       # This helps us delete any associated datasets of the zone
       def delete_dataset(machine, uiinfo)
         config = machine.provider_config
-        
+        name = machine.name
         datadir = machine.data_dir
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
