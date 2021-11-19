@@ -824,8 +824,10 @@ end          )
         when 'bhyve'
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, _zlogin_write, pid|
             bcheck = config.bcheck_string
+            puts "Checking for the string: #{bcheck}"
             bcheck = 'Last login: ' if config.bcheck_string.nil?
-            if zlogin_read.expect(/#{bcheck}/)
+            zlogin_write.printf("\n")
+            if zlogin_read.expect(/#{bcheck}/) 
               uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access'))
               Timeout.timeout(config.setup_wait) do
                 loop do

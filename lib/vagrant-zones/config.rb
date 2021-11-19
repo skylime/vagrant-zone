@@ -23,6 +23,7 @@ module VagrantPlugins
         @cdroms = nil
         @shared_dir = nil
         @os_type = 'generic'
+        @bcheck_string = 'Last login: '
         @shared_disk_enabled = true
         @consoleport = nil
         @console_onboot = 'false'
