@@ -478,7 +478,7 @@ set max-lwps=2000
           ## General Configuration
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
           attr = %(create
-set zonepath=#{datasetpath}/path
+set zonepath=/#{datasetpath}/path
 set brand=#{config.brand}
 set autoboot=#{config.autoboot}
 set ip-type=exclusive
