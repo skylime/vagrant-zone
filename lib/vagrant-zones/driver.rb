@@ -399,7 +399,12 @@ end             )
         name = machine.name
         datadir = machine.data_dir
         bootconfigs = config.boot
+        puts "it errors out here"
+        puts bootconfigs['array']
+        puts bootconfigs['dataset']
+        puts name
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
+
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
 
 
