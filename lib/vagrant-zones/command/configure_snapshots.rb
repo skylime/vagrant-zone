@@ -9,7 +9,7 @@ module VagrantPlugins
           options = {}
           opts = OptionParser.new do |o|
             o.banner = 'Usage: vagrant zone zfssnapshot list [options]'
-            o.on('--dataset SNAPSHOTPATH', 'Specify path to enable snapshots on') do |p|
+            o.on('--dataset DATASETPATH/ALL', 'Specify path to enable snapshots on, defaults to ALL') do |p|
               options[:dataset] = p
             end
             frequencymsg = 'Set a policy with one of the available optional frequencies'

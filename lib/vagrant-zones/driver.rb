@@ -62,7 +62,7 @@ module VagrantPlugins
         case config.brand
         when 'lx'
           results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
-          raise 'You appear to not have LX Zones installed in this Machine' if results.include? 'unknown brand'
+          raise 'You appear to not have the LX Package installed in this Machine' if results.include? 'unknown brand'
         when 'bhyve'
           execute(false, "#{@pfexec} zoneadm -z #{name} install")
         when 'kvm' || 'illumos'
@@ -1073,14 +1073,17 @@ end          )
           end
         when 'cron'
           crons = execute(false, "#{@pfexec} crontab -l").split("\n")
-          ## Strip solaris Header
-          snapshooter = '/opt/vagrant/bin/Snapshooter.sh'
+          snapshooter = "#{config.snapshot_script}"
           hourlytrn = 24
           dailytrn = 8
           weeklytrn = 5
           monthlytrn = 1
           rtnregex = '-p (weekly|monthly|daily|hourly)'
           options[:dataset] = 'all' if options[:dataset].nil?
+
+          ## Insert  Verification Check that Dataset is in Zoneconfiguration
+
+
           datasets.each do |disk|
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
             puts disk
@@ -1124,19 +1127,19 @@ end          )
             elsif options[:delete]
               removecron = ''
               if options[:delete] == 'all'
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" unless cronjobs[:hourly].nil?
+                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" unless cronjobs[:hourly].nil?
                 puts removecron unless cronjobs[:hourly].nil?
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" unless cronjobs[:daily].nil?
+                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" unless cronjobs[:daily].nil?
                 puts removecron unless cronjobs[:daily].nil?
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" unless cronjobs[:weekly].nil?
+                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" unless cronjobs[:weekly].nil?
                 puts removecron unless cronjobs[:weekly].nil?
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" unless cronjobs[:monthly].nil?
+                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" unless cronjobs[:monthly].nil?
                 puts removecron unless cronjobs[:monthly].nil?
               else
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" if cronjobs[:hourly] && options[:delete] == 'hourly'
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" if cronjobs[:daily] && options[:delete] == 'daily'
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" if cronjobs[:weekly] && options[:delete] == 'weekly'
-                removecron = "{ #{@pfexec} crontab -l | grep -v '#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab }" if cronjobs[:monthly] && options[:delete] == 'monthly'
+                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" if cronjobs[:hourly] && options[:delete] == 'hourly'
+                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" if cronjobs[:daily] && options[:delete] == 'daily'
+                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" if cronjobs[:weekly] && options[:delete] == 'weekly'
+                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" if cronjobs[:monthly] && options[:delete] == 'monthly'
                 puts removecron
               end
             elsif options[:set_frequency] && if options[:set_frequency] == 'all'
@@ -1144,24 +1147,29 @@ end          )
                 dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}" unless options[:set_frequency_rtn].nil? || options[:set_frequency_rtn] == 'defaults'
                 weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}" unless options[:set_frequency_rtn].nil? || options[:set_frequency_rtn] == 'defaults'
                 monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}" unless options[:set_frequency_rtn].nil? || options[:set_frequency_rtn] == 'defaults'
-                setcron = "{ #{@pfexec} crontab -l; echo '#{hourlycron}'; } | #{@pfexec} crontab" if cronjobs[:hourly].nil?
+                setcron = "( #{@pfexec} crontab -l; echo '#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil?
                 puts setcron if cronjobs[:hourly].nil?
-                setcron = "{ #{@pfexec} crontab -l; echo '#{dailycron}'; } | #{@pfexec} crontab" if cronjobs[:daily].nil?
+                execute(false, setcron) if cronjobs[:hourly].nil?
+                setcron = "( #{@pfexec} crontab -l; echo '#{dailycron}' ) | #{@pfexec} crontab" if cronjobs[:daily].nil?
                 puts setcron if cronjobs[:daily].nil?
-                setcron = "{ #{@pfexec} crontab -l; echo '#{weeklycron}'; } | #{@pfexec} crontab" if cronjobs[:weekly].nil?
+                execute(false, setcron) if cronjobs[:daily].nil?
+                setcron = "( #{@pfexec} crontab -l; echo '#{weeklycron}' ) | #{@pfexec} crontab" if cronjobs[:weekly].nil?
                 puts setcron if cronjobs[:weekly].nil?
-                setcron = "{ #{@pfexec} crontab -l; echo '#{monthlycron}'; } | #{@pfexec} crontab" if cronjobs[:monthly].nil?
+                execute(false, setcron) if cronjobs[:weekly].nil?
+                setcron = "( #{@pfexec} crontab -l; echo '#{monthlycron}' ) | #{@pfexec} crontab" if cronjobs[:monthly].nil?
                 puts setcron if cronjobs[:monthly].nil?
+                execute(false, setcron) if cronjobs[:monthly].nil?
           elsif options[:set_frequency]
                 hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}" unless options[:set_frequency_rtn].nil? || options[:set_frequency_rtn] == 'defaults'
                 dailycron = "0  0  *  *  0-5  #{snapshooter} -p daily -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}" unless options[:set_frequency_rtn].nil? || options[:set_frequency_rtn] == 'defaults'
                 weeklycron = "0  0  *  *  6   #{snapshooter} -p weekly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}" unless options[:set_frequency_rtn].nil? || options[:set_frequency_rtn] == 'defaults'
                 monthlycron = "0  0  1  *  *   #{snapshooter} -p monthly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}" unless options[:set_frequency_rtn].nil? || options[:set_frequency_rtn] == 'defaults'
-                setcron = "{ #{@pfexec} crontab -l; echo '#{hourlycron}'; } | #{@pfexec} crontab" if cronjobs[:hourly].nil? && options[:set_frequency] == 'hourly'
-                setcron = "{ #{@pfexec} crontab -l; echo '#{dailycron}'; } | #{@pfexec} crontab" if cronjobs[:daily].nil? && options[:set_frequency] == 'daily'
-                setcron = "{ #{@pfexec} crontab -l; echo '#{weeklycron}'; } | #{@pfexec} crontab" if cronjobs[:weekly].nil? && options[:set_frequency] == 'weekly'
-                setcron = "{ #{@pfexec} crontab -l; echo '#{monthlycron}'; } | #{@pfexec} crontab" if cronjobs[:monthly].nil? && options[:set_frequency] == 'monthly'
+                setcron = "( #{@pfexec} crontab -l; echo '#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil? && options[:set_frequency] == 'hourly'
+                setcron = "( #{@pfexec} crontab -l; echo '#{dailycron}' ) | #{@pfexec} crontab" if cronjobs[:daily].nil? && options[:set_frequency] == 'daily'
+                setcron = "( #{@pfexec} crontab -l; echo '#{weeklycron}' ) | #{@pfexec} crontab" if cronjobs[:weekly].nil? && options[:set_frequency] == 'weekly'
+                setcron = "( #{@pfexec} crontab -l; echo '#{monthlycron}' ) | #{@pfexec} crontab" if cronjobs[:monthly].nil? && options[:set_frequency] == 'monthly'
                 puts setcron
+                execute(false, setcron)
               end
             end
           end

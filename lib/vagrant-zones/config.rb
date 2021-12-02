@@ -7,7 +7,7 @@ module VagrantPlugins
     # This is used define the variables for the project
     class Config < Vagrant.plugin('2', :config)
       # rubocop:disable Layout/LineLength
-      attr_accessor :brand, :autoboot, :kernel, :bcheck_string, :zonepath, :zonepathsize, :diskif, :netif, :cdroms, :disk1path, :disk1size, :cpus, :cpu_configuration, :boot, :complex_cpu_conf, :memory, :vagrant_user, :vagrant_user_private_key_path, :setup_wait, :clean_shutdown_time, :dhcp, :vagrant_user_pass, :firmware_type, :vm_type, :partition_id, :shared_disk_enabled, :shared_dir, :acpi, :os_type, :console, :consoleport, :console_onboot, :hostbridge, :sshport, :rdpport, :override, :additional_disks, :cloud_init_enabled, :dns, :box, :vagrant_cloud_creator
+      attr_accessor :brand, :autoboot, :kernel, :bcheck_string, :zonepath, :zonepathsize, :snapshot_script, :diskif, :netif, :cdroms, :disk1path, :disk1size, :cpus, :cpu_configuration, :boot, :complex_cpu_conf, :memory, :vagrant_user, :vagrant_user_private_key_path, :setup_wait, :clean_shutdown_time, :dhcp, :vagrant_user_pass, :firmware_type, :vm_type, :partition_id, :shared_disk_enabled, :shared_dir, :acpi, :os_type, :console, :consoleport, :console_onboot, :hostbridge, :sshport, :rdpport, :override, :additional_disks, :cloud_init_enabled, :dns, :box, :vagrant_cloud_creator
 
       # rubocop:enable Layout/LineLength
 
@@ -53,6 +53,7 @@ module VagrantPlugins
         @vagrant_cloud_creator = UNSET_VALUE
         @firmware_type = 'compatability'
         @vm_type = 'production'
+        @snapshot_script = '/opt/vagrant/bin/Snapshooter.sh'
       end
     end
   end

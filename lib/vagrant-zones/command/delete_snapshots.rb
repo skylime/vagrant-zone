@@ -9,7 +9,7 @@ module VagrantPlugins
           options = {}
           opts = OptionParser.new do |o|
             o.banner = 'Usage: vagrant zone zfssnapshot list [options]'
-            o.on('--dataset SNAPSHOTPATH', 'Specify snapshot path') do |p|
+            o.on('--dataset DATASETPATH', 'Specify snapshot path') do |p|
               options[:dataset] = p
             end
             o.on('--snapshot_name @SNAPSHOTNAME', 'Specify snapshot name') do |p|
