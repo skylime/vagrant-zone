@@ -55,10 +55,10 @@ This project is licensed under the AGPL v3 License - see the [LICENSE](LICENSE) 
 
 ## Built With
 * [Vagrant](https://www.vagrantup.com/) - Portable Development Environment Suite.
-* [VirtualBox](https://www.virtualbox.org/wiki/Downloads) - Hypervisor.
-* [zadm](https://github.com/omniosorg/zadm)
+* [bhyve](https://omnios.org/info/bhyve) - Hypervisor.
+* [zadm](https://github.com/omniosorg/zadm) -  Bhyve Management tool
 
-## Contributing Sources
+## Contributing Sources and References
 * [vagrant-bhyve](https://github.com/jesa7955/vagrant-bhyve) - A Vagrant plugin for FreeBSD to spin up Bhyve Guests.
 * [vagrant-zone](https://github.com/skylime/vagrant-zone) - A Vagrant plugin to spin up LXZones.
 
