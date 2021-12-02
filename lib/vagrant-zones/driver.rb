@@ -1127,20 +1127,25 @@ end          )
             elsif options[:delete]
               removecron = ''
               if options[:delete] == 'all'
-                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" unless cronjobs[:hourly].nil?
+                removecron = "#{@pfexec} crontab -l | grep -v '#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:hourly].nil?
                 puts removecron unless cronjobs[:hourly].nil?
-                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" unless cronjobs[:daily].nil?
+                execute(false, removecron) unless cronjobs[:hourly].nil?
+                removecron = "#{@pfexec} crontab -l | grep -v '#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:daily].nil?
                 puts removecron unless cronjobs[:daily].nil?
-                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" unless cronjobs[:weekly].nil?
+                execute(false, removecron) unless cronjobs[:daily].nil?
+                removecron = "#{@pfexec} crontab -l | grep -v '#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:weekly].nil?
                 puts removecron unless cronjobs[:weekly].nil?
-                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" unless cronjobs[:monthly].nil?
+                execute(false, removecron) unless cronjobs[:weekly].nil?
+                removecron = "#{@pfexec} crontab -l | grep -v '#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:monthly].nil?
                 puts removecron unless cronjobs[:monthly].nil?
+                execute(false, removecron) unless cronjobs[:monthly].nil?
               else
-                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" if cronjobs[:hourly] && options[:delete] == 'hourly'
-                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" if cronjobs[:daily] && options[:delete] == 'daily'
-                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" if cronjobs[:weekly] && options[:delete] == 'weekly'
-                removecron = "( #{@pfexec} crontab -l | grep -v '#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab )" if cronjobs[:monthly] && options[:delete] == 'monthly'
+                removecron = "#{@pfexec} crontab -l | grep -v '#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:hourly] && options[:delete] == 'hourly'
+                removecron = "#{@pfexec} crontab -l | grep -v '#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:daily] && options[:delete] == 'daily'
+                removecron = "#{@pfexec} crontab -l | grep -v '#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:weekly] && options[:delete] == 'weekly'
+                removecron = "#{@pfexec} crontab -l | grep -v '#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:monthly] && options[:delete] == 'monthly'
                 puts removecron
+                execute(false, removecron)
               end
             elsif options[:set_frequency] && if options[:set_frequency] == 'all'
                 hourlycron = "0  1-23  *  *  *  #{snapshooter} -p hourly -r -n #{options[:set_frequency_rtn]} #{disk} # #{machine.name}" unless options[:set_frequency_rtn].nil? || options[:set_frequency_rtn] == 'defaults'
