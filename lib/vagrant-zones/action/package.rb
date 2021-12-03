@@ -24,17 +24,21 @@ module VagrantPlugins
           tmp_img = "#{tmp_dir}/box.zss"
           Dir.mkdir(tmp_dir) unless File.exist?(tmp_dir)
 
-          zonepath = config.zonepath.delete_prefix('/').to_s
+          
           brand  = @machine.provider_config.brand
           kernel = @machine.provider_config.kernel
           vagrant_cloud_creator = @machine.provider_config.vagrant_cloud_creator
 
+          bootconfigs = config.boot
+          datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
+          datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
+          
           env[:ui].info("==> #{name}: Creating a Snapshot of the box.")
-          snapshot_create(zonepath)
+          snapshot_create(datasetpath)
           env[:ui].info("==> #{name}: Sending Snapshot to ZFS Send Sream image.")
-          snapshot_send(zonepath, tmp_img)
+          snapshot_send(datasetpath, tmp_img)
           env[:ui].info("==> #{name}: Remove templated snapshot.")
-          snapshot_delete(zonepath)
+          snapshot_delete(datasetpath)
 
           extra = ''
           @tmp_include = "#{tmp_dir}/_include"
@@ -54,7 +58,7 @@ module VagrantPlugins
           end
 
           File.write("#{@tmp_dir}/metadata.json", metadata_content(brand, kernel, vagrant_cloud_creator, boxname))
-          File.write("#{@tmp_dir}/Vagrantfile", vagrantfile_content(brand, kernel, zonepath))
+          File.write("#{@tmp_dir}/Vagrantfile", vagrantfile_content(brand, kernel, datasetpath))
 
           Dir.chdir(tmp_dir)
           assemble_box(boxname, extra)
@@ -65,21 +69,21 @@ module VagrantPlugins
           env[:ui].info('Box created')
           env[:ui].info('You can now add the box:')
           env[:ui].info("vagrant box add #{boxname} --name any_name_you_want")
-
+  
           @app.call(env)
         end
 
-        def snapshot_create(zonepath)
-          `pfexec zfs snapshot -r #{zonepath}/boot@vagrant_boxing`
-          puts "pfexec zfs snapshot -r #{zonepath}/boot@vagrant_boxing"
+        def snapshot_create(datasetpath)
+          `pfexec zfs snapshot -r #{datasetpath}/boot@vagrant_boxing`
+          puts "pfexec zfs snapshot -r #{datasetpath}/boot@vagrant_boxing"
         end
 
-        def snapshot_delete(zonepath)
-          `pfexec zfs destroy -r -F #{zonepath}/boot@vagrant_boxing`
+        def snapshot_delete(datasetpath)
+          `pfexec zfs destroy -r -F #{datasetpath}/boot@vagrant_boxing`
         end
 
-        def snapshot_send(zonepath, destination)
-          `pfexec zfs send #{zonepath}/boot@vagrant_boxing > #{destination}`
+        def snapshot_send(datasetpath, destination)
+          `pfexec zfs send #{datasetpath}/boot@vagrant_boxing > #{destination}`
         end
 
         def metadata_content(brand, _kernel, vagrant_cloud_creator, boxname)
@@ -93,12 +97,12 @@ module VagrantPlugins
           ZONEBOX
         end
 
-        def vagrantfile_content(brand, _kernel, zonepath)
+        def vagrantfile_content(brand, _kernel, datasetpath)
           <<-ZONEBOX
           Vagrant.configure('2') do |config|
             config.vm.provider :zone do |zone|
               zone.brand = "#{brand}"
-              zone.zonepath = "#{zonepath}"
+              zone.zonepath = "#{datasetpath}"
             end
           end
           user_vagrantfile = File.expand_path('../_include/Vagrantfile', __FILE__)
