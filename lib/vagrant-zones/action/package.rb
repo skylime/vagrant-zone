@@ -90,18 +90,18 @@ module VagrantPlugins
         end
 
         def snapshot_create(datasetpath, datetime)
-          result = execute(true, "#{@pfexec} zfs snapshot -r #{datasetpath}/boot@datetime")           
+          result = execute(true, "#{@pfexec} zfs snapshot -r #{datasetpath}/boot@#{datetime}")           
           puts "pfexec zfs snapshot -r #{datasetpath}/boot@datetime" if result.zero?
         end
 
         def snapshot_delete(datasetpath, datetime)
-          result = execute(true, "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@datetime")
+          result = execute(true, "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@#{datetime}")
           puts "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@datetime" if result.zero?
         end
 
         def snapshot_send(datasetpath, destination, datetime)
-          result = execute(true, "#{@pfexec} zfs send #{datasetpath}/boot@datetime > #{destination}")
-          puts "#{@pfexec} zfs send #{datasetpath}/boot@datetime > #{destination}" if result.zero?
+          result = execute(true, "#{@pfexec} zfs send #{datasetpath}/boot@#{datetime} > #{destination}")
+          puts "#{@pfexec} zfs send #{datasetpath}/boot@#{datetime} > #{destination}" if result.zero?
         end
 
         def metadata_content(brand, _kernel, vagrant_cloud_creator, boxname)
