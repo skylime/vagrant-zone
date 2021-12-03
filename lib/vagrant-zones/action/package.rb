@@ -91,12 +91,12 @@ module VagrantPlugins
 
         def snapshot_create(datasetpath, datetime)
           result = execute(true, "#{@pfexec} zfs snapshot -r #{datasetpath}/boot@#{datetime}")           
-          puts "pfexec zfs snapshot -r #{datasetpath}/boot@datetime" if result.zero?
+          puts "pfexec zfs snapshot -r #{datasetpath}/boot@#{datetime}" if result.zero?
         end
 
         def snapshot_delete(datasetpath, datetime)
           result = execute(true, "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@#{datetime}")
-          puts "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@datetime" if result.zero?
+          puts "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@#{datetime}" if result.zero?
         end
 
         def snapshot_send(datasetpath, destination, datetime)
