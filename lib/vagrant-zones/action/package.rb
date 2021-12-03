@@ -57,11 +57,9 @@ module VagrantPlugins
             FileUtils.cp(env['package.vagrantfile'], "#{@tmp_include}/Vagrantfile")
           end
 
+          Dir.chdir(tmp_dir)
           File.write("#{@tmp_dir}/metadata.json", metadata_content(brand, kernel, vagrant_cloud_creator, boxname))
           File.write("#{@tmp_dir}/Vagrantfile", vagrantfile_content(brand, kernel, datasetpath))
-          puts metadata_content(brand, kernel, vagrant_cloud_creator, boxname)
-          puts vagrantfile_content(brand, kernel, datasetpath)
-          Dir.chdir(tmp_dir)
           assemble_box(boxname, extra)
 
           FileUtils.mv("#{tmp_dir}/boxname", "../#{boxname}")
