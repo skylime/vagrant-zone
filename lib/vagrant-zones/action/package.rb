@@ -31,6 +31,7 @@ module VagrantPlugins
           name = @machine.name
           boxname = env['package.output']
           boxshortname = config.boxshortname
+          puts boxshortname
           raise "#{boxname}: Already exists" if File.exist?(boxname)
 
           tmp_dir = "#{Dir.pwd}/_tmp_package"
