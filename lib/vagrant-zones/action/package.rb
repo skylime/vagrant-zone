@@ -62,7 +62,7 @@ module VagrantPlugins
           File.write("./Vagrantfile", vagrantfile_content(brand, kernel, datasetpath))
           assemble_box(boxname, extra)
 
-          FileUtils.mv("#{tmp_dir}/boxname", "../#{boxname}")
+          FileUtils.mv("#{tmp_dir}/#{boxname}", "../#{boxname}")
           FileUtils.rm_rf(tmp_dir)
 
           env[:ui].info('Box created')
