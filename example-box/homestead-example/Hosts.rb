@@ -46,6 +46,7 @@ class Hosts
                   vm.cloud_init_enabled                   = host['cloud_init_enabled']
                   vm.brand                                = host['brand']
                   vm.vagrant_cloud_creator                = host['cloud_creator']
+                  vm.boxshortname                         = host['boxshortname']
                   vm.autoboot                             = host['autostart']
                   vm.partition_id                         = host['partition_id']
                   vm.setup_wait                           = host['setup_wait']

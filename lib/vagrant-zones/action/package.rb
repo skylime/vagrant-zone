@@ -30,6 +30,7 @@ module VagrantPlugins
           config  = @machine.provider_config
           name = @machine.name
           boxname = env['package.output']
+          boxshortname = config.boxshortname
           raise "#{boxname}: Already exists" if File.exist?(boxname)
 
           tmp_dir = "#{Dir.pwd}/_tmp_package"
@@ -75,7 +76,7 @@ module VagrantPlugins
           end
 
           Dir.chdir(tmp_dir)
-          File.write("./metadata.json", metadata_content(brand, kernel, vagrant_cloud_creator, boxname))
+          File.write("./metadata.json", metadata_content(brand, kernel, vagrant_cloud_creator, boxshortname))
           File.write("./Vagrantfile", vagrantfile_content(brand, kernel, datasetpath))
           assemble_box(boxname, extra)
 
@@ -90,27 +91,27 @@ module VagrantPlugins
         end
 
         def snapshot_create(datasetpath, datetime)
-          result = execute(true, "#{@pfexec} zfs snapshot -r #{datasetpath}/boot@#{datetime}")           
-          puts "pfexec zfs snapshot -r #{datasetpath}/boot@#{datetime}" if result.zero?
+          result = execute(true, "#{@pfexec} zfs snapshot -r #{datasetpath}/boot@vagrant_box#{datetime}")           
+          puts "pfexec zfs snapshot -r #{datasetpath}/boot@vagrant_box#{datetime}" if result.zero?
         end
 
         def snapshot_delete(datasetpath, datetime)
-          result = execute(true, "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@#{datetime}")
-          puts "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@#{datetime}" if result.zero?
+          result = execute(true, "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@vagrant_box#{datetime}")
+          puts "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@vagrant_box#{datetime}" if result.zero?
         end
 
         def snapshot_send(datasetpath, destination, datetime)
-          result = execute(true, "#{@pfexec} zfs send #{datasetpath}/boot@#{datetime} > #{destination}")
-          puts "#{@pfexec} zfs send #{datasetpath}/boot@#{datetime} > #{destination}" if result.zero?
+          result = execute(true, "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}")
+          puts "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}" if result.zero?
         end
 
-        def metadata_content(brand, _kernel, vagrant_cloud_creator, boxname)
+        def metadata_content(brand, _kernel, vagrant_cloud_creator, boxshortname)
           <<-ZONEBOX
           {
             "provider": "zone",
             "format": "zss",
             "brand": "#{brand}",
-            "url": "https://app.vagrantup.com/#{vagrant_cloud_creator}/boxes/#{boxname}"
+            "url": "https://app.vagrantup.com/#{vagrant_cloud_creator}/boxes/#{boxshortname}"
           }
           ZONEBOX
         end
