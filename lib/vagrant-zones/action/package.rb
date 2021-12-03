@@ -34,11 +34,11 @@ module VagrantPlugins
           datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
           
           env[:ui].info("==> #{name}: Creating a Snapshot of the box.")
-          snapshot_create(datasetpath)
+          #snapshot_create(datasetpath)
           env[:ui].info("==> #{name}: Sending Snapshot to ZFS Send Sream image.")
-          snapshot_send(datasetpath, tmp_img)
+          #snapshot_send(datasetpath, tmp_img)
           env[:ui].info("==> #{name}: Remove templated snapshot.")
-          snapshot_delete(datasetpath)
+          #snapshot_delete(datasetpath)
 
           extra = ''
           @tmp_include = "#{tmp_dir}/_include"
@@ -58,8 +58,8 @@ module VagrantPlugins
           end
 
           Dir.chdir(tmp_dir)
-          File.write("#{@tmp_dir}/metadata.json", metadata_content(brand, kernel, vagrant_cloud_creator, boxname))
-          File.write("#{@tmp_dir}/Vagrantfile", vagrantfile_content(brand, kernel, datasetpath))
+          File.write("./metadata.json", metadata_content(brand, kernel, vagrant_cloud_creator, boxname))
+          File.write("./Vagrantfile", vagrantfile_content(brand, kernel, datasetpath))
           assemble_box(boxname, extra)
 
           FileUtils.mv("#{tmp_dir}/boxname", "../#{boxname}")
@@ -110,7 +110,7 @@ module VagrantPlugins
         end
 
         def assemble_box(boxname, extra)
-          `tar cvzf "#{boxname}" #{@tmp_dir}/metadata.json #{@tmp_dir}/Vagrantfile #{@tmp_dir}/box.zss #{extra}`
+          `tar cvzf "#{boxname}" ./metadata.json ./Vagrantfile ./box.zss #{extra}`
         end
       end
     end
