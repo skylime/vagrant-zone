@@ -53,7 +53,7 @@ module VagrantPlugins
             FileUtils.cp(env['package.vagrantfile'], "#{@tmp_include}/Vagrantfile")
           end
 
-          File.write("#{@tmp_dir}/metadata.json", metadata_content(brand, kernel, vagrant_cloud_creator, url, boxname))
+          File.write("#{@tmp_dir}/metadata.json", metadata_content(brand, kernel, vagrant_cloud_creator, boxname))
           File.write("#{@tmp_dir}/Vagrantfile", vagrantfile_content(brand, kernel, zonepath))
 
           Dir.chdir(tmp_dir)
@@ -82,7 +82,7 @@ module VagrantPlugins
           `pfexec zfs send #{zonepath}/boot@vagrant_boxing > #{destination}`
         end
 
-        def metadata_content(brand, _kernel, vagrant_cloud_creator, _url, boxname)
+        def metadata_content(brand, _kernel, vagrant_cloud_creator, boxname)
           <<-ZONEBOX
           {
             "provider": "zone",
