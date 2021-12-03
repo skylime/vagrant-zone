@@ -9,7 +9,19 @@ module VagrantPlugins
         def initialize(app, env)
           @logger = Log4r::Logger.new('vagrant_zones::action::import')
           @app = app
+          @executor = Executor::Exec.new
+          @pfexec = if Process.uid.zero?
+                      ''
+                    elsif system('sudo -v')
+                      'sudo'
+                    else
+                      'pfexec'
+                    end
           env['package.output'] ||= 'package.box'
+        end
+
+        def execute(*cmd, **opts, &block)
+          @executor.execute(*cmd, **opts, &block)
         end
 
         def call(env)
@@ -101,7 +113,7 @@ module VagrantPlugins
           Vagrant.configure('2') do |config|
             config.vm.provider :zone do |zone|
               zone.brand = "#{brand}"
-              zone.zonepath = "#{datasetpath}"
+              zone.datasetpath = "#{datasetpath}"
             end
           end
           user_vagrantfile = File.expand_path('../_include/Vagrantfile', __FILE__)
