@@ -30,7 +30,7 @@ module VagrantPlugins
           config  = @machine.provider_config
           name = @machine.name
           boxname = env['package.output']
-          boxshortname = config.boxshortname
+          boxshortname = @machine.provider_config.boxshortname
           puts boxshortname
           raise "#{boxname}: Already exists" if File.exist?(boxname)
 
