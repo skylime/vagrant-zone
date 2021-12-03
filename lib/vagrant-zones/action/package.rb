@@ -55,9 +55,9 @@ module VagrantPlugins
           env[:ui].info("==> #{name}: Creating a Snapshot of the box.")
           snapshot_create(datasetpath, datetime)
           env[:ui].info("==> #{name}: Sending Snapshot to ZFS Send Sream image.")
-          #snapshot_send(datasetpath, tmp_img, datetime)
+          snapshot_send(datasetpath, tmp_img, datetime)
           env[:ui].info("==> #{name}: Remove templated snapshot.")
-          #snapshot_delete(datasetpath, datetime)
+          snapshot_delete(datasetpath, datetime)
 
           extra = ''
           @tmp_include = "#{tmp_dir}/_include"
