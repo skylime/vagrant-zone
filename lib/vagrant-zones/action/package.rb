@@ -130,7 +130,7 @@ module VagrantPlugins
         end
 
         def assemble_box(boxname, extra)
-          `tar cvzf "#{boxname}" ./metadata.json ./Vagrantfile ./box.zss #{extra}`
+          `tar -cvzEf "#{boxname}" ./metadata.json ./Vagrantfile ./box.zss #{extra}`
         end
       end
     end
