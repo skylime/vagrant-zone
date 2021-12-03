@@ -1081,8 +1081,7 @@ end          )
           rtnregex = '-p (weekly|monthly|daily|hourly)'
           options[:dataset] = 'all' if options[:dataset].nil?
 
-          ## Insert  Verification Check that Dataset is in Zoneconfiguration
-
+          ## Insert Verification Check here that Dataset is in Zoneconfiguration
 
           datasets.each do |disk|
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))

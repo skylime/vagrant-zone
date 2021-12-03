@@ -16,6 +16,7 @@ module VagrantPlugins
           @machine = env[:machine]
           @driver  = @machine.provider.driver
           config  = @machine.provider_config
+          name = @machine.name
           boxname = env['package.output']
           raise "#{boxname}: Already exists" if File.exist?(boxname)
 
