@@ -59,7 +59,8 @@ module VagrantPlugins
 
           File.write("#{@tmp_dir}/metadata.json", metadata_content(brand, kernel, vagrant_cloud_creator, boxname))
           File.write("#{@tmp_dir}/Vagrantfile", vagrantfile_content(brand, kernel, datasetpath))
-
+          puts metadata_content(brand, kernel, vagrant_cloud_creator, boxname)
+          puts vagrantfile_content(brand, kernel, datasetpath)
           Dir.chdir(tmp_dir)
           assemble_box(boxname, extra)
 
@@ -111,7 +112,7 @@ module VagrantPlugins
         end
 
         def assemble_box(boxname, extra)
-          `tar cvzf "#{boxname}" ./metadata.json ./Vagrantfile ./box.zss #{extra}`
+          `tar cvzf "#{boxname}" #{@tmp_dir}/metadata.json #{@tmp_dir}/Vagrantfile #{@tmp_dir}/box.zss #{extra}`
         end
       end
     end
