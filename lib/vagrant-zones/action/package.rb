@@ -46,7 +46,7 @@ module VagrantPlugins
           datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
           
           env[:ui].info("==> #{name}: Creating a Snapshot of the box.")
-          #snapshot_create(datasetpath)
+          snapshot_create(datasetpath)
           env[:ui].info("==> #{name}: Sending Snapshot to ZFS Send Sream image.")
           #snapshot_send(datasetpath, tmp_img)
           env[:ui].info("==> #{name}: Remove templated snapshot.")
@@ -85,7 +85,9 @@ module VagrantPlugins
         end
 
         def snapshot_create(datasetpath)
-          `pfexec zfs snapshot -r #{datasetpath}/boot@vagrant_boxing`
+
+          result = execute(true, "#{@pfexec} zfs snapshot -r #{datasetpath}/boot@vagrant_boxing")
+          puts result
           puts "pfexec zfs snapshot -r #{datasetpath}/boot@vagrant_boxing"
         end
 
