@@ -31,7 +31,6 @@ module VagrantPlugins
           name = @machine.name
           boxname = env['package.output']
           boxshortname = @machine.provider_config.boxshortname
-          puts boxshortname
           raise "#{boxname}: Already exists" if File.exist?(boxname)
 
           tmp_dir = "#{Dir.pwd}/_tmp_package"
@@ -98,7 +97,7 @@ module VagrantPlugins
 
         def snapshot_delete(datasetpath, datetime)
           result = execute(true, "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@vagrant_box#{datetime}")
-          puts "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@vagrant_box#{datetime}" if result.zero?
+          puts "#{@pfexec} zfs destroy -r #{datasetpath}/boot@vagrant_box#{datetime}" if result.zero?
         end
 
         def snapshot_send(datasetpath, destination, datetime)
