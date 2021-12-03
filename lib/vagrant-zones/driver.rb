@@ -363,7 +363,7 @@ end             )
           # Create boot volume
           cinfo = "#{bootconfigs['size']}, #{datasetroot}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot') + cinfo)
-          execute(false, "#{@pfexec} zfs create -V -s #{bootconfigs['size']} #{datasetroot}")
+          execute(false, "#{@pfexec} zfs create -V -s -o volblocksize=4k #{bootconfigs['size']} #{datasetroot}")
 
           ## Import template to boot volume
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + datasetroot)
