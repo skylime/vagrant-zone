@@ -363,7 +363,7 @@ end             )
           # Create boot volume
           cinfo = "#{bootconfigs['size']}, #{datasetroot}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot') + cinfo)
-          execute(false, "#{@pfexec} zfs create -b 4k -s -V   #{bootconfigs['size']} #{datasetroot}")
+          execute(false, "#{@pfexec} zfs create -s -V   #{bootconfigs['size']} #{datasetroot}")
 
           ## Import template to boot volume
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + datasetroot)
@@ -386,10 +386,10 @@ end             )
         return if config.additional_disks.nil?
 
         config.additional_disks.each do |disk|
-          dataset = "#{disk['array']}/#{disk['dataset']}/#{config.name}/#{disk['volume_name']}"
+          dataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
           cinfo = ",#{disk['size']}, #{dataset}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-          execute(false, "#{@pfexec} zfs create -b 4k -s -V #{disk['size']} #{dataset}")
+          execute(false, "#{@pfexec} zfs create -s -V #{disk['size']} #{dataset}")
         end
       end
 
