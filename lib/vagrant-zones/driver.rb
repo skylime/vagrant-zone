@@ -470,7 +470,6 @@ module VagrantPlugins
           execute(false, %(#{@pfexec} zonecfg -z #{name} "add dataset; set name=#{datasetroot}; end;"))
           execute(false, %(#{@pfexec} zonecfg -z #{name} "set max-lwps=2000"))
         when 'bhyve'
-          ## General Configuration
           ## Bhyve
           execute(false, %(#{@pfexec} zonecfg -z #{name} "create ; set zonepath=/#{datasetpath}/path"))
           execute(false, %(#{@pfexec} zonecfg -z #{name} "set brand=#{config.brand}"))
@@ -483,8 +482,7 @@ module VagrantPlugins
           execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=diskif; set value=#{config.diskif}; set type=string; end;"))   
           execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=netif; set value=#{config.netif}; set type=string; end;"))   
           execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=bootdisk; set value=#{datasetroot.delete_prefix('/')}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=type; set value=#{config.os_type}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=4; set type=string; end;"))   
+          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=type; set value=#{config.os_type}; set type=string; end;"))  
           execute(false, %(#{@pfexec} zonecfg -z #{name} "add device; set match=/dev/zvol/rdsk/#{datasetroot}; end;"))          
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
         end
