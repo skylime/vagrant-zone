@@ -762,7 +762,7 @@ end          )
 
         ## Nic Configurations
         
-        id.info(I18n.t('vagrant_zones.networking_int_add'))
+        uiinfo.info(I18n.t('vagrant_zones.networking_int_add'))
         network(@machine, uiinfo, 'config')
 
         ## Write out Config
