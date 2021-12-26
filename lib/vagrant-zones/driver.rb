@@ -365,7 +365,7 @@ end             )
           execute(false, "#{@pfexec} zfs create #{datasetpath}")
 
           # Create boot volume
-          cinfo = " #{datasetroot}, #{bootconfigs['size']}"
+          cinfo = "#{datasetroot}, #{bootconfigs['size']}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot') + cinfo)
           execute(false, "#{@pfexec} zfs create #{sparse} -V #{bootconfigs['size']} #{datasetroot}")
 
