@@ -394,7 +394,7 @@ end             )
             execute(false, "#{@pfexec} zfs create -s -V #{disk['size']} #{dataset}")
           else
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo)
-            execute(false, "#{@pfexec} zfs create #{addtl_dataset_root_exists}")
+            execute(false, "#{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}")
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             execute(false, "#{@pfexec} zfs create -s -V #{disk['size']} #{dataset}")
           end
