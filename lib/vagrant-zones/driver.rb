@@ -448,7 +448,7 @@ end             )
         dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep #{zp} | awk '{ print $1 }' | grep -v path || true")
         uiinfo.info(I18n.t('vagrant_zones.destroy_root_dataset') + zp) if dataset_root_exists == zp.to_s
         execute(false, "#{@pfexec} zfs destroy -r #{zp}") if dataset_root_exists == zp.to_s
-        uiinfo.info(I18n.t('vagrant_zones.root_dataset_nil') + zp) unless dataset_root_exists == zp.to_s
+        uiinfo.info(I18n.t('vagrant_zones.root_dataset_nil')) unless dataset_root_exists == zp.to_s
       end
 
       # This helps us set the zone configurations for the zone
