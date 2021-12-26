@@ -119,11 +119,11 @@ en:
     boot_ready: |-
       The zone has booted
     root_dataset_nil: |-
-      No root dataset to remove 
+      - No root dataset to remove 
     boot_dataset_nil: |-
-      No boot dataset volumes to remove 
+      - No boot dataset volumes to remove 
     additional_dataset_nil: |-
-      No additional dataset volumes to remove
+      - No additional dataset volumes to remove
     destroy_root_dataset: |-
       - Destroying root dataset for zone ==> 
     starting_zone: |-
