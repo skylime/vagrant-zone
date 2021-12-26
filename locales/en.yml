@@ -77,7 +77,7 @@ en:
        
     bhyve_zone_dataset_boot_volume: |-
       - Importing template to:
-       
+         
     setting_additional_disks_configurations: |-
       - Setting additional disk Configurations in the zone configurations:
        
@@ -108,7 +108,7 @@ en:
     bhyve_zone_config_uninstall: |-
       Uninstalling zone and removing zonecfg configuration
     exporting_bhyve_zone_config_gen: |-
-      Exporting generated zonecfg configuration
+      Importing generated zonecfg configuration
       
     preflight_checks: |-
       Running Preflight Checks:
@@ -165,6 +165,9 @@ en:
        - Importing Box image ==> 
     importing_box_image_to_disk: |-
        - Importing Box image to disk ==> 
+    template_import_path: |-
+       - Template path:
+       
     importing_joyent_image: |-
        - Importing Joyent Image ==> 
     graceful_restart: |-

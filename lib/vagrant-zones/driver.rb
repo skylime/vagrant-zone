@@ -373,10 +373,12 @@ end             )
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + datasetroot)
           commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss')} | #{@pfexec} zfs recv -u -v -F #{datasetroot} "
 
+          uiinfo.info(I18n.t('vagrant_zones.template_import_path') + "#{datadir}/box.zss")
+          
           Util::Subprocess.new commandtransfer do |_stdout, stderr, _thread|
             uiinfo.rewriting do |uiprogress|
               uiprogress.clear_line
-              uiprogress.info(I18n.t('vagrant_zones.importing_box_image_to_disk') + "#{datadir}/box.zss ==> ", new_line: false)
+              uiprogress.info(I18n.t('vagrant_zones.importing_box_image_to_disk') + datasetroot.to_s, new_line: false)
               uiprogress.report_progress(stderr, 100, false)
             end
           end
