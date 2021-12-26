@@ -41,7 +41,7 @@ en:
     vnic_setup: |-
         - Setting up VNIC
     removing_vnic: |-
-       - Deleting VNIC
+        - Deleting VNIC
     no_removing_vnic: |-
         - No VNIC to Remove
     delete_disks: |-
@@ -132,13 +132,13 @@ en:
     boot_ready: |-
       The zone has booted
     root_dataset_nil: |-
-      - No root dataset to remove 
+        - No root dataset to remove 
     boot_dataset_nil: |-
-      - No boot dataset volumes to remove 
+        - No boot dataset volumes to remove 
     additional_dataset_nil: |-
-      - No additional dataset volumes to remove
+        - No additional dataset volumes to remove
     destroy_root_dataset: |-
-      - Destroying root dataset for zone ==> 
+        - Destroying root dataset for zone ==> 
     starting_zone: |-
       Starting the zone
     joyent_image_uuid_verified: |-
