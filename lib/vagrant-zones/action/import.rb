@@ -35,7 +35,7 @@ module VagrantPlugins
           @driver = @machine.provider.driver
           ui = env[:ui]
           ui.info(I18n.t('vagrant_zones.meeting'))
-          ui.info(I18n.t('vagrant_zones.datadir') +  datadir))
+          ui.info(I18n.t('vagrant_zones.datadir') +  datadir)
           ui.info(I18n.t('vagrant_zones.detecting_box'))
 
           # If image ends on '.zss' it's a local ZFS snapshot which
