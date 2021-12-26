@@ -43,9 +43,9 @@ en:
       - Setting up VNIC
         
     networking_int_remove: |-
-      Removing networking devices:
+      Removing network devices:
     networking_int_add: |-
-      Adding networking devices:
+      Adding network devices:
         
     removing_vnic: |-
       - Deleting VNIC
