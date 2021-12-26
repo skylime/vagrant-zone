@@ -114,8 +114,8 @@ en:
       SSH appears to be ready
     boot_ready: |-
       The zone has booted
-    dataset_nil: |-
-      No dataset to remove
+    boot_dataset_nil: |-
+      No boot dataset to remove
     starting_zone: |-
       Starting the zone
     joyent_image_uuid_verified: |-
