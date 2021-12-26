@@ -73,7 +73,7 @@ en:
       - Importing template to ==> 
     setting_additional_disks_configurations: |-
       - Setting additional disk Configurations in the zone configurations:
-        
+       
     bhyve_zone_dataset_additional_volume: |-
       - Additional ZFS Volume for bhyve zone
       
@@ -95,21 +95,24 @@ en:
     lx_zone_config_gen: |-
       Generating configuration for LX zone
     bhyve_zone_config_gen: |-
-      Generating configuration for bhyve zone
+      Generating zone configuration for bhyve zone
     bhyve_zone_config_remove: |-
       Removing zonecfg configuration
     bhyve_zone_config_uninstall: |-
       Uninstalling zone and removing zonecfg configuration
     exporting_bhyve_zone_config_gen: |-
       Exporting generated zonecfg configuration
+      
+    preflight_checks: |-
+      Running Preflight Checks:
     vbox_run_check: |-
-      Checking if VirtualBox is loaded as it may conflict with bhyve
+      - Checking if VirtualBox is loaded as it may conflict with bhyve
     lx_check: |-
       Minimal checks performed for LX Branded zones on the host OS, please use with caution!
     bhyve_check: |-
-      Checking OmniOS release against version ==> 
+      - Checking OmniOS release against version ==> 
     bhyve_compat_check: |-
-      Checking bhyve installation environment
+      - Checking bhyve installation environment
     wait_for_boot: |-
       Waiting for the zone to boot
     inserting_ssh_key: |-

@@ -771,6 +771,7 @@ end          )
 
       # This ensures the zone is safe to boot
       def check_zone_support(machine, uiinfo)
+        uiinfo.info(I18n.t('vagrant_zones.preflight_checks'))
         config = machine.provider_config
         ## Detect if Virtualbox is Running
         ## Kernel, KVM, and Bhyve cannot run conncurently with Virtualbox:
