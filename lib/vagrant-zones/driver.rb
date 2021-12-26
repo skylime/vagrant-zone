@@ -434,7 +434,7 @@ end             )
 
                 cinfo = ", #{disk['array']}/#{disk['dataset']}/#{name}"
                 uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-                execute(false, "#{@pfexec} zfs destroy #{disk['array']}/#{disk['dataset']}/#{name}")   if addtl_dataset_root_exists == "#{disk['array']}/#{disk['dataset']}/#{name}""
+                execute(false, "#{@pfexec} zfs destroy #{disk['array']}/#{disk['dataset']}/#{name}")   if addtl_dataset_root_exists == "#{disk['array']}/#{disk['dataset']}/#{name}"
               end
             end
 
