@@ -77,7 +77,7 @@ en:
        
     bhyve_zone_dataset_boot_volume: |-
       - Importing template to:
-         
+        
     setting_additional_disks_configurations: |-
       - Setting additional disk Configurations in the zone configurations:
        
@@ -88,16 +88,16 @@ en:
       - Destroying additional ZFS Volume for bhyve zone:
         
     bhyve_zone_dataset_additional_volume_destroy_root: |-
-      - Destroying ZFS root dataset for additional volume for the bhyve zone
+      - Destroying ZFS root dataset for additional volume
        
     bhyve_zone_dataset_additional_volume_root: |-
-      - Creating ZFS root dataset for additional volume for the bhyve zone
+      - Creating ZFS root dataset for additional volume
        
     destroy_root_dataset: |-
-      - Destroying root dataset for zone
+      - Destroying root datasete
        
     destroy_dataset: |-
-      - Destroying dataset for zone
+      - Destroying boot dataset:
         
     lx_zone_config_gen: |-
       Generating configuration for LX zone
@@ -150,7 +150,7 @@ en:
     additional_dataset_nil: |-
       - No additional dataset volumes to remove
     destroy_root_dataset: |-
-      - Destroying root dataset for zone ==> 
+      - Destroying root dataset ==> 
     starting_zone: |-
       Starting the zone
     joyent_image_uuid_verified: |-
@@ -167,7 +167,7 @@ en:
        - Importing Box image to disk ==> 
     template_import_path: |-
        - Template path:
-       
+         
     importing_joyent_image: |-
        - Importing Joyent Image ==> 
     graceful_restart: |-
