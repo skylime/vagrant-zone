@@ -387,7 +387,7 @@ end             )
 
         config.additional_disks.each do |disk|
           dataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
-          addtl_dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }' || true")
+          addtl_dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }'  | head -n 1 || true")
           puts "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }' || true"
           if addtl_dataset_root_exists == "#{disk['array']}/#{disk['dataset']}/#{name}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
