@@ -40,6 +40,12 @@ en:
       Configuring the interface on the zone for VNIC  
     vnic_setup: |-
       - Setting up VNIC ==> 
+    networking_int_remove: |-
+      Removing networking devices:
+      
+    networking_int_add: |-
+      Adding networking devices:
+      
     removing_vnic: |-
       - Deleting VNIC ==> 
     no_removing_vnic: |-

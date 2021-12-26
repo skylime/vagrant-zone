@@ -433,7 +433,7 @@ end             )
           disks.each do |disk|
             diskpath = "#{disk['array']}/#{disk['dataset']}/#{name}"
             addataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
-            cinfo = "#{addataset}, #{disk['size']}"
+            cinfo = "#{addataset}"
             dataset_exists = execute(false, "#{@pfexec} zfs list | grep #{addataset} | awk '{ print $1 }' || true")
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo) if dataset_exists == addataset
             execute(false, "#{@pfexec} zfs destroy -r #{addataset}") if dataset_exists == addataset
@@ -761,6 +761,8 @@ end          )
         end
 
         ## Nic Configurations
+        
+        id.info(I18n.t('vagrant_zones.networking_int_add'))
         network(@machine, uiinfo, 'config')
 
         ## Write out Config
@@ -1251,6 +1253,7 @@ end          )
 
         ### Nic Configurations
         state = 'delete'
+        id.info(I18n.t('vagrant_zones.networking_int_remove'))
         network(machine, id, state)
       end
     end
