@@ -84,16 +84,16 @@ en:
       - Setting additional disk Configurations in the zone configurations:
        
     bhyve_zone_dataset_additional_volume: |-
-      - Additional ZFS Volume:
+      - Additional ZFS volume:
         
     bhyve_zone_dataset_additional_volume_destroy: |-
-      - Destroying additional ZFS Volume:
+      - Destroying additional ZFS volume:
         
     bhyve_zone_dataset_additional_volume_destroy_root: |-
-      - Destroying ZFS root dataset for additional volume
+      - Destroying ZFS root dataset for additional ZFS volume
        
     bhyve_zone_dataset_additional_volume_root: |-
-      - Creating ZFS root dataset for additional volume
+      - Creating ZFS root dataset for additional ZFS volume
        
     destroy_root_dataset: |-
       - Destroying root dataset:
@@ -183,4 +183,4 @@ en:
       Zone gracefully shutdown, now waiting for boot
     setting_console_access: |-
        - Setting Console access port
-          
+         
