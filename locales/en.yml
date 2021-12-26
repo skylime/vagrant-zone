@@ -37,7 +37,8 @@ en:
     creating_vnic: |-
       Creating VNIC  
     configure_interface_using_vnic: |-
-      Configuring the interface on the zone for VNIC  
+      Configuring the interface on the zone for VNIC
+      
     vnic_setup: |-
       - Setting up VNIC
         
@@ -77,7 +78,7 @@ en:
       - ZFS root dataset:
         
     begin_create_datasets: |-
-      Creating ZFS datasets:
+      Creating ZFS datasets and volumes:
     bhyve_zone_dataset_boot: |-
       - ZFS boot volume:
        
@@ -94,10 +95,10 @@ en:
       - Additional ZFS volume:
         
     bhyve_zone_dataset_additional_volume_destroy_root: |-
-      - ZFS root dataset for additional ZFS volume
-      
+      - ZFS root dataset for additional ZFS volume:
+       
     bhyve_zone_dataset_additional_volume_root: |-
-      - ZFS root dataset for additional ZFS volume
+      - ZFS root dataset for additional ZFS volume:
        
     destroy_root_dataset: |-
       - ZFS root dataset:
