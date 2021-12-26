@@ -429,7 +429,7 @@ end             )
           disks.each do |disk|
             diskpath = "#{disk['array']}/#{disk['dataset']}/#{name}"
             addataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
-            cinfo = ", #{disk['size']}, #{addataset}"
+            cinfo = "#{addataset}, #{disk['size']}"
             dataset_exists = execute(false, "#{@pfexec} zfs list | grep #{addataset} | awk '{ print $1 }' || true")
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo) if dataset_exists == addataset
             execute(false, "#{@pfexec} zfs destroy -r #{addataset}") if dataset_exists == addataset
