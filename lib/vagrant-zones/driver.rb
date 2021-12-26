@@ -286,9 +286,10 @@ module VagrantPlugins
             end
           # Delete the VNIC
           when 'delete'
-            uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name)
             vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
+            uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name) if vnic_configured == vnic_name.to_s
             execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
+            uiinfo.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == vnic_name.to_s
           # Set Zonecfg Settings
           when 'config'
             uiinfo.info(I18n.t('vagrant_zones.vnic_setup') + vnic_name)
