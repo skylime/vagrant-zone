@@ -91,7 +91,7 @@ en:
       - Additional ZFS volume:
        
     bhyve_zone_dataset_additional_volume_destroy: |-
-      - additional ZFS volume:
+      - Additional ZFS volume:
         
     bhyve_zone_dataset_additional_volume_destroy_root: |-
       - ZFS root dataset for additional ZFS volume
@@ -100,10 +100,10 @@ en:
       - ZFS root dataset for additional ZFS volume
        
     destroy_root_dataset: |-
-      - root dataset:
+      - Root dataset:
         
     destroy_dataset: |-
-      - Destroying boot dataset:
+      - Boot dataset:
         
     lx_zone_config_gen: |-
       Generating configuration for LX zone
