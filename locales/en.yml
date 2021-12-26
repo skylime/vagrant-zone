@@ -70,13 +70,14 @@ en:
       - ZFS boot volume:
        
     bhyve_zone_dataset_boot_volume: |-
-      - Importing template to ==> 
+      - Importing template to:
+       
     setting_additional_disks_configurations: |-
       - Setting additional disk Configurations in the zone configurations:
        
     bhyve_zone_dataset_additional_volume: |-
       - Additional ZFS Volume for bhyve zone
-        
+      
     bhyve_zone_dataset_additional_volume_destroy: |-
       - Destroying additional ZFS Volume for bhyve zone:
         
@@ -95,7 +96,7 @@ en:
     lx_zone_config_gen: |-
       Generating configuration for LX zone
     bhyve_zone_config_gen: |-
-      Generating zone configuration for bhyve zone
+      Generating zone configuration for bhyve zone:
     bhyve_zone_config_remove: |-
       Removing zonecfg configuration
     bhyve_zone_config_uninstall: |-
@@ -123,6 +124,9 @@ en:
       Could not login as root, check if root auto-login works -- NOT IMPLEMENTED YET
     detecting_box: |-
       Detecting Image
+    datadir: |-
+      Vagrant Datadir:
+        
     zfs_snapshot_stream_detected: |-
       ZFS Snapshot Stream detected ==> 
     joyent_image_uuid_detected: |-
