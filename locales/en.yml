@@ -95,7 +95,7 @@ en:
        
     destroy_root_dataset: |-
       - Destroying root dataset:
-       
+        
     destroy_dataset: |-
       - Destroying boot dataset:
         
@@ -149,8 +149,6 @@ en:
       - No boot dataset volumes to remove 
     additional_dataset_nil: |-
       - No additional dataset volumes to remove
-    destroy_root_dataset: |-
-      - Destroying root dataset ==> 
     starting_zone: |-
       Starting the zone
     joyent_image_uuid_verified: |-
