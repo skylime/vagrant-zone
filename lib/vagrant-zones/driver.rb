@@ -435,7 +435,7 @@ end             )
             dataset_exists = execute(false, "#{@pfexec} zfs list | grep #{addataset} | awk '{ print $1 }' || true")
             execute(false, "#{@pfexec} zfs destroy -r #{addataset}") if dataset_exists == addataset
             cinfo = ", #{disk['array']}/#{disk['dataset']}/#{name}"
-            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root_remove') + cinfo)
+            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy_root') + cinfo)
             addtl_dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }' || true")
             execute(false, "#{@pfexec} zfs destroy #{disk['array']}/#{disk['dataset']}/#{name}") unless addtl_dataset_root_exists == zp.to_s
           end
