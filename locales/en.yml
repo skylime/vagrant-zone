@@ -116,6 +116,8 @@ en:
       SSH appears to be ready
     boot_ready: |-
       The zone has booted
+    boot_dataset_nil: |-
+      No additional dataset volumes to remove
     additional_dataset_nil: |-
       No additional dataset volumes to remove
     destroy_root_dataset: |-
