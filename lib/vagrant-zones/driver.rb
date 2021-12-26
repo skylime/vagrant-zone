@@ -639,9 +639,8 @@ end         )
           disks.each do |disk|
             diskname = 'disk'
             dset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
-            cinfo = "   #{disk['size']}, #{dset}"
-            uiinfo.info(I18n.t('vagrant_zones.setting_additional_disks_configurations'))
-            uiinfo.info(cinfo)
+            cinfo = " #{disk['size']}, #{dset}"
+            uiinfo.info(I18n.t('vagrant_zones.setting_additional_disks_configurations') + cinfo)
             diskname += diskrun.to_s if diskrun.positive?
             diskrun += 1
             additional_disk_attr = %(add device
