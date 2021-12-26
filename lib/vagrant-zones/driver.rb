@@ -488,25 +488,25 @@ module VagrantPlugins
           execute(false, %(#{@pfexec} zonecfg -z #{name} "add dataset; set name=#{datasetroot}; end;"))
           execute(false, %(#{@pfexec} zonecfg -z #{name} "set max-lwps=2000"))
 
-          attr = %(create
-set zonepath=/#{datasetpath}/path
-set brand=#{config.brand}
-set autoboot=#{config.autoboot}
-add attr
-  set name=kernel-version
-  set type=string
-  set value=#{config.kernel}
-end
-add capped-memory
-  set physical=#{config.memory}
-  set swap=#{config.memory}
-  set locked=#{config.memory}
-end
-add dataset
-  set name=#{datasetroot}
-end
-set max-lwps=2000
-        )
+#          attr = %(create
+#set zonepath=/#{datasetpath}/path
+#set brand=#{config.brand}
+#set autoboot=#{config.autoboot}
+#add attr
+#  set name=kernel-version
+#  set type=string
+#  set value=#{config.kernel}
+#end
+#add capped-memory
+#  set physical=#{config.memory}
+#  set swap=#{config.memory}
+#  set locked=#{config.memory}
+#end
+#add dataset
+#  set name=#{datasetroot}
+#end
+#set max-lwps=2000
+#        )
         when 'bhyve'
           ## General Configuration
           ## Bhyve
