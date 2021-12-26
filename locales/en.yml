@@ -35,19 +35,19 @@ en:
     graceful_shutdown: |-
       Ensuring the zone is shutdown at the hypervisor level
     creating_vnic: |-
-      Creating VNIC ==> 
+      Creating VNIC \n   
     configure_interface_using_vnic: |-
-      Configuring the interface on the zone for VNIC ==> 
+      Configuring the interface on the zone for VNIC \n   
     vnic_setup: |-
-      - Setting up VNIC ==> 
+      - Setting up VNIC \n   
     removing_vnic: |-
-      - Deleting VNIC ==> 
+      - Deleting VNIC \n   
     no_removing_vnic: |-
       - No VNIC to Remove
     delete_disks: |-
       Removing associated disks
     installing_zone: |-
-      Installing zone as brand ==> 
+      Installing zone as brand \n   
     netplan_remove: |-
       - Removing stale netplan configurations
     netplan_set: |-
@@ -55,17 +55,19 @@ en:
     netplan_applied: |-
       - New Netplan configurations Applied
     netplan_applied_dhcp: |-
-      - Set DHCP Netplan configurations ==> 
+      - Set DHCP Netplan configurations \n   
     netplan_applied_static: |-
-      - Set Static Netplan configurations ==> 
+      - Set Static Netplan configurations \n   
     lx_zone_dataset: |-
       - Creating zoned ZFS dataset for LX zone ==>
     bhyve_zone_dataset_root: |-
-      - Creating ZFS root dataset ==> 
+      - Creating ZFS root dataset \n   
+    begin_create_datasets: |-
+      - Creating ZFS root dataset \n   
     bhyve_zone_dataset_boot: |-
-      - Creating ZFS boot volume ==> 
+      - Creating ZFS boot volume \n   
     bhyve_zone_dataset_boot_volume: |-
-      Importing template to ==> 
+      Importing template to \n   
     setting_additional_disks_configurations: |-
       - Setting additional disk Configurations in the zone configurations
     bhyve_zone_dataset_additional_volume: |-
