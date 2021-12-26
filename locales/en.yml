@@ -153,9 +153,9 @@ en:
     root_dataset_nil: |-
       - No root dataset to remove 
     boot_dataset_nil: |-
-      - No boot dataset volumes to remove 
+      - No boot volumes to remove 
     additional_dataset_nil: |-
-      - No additional dataset volumes to remove
+      - No additional volumes to remove
     starting_zone: |-
       Starting the zone
     joyent_image_uuid_verified: |-
