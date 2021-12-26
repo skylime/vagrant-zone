@@ -57,13 +57,13 @@ en:
     netplan_applied_dhcp: |-
       - Set DHCP Netplan configurations /\n   
     netplan_applied_static: |-
-      - Set Static Netplan configurations \n   
+      - Set Static Netplan configurations /\n   
     lx_zone_dataset: |-
       - Creating zoned ZFS dataset for LX zone ==>
     bhyve_zone_dataset_root: |-
-      - Creating ZFS root dataset \n   
+      - Creating ZFS root dataset /\n   
     begin_create_datasets: |-
-      - Creating ZFS root dataset \n   
+      - Creating ZFS dataset \n   
     bhyve_zone_dataset_boot: |-
       - Creating ZFS boot volume \n   
     bhyve_zone_dataset_boot_volume: |-
