@@ -82,10 +82,10 @@ en:
       - Setting additional disk Configurations in the zone configurations:
        
     bhyve_zone_dataset_additional_volume: |-
-      - Additional ZFS Volume for bhyve zone
+      - Additional ZFS Volume:
       
     bhyve_zone_dataset_additional_volume_destroy: |-
-      - Destroying additional ZFS Volume for bhyve zone:
+      - Destroying additional ZFS Volume:
         
     bhyve_zone_dataset_additional_volume_destroy_root: |-
       - Destroying ZFS root dataset for additional volume
@@ -94,7 +94,7 @@ en:
       - Creating ZFS root dataset for additional volume
        
     destroy_root_dataset: |-
-      - Destroying root datasete
+      - Destroying root dataset:
        
     destroy_dataset: |-
       - Destroying boot dataset:
@@ -102,7 +102,7 @@ en:
     lx_zone_config_gen: |-
       Generating configuration for LX zone
     bhyve_zone_config_gen: |-
-      Generating zone configuration for bhyve zone:
+      Generating zone configuration:
     bhyve_zone_config_remove: |-
       Removing zonecfg configuration
     bhyve_zone_config_uninstall: |-

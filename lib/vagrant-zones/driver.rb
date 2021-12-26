@@ -378,7 +378,7 @@ end             )
           Util::Subprocess.new commandtransfer do |_stdout, stderr, _thread|
             uiinfo.rewriting do |uiprogress|
               uiprogress.clear_line
-              uiprogress.info(I18n.t('vagrant_zones.importing_box_image_to_disk') + datasetroot.to_s, new_line: false)
+              uiprogress.info(I18n.t('vagrant_zones.importing_box_image_to_disk') + "#{datasetroot.to_s} ", new_line: false)
               uiprogress.report_progress(stderr, 100, false)
             end
           end
@@ -397,13 +397,14 @@ end             )
           sparse = "" unless disk['sparse']
           addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }'  | head -n 1 || true")
           if addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
+            cinfo = " #{dataset}, #{disk['size']}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             execute(false, "#{@pfexec} zfs create #{sparse} -V #{disk['size']} #{dataset}")
           else
             cinfo = ", #{disk['array']}/#{disk['dataset']}/#{name}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo)
             execute(false, "#{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}")
-            cinfo = ", #{disk['size']}, #{dataset}"
+            cinfo = " #{dataset}, #{disk['size']}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             execute(false, "#{@pfexec} zfs create #{sparse} -V #{disk['size']} #{dataset}")
           end
