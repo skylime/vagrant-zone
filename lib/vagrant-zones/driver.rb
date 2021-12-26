@@ -392,7 +392,7 @@ end             )
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             execute(false, "#{@pfexec} zfs create -s -V #{disk['size']} #{dataset}")
           else
-            cinfo = ", #{dataset}, #{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}"
+            cinfo = ", #{dataset}, #{disk['array']}/#{disk['dataset']}/#{name}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo)
             execute(false, "#{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}")
             cinfo = ", #{disk['size']}, #{dataset}"
@@ -423,12 +423,15 @@ end             )
           unless  config.additional_disks.nil?
             disks = config.additional_disks
             disks.each do |disk|
-              addataset = "#{disk['array']}#{disk['path']}"
+              addataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
               cinfo = "#{disk['size']}, #{addataset}"
               uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo)
               dataset_exists = execute(false, "#{@pfexec} zfs list | grep #{addataset} | awk '{ print $1 }' || true")
               execute(false, "#{@pfexec} zfs destroy -r #{addataset}") if dataset_exists == addataset
+              addtl_dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }' | grep -v path || true")
+              execute(false, "#{@pfexec} zfs destroy #{disk['array']}/#{disk['dataset']}/#{name}") if addtl_dataset_root_exists == zp.to_s
             end
+
           end
           ## Destroy Boot dataset
           uiinfo.info(I18n.t('vagrant_zones.destroy_dataset') + "#{datasetroot}")
