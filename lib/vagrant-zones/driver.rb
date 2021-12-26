@@ -392,7 +392,7 @@ end             )
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             execute(false, "#{@pfexec} zfs create -s -V #{disk['size']} #{dataset}")
           else
-            cinfo = ", #{dataset}, #{disk['array']}/#{disk['dataset']}/#{name}"
+            cinfo = ", #{disk['array']}/#{disk['dataset']}/#{name}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo)
             execute(false, "#{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}")
             cinfo = ", #{disk['size']}, #{dataset}"
