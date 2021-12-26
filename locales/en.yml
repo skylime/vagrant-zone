@@ -61,7 +61,8 @@ en:
     lx_zone_dataset: |-
       - Creating zoned ZFS dataset for LX zone ==>
     bhyve_zone_dataset_root: |-
-      - Creating ZFS root dataset /\n   
+      - Creating ZFS root dataset
+       
     begin_create_datasets: |-
       - Creating ZFS dataset \n   
     bhyve_zone_dataset_boot: |-
