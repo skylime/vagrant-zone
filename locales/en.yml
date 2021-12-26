@@ -44,7 +44,6 @@ en:
         
     networking_int_remove: |-
       Removing networking devices:
-        
     networking_int_add: |-
       Adding networking devices:
         
