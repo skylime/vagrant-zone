@@ -55,7 +55,7 @@ en:
     netplan_applied: |-
       - New Netplan configurations Applied
     netplan_applied_dhcp: |-
-      - Set DHCP Netplan configurations \n   
+      - Set DHCP Netplan configurations /\n   
     netplan_applied_static: |-
       - Set Static Netplan configurations \n   
     lx_zone_dataset: |-
