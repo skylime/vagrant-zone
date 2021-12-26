@@ -101,7 +101,7 @@ en:
       - ZFS root dataset:
         
     destroy_dataset: |-
-      - ZFS Boot bolume dataset:
+      - ZFS Boot volume dataset:
         
     lx_zone_config_gen: |-
       Generating configuration for LX zone
