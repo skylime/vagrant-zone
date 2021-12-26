@@ -610,25 +610,18 @@ module VagrantPlugins
             cinfo = "Cloud-init SSH Key: #{config.cloud_init_sshkey}"
             uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + cinfo)
           end
-
           cinfo = "Cloud Config: #{cloudconfig}"
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cinfo)
           execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
         end
 
-        ## Nic Configurations
-        
+        ## Nic Configurations       
         uiinfo.info(I18n.t('vagrant_zones.networking_int_add'))
         network(@machine, uiinfo, 'config')
 
-        ## Write out Config
-        exit = %(exit)
-        File.open("#{name}.zoneconfig", 'a') do |f|
-          f.puts exit
-        end
         uiinfo.info(I18n.t('vagrant_zones.exporting_bhyve_zone_config_gen'))
         ## Export config to zonecfg
-        execute(false, "cat #{name}.zoneconfig | #{@pfexec} zonecfg -z #{machine.name}")
+        
       end
 
       # This ensures the zone is safe to boot
