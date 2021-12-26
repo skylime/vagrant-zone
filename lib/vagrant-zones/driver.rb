@@ -361,7 +361,7 @@ end             )
           execute(false, "#{@pfexec} zfs create #{datasetpath}")
 
           # Create boot volume
-          cinfo = "#{bootconfigs['size']}, #{datasetroot}"
+          cinfo = ", #{bootconfigs['size']}, #{datasetroot}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot') + cinfo)
           execute(false, "#{@pfexec} zfs create -s -V   #{bootconfigs['size']} #{datasetroot}")
 
@@ -392,13 +392,16 @@ end             )
           if addtl_dataset_root_exists == "#{disk['array']}/#{disk['dataset']}/#{name}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             execute(false, "#{@pfexec} zfs create -s -V #{disk['size']} #{dataset}")
+            puts  "#{@pfexec} zfs create -s -V #{disk['size']} #{dataset}"
           else
             cinfo = ", #{disk['array']}/#{disk['dataset']}/#{name}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo)
             execute(false, "#{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}")
+            puts "#{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}"
             cinfo = ", #{disk['size']}, #{dataset}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             execute(false, "#{@pfexec} zfs create -s -V #{disk['size']} #{dataset}")
+            puts  "#{@pfexec} zfs create -s -V #{disk['size']} #{dataset}"
           end
         end
       end

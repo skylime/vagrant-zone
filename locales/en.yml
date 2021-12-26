@@ -71,7 +71,7 @@ en:
     bhyve_zone_dataset_additional_volume_destroy: |-
       Destroying additional ZFS Volume for bhyve zone
     bhyve_zone_dataset_additional_volume_root: |-
-      Creating additional ZFS root dataset for bhyve zone volume
+      Creating additional ZFS root dataset for bhyve zone volume 
     destroy_dataset: |-
       - Destroying dataset ==> 
     lx_zone_config_gen: |-
