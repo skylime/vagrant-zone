@@ -39,60 +39,60 @@ en:
     configure_interface_using_vnic: |-
       Configuring the interface on the zone for VNIC  
     vnic_setup: |-
-        - Setting up VNIC
+      - Setting up VNIC
     removing_vnic: |-
-        - Deleting VNIC
+      - Deleting VNIC
     no_removing_vnic: |-
-        - No VNIC to Remove
+      - No VNIC to Remove
     delete_disks: |-
       Removing associated disks
     installing_zone: |-
       Installing zone as brand   
     netplan_remove: |-
-        - Removing stale netplan configurations
+      - Removing stale netplan configurations
     netplan_set: |-
-        - Generate fresh netplan configurations
+      - Generate fresh netplan configurations
     netplan_applied: |-
-        - New Netplan configurations Applied
+      - New Netplan configurations Applied
     netplan_applied_dhcp: |-
-        - Set DHCP Netplan configurations  
+      - Set DHCP Netplan configurations  
     netplan_applied_static: |-
-        - Set Static Netplan configurations  
+      - Set Static Netplan configurations  
     lx_zone_dataset: |-
-        - Creating zoned ZFS dataset for LX zone:
+      - Creating zoned ZFS dataset for LX zone:
         
     bhyve_zone_dataset_root: |-
-        - ZFS root dataset:
+      - ZFS root dataset:
         
     begin_create_datasets: |-
       Creating ZFS datasets:
         
     bhyve_zone_dataset_boot: |-
-        - ZFS boot volume
+      - ZFS boot volume
        
     bhyve_zone_dataset_boot_volume: |-
-          Importing template to 
+      Importing template to 
     setting_additional_disks_configurations: |-
-        - Setting additional disk Configurations in the zone configurations:
+      - Setting additional disk Configurations in the zone configurations:
         
     bhyve_zone_dataset_additional_volume: |-
-        - Additional ZFS Volume for bhyve zone
+      - Additional ZFS Volume for bhyve zone
       
     bhyve_zone_dataset_additional_volume_destroy: |-
-        - Destroying additional ZFS Volume for bhyve zone:
+      - Destroying additional ZFS Volume for bhyve zone:
         
     bhyve_zone_dataset_additional_volume_destroy_root: |-
-        - Destroying ZFS root dataset for additional volume for the bhyve zone
+      - Destroying ZFS root dataset for additional volume for the bhyve zone
        
     bhyve_zone_dataset_additional_volume_root: |-
-        - Creating ZFS root dataset for additional volume for the bhyve zone
+      - Creating ZFS root dataset for additional volume for the bhyve zone
        
     destroy_root_dataset: |-
-        - Destroying root dataset for zone
+      - Destroying root dataset for zone
        
     destroy_dataset: |-
-        - Destroying dataset for zone
-        
+      - Destroying dataset for zone
+       
     lx_zone_config_gen: |-
       Generating configuration for LX zone
     bhyve_zone_config_gen: |-
@@ -132,13 +132,13 @@ en:
     boot_ready: |-
       The zone has booted
     root_dataset_nil: |-
-        - No root dataset to remove 
+      - No root dataset to remove 
     boot_dataset_nil: |-
-        - No boot dataset volumes to remove 
+      - No boot dataset volumes to remove 
     additional_dataset_nil: |-
-        - No additional dataset volumes to remove
+      - No additional dataset volumes to remove
     destroy_root_dataset: |-
-        - Destroying root dataset for zone ==> 
+      - Destroying root dataset for zone ==> 
     starting_zone: |-
       Starting the zone
     joyent_image_uuid_verified: |-
