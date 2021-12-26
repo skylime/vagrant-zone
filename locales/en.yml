@@ -56,7 +56,7 @@ en:
       Preparing zone OS networking interfaces:
       
     delete_disks: |-
-      Removing associated disks
+      Removing associated disks:
     installing_zone: |-
       Installing zone as brand:
         
