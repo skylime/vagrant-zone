@@ -35,19 +35,21 @@ en:
     graceful_shutdown: |-
       Ensuring the zone is shutdown at the hypervisor level
     creating_vnic: |-
-      Creating VNIC \n   
+      Creating VNIC  
     configure_interface_using_vnic: |-
-      Configuring the interface on the zone for VNIC \n   
+      Configuring the interface on the zone for VNIC  
     vnic_setup: |-
-      - Setting up VNIC \n   
+      - Setting up VNIC
+          
     removing_vnic: |-
-      - Deleting VNIC \n   
+      - Deleting VNIC
+          
     no_removing_vnic: |-
       - No VNIC to Remove
     delete_disks: |-
       Removing associated disks
     installing_zone: |-
-      Installing zone as brand \n   
+      Installing zone as brand   
     netplan_remove: |-
       - Removing stale netplan configurations
     netplan_set: |-
@@ -55,9 +57,9 @@ en:
     netplan_applied: |-
       - New Netplan configurations Applied
     netplan_applied_dhcp: |-
-      - Set DHCP Netplan configurations /\n   
+      - Set DHCP Netplan configurations  
     netplan_applied_static: |-
-      - Set Static Netplan configurations /\n   
+      - Set Static Netplan configurations  
     lx_zone_dataset: |-
       - Creating zoned ZFS dataset for LX zone ==>
     bhyve_zone_dataset_root: |-
