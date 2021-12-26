@@ -397,14 +397,14 @@ end             )
           sparse = "" unless disk['sparse']
           addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }'  | head -n 1 || true")
           if addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
-            cinfo = " #{dataset}, #{disk['size']}"
+            cinfo = "#{dataset}, #{disk['size']}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             execute(false, "#{@pfexec} zfs create #{sparse} -V #{disk['size']} #{dataset}")
           else
             cinfo = "#{disk['array']}/#{disk['dataset']}/#{name}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo)
             execute(false, "#{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}")
-            cinfo = " #{dataset}, #{disk['size']}"
+            cinfo = "#{dataset}, #{disk['size']}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
             execute(false, "#{@pfexec} zfs create #{sparse} -V #{disk['size']} #{dataset}")
           end
@@ -647,7 +647,7 @@ end         )
           disks.each do |disk|
             diskname = 'disk'
             dset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
-            cinfo = " #{dset}, #{disk['size']}"
+            cinfo = "#{dset}, #{disk['size']}"
             uiinfo.info(I18n.t('vagrant_zones.setting_additional_disks_configurations') + cinfo)
             diskname += diskrun.to_s if diskrun.positive?
             diskrun += 1
