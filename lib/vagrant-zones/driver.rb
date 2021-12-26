@@ -350,7 +350,9 @@ end             )
         datadir = machine.data_dir
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
-        datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
+        datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"      
+        sparse = "-s " if bootconfigs['sparse']
+        sparse = "" unless bootconfigs['sparse']
         uiinfo.info(I18n.t('vagrant_zones.begin_create_datasets'))
         ## Create Boot Volume
         case config.brand
@@ -365,7 +367,7 @@ end             )
           # Create boot volume
           cinfo = " #{datasetroot}, #{bootconfigs['size']}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot') + cinfo)
-          execute(false, "#{@pfexec} zfs create -s -V #{bootconfigs['size']} #{datasetroot}")
+          execute(false, "#{@pfexec} zfs create #{sparse} -V #{bootconfigs['size']} #{datasetroot}")
 
           ## Import template to boot volume
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + datasetroot)
@@ -389,17 +391,19 @@ end             )
 
         config.additional_disks.each do |disk|
           dataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
+          sparse = "-s "
+          sparse = "" unless disk['sparse']
           addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }'  | head -n 1 || true")
           if addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-            execute(false, "#{@pfexec} zfs create -s -V #{disk['size']} #{dataset}")
+            execute(false, "#{@pfexec} zfs create #{sparse} -V #{disk['size']} #{dataset}")
           else
             cinfo = ", #{disk['array']}/#{disk['dataset']}/#{name}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo)
             execute(false, "#{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}")
             cinfo = ", #{disk['size']}, #{dataset}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-            execute(false, "#{@pfexec} zfs create -s -V #{disk['size']} #{dataset}")
+            execute(false, "#{@pfexec} zfs create #{sparse} -V #{disk['size']} #{dataset}")
           end
         end
       end
