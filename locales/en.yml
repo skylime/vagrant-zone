@@ -58,7 +58,8 @@ en:
     delete_disks: |-
       Removing associated disks
     installing_zone: |-
-      Installing zone as brand ==> 
+      Installing zone as brand:
+        
     netplan_remove: |-
       - Removing stale netplan configurations
     netplan_set: |-
