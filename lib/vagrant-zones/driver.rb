@@ -306,7 +306,7 @@ module VagrantPlugins
 #end             )
 #              File.open("#{name}.zoneconfig", 'a') do |f|
 #                f.puts nic_attr
-#              end
+ #             end
             when 'bhyve'
               execute(false, %(#{@pfexec} zonecfg -z #{name} "add net; set physical=#{vnic_name}; set allowed-address=#{allowed_address}; end;"))
               #nic_attr = %(add net
@@ -487,132 +487,135 @@ module VagrantPlugins
           execute(false, %(#{@pfexec} zonecfg -z #{name} "add capped-memory; set physical=#{config.memory}; set swap=#{config.kernel}; set locked=#{config.memory}; end;"))
           execute(false, %(#{@pfexec} zonecfg -z #{name} "add dataset; set name=#{datasetroot}; end;"))
           execute(false, %(#{@pfexec} zonecfg -z #{name} "set max-lwps=2000"))
-#          attr = %(create
-#set zonepath=/#{datasetpath}/path
-#set brand=#{config.brand}
-#set autoboot=#{config.autoboot}
-#add attr
-#  set name=kernel-version
-#  set type=string
-#  set value=#{config.kernel}
-#end
-#add capped-memory
-#  set physical=#{config.memory}
-#  set swap=#{config.memory}
-#  set locked=#{config.memory}
-#end
-#add dataset
-#  set name=#{datasetroot}
-#end
-#set max-lwps=2000
-#        )
+
+          attr = %(create
+set zonepath=/#{datasetpath}/path
+set brand=#{config.brand}
+set autoboot=#{config.autoboot}
+add attr
+  set name=kernel-version
+  set type=string
+  set value=#{config.kernel}
+end
+add capped-memory
+  set physical=#{config.memory}
+  set swap=#{config.memory}
+  set locked=#{config.memory}
+end
+add dataset
+  set name=#{datasetroot}
+end
+set max-lwps=2000
+        )
         when 'bhyve'
           ## General Configuration
           ## Bhyve
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "create ; set zonepath=/#{datasetpath}/path"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "set brand=#{config.brand}"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "set autoboot=#{config.autoboot}"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "set ip-type=exclusive"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=acpi; set value=#{config.acpi}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=ram; set value=#{config.memory}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=bootrom; set value=#{firmware(machine)}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=hostbridge; set value=#{config.hostbridge}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=diskif; set value=#{config.diskif}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=netif; set value=#{config.netif}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=bootdisk; set value=#{datasetroot.delete_prefix('/')}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=type; set value=#{config.os_type}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add device; set match=/dev/zvol/rdsk/#{datasetroot}; end;"))          
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "create ; set zonepath=/#{datasetpath}/path"))
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "set brand=#{config.brand}"))
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "set autoboot=#{config.autoboot}"))
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "set ip-type=exclusive"))
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=acpi; set value=#{config.acpi}; set type=string; end;"))   
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=ram; set value=#{config.memory}; set type=string; end;"))   
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=bootrom; set value=#{firmware(machine)}; set type=string; end;"))   
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=hostbridge; set value=#{config.hostbridge}; set type=string; end;"))   
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=diskif; set value=#{config.diskif}; set type=string; end;"))   
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=netif; set value=#{config.netif}; set type=string; end;"))   
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=bootdisk; set value=#{datasetroot.delete_prefix('/')}; set type=string; end;"))   
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=type; set value=#{config.os_type}; set type=string; end;"))   
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=4; set type=string; end;"))   
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "add device; set match=/dev/zvol/rdsk/#{datasetroot}; end;"))          
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
-#          attr = %(create
-#set zonepath=/#{datasetpath}/path
-#set brand=#{config.brand}
-#set autoboot=#{config.autoboot}
-#set ip-type=exclusive
-#add attr
-#  set name=acpi
-#  set type=string
-#  set value=#{config.acpi}
-#end
-#add attr
-#  set name=ram
-#  set type=string
-#  set value=#{config.memory}
-#end
-#add attr
-#  set name=bootrom
-#  set type=string
-#  set value=#{firmware(machine)}
-#end
-#add attr
-#  set name=hostbridge
-#  set type=string
-#  set value=#{config.hostbridge}
-#end
-#add attr
-#  set name=diskif
-#  set type=string
-#  set value=#{config.diskif}
-#end
-#add attr
-#  set name=netif
-#  set type=string
-#  set value=#{config.netif}
-#end
-#add attr
-#  set name=bootdisk
-#  set type=string
-#  set value=#{datasetroot.delete_prefix('/')}
-#end
-#add attr
-#  set name=type
-#  set type=string
-#  set value=#{config.os_type}
-#end
-#add device
-#  set match=/dev/zvol/rdsk/#{datasetroot}
-#end   )
-#        end
-#        File.open("#{name}.zoneconfig", 'w') do |f|
-#          f.puts attr
-#        end
+          attr = %(create
+set zonepath=/#{datasetpath}/path
+set brand=#{config.brand}
+set autoboot=#{config.autoboot}
+set ip-type=exclusive
+add attr
+  set name=acpi
+  set type=string
+  set value=#{config.acpi}
+end
+add attr
+  set name=ram
+  set type=string
+  set value=#{config.memory}
+end
+add attr
+  set name=bootrom
+  set type=string
+  set value=#{firmware(machine)}
+end
+add attr
+  set name=hostbridge
+  set type=string
+  set value=#{config.hostbridge}
+end
+add attr
+  set name=diskif
+  set type=string
+  set value=#{config.diskif}
+end
+add attr
+  set name=netif
+  set type=string
+  set value=#{config.netif}
+end
+add attr
+  set name=bootdisk
+  set type=string
+  set value=#{datasetroot.delete_prefix('/')}
+end
+add attr
+  set name=type
+  set type=string
+  set value=#{config.os_type}
+end
+add device
+  set match=/dev/zvol/rdsk/#{datasetroot}
+end   )
+        end
+        File.open("#{name}.zoneconfig", 'w') do |f|
+          f.puts attr
+        end
 
         ## Shared Disk Configurations
         if config.shared_disk_enabled
           uiinfo.info(I18n.t('vagrant_zones.setting_alt_shared_disk_configurations') + path.path)
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add fs; set dir=/vagrant; set special=#{config.shared_dir}; set type=lofs; end;"))  
-#          shared_disk_attr = %(add fs
-#  set dir=/vagrant
-#  set special=#{config.shared_dir}
-#  set type=lofs
-#end       )
-#          File.open("#{name}.zoneconfig", 'a') do |f|
-#            f.puts shared_disk_attr
-#          end
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "add fs; set dir=/vagrant; set special=#{config.shared_dir}; set type=lofs; end;"))  
+          shared_disk_attr = %(add fs
+  set dir=/vagrant
+  set special=#{config.shared_dir}
+  set type=lofs
+end       )
+          File.open("#{name}.zoneconfig", 'a') do |f|
+            f.puts shared_disk_attr
+          end
         end
 
         ## CPU Configurations
         if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm')
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=#{config.cpus}; set type=string; end;")) 
-#          cpu_attr = %(add attr
-#  set name=vcpus
-#  set type=string
-#  set value=#{config.cpus}
-#end       )
-#          File.open("#{name}.zoneconfig", 'a') do |f|
-#            f.puts cpu_attr
-#          end
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=#{config.cpus}; set type=string; end;")) 
+          cpu_attr = %(add attr
+  set name=vcpus
+  set type=string
+  set value=#{config.cpus}
+end       )
+          File.open("#{name}.zoneconfig", 'a') do |f|
+            f.puts cpu_attr
+          end
         elsif config.cpu_configuration == 'complex' && (config.brand == 'bhyve' || config.brand == 'kvm')
+
           hash = config.complex_cpu_conf[0]
           cstring="sockets=#{hash['sockets']},cores=#{hash['cores']},threads=#{hash['threads']}"
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=#{cstring}; set type=string; end;")) 
-#          cpu_attr = %(add attr
-#  set name=vcpus
-#  set type=string
-#  set value="sockets=#{hash['sockets']},cores=#{hash['cores']},threads=#{hash['threads']}"
-#end       )
-#          File.open("#{name}.zoneconfig", 'a') do |f|
-#            f.puts cpu_attr
-#          end
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=#{cstring}; set type=string; end;")) 
+          cpu_attr = %(add attr
+  set name=vcpus
+  set type=string
+  set value="sockets=#{hash['sockets']},cores=#{hash['cores']},threads=#{hash['threads']}"
+end       )
+          File.open("#{name}.zoneconfig", 'a') do |f|
+            f.puts cpu_attr
+          end
         end
 
         ### Passthrough PCI Devices
@@ -649,23 +652,23 @@ module VagrantPlugins
             uiinfo.info(I18n.t('vagrant_zones.setting_cd_rom_configurations') + cdrom['path'])
             cdname += cdrun.to_s if cdrun.positive?
             cdrun += 1
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=#{cdname}; set value=#{cdrom['path']}; set type=string; end;")) 
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add fs; set dir=#{cdrom['path']}; set special=#{cdrom['path']}; set type=lofs; add options nodevices; add options ro; end;"))
-#            cdrom_attr = %(add attr
-#    set name=#{cdname}
-#    set type=string
-#    set value=#{cdrom['path']}
-#end
-#add fs
-#    set dir=#{cdrom['path']}
-#    set special=#{cdrom['path']}
-#    set type=lofs
-#    add options ro
-#    add options nodevices
-#end         )
-#            File.open("#{name}.zoneconfig", 'a') do |f|
-#              f.puts cdrom_attr
-#            end
+            # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=#{cdname}; set value=#{cdrom['path']}; set type=string; end;")) 
+            # execute(false, %(#{@pfexec} zonecfg -z #{name} "add fs; set dir=#{cdrom['path']}; set special=#{cdrom['path']}; set type=lofs; add options nodevices; add options ro; end;"))
+            cdrom_attr = %(add attr
+    set name=#{cdname}
+    set type=string
+    set value=#{cdrom['path']}
+end
+add fs
+    set dir=#{cdrom['path']}
+    set special=#{cdrom['path']}
+    set type=lofs
+    add options ro
+    add options nodevices
+end         )
+            File.open("#{name}.zoneconfig", 'a') do |f|
+              f.puts cdrom_attr
+            end
           end
         end
 
@@ -680,19 +683,19 @@ module VagrantPlugins
             uiinfo.info(I18n.t('vagrant_zones.setting_additional_disks_configurations') + cinfo)
             diskname += diskrun.to_s if diskrun.positive?
             diskrun += 1
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add device; set match=/dev/zvol/rdsk/#{dset}; end;")) 
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=#{diskname}; set value=#{dset}; set type=string; end;")) 
-#            additional_disk_attr = %(add device
-#  set match=/dev/zvol/rdsk/#{dset}
-#end
-#add attr
-#  set name=#{diskname}
-#  set type=string
-#  set value=#{dset}
-#end         )
-#            File.open("#{name}.zoneconfig", 'a') do |f|
-#              f.puts additional_disk_attr
-#            end
+            # execute(false, %(#{@pfexec} zonecfg -z #{name} "add device; set match=/dev/zvol/rdsk/#{dset}; end;")) 
+            # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=#{diskname}; set value=#{dset}; set type=string; end;")) 
+            additional_disk_attr = %(add device
+  set match=/dev/zvol/rdsk/#{dset}
+end
+add attr
+  set name=#{diskname}
+  set type=string
+  set value=#{dset}
+end         )
+            File.open("#{name}.zoneconfig", 'a') do |f|
+              f.puts additional_disk_attr
+            end
           end
         end
 
@@ -714,15 +717,15 @@ module VagrantPlugins
             port += ',wait' if config.console_onboot
             cinfo = "Console type: #{console}, State: #{port}, Port: #{config.consoleport}"
             uiinfo.info(I18n.t('vagrant_zones.setting_console_access') + cinfo)
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=#{console}; set value=#{port}; set type=string; end;")) 
-#            console_attr = %(add attr
-#    set name=#{console}
-#    set type=string
-#    set value=#{port}
-#end            )
-#            File.open("#{name}.zoneconfig", 'a') do |f|
-#              f.puts console_attr
-#            end
+            # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=#{console}; set value=#{port}; set type=string; end;")) 
+            console_attr = %(add attr
+    set name=#{console}
+    set type=string
+    set value=#{port}
+end            )
+            File.open("#{name}.zoneconfig", 'a') do |f|
+              f.puts console_attr
+            end
           end
         end
 
@@ -739,81 +742,82 @@ module VagrantPlugins
           unless config.cloud_init_dnsdomain.nil?
             cinfo = "Cloud-init dns-domain: #{config.cloud_init_dnsdomain}"
             uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + cinfo)
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=dns-domain; set value=#{config.cloud_init_dnsdomain}; set type=string; end;"))
-#            cloud_init_dnsdomain_attr = %(add attr
-#      set name=dns-domain
-#      set type=string
-#      set value=#{config.cloud_init_dnsdomain}
-#  end       )
-#            File.open("#{name}.zoneconfig", 'a') do |f|
-#              f.puts cloud_init_dnsdomain_attr
-#            end
+            # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=dns-domain; set value=#{config.cloud_init_dnsdomain}; set type=string; end;"))
+            cloud_init_dnsdomain_attr = %(add attr
+      set name=dns-domain
+      set type=string
+      set value=#{config.cloud_init_dnsdomain}
+  end       )
+            File.open("#{name}.zoneconfig", 'a') do |f|
+              f.puts cloud_init_dnsdomain_attr
+            end
           end
           unless config.cloud_init_password.nil?
             cinfo = "Cloud-init password: #{config.cloud_init_password}"
             uiinfo.info(I18n.t('vagrant_zones.setting_cloud_password') + cinfo)
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=password; set value=#{config.cloud_init_password}; set type=string; end;"))
-#            cloud_init_password_attr = %(add attr
-#      set name=password
-#      set type=string
-#      set value=#{config.cloud_init_password}
-#  end       )
-#            File.open("#{name}.zoneconfig", 'a') do |f|
-#              f.puts cloud_init_password_attr
-#            end
+            # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=password; set value=#{config.cloud_init_password}; set type=string; end;"))
+            cloud_init_password_attr = %(add attr
+      set name=password
+      set type=string
+      set value=#{config.cloud_init_password}
+  end       )
+            File.open("#{name}.zoneconfig", 'a') do |f|
+              f.puts cloud_init_password_attr
+            end
           end
           unless config.cloud_init_resolvers.nil?
             cinfo = "Cloud-init resolvers: #{config.cloud_init_resolvers}"
             uiinfo.info(I18n.t('vagrant_zones.setting_cloud_resolvers') + cinfo)
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=resolvers; set value=#{config.cloud_init_resolvers}; set type=string; end;"))
-#            cloud_init_resolvers_attr = %(add attr
-#      set name=resolvers
-#      set type=string
-#      set value=#{config.cloud_init_resolvers}
-#  end       )
-#            File.open("#{name}.zoneconfig", 'a') do |f|
-#              f.puts cloud_init_resolvers_attr
-#            end
+            # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=resolvers; set value=#{config.cloud_init_resolvers}; set type=string; end;"))
+            cloud_init_resolvers_attr = %(add attr
+      set name=resolvers
+      set type=string
+      set value=#{config.cloud_init_resolvers}
+  end       )
+            File.open("#{name}.zoneconfig", 'a') do |f|
+              f.puts cloud_init_resolvers_attr
+            end
           end
           unless config.cloud_init_sshkey.nil?
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=sshkey; set value=#{config.cloud_init_sshkey}; set type=string; end;"))
+            # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=sshkey; set value=#{config.cloud_init_sshkey}; set type=string; end;"))
             cinfo = "Cloud-init SSH Key: #{config.cloud_init_sshkey}"
             uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + cinfo)
-#            cloud_init_ssh_attr = %(add attr
-#      set name=sshkey
-#      set type=string
-#      set value=#{config.cloud_init_sshkey}
-#  end       )
-#            File.open("#{name}.zoneconfig", 'a') do |f|
-#              f.puts cloud_init_ssh_attr
-#            end
+            cloud_init_ssh_attr = %(add attr
+      set name=sshkey
+      set type=string
+      set value=#{config.cloud_init_sshkey}
+  end       )
+            File.open("#{name}.zoneconfig", 'a') do |f|
+              f.puts cloud_init_ssh_attr
+            end
           end
 
           cinfo = "Cloud Config: #{cloudconfig}"
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cinfo)
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
-#          cloud_init_attr = %(add attr
-#    set name=cloud-init
-#    set type=string
-#    set value=#{cloudconfig}
-#end          )
-#          File.open("#{name}.zoneconfig", 'a') do |f|
-#            f.puts cloud_init_attr
-#          end
+          # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
+          cloud_init_attr = %(add attr
+    set name=cloud-init
+    set type=string
+    set value=#{cloudconfig}
+end          )
+          File.open("#{name}.zoneconfig", 'a') do |f|
+            f.puts cloud_init_attr
+          end
         end
 
         ## Nic Configurations
+        
         uiinfo.info(I18n.t('vagrant_zones.networking_int_add'))
         network(@machine, uiinfo, 'config')
 
         ## Write out Config
-        #exit = %(exit)
-        #File.open("#{name}.zoneconfig", 'a') do |f|
-        #  f.puts exit
-        #end
+        exit = %(exit)
+        File.open("#{name}.zoneconfig", 'a') do |f|
+          f.puts exit
+        end
         uiinfo.info(I18n.t('vagrant_zones.exporting_bhyve_zone_config_gen'))
-        ## Verify Zone config
-        #execute(false, "cat #{name}.zoneconfig | #{@pfexec} zonecfg -z #{machine.name}")
+        ## Export config to zonecfg
+        execute(false, "cat #{name}.zoneconfig | #{@pfexec} zonecfg -z #{machine.name}")
       end
 
       # This ensures the zone is safe to boot
