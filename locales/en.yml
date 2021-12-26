@@ -140,7 +140,8 @@ en:
     joyent_image_uuid_detected: |-
       Joyent UUID detected ==> 
     vagrant_cloud_box_detected: |-
-      Vagrant Cloud Box detected ==> 
+      - Vagrant Cloud Box detected:
+        
     ssh_ready: |-
       SSH appears to be ready
     boot_ready: |-
