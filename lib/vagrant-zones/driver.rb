@@ -351,7 +351,7 @@ end             )
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
-        uiinfo.info(I18n.t('vagrant_zones.begin_create_datasets') + datasetpath)
+        uiinfo.info(I18n.t('vagrant_zones.begin_create_datasets'))
         ## Create Boot Volume
         case config.brand
         when 'lx'

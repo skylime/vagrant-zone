@@ -40,10 +40,8 @@ en:
       Configuring the interface on the zone for VNIC  
     vnic_setup: |-
       - Setting up VNIC
-          
     removing_vnic: |-
       - Deleting VNIC
-          
     no_removing_vnic: |-
       - No VNIC to Remove
     delete_disks: |-
@@ -61,26 +59,28 @@ en:
     netplan_applied_static: |-
       - Set Static Netplan configurations  
     lx_zone_dataset: |-
-      - Creating zoned ZFS dataset for LX zone ==>
+      - Creating zoned ZFS dataset for LX zone:
+        
     bhyve_zone_dataset_root: |-
-      - Creating ZFS root dataset
-
+      - ZFS root dataset:
+        
     begin_create_datasets: |-
-      - Creating ZFS dataset
-       
+      Creating ZFS datasets:
+        
     bhyve_zone_dataset_boot: |-
-      - Creating ZFS boot volume
+      - ZFS boot volume
        
     bhyve_zone_dataset_boot_volume: |-
-      Importing template to
-         
+          Importing template to 
     setting_additional_disks_configurations: |-
-      - Setting additional disk Configurations in the zone configurations
+      - Setting additional disk Configurations in the zone configurations:
+        
     bhyve_zone_dataset_additional_volume: |-
-      Creating additional ZFS Volume for bhyve zone
+      - Additional ZFS Volume for bhyve zone
       
     bhyve_zone_dataset_additional_volume_destroy: |-
-      - Destroying additional ZFS Volume for bhyve zone ==> 
+      - Destroying additional ZFS Volume for bhyve zone:
+        
     bhyve_zone_dataset_additional_volume_destroy_root: |-
       - Destroying ZFS root dataset for additional volume for the bhyve zone
        
