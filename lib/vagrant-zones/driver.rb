@@ -813,7 +813,7 @@ module VagrantPlugins
         #end
         uiinfo.info(I18n.t('vagrant_zones.exporting_bhyve_zone_config_gen'))
         ## Verify Zone config
-        execute(false, "cat #{name}.zoneconfig | #{@pfexec} zonecfg -z #{machine.name}")
+        #execute(false, "cat #{name}.zoneconfig | #{@pfexec} zonecfg -z #{machine.name}")
       end
 
       # This ensures the zone is safe to boot
