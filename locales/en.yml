@@ -37,17 +37,17 @@ en:
     creating_vnic: |-
       Creating VNIC  
     configure_interface_using_vnic: |-
-      Configuring the interface on the zone for VNIC
-      
+      - Configuring the interface on the zone for VNIC
+        
     vnic_setup: |-
       - Setting up VNIC
         
     networking_int_remove: |-
       Removing networking devices:
-      
+        
     networking_int_add: |-
       Adding networking devices:
-      
+        
     removing_vnic: |-
       - Deleting VNIC
         
@@ -55,7 +55,6 @@ en:
       - No VNIC to Remove
     network_setup: |-
       Preparing zone OS networking interfaces:
-      
     delete_disks: |-
       Removing associated disks:
     installing_zone: |-
@@ -81,25 +80,25 @@ en:
       Creating ZFS datasets and volumes:
     bhyve_zone_dataset_boot: |-
       - ZFS boot volume:
-       
+        
     bhyve_zone_dataset_boot_volume: |-
       - Importing template to:
         
     setting_additional_disks_configurations: |-
       - Setting additional disk Configurations in the zone configurations:
-       
+        
     bhyve_zone_dataset_additional_volume: |-
       - Additional ZFS volume:
-       
+        
     bhyve_zone_dataset_additional_volume_destroy: |-
       - Additional ZFS volume:
         
     bhyve_zone_dataset_additional_volume_destroy_root: |-
       - ZFS root dataset for additional ZFS volume:
-       
+        
     bhyve_zone_dataset_additional_volume_root: |-
       - ZFS root dataset for additional ZFS volume:
-       
+        
     destroy_root_dataset: |-
       - ZFS root dataset:
         
@@ -116,7 +115,6 @@ en:
       Uninstalling the zone
     exporting_bhyve_zone_config_gen: |-
       Importing generated zonecfg configuration
-      
     preflight_checks: |-
       Running Preflight Checks:
     vbox_run_check: |-
