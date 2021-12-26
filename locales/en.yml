@@ -29,7 +29,7 @@ en:
     halting_zone: |-
       Halting the zone
     destroy_zone: |-
-      Destroying the zone
+      Starting zone destruction
     graceful_shutdown_failed: |-
       Zone failed to shutdown in alloted time ==> 
     graceful_shutdown: |-
@@ -39,7 +39,8 @@ en:
     configure_interface_using_vnic: |-
       Configuring the interface on the zone for VNIC  
     vnic_setup: |-
-      - Setting up VNIC ==> 
+      - Setting up VNIC
+        
     networking_int_remove: |-
       Removing networking devices:
       
@@ -47,7 +48,8 @@ en:
       Adding networking devices:
       
     removing_vnic: |-
-      - Deleting VNIC ==> 
+      - Deleting VNIC
+        
     no_removing_vnic: |-
       - No VNIC to Remove
     delete_disks: |-
@@ -106,7 +108,7 @@ en:
     bhyve_zone_config_remove: |-
       Removing zonecfg configuration
     bhyve_zone_config_uninstall: |-
-      Uninstalling zone and removing zonecfg configuration
+      Uninstalling the zone
     exporting_bhyve_zone_config_gen: |-
       Importing generated zonecfg configuration
       
