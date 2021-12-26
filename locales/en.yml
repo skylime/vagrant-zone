@@ -95,7 +95,7 @@ en:
         
     bhyve_zone_dataset_additional_volume_destroy_root: |-
       - ZFS root dataset for additional ZFS volume
-       
+      
     bhyve_zone_dataset_additional_volume_root: |-
       - ZFS root dataset for additional ZFS volume
        
