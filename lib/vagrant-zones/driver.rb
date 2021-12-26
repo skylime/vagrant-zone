@@ -446,7 +446,7 @@ end             )
         end
 
         ## Check if root dataset exists
-        uiinfo.info(I18n.t('vagrant_zones.destroy_dataset') + zp)
+        uiinfo.info(I18n.t('vagrant_zones.destroy_root_dataset') + zp)
         dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep #{zp} | awk '{ print $1 }' | grep -v path || true")
         execute(false, "#{@pfexec} zfs destroy -r #{zp}") if dataset_root_exists == zp.to_s
       end

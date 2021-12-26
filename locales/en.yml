@@ -74,8 +74,10 @@ en:
       Destroying ZFS root dataset for additional volume for the bhyve zone
     bhyve_zone_dataset_additional_volume_root: |-
       Creating ZFS root dataset for additional volume for the bhyve zone
+    destroy_root_dataset: |-
+      - Destroying root dataset for zone ==> 
     destroy_dataset: |-
-      - Destroying dataset ==> 
+      - Destroying dataset for zone ==> 
     lx_zone_config_gen: |-
       Generating configuration for LX zone
     bhyve_zone_config_gen: |-
@@ -114,8 +116,10 @@ en:
       SSH appears to be ready
     boot_ready: |-
       The zone has booted
-    boot_dataset_nil: |-
-      No boot dataset to remove
+    additional_dataset_nil: |-
+      No additional dataset volumes to remove
+    destroy_root_dataset: |-
+      - Destroying root dataset for zone ==> 
     starting_zone: |-
       Starting the zone
     joyent_image_uuid_verified: |-
