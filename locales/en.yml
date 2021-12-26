@@ -64,15 +64,18 @@ en:
       - Creating ZFS root dataset
        
     begin_create_datasets: |-
-      - Creating ZFS dataset \n   
+      - Creating ZFS dataset
+      
     bhyve_zone_dataset_boot: |-
-      - Creating ZFS boot volume \n   
+      - Creating ZFS boot volume
+       
     bhyve_zone_dataset_boot_volume: |-
       Importing template to \n   
     setting_additional_disks_configurations: |-
       - Setting additional disk Configurations in the zone configurations
     bhyve_zone_dataset_additional_volume: |-
-      Creating additional ZFS Volume for bhyve zone ==> 
+      Creating additional ZFS Volume for bhyve zone
+      
     bhyve_zone_dataset_additional_volume_destroy: |-
       - Destroying additional ZFS Volume for bhyve zone ==> 
     bhyve_zone_dataset_additional_volume_destroy_root: |-
