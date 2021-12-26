@@ -837,7 +837,7 @@ end          )
       def setup(machine, uiinfo)
         config = machine.provider_config
         ### network Configurations
-        uiinfo.info(I18n.t('vagrant_zones.network_setup')) == 'bhyve'
+        uiinfo.info(I18n.t('vagrant_zones.network_setup')) if config.brand == 'bhyve'
         network(@machine, uiinfo, 'setup') if config.brand == 'bhyve'
       end
 
