@@ -53,7 +53,7 @@ en:
     no_removing_vnic: |-
       - No VNIC to Remove
     network_setup: |-
-      Preparing networking interfaces:
+      Preparing zone OS networking interfaces:
       
     delete_disks: |-
       Removing associated disks
@@ -88,18 +88,18 @@ en:
        
     bhyve_zone_dataset_additional_volume: |-
       - Additional ZFS volume:
-        
+       
     bhyve_zone_dataset_additional_volume_destroy: |-
-      - Destroying additional ZFS volume:
+      - additional ZFS volume:
         
     bhyve_zone_dataset_additional_volume_destroy_root: |-
-      - Destroying ZFS root dataset for additional ZFS volume
+      - ZFS root dataset for additional ZFS volume
        
     bhyve_zone_dataset_additional_volume_root: |-
-      - Creating ZFS root dataset for additional ZFS volume
+      - ZFS root dataset for additional ZFS volume
        
     destroy_root_dataset: |-
-      - Destroying root dataset:
+      - root dataset:
         
     destroy_dataset: |-
       - Destroying boot dataset:
