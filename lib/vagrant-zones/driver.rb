@@ -437,7 +437,6 @@ end             )
             execute(false, "#{@pfexec} zfs destroy -r #{addataset}") if dataset_exists == addataset
             uiinfo.info(I18n.t('vagrant_zones.additional_dataset_nil')) unless dataset_exists == addataset
 
-
             cinfo = ", #{diskpath}"
             addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{diskpath} | awk '{ print $1 }' | head -n 1 || true")
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy_root') + cinfo) if (addsrtexists == diskpath && addsrtexists != zp.to_s )
@@ -446,9 +445,10 @@ end             )
         end
 
         ## Check if root dataset exists
-        uiinfo.info(I18n.t('vagrant_zones.destroy_root_dataset') + zp)
         dataset_root_exists = execute(false, "#{@pfexec} zfs list | grep #{zp} | awk '{ print $1 }' | grep -v path || true")
+        uiinfo.info(I18n.t('vagrant_zones.destroy_root_dataset') + zp) if dataset_root_exists == zp.to_s
         execute(false, "#{@pfexec} zfs destroy -r #{zp}") if dataset_root_exists == zp.to_s
+        uiinfo.info(I18n.t('vagrant_zones.root_dataset_nil') + zp) unless dataset_root_exists == zp.to_s
       end
 
       # This helps us set the zone configurations for the zone
