@@ -64,6 +64,8 @@ en:
       Creating ZFS boot volume ==> 
     bhyve_zone_dataset_boot_volume: |-
       Importing template to ==> 
+    setting_additional_disks_configurations: |-
+      Setting additional disk Configurations in the zone configurations.
     bhyve_zone_dataset_additional_volume: |-
       Creating additional ZFS Volume for bhyve zone
     bhyve_zone_dataset_additional_volume_destroy: |-
