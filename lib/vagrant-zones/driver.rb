@@ -68,7 +68,7 @@ module VagrantPlugins
         when 'kvm' || 'illumos'
           raise Errors::NotYetImplemented
         end
-        uiinfo.info(I18n.t('vagrant_zones.installing_zone') + " brand: #{config.brand}")
+        uiinfo.info(I18n.t('vagrant_zones.installing_zone') + config.brand)
       end
 
       ## Control the Machine from inside the machine
@@ -664,7 +664,7 @@ end         )
           if console != 'disabled'
             port = if %w[console].include?(console) && config.consoleport.nil?
                      'socket,/tmp/vm.com1'
-                   elsif %w[webvnc vnc].include?(console)
+                   elsif (%w[webvnc].include?(console) || %w[vnc].include?(console))
                      console = 'vnc'
                      'on'
                    else

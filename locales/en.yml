@@ -39,15 +39,15 @@ en:
     configure_interface_using_vnic: |-
       Configuring the interface on the zone for VNIC  
     vnic_setup: |-
-      - Setting up VNIC
+      - Setting up VNIC ==> 
     removing_vnic: |-
-      - Deleting VNIC
+      - Deleting VNIC ==> 
     no_removing_vnic: |-
       - No VNIC to Remove
     delete_disks: |-
       Removing associated disks
     installing_zone: |-
-      Installing zone as brand   
+      Installing zone as brand ==> 
     netplan_remove: |-
       - Removing stale netplan configurations
     netplan_set: |-
@@ -66,12 +66,11 @@ en:
         
     begin_create_datasets: |-
       Creating ZFS datasets:
-        
     bhyve_zone_dataset_boot: |-
-      - ZFS boot volume
+      - ZFS boot volume:
        
     bhyve_zone_dataset_boot_volume: |-
-      Importing template to 
+      - Importing template to ==> 
     setting_additional_disks_configurations: |-
       - Setting additional disk Configurations in the zone configurations:
         
