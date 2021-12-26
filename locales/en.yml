@@ -59,11 +59,14 @@ en:
     netplan_applied_static: |-
       - Set Static Netplan configurations /\n   
     lx_zone_dataset: |-
-      - Creating zoned ZFS dataset for LX zone ==>
-    bhyve_zone_dataset_root: '  - Creating ZFS root dataset \n'       
+      - Creating zoned ZFS dataset for LX zone
+       
+    bhyve_zone_dataset_root: |-
+      - Creating ZFS root dataset
+       
     begin_create_datasets: |-
       - Creating ZFS dataset
-      
+       
     bhyve_zone_dataset_boot: |-
       - Creating ZFS boot volume
        
@@ -75,15 +78,20 @@ en:
       Creating additional ZFS Volume for bhyve zone
       
     bhyve_zone_dataset_additional_volume_destroy: |-
-      - Destroying additional ZFS Volume for bhyve zone ==> 
+      - Destroying additional ZFS Volume for bhyve zone
+       
     bhyve_zone_dataset_additional_volume_destroy_root: |-
-      - Destroying ZFS root dataset for additional volume for the bhyve zone  ==> 
+      - Destroying ZFS root dataset for additional volume for the bhyve zone
+        
     bhyve_zone_dataset_additional_volume_root: |-
-      - Creating ZFS root dataset for additional volume for the bhyve zone ==> 
+      - Creating ZFS root dataset for additional volume for the bhyve zone
+       
     destroy_root_dataset: |-
-      - Destroying root dataset for zone ==> 
+      - Destroying root dataset for zone
+       
     destroy_dataset: |-
-      - Destroying dataset for zone ==> 
+      - Destroying dataset for zone
+       
     lx_zone_config_gen: |-
       Generating configuration for LX zone
     bhyve_zone_config_gen: |-
@@ -113,11 +121,14 @@ en:
     detecting_box: |-
       Detecting Image
     zfs_snapshot_stream_detected: |-
-      ZFS Snapshot Stream detected ==> 
+      ZFS Snapshot Stream detected
+       
     joyent_image_uuid_detected: |-
-      Joyent UUID detected ==> 
+      Joyent UUID detected
+       
     vagrant_cloud_box_detected: |-
-      Vagrant Cloud Box detected ==> 
+      Vagrant Cloud Box detected
+       
     ssh_ready: |-
       SSH appears to be ready
     boot_ready: |-
