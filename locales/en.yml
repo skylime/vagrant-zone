@@ -60,9 +60,7 @@ en:
       - Set Static Netplan configurations /\n   
     lx_zone_dataset: |-
       - Creating zoned ZFS dataset for LX zone ==>
-    bhyve_zone_dataset_root: |-
-      - Creating ZFS root dataset
-       
+    bhyve_zone_dataset_root: '  - Creating ZFS root dataset \n'       
     begin_create_datasets: |-
       - Creating ZFS dataset
       
