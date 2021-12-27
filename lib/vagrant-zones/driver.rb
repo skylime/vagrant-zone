@@ -815,7 +815,6 @@ module VagrantPlugins
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
 
-
       ## List ZFS Snapshots
       def zfssnaplist(datasets, _config, opts, uiinfo, _name)
         uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
@@ -909,10 +908,7 @@ module VagrantPlugins
       end
 
       ## This will list Cron Jobs for Snapshots to take place
-      def zfssnapcronlist(datasets, _config, opts, uiinfo, cronjobs)
-        shrtcr = "( #{@pfexec} crontab -l; echo "
-        rmcr = "#{@pfexec} crontab -l | grep -v "
-        sfr = opts[:set_frequency_rtn]
+      def zfssnapcronlist(_datasets, _config, opts, uiinfo, cronjobs)
         if opts[:list] == 'all'
           puts opts[:list]
           puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
@@ -930,7 +926,6 @@ module VagrantPlugins
       ## This will delete Cron Jobs for Snapshots to take place
       def zfssnapcrondelete(datasets, _config, opts, uiinfo, cronjobs)
         removecron = ''
-        shrtcr = "( #{@pfexec} crontab -l; echo "
         rmcr = "#{@pfexec} crontab -l | grep -v "
         sfr = opts[:set_frequency_rtn]
         if opts[:delete] == 'all'
