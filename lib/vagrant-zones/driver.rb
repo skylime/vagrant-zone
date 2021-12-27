@@ -384,10 +384,10 @@ module VagrantPlugins
           sparse = '' unless disk['sparse']
           ## If the root data set doesn't exist create it
           addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{shrtpath} | awk '{ print $1 }' | head -n 1 || true")
-          cinfo = "#{shrtpath}"
+          cinfo = shrtpath.to_s
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo) unless addsrtexists == "#{shrtpath}"
           ## Create the Additional volume
-          execute(false, "#{@pfexec} zfs create #{shrtpath}") unless addsrtexists == "#{shrtpath}"
+          execute(false, "#{@pfexec} zfs create #{shrtpath}") unless addsrtexists == shrtpath.to_s
           cinfo = "#{dataset}, #{disk['size']}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
           execute(false, "#{@pfexec} zfs create #{sparse} -V #{disk['size']} #{dataset}")
