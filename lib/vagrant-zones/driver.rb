@@ -397,6 +397,7 @@ module VagrantPlugins
         config = machine.provider_config
         name = machine.name
         #datadir = machine.data_dir
+
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
 
@@ -442,6 +443,7 @@ module VagrantPlugins
         ## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console
         config = machine.provider_config
         #datadir = machine.data_dir
+
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
@@ -493,7 +495,7 @@ module VagrantPlugins
           execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=#{config.cpus}; set type=string; end;"))
         elsif config.cpu_configuration == 'complex' && (config.brand == 'bhyve' || config.brand == 'kvm')
           hash = config.complex_cpu_conf[0]
-          cstring="sockets=#{hash['sockets']},cores=#{hash['cores']},threads=#{hash['threads']}"
+          cstring = "sockets=#{hash['sockets']},cores=#{hash['cores']},threads=#{hash['threads']}"
           execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=#{cstring}; set type=string; end;"))
         end
 
@@ -509,8 +511,8 @@ module VagrantPlugins
             cdname += cdrun.to_s if cdrun.positive?
             cdrun += 1
             strt = "#{@pfexec} zonecfg -z #{name} "
-            shrtstrng = "set type=lofs; add options nodevices; add options ro; end;"
-            execute(false, %(#{strt}"add attr; set name=#{cdname}; set value=#{cdrom['path']}; set type=string; end;")) 
+            shrtstrng = 'set type=lofs; add options nodevices; add options ro; end;'
+            execute(false, %(#{strt}"add attr; set name=#{cdname}; set value=#{cdrom['path']}; set type=string; end;"))
             execute(false, %(#{strt}"add fs; set dir=#{cdrom['path']}; set special=#{cdrom['path']}; #{shrtstrng}"))
           end
         end
@@ -526,7 +528,7 @@ module VagrantPlugins
             uiinfo.info(I18n.t('vagrant_zones.setting_additional_disks_configurations') + cinfo)
             diskname += diskrun.to_s if diskrun.positive?
             diskrun += 1
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add device; set match=/dev/zvol/rdsk/#{dset}; end;")) 
+            execute(false, %(#{@pfexec} zonecfg -z #{name} "add device; set match=/dev/zvol/rdsk/#{dset}; end;"))
             execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=#{diskname}; set value=#{dset}; set type=string; end;")) 
           end
         end
@@ -536,10 +538,10 @@ module VagrantPlugins
           console = config.console
           if console != 'disabled'
             port = if %w[console].include?(console) && config.consoleport.nil?
-                    'socket,/tmp/vm.com1'
-                   elsif %w[console].include?(console)  && !config.consoleport.nil?
+                     'socket,/tmp/vm.com1'
+                   elsif %w[console].include?(console) && !config.consoleport.nil?
                      config.consoleport
-                   elsif (%w[webvnc].include?(console) || %w[vnc].include?(console))
+                   elsif %w[webvnc].include?(console) || %w[vnc].include?(console)
                      console = 'vnc'
                      'on'
                    else
@@ -549,7 +551,7 @@ module VagrantPlugins
             port += ',wait' if config.console_onboot
             cinfo = "Console type: #{console}, State: #{port}, Port: #{config.consoleport}"
             uiinfo.info(I18n.t('vagrant_zones.setting_console_access') + cinfo)
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=#{console}; set value=#{port}; set type=string; end;")) 
+            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=#{console}; set value=#{port}; set type=string; end;"))
           end
         end
 
@@ -588,13 +590,10 @@ module VagrantPlugins
           execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
         end
 
-        ## Nic Configurations       
+        ## Nic Configurations
         uiinfo.info(I18n.t('vagrant_zones.networking_int_add'))
         network(@machine, uiinfo, 'config')
-
         uiinfo.info(I18n.t('vagrant_zones.exporting_bhyve_zone_config_gen'))
-        ## Export config to zonecfg
-        
       end
 
       # This ensures the zone is safe to boot
@@ -919,7 +918,7 @@ module VagrantPlugins
           end
         when 'cron'
           crons = execute(false, "#{@pfexec} crontab -l").split("\n")
-          spshtr = "#{config.snapshot_script}"
+          spshtr = config.snapshot_script.to_s
           hourlytrn = 24
           dailytrn = 8
           weeklytrn = 5
