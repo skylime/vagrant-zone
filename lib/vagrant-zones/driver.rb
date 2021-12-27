@@ -496,8 +496,9 @@ module VagrantPlugins
       end
 
       ## zonecfg function for Shared Disk Configurations
-      def zonecfgshareddisks(uiinfo, name, config, zcfg)
+      def zonecfgshareddisks(uiinfo, _name, config, zcfg)
         return unless config.shared_disk_enabled
+
         uiinfo.info(I18n.t('vagrant_zones.setting_alt_shared_disk_configurations') + path.path)
         execute(false, %(#{zcfg}"add fs; set dir=/vagrant; set special=#{config.shared_dir}; set type=lofs; end;"))
       end
