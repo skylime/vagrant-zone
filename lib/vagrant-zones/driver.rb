@@ -334,7 +334,6 @@ module VagrantPlugins
       def create_dataset(machine, uiinfo)
         config = machine.provider_config
         name = machine.name
-
         datadir = machine.data_dir
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
@@ -374,11 +373,13 @@ module VagrantPlugins
         else
           raise Errors::InvalidBrand
         end
+
         ## Create Additional Disks
-        shrtpath = "#{disk['array']}/#{disk['dataset']}/#{name}"
+        
         return if config.additional_disks.nil?
 
         config.additional_disks.each do |disk|
+          shrtpath = "#{disk['array']}/#{disk['dataset']}/#{name}"
           dataset = "#{shrtpath}/#{disk['volume_name']}"
           sparse = '-s '
           sparse = '' unless disk['sparse']
