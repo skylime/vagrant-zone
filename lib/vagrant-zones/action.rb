@@ -18,7 +18,7 @@ module VagrantPlugins
               env[:halt_on_error] = true
               b2.use action_start
             elsif !env[:result]
-              b2.use BoxUpdate
+              b2.use BoxCheckOutdated
               b2.use Import
               b2.use Create
               b2.use Network
