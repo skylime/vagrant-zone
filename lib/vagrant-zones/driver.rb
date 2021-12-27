@@ -846,11 +846,12 @@ module VagrantPlugins
           end
           zfssnapshots.reverse.each_with_index do |snapshot, si|
             ar = snapshot.gsub(/\s+/m, ' ').strip.split
-            strg = "%<sym>5s %<s>-"
+            strg1 = "%<sym>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s"
+            strg2 = "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s"
             if si.zero?
-              puts format "#{strg}#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
+              puts format "#{strg1}", sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
             else
-              puts format "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", si: si - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
+              puts format "#{strg2}", si: si - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
             end
           end
         end
