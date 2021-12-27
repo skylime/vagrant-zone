@@ -924,7 +924,6 @@ module VagrantPlugins
           opts[:dataset] = 'all' if opts[:dataset].nil?
 
           ## Insert Verification Check here that Dataset is in Zoneconfiguration
-
           datasets.each do |disk|
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
             puts disk
