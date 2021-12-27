@@ -515,7 +515,7 @@ module VagrantPlugins
 
       ## zonecfg function for CDROM Configurations
       def zonecfgcdrom(uiinfo, name, config, zcfg)
-        return unless config.cdroms.nil?
+        return if config.cdroms.nil?
         cdroms = config.cdroms
         cdrun = 0
         cdroms.each do |cdrom|
@@ -536,7 +536,7 @@ module VagrantPlugins
 
       ## zonecfg function for AdditionalDisks
       def zonecfgadditionaldisks(uiinfo, name, config, zcfg)
-        return unless config.additional_disks.nil?
+        return if config.additional_disks.nil?
         disks = config.additional_disks
         diskrun = 0
         disks.each do |disk|
@@ -553,7 +553,7 @@ module VagrantPlugins
 
       ## zonecfg function for Console Access
       def zonecfgconsole(uiinfo, name, config, zcfg)
-        return unless config.console.nil?
+        return if config.console.nil?
         console = config.console
         if console != 'disabled'
           port = if %w[console].include?(console) && config.consoleport.nil?
