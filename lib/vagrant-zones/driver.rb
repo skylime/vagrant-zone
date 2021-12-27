@@ -425,7 +425,7 @@ module VagrantPlugins
             cinfo = diskpath.to_s
             addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{diskpath} | awk '{ print $1 }' | head -n 1 || true")
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy_root') + cinfo) if addsrtexists == diskpath && addsrtexists != zp.to_s
-            execute(false, "#{@pfexec} zfs destroy #{diskpath}") if (addsrtexists == diskpath && addsrtexists != zp.to_s )
+            execute(false, "#{@pfexec} zfs destroy #{diskpath}") if addsrtexists == diskpath && addsrtexists != zp.to_s
           end
         end
 
@@ -441,7 +441,7 @@ module VagrantPlugins
         name = @machine.name
         ## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console
         config = machine.provider_config
-        datadir = machine.data_dir
+        #datadir = machine.data_dir
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
@@ -470,32 +470,31 @@ module VagrantPlugins
           execute(false, %(#{@pfexec} zonecfg -z #{name} "set brand=#{config.brand}"))
           execute(false, %(#{@pfexec} zonecfg -z #{name} "set autoboot=#{config.autoboot}"))
           execute(false, %(#{@pfexec} zonecfg -z #{name} "set ip-type=exclusive"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=acpi; set value=#{config.acpi}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=ram; set value=#{config.memory}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=bootrom; set value=#{firmware(machine)}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=hostbridge; set value=#{config.hostbridge}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=diskif; set value=#{config.diskif}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=netif; set value=#{config.netif}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=bootdisk; set value=#{datasetroot.delete_prefix('/')}; set type=string; end;"))   
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=type; set value=#{config.os_type}; set type=string; end;"))  
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add device; set match=/dev/zvol/rdsk/#{datasetroot}; end;"))          
+          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=acpi; set value=#{config.acpi}; set type=string; end;"))
+          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=ram; set value=#{config.memory}; set type=string; end;"))
+          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=bootrom; set value=#{firmware(machine)}; set type=string; end;"))
+          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=hostbridge; set value=#{config.hostbridge}; set type=string; end;"))
+          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=diskif; set value=#{config.diskif}; set type=string; end;"))
+          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=netif; set value=#{config.netif}; set type=string; end;"))
+          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=bootdisk; set value=#{datasetroot.delete_prefix('/')}; set type=string; end;"))
+          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=type; set value=#{config.os_type}; set type=string; end;"))
+          execute(false, %(#{@pfexec} zonecfg -z #{name} "add device; set match=/dev/zvol/rdsk/#{datasetroot}; end;"))
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
         end
 
         ## Shared Disk Configurations
         if config.shared_disk_enabled
           uiinfo.info(I18n.t('vagrant_zones.setting_alt_shared_disk_configurations') + path.path)
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add fs; set dir=/vagrant; set special=#{config.shared_dir}; set type=lofs; end;"))  
+          execute(false, %(#{@pfexec} zonecfg -z #{name} "add fs; set dir=/vagrant; set special=#{config.shared_dir}; set type=lofs; end;"))
         end
 
         ## CPU Configurations
         if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm')
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=#{config.cpus}; set type=string; end;")) 
+          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=#{config.cpus}; set type=string; end;"))
         elsif config.cpu_configuration == 'complex' && (config.brand == 'bhyve' || config.brand == 'kvm')
-
           hash = config.complex_cpu_conf[0]
           cstring="sockets=#{hash['sockets']},cores=#{hash['cores']},threads=#{hash['threads']}"
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=#{cstring}; set type=string; end;")) 
+          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=#{cstring}; set type=string; end;"))
         end
 
         ### Passthrough PCI Devices
@@ -509,8 +508,8 @@ module VagrantPlugins
             uiinfo.info(I18n.t('vagrant_zones.setting_cd_rom_configurations') + cdrom['path'])
             cdname += cdrun.to_s if cdrun.positive?
             cdrun += 1
-            strt="#{@pfexec} zonecfg -z #{name} "
-            shrtstrng="set type=lofs; add options nodevices; add options ro; end;"
+            strt = "#{@pfexec} zonecfg -z #{name} "
+            shrtstrng = "set type=lofs; add options nodevices; add options ro; end;"
             execute(false, %(#{strt}"add attr; set name=#{cdname}; set value=#{cdrom['path']}; set type=string; end;")) 
             execute(false, %(#{strt}"add fs; set dir=#{cdrom['path']}; set special=#{cdrom['path']}; #{shrtstrng}"))
           end
