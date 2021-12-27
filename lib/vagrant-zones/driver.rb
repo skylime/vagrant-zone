@@ -504,7 +504,7 @@ module VagrantPlugins
       end
 
       ## zonecfg function for CPU Configurations
-      def zonecfgcpu(uiinfo, name, config, zcfg)
+      def zonecfgcpu(_uiinfo, _name, config, zcfg)
         if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm')
           execute(false, %(#{zcfg}"add attr; set name=vcpus; set value=#{config.cpus}; set type=string; end;"))
         elsif config.cpu_configuration == 'complex' && (config.brand == 'bhyve' || config.brand == 'kvm')
@@ -557,6 +557,7 @@ module VagrantPlugins
       ## zonecfg function for Console Access
       def zonecfgconsole(uiinfo, _name, config, zcfg)
         return if config.console.nil?
+
         console = config.console
         if console != 'disabled'
           port = if %w[console].include?(console) && config.consoleport.nil?
@@ -575,7 +576,7 @@ module VagrantPlugins
       end
 
       ## zonecfg function for Cloud-init
-      def zonecfgcloudinit(uiinfo, name, config, zcfg)
+      def zonecfgcloudinit(uiinfo, _name, config, zcfg)
         return unless config.cloud_init_enabled
 
         cloudconfig = case config.cloud_init_enabled
