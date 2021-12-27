@@ -1033,13 +1033,13 @@ module VagrantPlugins
 
         case job
         when 'list'
-          zfssnaplist(datasets, config, opts, uiinfo))
+          zfssnaplist(datasets, config, opts, uiinfo)
         when 'create'
-          zfssnapcreate(datasets, config, opts, uiinfo))
+          zfssnapcreate(datasets, config, opts, uiinfo)
         when 'destroy'
-          zfssnapdestroy(datasets, config, opts, uiinfo))
+          zfssnapdestroy(datasets, config, opts, uiinfo)
         when 'cron'
-          zfssnapcron(datasets, config, opts, uiinfo))
+          zfssnapcron(datasets, config, opts, uiinfo)
         end
       end
       ####################### REFACTOR THIS ###############################
