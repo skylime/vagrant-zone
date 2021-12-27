@@ -443,23 +443,21 @@ module VagrantPlugins
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
-        if config.brand == 'bhyve'
-          ## Bhyve
-          execute(false, %(#{zcfg}"create ; set zonepath=/#{datasetpath}/path"))
-          execute(false, %(#{zcfg}"set brand=#{config.brand}"))
-          execute(false, %(#{zcfg}"set autoboot=#{config.autoboot}"))
-          execute(false, %(#{zcfg}"set ip-type=exclusive"))
-          execute(false, %(#{zcfg}"add attr; set name=acpi; set value=#{config.acpi}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add attr; set name=ram; set value=#{config.memory}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add attr; set name=bootrom; set value=#{firmware(config)}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add attr; set name=hostbridge; set value=#{config.hostbridge}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add attr; set name=diskif; set value=#{config.diskif}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add attr; set name=netif; set value=#{config.netif}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add attr; set name=bootdisk; set value=#{datasetroot.delete_prefix('/')}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add attr; set name=type; set value=#{config.os_type}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add device; set match=/dev/zvol/rdsk/#{datasetroot}; end;"))
-          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
-        end
+        return unless config.brand == 'bhyve'
+        execute(false, %(#{zcfg}"create ; set zonepath=/#{datasetpath}/path"))
+        execute(false, %(#{zcfg}"set brand=#{config.brand}"))
+        execute(false, %(#{zcfg}"set autoboot=#{config.autoboot}"))
+        execute(false, %(#{zcfg}"set ip-type=exclusive"))
+        execute(false, %(#{zcfg}"add attr; set name=acpi; set value=#{config.acpi}; set type=string; end;"))
+        execute(false, %(#{zcfg}"add attr; set name=ram; set value=#{config.memory}; set type=string; end;"))
+        execute(false, %(#{zcfg}"add attr; set name=bootrom; set value=#{firmware(config)}; set type=string; end;"))
+        execute(false, %(#{zcfg}"add attr; set name=hostbridge; set value=#{config.hostbridge}; set type=string; end;"))
+        execute(false, %(#{zcfg}"add attr; set name=diskif; set value=#{config.diskif}; set type=string; end;"))
+        execute(false, %(#{zcfg}"add attr; set name=netif; set value=#{config.netif}; set type=string; end;"))
+        execute(false, %(#{zcfg}"add attr; set name=bootdisk; set value=#{datasetroot.delete_prefix('/')}; set type=string; end;"))
+        execute(false, %(#{zcfg}"add attr; set name=type; set value=#{config.os_type}; set type=string; end;"))
+        execute(false, %(#{zcfg}"add device; set match=/dev/zvol/rdsk/#{datasetroot}; end;"))
+        uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
       end
       
       ## zonecfg function for lx
@@ -467,29 +465,29 @@ module VagrantPlugins
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
-        if config.brand == 'lx'
-          uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
-          machine.config.vm.networks.each do |adaptertype, opts|
-            next unless adaptertype.to_s == 'public_network'
+        return unless config.brand == 'lx'
+        uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
+        machine.config.vm.networks.each do |adaptertype, opts|
+          next unless adaptertype.to_s == 'public_network'
 
-            @ip = opts[:ip].to_s
-            cinfo = "#{opts[:ip]}/#{opts[:netmask]}"
-            @network = NetAddr.parse_net(cinfo)
-            @defrouter = opts[:gateway]
-          end
-          execute(false, %(#{zcfg}"create ; set zonepath=/#{datasetpath}/path"))
-          execute(false, %(#{zcfg}"set brand=#{config.brand}"))
-          execute(false, %(#{zcfg}"set autoboot=#{config.autoboot}"))
-          execute(false, %(#{zcfg}"add attr; set name=kernel-version; set value=#{config.kernel}; set type=string; end;"))
-          cmss = " add capped-memory; set physical="
-          execute(false, %(#{zcfg + cmss}"#{config.memory}; set swap=#{config.kernel}; set locked=#{config.memory}; end;"))
-          execute(false, %(#{zcfg}"add dataset; set name=#{datasetroot}; end;"))
-          execute(false, %(#{zcfg}"set max-lwps=2000"))
+          @ip = opts[:ip].to_s
+          cinfo = "#{opts[:ip]}/#{opts[:netmask]}"
+          @network = NetAddr.parse_net(cinfo)
+          @defrouter = opts[:gateway]
         end
+        execute(false, %(#{zcfg}"create ; set zonepath=/#{datasetpath}/path"))
+        execute(false, %(#{zcfg}"set brand=#{config.brand}"))
+        execute(false, %(#{zcfg}"set autoboot=#{config.autoboot}"))
+        execute(false, %(#{zcfg}"add attr; set name=kernel-version; set value=#{config.kernel}; set type=string; end;"))
+        cmss = " add capped-memory; set physical="
+        execute(false, %(#{zcfg + cmss}"#{config.memory}; set swap=#{config.kernel}; set locked=#{config.memory}; end;"))
+        execute(false, %(#{zcfg}"add dataset; set name=#{datasetroot}; end;"))
+        execute(false, %(#{zcfg}"set max-lwps=2000"))
       end
       
       ## zonecfg function for KVM
       def zonecfgkvm(uiinfo, name, config, zcfg)
+        
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
@@ -498,10 +496,9 @@ module VagrantPlugins
 
       ## zonecfg function for Shared Disk Configurations
       def zonecfgshareddisks(uiinfo, name, config, zcfg)
-        if config.shared_disk_enabled
-          uiinfo.info(I18n.t('vagrant_zones.setting_alt_shared_disk_configurations') + path.path)
-          execute(false, %(#{zcfg}"add fs; set dir=/vagrant; set special=#{config.shared_dir}; set type=lofs; end;"))
-        end
+        return unless config.shared_disk_enabled
+        uiinfo.info(I18n.t('vagrant_zones.setting_alt_shared_disk_configurations') + path.path)
+        execute(false, %(#{zcfg}"add fs; set dir=/vagrant; set special=#{config.shared_dir}; set type=lofs; end;"))
       end
 
       ## zonecfg function for CPU Configurations
@@ -517,18 +514,17 @@ module VagrantPlugins
 
       ## zonecfg function for CDROM Configurations
       def zonecfgcdrom(uiinfo, name, config, zcfg)
-        unless config.cdroms.nil?
-          cdroms = config.cdroms
-          cdrun = 0
-          cdroms.each do |cdrom|
-            cdname = 'cdrom'
-            uiinfo.info(I18n.t('vagrant_zones.setting_cd_rom_configurations') + cdrom['path'])
-            cdname += cdrun.to_s if cdrun.positive?
-            cdrun += 1
-            shrtstrng = 'set type=lofs; add options nodevices; add options ro; end;'
-            execute(false, %(#{zcfg}"add attr; set name=#{cdname}; set value=#{cdrom['path']}; set type=string; end;"))
-            execute(false, %(#{zcfg}"add fs; set dir=#{cdrom['path']}; set special=#{cdrom['path']}; #{shrtstrng}"))
-          end
+        return unless config.cdroms.nil?
+        cdroms = config.cdroms
+        cdrun = 0
+        cdroms.each do |cdrom|
+          cdname = 'cdrom'
+          uiinfo.info(I18n.t('vagrant_zones.setting_cd_rom_configurations') + cdrom['path'])
+          cdname += cdrun.to_s if cdrun.positive?
+          cdrun += 1
+          shrtstrng = 'set type=lofs; add options nodevices; add options ro; end;'
+          execute(false, %(#{zcfg}"add attr; set name=#{cdname}; set value=#{cdrom['path']}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add fs; set dir=#{cdrom['path']}; set special=#{cdrom['path']}; #{shrtstrng}"))
         end
       end
 
@@ -539,78 +535,75 @@ module VagrantPlugins
 
       ## zonecfg function for AdditionalDisks
       def zonecfgadditionaldisks(uiinfo, name, config, zcfg)
-        unless config.additional_disks.nil?
-          disks = config.additional_disks
-          diskrun = 0
-          disks.each do |disk|
-            diskname = 'disk'
-            dset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
-            cinfo = "#{dset}, #{disk['size']}"
-            uiinfo.info(I18n.t('vagrant_zones.setting_additional_disks_configurations') + cinfo)
-            diskname += diskrun.to_s if diskrun.positive?
-            diskrun += 1
-            execute(false, %(#{zcfg}"add device; set match=/dev/zvol/rdsk/#{dset}; end;"))
-            execute(false, %(#{zcfg}"add attr; set name=#{diskname}; set value=#{dset}; set type=string; end;"))
-          end
+        return unless config.additional_disks.nil?
+        disks = config.additional_disks
+        diskrun = 0
+        disks.each do |disk|
+          diskname = 'disk'
+          dset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
+          cinfo = "#{dset}, #{disk['size']}"
+          uiinfo.info(I18n.t('vagrant_zones.setting_additional_disks_configurations') + cinfo)
+          diskname += diskrun.to_s if diskrun.positive?
+          diskrun += 1
+          execute(false, %(#{zcfg}"add device; set match=/dev/zvol/rdsk/#{dset}; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=#{diskname}; set value=#{dset}; set type=string; end;"))
         end
       end
 
       ## zonecfg function for Console Access
       def zonecfgconsole(uiinfo, name, config, zcfg)
-        unless config.console.nil?
-          console = config.console
-          if console != 'disabled'
-            port = if %w[console].include?(console) && config.consoleport.nil?
-                     'socket,/tmp/vm.com1'
-                   elsif %w[webvnc].include?(console) || %w[vnc].include?(console)
-                     console = 'vnc'
-                     'on'
-                   else
-                     config.consoleport
-                   end
-            port += ',wait' if config.console_onboot
-            cinfo = "Console type: #{console}, State: #{port}, Port: #{config.consoleport}"
-            uiinfo.info(I18n.t('vagrant_zones.setting_console_access') + cinfo)
-            execute(false, %(#{zcfg}"add attr; set name=#{console}; set value=#{port}; set type=string; end;"))
-          end
+        return unless config.console.nil?
+        console = config.console
+        if console != 'disabled'
+          port = if %w[console].include?(console) && config.consoleport.nil?
+                   'socket,/tmp/vm.com1'
+                 elsif %w[webvnc].include?(console) || %w[vnc].include?(console)
+                   console = 'vnc'
+                   'on'
+                 else
+                   config.consoleport
+                 end
+          port += ',wait' if config.console_onboot
+          cinfo = "Console type: #{console}, State: #{port}, Port: #{config.consoleport}"
+          uiinfo.info(I18n.t('vagrant_zones.setting_console_access') + cinfo)
+          execute(false, %(#{zcfg}"add attr; set name=#{console}; set value=#{port}; set type=string; end;"))
         end
       end
 
       ## zonecfg function for Cloud-init
       def zonecfgcloudinit(uiinfo, name, config, zcfg)
-        if config.cloud_init_enabled
-          cloudconfig = case config.cloud_init_enabled
-                        when 'on'
-                          'on'
-                        when 'off'
-                          'off'
-                        else
-                          config.cloud_init_enabled
-                        end
-          unless config.cloud_init_dnsdomain.nil?
-            cinfo = "Cloud-init dns-domain: #{config.cloud_init_dnsdomain}"
-            uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + cinfo)
-            execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{config.cloud_init_dnsdomain}; set type=string; end;"))
-          end
-          unless config.cloud_init_password.nil?
-            cinfo = "Cloud-init password: #{config.cloud_init_password}"
-            uiinfo.info(I18n.t('vagrant_zones.setting_cloud_password') + cinfo)
-            execute(false, %(#{zcfg}"add attr; set name=password; set value=#{config.cloud_init_password}; set type=string; end;"))
-          end
-          unless config.cloud_init_resolvers.nil?
-            cinfo = "Cloud-init resolvers: #{config.cloud_init_resolvers}"
-            uiinfo.info(I18n.t('vagrant_zones.setting_cloud_resolvers') + cinfo)
-            execute(false, %(#{zcfg}"add attr; set name=resolvers; set value=#{config.cloud_init_resolvers}; set type=string; end;"))
-          end
-          unless config.cloud_init_sshkey.nil?
-            execute(false, %(#{zcfg}"add attr; set name=sshkey; set value=#{config.cloud_init_sshkey}; set type=string; end;"))
-            cinfo = "Cloud-init SSH Key: #{config.cloud_init_sshkey}"
-            uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + cinfo)
-          end
-          cinfo = "Cloud Config: #{cloudconfig}"
-          uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cinfo)
-          execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
+        return unless config.cloud_init_enabled
+        cloudconfig = case config.cloud_init_enabled
+                      when 'on'
+                        'on'
+                      when 'off'
+                        'off'
+                      else
+                        config.cloud_init_enabled
+                      end
+        unless config.cloud_init_dnsdomain.nil?
+          cinfo = "Cloud-init dns-domain: #{config.cloud_init_dnsdomain}"
+          uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + cinfo)
+          execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{config.cloud_init_dnsdomain}; set type=string; end;"))
         end
+        unless config.cloud_init_password.nil?
+          cinfo = "Cloud-init password: #{config.cloud_init_password}"
+          uiinfo.info(I18n.t('vagrant_zones.setting_cloud_password') + cinfo)
+          execute(false, %(#{zcfg}"add attr; set name=password; set value=#{config.cloud_init_password}; set type=string; end;"))
+        end
+        unless config.cloud_init_resolvers.nil?
+          cinfo = "Cloud-init resolvers: #{config.cloud_init_resolvers}"
+          uiinfo.info(I18n.t('vagrant_zones.setting_cloud_resolvers') + cinfo)
+          execute(false, %(#{zcfg}"add attr; set name=resolvers; set value=#{config.cloud_init_resolvers}; set type=string; end;"))
+        end
+        unless config.cloud_init_sshkey.nil?
+          execute(false, %(#{zcfg}"add attr; set name=sshkey; set value=#{config.cloud_init_sshkey}; set type=string; end;"))
+          cinfo = "Cloud-init SSH Key: #{config.cloud_init_sshkey}"
+          uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + cinfo)
+        end
+        cinfo = "Cloud Config: #{cloudconfig}"
+        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cinfo)
+        execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
       end
 
       # This helps us set the zone configurations for the zone
