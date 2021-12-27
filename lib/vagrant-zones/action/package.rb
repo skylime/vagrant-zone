@@ -30,7 +30,6 @@ module VagrantPlugins
           config = @machine.provider_config
           name = @machine.name
           boxname = env['package.output']
-          boxshortname = config.boxshortname
           raise "#{boxname}: Already exists" if File.exist?(boxname)
 
           tmp_dir = "#{Dir.pwd}/_tmp_package"
@@ -65,7 +64,7 @@ module VagrantPlugins
           end
 
           Dir.chdir(tmp_dir)
-          File.write('./metadata.json', metadata_content(config.brand,config.kernel, config.vagrant_cloud_creator, boxshortname))
+          File.write('./metadata.json', metadata_content(config.brand,config.kernel, config.vagrant_cloud_creator, config.boxshortname))
           File.write('./Vagrantfile', vagrantfile_content(config.brand, config.kernel, datasetpath))
           assemble_box(boxname, extra)
           FileUtils.mv("#{tmp_dir}/#{boxname}", "../#{boxname}")
@@ -90,13 +89,13 @@ module VagrantPlugins
           puts "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}" if result.zero?
         end
 
-        def metadata_content(config.brand, _kernel, config.vagrant_cloud_creator, boxshortname)
+        def metadata_content(config.brand, _kernel, config.vagrant_cloud_creator, config.boxshortname)
           <<-ZONEBOX
           {
             "provider": "zone",
             "format": "zss",
             "brand": "#{config.brand}",
-            "url": "https://app.vagrantup.com/#{config.vagrant_cloud_creator}/boxes/#{boxshortname}"
+            "url": "https://app.vagrantup.com/#{config.vagrant_cloud_creator}/boxes/#{config.boxshortname}"
           }
           ZONEBOX
         end
