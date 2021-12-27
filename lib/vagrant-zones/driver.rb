@@ -380,7 +380,7 @@ module VagrantPlugins
           dataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
           sparse = '-s '
           sparse = '' unless disk['sparse']
-          addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }'  | head -n 1 || true")
+          addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }' | head -n 1 || true")
           unless addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
             cinfo = "#{disk['array']}/#{disk['dataset']}/#{name}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo)
