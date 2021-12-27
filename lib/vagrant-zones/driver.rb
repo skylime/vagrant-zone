@@ -298,7 +298,7 @@ module VagrantPlugins
               strt = "#{@pfexec} zonecfg -z #{name} "
               shrtstr1 = %(set allowed-address=#{allowed_address}; add property (name=gateway,value="#{defrouter}"); )
               shrtstr2 = %(add property (name=ips,value="#{allowed_address}"); add property (name=primary,value="true"); end;)
-              execute(false, %(#{strt}"add net; set physical=#{vnic_name}; set global-nic=auto; #{shrtstr1} #{shrtstr1}"))
+              execute(false, %(#{strt}"add net; set physical=#{vnic_name}; set global-nic=auto; #{shrtstr1} #{shrtstr2}"))
             when 'bhyve'
               execute(false, %(#{@pfexec} zonecfg -z #{name} "add net; set physical=#{vnic_name}; set allowed-address=#{allowed_address}; end;"))
             end
