@@ -39,9 +39,9 @@ Style/LineEndConcatenation:
   AutoCorrect: true
 
 Layout/LineLength:
-  Description: 'Limit lines to 139 characters.'
+  Description: 'Limit lines to 160 characters.'
   Enabled: true
-  Max: 180
+  Max: 160
 
 Metrics/CyclomaticComplexity:
   Description: 'Avoid complex methods.'
@@ -49,11 +49,11 @@ Metrics/CyclomaticComplexity:
 
 Metrics/BlockLength:
  Description: 'Limit Block to 139 Characters'
- Max: 180
+ Max: 160
 
 Metrics/ModuleLength:
- Description: 'Limit Block to 179 Characters'
- Max: 180
+ Description: 'Limit Block to 160 Characters'
+ Max: 160
 
 Metrics/AbcSize:
   Description: >-
@@ -64,7 +64,7 @@ Metrics/AbcSize:
   VersionAdded: '0.27'
   # The ABC size is a calculated magnitude, so this number can be an Integer or
   # a Float.
-  Max: 200
+  Max: 150
 
 Metrics/PerceivedComplexity:
   Description: >-
@@ -72,11 +72,11 @@ Metrics/PerceivedComplexity:
                  human reader.
   Enabled: true
   VersionAdded: '0.25'
-  Max: 52
+  Max: 50
 
 Style/RedundantReturn:
   Description: >-
-                 ensure there are no redudant returs
+                 ensure there are no redudant returns
   Enabled: true
   AutoCorrect: true
 
