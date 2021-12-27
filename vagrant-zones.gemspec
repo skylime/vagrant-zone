@@ -16,6 +16,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/makr91/vagrant-zones'
   spec.license       = 'AGPL-3.0'
   spec.metadata = {
+    'rubygems_mfa_required' => 'true' ,
     'bug_tracker_uri' => 'https://github.com/Makr91/issues',
     'changelog_uri' => 'https://github.com/Makr91/blob/main/CHANGELOG.md',
     'documentation_uri' => 'http://rubydoc.info/gems/vagrant-zones',
