@@ -39,9 +39,9 @@ Style/LineEndConcatenation:
   AutoCorrect: true
 
 Layout/LineLength:
-  Description: 'Limit lines to 160 characters.'
+  Description: 'Limit lines to 139 characters.'
   Enabled: true
-  Max: 160
+  Max: 139
 
 Metrics/CyclomaticComplexity:
   Description: 'Avoid complex methods.'
@@ -49,11 +49,11 @@ Metrics/CyclomaticComplexity:
 
 Metrics/BlockLength:
  Description: 'Limit Block to 139 Characters'
- Max: 160
+ Max: 139
 
 Metrics/ModuleLength:
- Description: 'Limit Block to 160 Characters'
- Max: 160
+ Description: 'Limit Block to 139 Characters'
+ Max: 139
 
 Metrics/AbcSize:
   Description: >-

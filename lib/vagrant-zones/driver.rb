@@ -564,7 +564,7 @@ module VagrantPlugins
         port = if %w[console].include?(config.console) && config.consoleport.nil?
                  'socket,/tmp/vm.com1'
                elsif %w[webvnc].include?(config.console) || %w[vnc].include?(config.console)
-                config.console = 'vnc'
+                 config.console = 'vnc'
                  'on'
                else
                  config.consoleport
