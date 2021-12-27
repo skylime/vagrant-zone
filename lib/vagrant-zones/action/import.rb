@@ -38,8 +38,7 @@ module VagrantPlugins
           ui.info(I18n.t('vagrant_zones.datadir') + datadir.to_s)
           ui.info(I18n.t('vagrant_zones.detecting_box'))
 
-          # If image ends on '.zss' it's a local ZFS snapshot which
-          # should be used
+          # If image ends on '.zss' it's a local ZFS snapshot which should be used
           if image[-4, 4] == '.zss'
             if File.exist?("#{curdir}/#{image}")
               FileUtils.cp("#{curdir}/#{image}", "#{datadir}/#{image}")
@@ -47,8 +46,7 @@ module VagrantPlugins
             elsif !File.exist?("#{datadir}/#{image}")
               raise Vagrant::Errors::BoxNotFound
             end
-          ## If image looks like an UUID, download the ZFS snapshot from
-          ## Joyent images server
+          ## If image looks like an UUID, download the ZFS snapshot from Joyent images server
           elsif validate_uuid_format(image)
             raise Vagrant::Errors::BoxNotFound unless check(image, ui)
 
@@ -82,28 +80,21 @@ module VagrantPlugins
             end
             ui.info(I18n.t('vagrant_zones.joyent_image_uuid_detected') + image)
 
-          ## If it's a regular name (everything else), try to find it
-          ## on Vagrant Cloud
-
+          ## If it's a regular name (everything else), try to find it on Vagrant Cloud
           else
             # Support zss format only for now, use other images and convert later
             puts image_url unless image_url.nil?
-            #  if box_format.nil?
-            # if box_format.nil?
-            #  raise Errors::NoBoxFormatSet
-            # end
-
             box_format = env[:machine].box.metadata['format'] unless env[:machine].box.metadata['format'].nil?
 
             if box_format == 'ovf'
-              ## Code to try to convert existing box
+              ## Insert Future Code to try to convert existing box
               ui.info(I18n.t('vagrant_zones.detected_ovf_format'))
-            elsif box_format != 'zss'
-              ## Code to try to convert existing box
-              raise Errors::WrongBoxFormatSet
             end
             ui.info(I18n.t('vagrant_zones.vagrant_cloud_box_detected') + image)
             ui.clear_line
+            ## Check if local repo exist, if not try to download
+
+            ## If exists, ensure repo is latest, if not try to download
           end
           @app.call(env)
         end
