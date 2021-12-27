@@ -1003,8 +1003,7 @@ module VagrantPlugins
 
         ## Insert Verification Check here that Dataset is in Zoneconfiguration
         datasets.each do |disk|
-          uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-          puts disk
+          uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron') + disk.to_s)
           cronjobs = {}
           crons.each do |tasks|
             next if tasks.empty?

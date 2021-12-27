@@ -185,3 +185,6 @@ en:
     setting_console_access: |-
        - Setting Console access port
          
+    zfs_snapshot_cron: |-
+      Listing Configured Cron Jobs
+      
