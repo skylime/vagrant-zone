@@ -817,7 +817,7 @@ module VagrantPlugins
 
       ####################### REFACTOR THIS ###############################
       ## List ZFS Snapshots
-      def zfssnaplist (datasets, config, opts, uiinfo)
+      def zfssnaplist (datasets, config, opts, uiinfo, name)
         uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
         datasets.each_with_index do |disk, index|
           puts "\n Disk Number: #{index}\n Disk Path: #{disk}"
@@ -853,7 +853,7 @@ module VagrantPlugins
       end
 
       ## Create ZFS Snapshots
-      def zfssnapcreate (datasets, config, opts, uiinfo)
+      def zfssnapcreate (datasets, config, opts, uiinfo, name)
         if opts[:dataset] == 'all'
           datasets.each do |disk|
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
@@ -871,7 +871,7 @@ module VagrantPlugins
       end
 
       ## Destroy ZFS Snapshots
-      def zfssnapdestroy (datasets, config, opts, uiinfo)
+      def zfssnapdestroy (datasets, config, opts, uiinfo, name)
         if opts[:dataset].to_s == 'all'
           datasets.each do |disk|
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
@@ -924,26 +924,26 @@ module VagrantPlugins
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
           puts disk
           cronjobs = {}
-          hourlycron = "0 1-23 * * * #{spshtr} -p hourly -r -n #{hourlytrn} #{disk} # #{machine.name}"
-          dailycron = "0 0 * * 0-5 #{spshtr} -p daily -r -n #{dailytrn} #{disk} # #{machine.name}"
-          weeklycron = "0 0 * * 6 #{spshtr} -p weekly -r -n #{weeklytrn} #{disk} # #{machine.name}"
-          monthlycron = "0 0 1 * * #{spshtr} -p monthly -r -n #{monthlytrn} #{disk} # #{machine.name}"
+          hourlycron = "0 1-23 * * * #{spshtr} -p hourly -r -n #{hourlytrn} #{disk} # #{name}"
+          dailycron = "0 0 * * 0-5 #{spshtr} -p daily -r -n #{dailytrn} #{disk} # #{name}"
+          weeklycron = "0 0 * * 6 #{spshtr} -p weekly -r -n #{weeklytrn} #{disk} # #{name}"
+          monthlycron = "0 0 1 * * #{spshtr} -p monthly -r -n #{monthlytrn} #{disk} # #{name}"
           crons.each do |tasks|
             next if tasks.empty?
 
-            name = machine.name
+            name = name
             case tasks[/#{rtnregex}/, 1]
             when 'hourly'
-              hourly = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
+              hourly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
               cronjobs.merge!(hourly: hourly)
             when 'daily'
-              daily = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
+              daily = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
               cronjobs.merge!(daily: daily)
             when 'weekly'
-              weekly = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
+              weekly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
               cronjobs.merge!(weekly: weekly)
             when 'monthly'
-              monthly = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
+              monthly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
               cronjobs.merge!(monthly: monthly)
             end
           end
@@ -1033,13 +1033,13 @@ module VagrantPlugins
 
         case job
         when 'list'
-          zfssnaplist(datasets, config, opts, uiinfo)
+          zfssnaplist(datasets, config, opts, uiinfo, name)
         when 'create'
-          zfssnapcreate(datasets, config, opts, uiinfo)
+          zfssnapcreate(datasets, config, opts, uiinfo, name)
         when 'destroy'
-          zfssnapdestroy(datasets, config, opts, uiinfo)
+          zfssnapdestroy(datasets, config, opts, uiinfo, name)
         when 'cron'
-          zfssnapcron(datasets, config, opts, uiinfo)
+          zfssnapcron(datasets, config, opts, uiinfo, name)
         end
       end
       ####################### REFACTOR THIS ###############################
