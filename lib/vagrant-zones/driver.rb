@@ -815,7 +815,8 @@ module VagrantPlugins
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
 
-####################### REFACTOR THIS ###############################
+      ####################### REFACTOR THIS ###############################
+
       # This helps us create ZFS Snapshots
       def zfs(machine, uiinfo, job, opts)
         name = machine.name
@@ -1023,7 +1024,7 @@ module VagrantPlugins
           end
         end
       end
-####################### REFACTOR THIS ###############################
+      ####################### REFACTOR THIS ###############################
 
       # Halts the Zone, first via shutdown command, then a halt.
       def halt(machine, uiinfo)
