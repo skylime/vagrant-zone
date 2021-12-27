@@ -438,8 +438,6 @@ module VagrantPlugins
         uiinfo.info(I18n.t('vagrant_zones.root_dataset_nil')) unless dataset_root_exists == zp.to_s
       end
 
-      ############# REFACTOR #################################################################################################################################
-
       ## zonecfg function for bhyve
       def zonecfgbhyve(uiinfo, name, config, zcfg)
         bootconfigs = config.boot
@@ -643,7 +641,6 @@ module VagrantPlugins
         network(@machine, uiinfo, 'config')
         uiinfo.info(I18n.t('vagrant_zones.exporting_bhyve_zone_config_gen'))
       end
-      ############# REFACTOR ######################################################################################
 
       # This ensures the zone is safe to boot
       def check_zone_support(machine, uiinfo)
