@@ -422,9 +422,9 @@ module VagrantPlugins
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo) if dataset_exists == addataset
             execute(false, "#{@pfexec} zfs destroy -r #{addataset}") if dataset_exists == addataset
             uiinfo.info(I18n.t('vagrant_zones.additional_dataset_nil')) unless dataset_exists == addataset
-            cinfo = "#{diskpath}"
+            cinfo = diskpath.to_s
             addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{diskpath} | awk '{ print $1 }' | head -n 1 || true")
-            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy_root') + cinfo) if (addsrtexists == diskpath && addsrtexists != zp.to_s )
+            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy_root') + cinfo) if addsrtexists == diskpath && addsrtexists != zp.to_s
             execute(false, "#{@pfexec} zfs destroy #{diskpath}") if (addsrtexists == diskpath && addsrtexists != zp.to_s )
           end
         end
