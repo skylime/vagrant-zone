@@ -381,13 +381,10 @@ module VagrantPlugins
           sparse = '-s '
           sparse = '' unless disk['sparse']
           ## If the root data set doesn't exist create it
-          addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }' | head -n 1 || true")
-
-          unless addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
-            cinfo = "#{disk['array']}/#{disk['dataset']}/#{name}"
-            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo)
-            execute(false, "#{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}")
-          end
+          addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }' | head -n 1 || true")        
+          cinfo = "#{disk['array']}/#{disk['dataset']}/#{name}"
+          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo) unless addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
+          execute(false, "#{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}") unless addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
           cinfo = "#{dataset}, #{disk['size']}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
           execute(false, "#{@pfexec} zfs create #{sparse} -V #{disk['size']} #{dataset}")
