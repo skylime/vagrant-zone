@@ -1020,7 +1020,6 @@ module VagrantPlugins
               puts setcron
               execute(false, setcron)
             end
-            end
           end
         end
       end
