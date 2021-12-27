@@ -35,10 +35,7 @@ module VagrantPlugins
           tmp_dir = "#{Dir.pwd}/_tmp_package"
           tmp_img = "#{tmp_dir}/box.zss"
           Dir.mkdir(tmp_dir) unless File.exist?(tmp_dir)
-          brand  = config.brand
-          kernel = config.kernel
-          bootconfigs = config.boot
-          datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
+          datasetpath = "#{config.boot['array']}/#{config.boot['dataset']}/#{name}"
           t = Time.new
           dash = '-'
           colon = ':'
@@ -67,8 +64,8 @@ module VagrantPlugins
           end
 
           Dir.chdir(tmp_dir)
-          File.write('./metadata.json', metadata_content(brand, kernel,  config.vagrant_cloud_creator, config.boxshortname))
-          File.write('./Vagrantfile', vagrantfile_content(brand, kernel, datasetpath))
+          File.write('./metadata.json', metadata_content(config.brand, config.kernel,  config.vagrant_cloud_creator, config.boxshortname))
+          File.write('./Vagrantfile', vagrantfile_content(config.brand, config.kernel, datasetpath))
           assemble_box(boxname, extra)
           FileUtils.mv("#{tmp_dir}/#{boxname}", "../#{boxname}")
           FileUtils.rm_rf(tmp_dir)
@@ -92,22 +89,22 @@ module VagrantPlugins
           puts "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}" if result.zero?
         end
 
-        def metadata_content(brand, _kernel,  config.vagrant_cloud_creator, config.boxshortname)
+        def metadata_content(config.brand, _config.kernel,  config.vagrant_cloud_creator, config.boxshortname)
           <<-ZONEBOX
           {
             "provider": "zone",
             "format": "zss",
-            "brand": "#{brand}",
+            "config.brand": "#{config.brand}",
             "url": "https://app.vagrantup.com/#{ config.vagrant_cloud_creator}/boxes/#{config.boxshortname}"
           }
           ZONEBOX
         end
 
-        def vagrantfile_content(brand, _kernel, datasetpath)
+        def vagrantfile_content(config.brand, _config.kernel, datasetpath)
           <<-ZONEBOX
           Vagrant.configure('2') do |config|
             config.vm.provider :zone do |zone|
-              zone.brand = "#{brand}"
+              zone.config.brand = "#{config.brand}"
               zone.datasetpath = "#{datasetpath}"
             end
           end
