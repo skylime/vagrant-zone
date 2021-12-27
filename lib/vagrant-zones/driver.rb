@@ -385,7 +385,7 @@ module VagrantPlugins
           ## If the root data set doesn't exist create it
           addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{shrtpath} | awk '{ print $1 }' | head -n 1 || true")
           cinfo = shrtpath.to_s
-          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo) unless addsrtexists == "#{shrtpath}"
+          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo) unless addsrtexists == shrtpath.to_s
           ## Create the Additional volume
           execute(false, "#{@pfexec} zfs create #{shrtpath}") unless addsrtexists == shrtpath.to_s
           cinfo = "#{dataset}, #{disk['size']}"
@@ -849,9 +849,9 @@ module VagrantPlugins
             strg1 = "%<sym>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s"
             strg2 = "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s"
             if si.zero?
-              puts format "#{strg1}", sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
+              puts format strg1.to_s, sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
             else
-              puts format "#{strg2}", si: si - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
+              puts format strg2.to_s, si: si - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
             end
           end
         end
