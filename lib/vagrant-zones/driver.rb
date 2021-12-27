@@ -1013,8 +1013,8 @@ module VagrantPlugins
             execute(false, setcron)
           end
         end
-      end 
-      
+      end
+
       # This helps us create ZFS Snapshots
       def zfs(machine, uiinfo, job, opts)
         name = machine.name
