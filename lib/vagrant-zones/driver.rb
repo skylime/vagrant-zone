@@ -375,7 +375,6 @@ module VagrantPlugins
         end
 
         ## Create Additional Disks
-        
         return if config.additional_disks.nil?
 
         config.additional_disks.each do |disk|
@@ -445,6 +444,7 @@ module VagrantPlugins
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
         return unless config.brand == 'bhyve'
+
         execute(false, %(#{zcfg}"create ; set zonepath=/#{datasetpath}/path"))
         execute(false, %(#{zcfg}"set brand=#{config.brand}"))
         execute(false, %(#{zcfg}"set autoboot=#{config.autoboot}"))
@@ -460,13 +460,14 @@ module VagrantPlugins
         execute(false, %(#{zcfg}"add device; set match=/dev/zvol/rdsk/#{datasetroot}; end;"))
         uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
       end
-      
+
       ## zonecfg function for lx
       def zonecfglx(uiinfo, name, config, zcfg)
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
         return unless config.brand == 'lx'
+
         uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
         machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
@@ -480,15 +481,14 @@ module VagrantPlugins
         execute(false, %(#{zcfg}"set brand=#{config.brand}"))
         execute(false, %(#{zcfg}"set autoboot=#{config.autoboot}"))
         execute(false, %(#{zcfg}"add attr; set name=kernel-version; set value=#{config.kernel}; set type=string; end;"))
-        cmss = " add capped-memory; set physical="
+        cmss = ' add capped-memory; set physical='
         execute(false, %(#{zcfg + cmss}"#{config.memory}; set swap=#{config.kernel}; set locked=#{config.memory}; end;"))
         execute(false, %(#{zcfg}"add dataset; set name=#{datasetroot}; end;"))
         execute(false, %(#{zcfg}"set max-lwps=2000"))
       end
-      
+
       ## zonecfg function for KVM
-      def zonecfgkvm(uiinfo, name, config, zcfg)
-        
+      def zonecfgkvm(_uiinfo, name, config, _zcfg)
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
@@ -514,8 +514,9 @@ module VagrantPlugins
       end
 
       ## zonecfg function for CDROM Configurations
-      def zonecfgcdrom(uiinfo, name, config, zcfg)
+      def zonecfgcdrom(uiinfo, _name, config, zcfg)
         return if config.cdroms.nil?
+
         cdroms = config.cdroms
         cdrun = 0
         cdroms.each do |cdrom|
@@ -530,13 +531,14 @@ module VagrantPlugins
       end
 
       ## zonecfg function for PCI Configurations
-      def zonecfgpci(_uiinfo, _name, _config,  _zcfg)
+      def zonecfgpci(_uiinfo, _name, _config, _zcfg)
         ##### RESERVED
       end
 
       ## zonecfg function for AdditionalDisks
       def zonecfgadditionaldisks(uiinfo, name, config, zcfg)
         return if config.additional_disks.nil?
+
         disks = config.additional_disks
         diskrun = 0
         disks.each do |disk|
@@ -552,7 +554,7 @@ module VagrantPlugins
       end
 
       ## zonecfg function for Console Access
-      def zonecfgconsole(uiinfo, name, config, zcfg)
+      def zonecfgconsole(uiinfo, _name, config, zcfg)
         return if config.console.nil?
         console = config.console
         if console != 'disabled'
@@ -574,6 +576,7 @@ module VagrantPlugins
       ## zonecfg function for Cloud-init
       def zonecfgcloudinit(uiinfo, name, config, zcfg)
         return unless config.cloud_init_enabled
+
         cloudconfig = case config.cloud_init_enabled
                       when 'on'
                         'on'
@@ -611,7 +614,7 @@ module VagrantPlugins
       def zonecfg(machine, uiinfo)
         name = @machine.name
         config = machine.provider_config
-        ## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console      
+        ## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console
         zcfg = "#{@pfexec} zonecfg -z #{name} "
         zonecfglx(uiinfo, name, config, zcfg)
         zonecfgbhyve(uiinfo, name, config, zcfg)
