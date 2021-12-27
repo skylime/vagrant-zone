@@ -300,7 +300,8 @@ module VagrantPlugins
               shrtstr2 = %(add property (name=ips,value="#{allowed_address}"); add property (name=primary,value="true"); end;)
               execute(false, %(#{strt}"add net; set physical=#{vnic_name}; set global-nic=auto; #{shrtstr1} #{shrtstr2}"))
             when 'bhyve'
-              execute(false, %(#{@pfexec} zonecfg -z #{name} "add net; set physical=#{vnic_name}; set allowed-address=#{allowed_address}; end;"))
+              strt = "#{@pfexec} zonecfg -z #{name} "
+              execute(false, %(#{strt}"add net; set physical=#{vnic_name}; set allowed-address=#{allowed_address}; end;"))
             end
           # Setup Interface in the VM
           when 'setup'
@@ -374,18 +375,19 @@ module VagrantPlugins
           raise Errors::InvalidBrand
         end
         ## Create Additional Disks
+        shrtpath = "#{disk['array']}/#{disk['dataset']}/#{name}"
         return if config.additional_disks.nil?
 
         config.additional_disks.each do |disk|
-          dataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
+          dataset = "#{shrtpath}/#{disk['volume_name']}"
           sparse = '-s '
           sparse = '' unless disk['sparse']
           ## If the root data set doesn't exist create it
-          addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }' | head -n 1 || true")
-          cinfo = "#{disk['array']}/#{disk['dataset']}/#{name}"
-          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo) unless addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
+          addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{shrtpath} | awk '{ print $1 }' | head -n 1 || true")
+          cinfo = "#{shrtpath}"
+          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo) unless addsrtexists == "#{shrtpath}"
           ## Create the Additional volume
-          execute(false, "#{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}") unless addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
+          execute(false, "#{@pfexec} zfs create #{shrtpath}") unless addsrtexists == "#{shrtpath}"
           cinfo = "#{dataset}, #{disk['size']}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
           execute(false, "#{@pfexec} zfs create #{sparse} -V #{disk['size']} #{dataset}")
@@ -424,7 +426,7 @@ module VagrantPlugins
             uiinfo.info(I18n.t('vagrant_zones.additional_dataset_nil')) unless dataset_exists == addataset
             cinfo = diskpath.to_s
             addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{diskpath} | awk '{ print $1 }' | head -n 1 || true")
-            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy_root') + cinfo) if addsrtexists == diskpath && addsrtexists != zp.to_s
+            uiinfo.info(I18n.t('vagrant_zones.addtl_volume_destroy_root') + cinfo) if addsrtexists == diskpath && addsrtexists != zp.to_s
             execute(false, "#{@pfexec} zfs destroy #{diskpath}") if addsrtexists == diskpath && addsrtexists != zp.to_s
           end
         end
@@ -446,6 +448,8 @@ module VagrantPlugins
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
+        mem = config.memory
+        zcfg = "#{@pfexec} zonecfg -z #{name} "
         case config.brand
         when 'lx'
           uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
@@ -458,44 +462,44 @@ module VagrantPlugins
             @defrouter = opts[:gateway]
           end
           ## LX Zone
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "create ; set zonepath=/#{datasetpath}/path"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "set brand=#{config.brand}"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "set autoboot=#{config.autoboot}"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=kernel-version; set value=#{config.kernel}; set type=string; end;"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add capped-memory; set physical=#{config.memory}; set swap=#{config.kernel}; set locked=#{config.memory}; end;"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add dataset; set name=#{datasetroot}; end;"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "set max-lwps=2000"))
+          execute(false, %(#{zcfg}"create ; set zonepath=/#{datasetpath}/path"))
+          execute(false, %(#{zcfg}"set brand=#{config.brand}"))
+          execute(false, %(#{zcfg}"set autoboot=#{config.autoboot}"))
+          execute(false, %(#{zcfg}"add attr; set name=kernel-version; set value=#{config.kernel}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add capped-memory; set physical=#{mem}; set swap=#{config.kernel}; set locked=#{mem}; end;"))
+          execute(false, %(#{zcfg}"add dataset; set name=#{datasetroot}; end;"))
+          execute(false, %(#{zcfg}"set max-lwps=2000"))
         when 'bhyve'
           ## Bhyve
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "create ; set zonepath=/#{datasetpath}/path"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "set brand=#{config.brand}"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "set autoboot=#{config.autoboot}"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "set ip-type=exclusive"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=acpi; set value=#{config.acpi}; set type=string; end;"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=ram; set value=#{config.memory}; set type=string; end;"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=bootrom; set value=#{firmware(machine)}; set type=string; end;"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=hostbridge; set value=#{config.hostbridge}; set type=string; end;"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=diskif; set value=#{config.diskif}; set type=string; end;"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=netif; set value=#{config.netif}; set type=string; end;"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=bootdisk; set value=#{datasetroot.delete_prefix('/')}; set type=string; end;"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=type; set value=#{config.os_type}; set type=string; end;"))
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add device; set match=/dev/zvol/rdsk/#{datasetroot}; end;"))
+          execute(false, %(#{zcfg}"create ; set zonepath=/#{datasetpath}/path"))
+          execute(false, %(#{zcfg}"set brand=#{config.brand}"))
+          execute(false, %(#{zcfg}"set autoboot=#{config.autoboot}"))
+          execute(false, %(#{zcfg}"set ip-type=exclusive"))
+          execute(false, %(#{zcfg}"add attr; set name=acpi; set value=#{config.acpi}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=ram; set value=#{mem}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=bootrom; set value=#{firmware(machine)}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=hostbridge; set value=#{config.hostbridge}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=diskif; set value=#{config.diskif}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=netif; set value=#{config.netif}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=bootdisk; set value=#{datasetroot.delete_prefix('/')}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=type; set value=#{config.os_type}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add device; set match=/dev/zvol/rdsk/#{datasetroot}; end;"))
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
         end
 
         ## Shared Disk Configurations
         if config.shared_disk_enabled
           uiinfo.info(I18n.t('vagrant_zones.setting_alt_shared_disk_configurations') + path.path)
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add fs; set dir=/vagrant; set special=#{config.shared_dir}; set type=lofs; end;"))
+          execute(false, %(#{zcfg}"add fs; set dir=/vagrant; set special=#{config.shared_dir}; set type=lofs; end;"))
         end
 
         ## CPU Configurations
         if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm')
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=#{config.cpus}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=vcpus; set value=#{config.cpus}; set type=string; end;"))
         elsif config.cpu_configuration == 'complex' && (config.brand == 'bhyve' || config.brand == 'kvm')
           hash = config.complex_cpu_conf[0]
           cstring = "sockets=#{hash['sockets']},cores=#{hash['cores']},threads=#{hash['threads']}"
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=#{cstring}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=vcpus; set value=#{cstring}; set type=string; end;"))
         end
 
         ### Passthrough PCI Devices
@@ -565,26 +569,26 @@ module VagrantPlugins
           unless config.cloud_init_dnsdomain.nil?
             cinfo = "Cloud-init dns-domain: #{config.cloud_init_dnsdomain}"
             uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + cinfo)
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=dns-domain; set value=#{config.cloud_init_dnsdomain}; set type=string; end;"))
+            execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{config.cloud_init_dnsdomain}; set type=string; end;"))
           end
           unless config.cloud_init_password.nil?
             cinfo = "Cloud-init password: #{config.cloud_init_password}"
             uiinfo.info(I18n.t('vagrant_zones.setting_cloud_password') + cinfo)
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=password; set value=#{config.cloud_init_password}; set type=string; end;"))
+            execute(false, %(#{zcfg}"add attr; set name=password; set value=#{config.cloud_init_password}; set type=string; end;"))
           end
           unless config.cloud_init_resolvers.nil?
             cinfo = "Cloud-init resolvers: #{config.cloud_init_resolvers}"
             uiinfo.info(I18n.t('vagrant_zones.setting_cloud_resolvers') + cinfo)
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=resolvers; set value=#{config.cloud_init_resolvers}; set type=string; end;"))
+            execute(false, %(#{zcfg}"add attr; set name=resolvers; set value=#{config.cloud_init_resolvers}; set type=string; end;"))
           end
           unless config.cloud_init_sshkey.nil?
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=sshkey; set value=#{config.cloud_init_sshkey}; set type=string; end;"))
+            execute(false, %(#{zcfg}"add attr; set name=sshkey; set value=#{config.cloud_init_sshkey}; set type=string; end;"))
             cinfo = "Cloud-init SSH Key: #{config.cloud_init_sshkey}"
             uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + cinfo)
           end
           cinfo = "Cloud Config: #{cloudconfig}"
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cinfo)
-          execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
         end
 
         ## Nic Configurations
@@ -599,7 +603,7 @@ module VagrantPlugins
         config = machine.provider_config
         ## Detect if Virtualbox is Running
         ## Kernel, KVM, and Bhyve cannot run conncurently with Virtualbox:
-        ### https://illumos.topicbox-beta.com/groups/omnios-discuss/Tce3bbd08cace5349-M5fc864e9c1a7585b94a7c080/virtualbox-and-bhyve-at-the-same-time
+        ### https://illumos.topicbox-beta.com/groups/omnios-discuss/Tce3bbd08cace5349-M5fc864e9c1a7585b94a7c080
         uiinfo.info(I18n.t('vagrant_zones.vbox_run_check'))
         result = execute(true, "#{@pfexec} VBoxManage list runningvms")
         raise Errors::VirtualBoxRunningConflictDetected if result.zero?
@@ -842,8 +846,9 @@ module VagrantPlugins
           end
           zfssnapshots.reverse.each_with_index do |snapshot, si|
             ar = snapshot.gsub(/\s+/m, ' ').strip.split
+            strg = "%<sym>5s %<s>-"
             if si.zero?
-              puts format "%<sym>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
+              puts format "#{strg}#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
             else
               puts format "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", si: si - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
             end
@@ -903,7 +908,8 @@ module VagrantPlugins
             end
           end
           ## Specify the Dataset by path
-          execute(false, "#{@pfexec} zfs destroy #{opts[:dataset]}@#{opts[:snapshot_name]}") if datasets.include?("#{opts[:dataset]}@#{opts[:snapshot_name]}")
+          cmd = "#{@pfexec} zfs destroy #{opts[:dataset]}@#{opts[:snapshot_name]}"
+          execute(false, cmd ) if datasets.include?("#{opts[:dataset]}@#{opts[:snapshot_name]}")
         end
       end
 
@@ -925,25 +931,26 @@ module VagrantPlugins
       ## This will delete Cron Jobs for Snapshots to take place
       def zfssnapcrondelete(_datasets, _config, opts, _uiinfo, cronjobs)
         removecron = ''
-        rmcr = "#{@pfexec} crontab -l | grep -v "
+        sc = "#{@pfexec} crontab"
+        rmcr = "#{sc} -l | grep -v "
         if opts[:delete] == 'all'
-          removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:hourly].nil?
+          removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[:hourly].nil?
           puts removecron unless cronjobs[:hourly].nil?
           execute(false, removecron) unless cronjobs[:hourly].nil?
-          removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:daily].nil?
+          removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{sc} crontab" unless cronjobs[:daily].nil?
           puts removecron unless cronjobs[:daily].nil?
           execute(false, removecron) unless cronjobs[:daily].nil?
-          removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:weekly].nil?
+          removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[:weekly].nil?
           puts removecron unless cronjobs[:weekly].nil?
           execute(false, removecron) unless cronjobs[:weekly].nil?
-          removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:monthly].nil?
+          removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[:monthly].nil?
           puts removecron unless cronjobs[:monthly].nil?
           execute(false, removecron) unless cronjobs[:monthly].nil?
         else
-          removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:hourly] && opts[:delete] == 'hourly'
-          removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:daily] && opts[:delete] == 'daily'
-          removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:weekly] && opts[:delete] == 'weekly'
-          removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:monthly] && opts[:delete] == 'monthly'
+          removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:hourly] && opts[:delete] == 'hourly'
+          removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:daily] && opts[:delete] == 'daily'
+          removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:weekly] && opts[:delete] == 'weekly'
+          removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:monthly] && opts[:delete] == 'monthly'
           puts removecron
           execute(false, removecron)
         end
