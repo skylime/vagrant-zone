@@ -396,7 +396,7 @@ module VagrantPlugins
       def delete_dataset(machine, uiinfo)
         config = machine.provider_config
         name = machine.name
-        datadir = machine.data_dir
+        #datadir = machine.data_dir
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
 
@@ -407,16 +407,16 @@ module VagrantPlugins
         dataset_boot_exists = execute(false, "#{@pfexec} zfs list | grep #{datasetroot} | awk '{ print $1 }' || true")
 
         ## Destroy Boot dataset
-        uiinfo.info(I18n.t('vagrant_zones.destroy_dataset') + "#{datasetroot}") if dataset_boot_exists == "#{datasetroot}"
-        execute(false, "#{@pfexec} zfs destroy -r #{datasetroot}") if dataset_boot_exists == "#{datasetroot}"
-        uiinfo.info(I18n.t('vagrant_zones.boot_dataset_nil')) unless dataset_boot_exists == "#{datasetroot}"
+        uiinfo.info(I18n.t('vagrant_zones.destroy_dataset') + datasetroot.to_s) if dataset_boot_exists == datasetroot.to_s
+        execute(false, "#{@pfexec} zfs destroy -r #{datasetroot}") if dataset_boot_exists == datasetroot.to_s
+        uiinfo.info(I18n.t('vagrant_zones.boot_dataset_nil')) unless dataset_boot_exists == datasetroot.to_s
 
         ## Destroy Additional Disks
         unless config.additional_disks.nil?
           disks = config.additional_disks
           disks.each do |disk|
             diskpath = "#{disk['array']}/#{disk['dataset']}/#{name}"
-            addataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
+            addataset = "#{diskpath}/#{disk['volume_name']}"
             cinfo = "#{addataset}"
             dataset_exists = execute(false, "#{@pfexec} zfs list | grep #{addataset} | awk '{ print $1 }' || true")
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo) if dataset_exists == addataset
