@@ -36,28 +36,21 @@ module VagrantPlugins
           tmp_dir = "#{Dir.pwd}/_tmp_package"
           tmp_img = "#{tmp_dir}/box.zss"
           Dir.mkdir(tmp_dir) unless File.exist?(tmp_dir)
-
-          
           brand  = @machine.provider_config.brand
           kernel = @machine.provider_config.kernel
           vagrant_cloud_creator = @machine.provider_config.vagrant_cloud_creator
-
           bootconfigs = config.boot
           datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
-          datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
-          
           t = Time.new
           dash = '-'
           colon = ':'
           datetime = t.year.to_s + dash + t.month.to_s + dash + t.day.to_s + dash + t.hour.to_s + colon + t.min.to_s + colon + t.sec.to_s
-
           env[:ui].info("==> #{name}: Creating a Snapshot of the box.")
           snapshot_create(datasetpath, datetime)
           env[:ui].info("==> #{name}: Sending Snapshot to ZFS Send Sream image.")
           snapshot_send(datasetpath, tmp_img, datetime)
           env[:ui].info("==> #{name}: Remove templated snapshot.")
           snapshot_delete(datasetpath, datetime)
-
           extra = ''
           @tmp_include = "#{tmp_dir}/_include"
           if env['package.include']
@@ -79,14 +72,10 @@ module VagrantPlugins
           File.write("./metadata.json", metadata_content(brand, kernel, vagrant_cloud_creator, boxshortname))
           File.write("./Vagrantfile", vagrantfile_content(brand, kernel, datasetpath))
           assemble_box(boxname, extra)
-
           FileUtils.mv("#{tmp_dir}/#{boxname}", "../#{boxname}")
           FileUtils.rm_rf(tmp_dir)
-
-          env[:ui].info('Box created')
-          env[:ui].info('You can now add the box:')
+          env[:ui].info('Box created, You can now add the box:')
           env[:ui].info("vagrant box add #{boxname} --name any_name_you_want")
-  
           @app.call(env)
         end
 

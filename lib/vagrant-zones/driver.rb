@@ -452,7 +452,6 @@ module VagrantPlugins
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
-        attr = ''
         case config.brand
         when 'lx'
           uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
@@ -507,29 +506,6 @@ module VagrantPlugins
         end
 
         ### Passthrough PCI Devices
-        # execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=vcpus; set value=#{cstring}; set type=string; end;")) 
-        # if config.ppt_devices == 'none'
-        #   ui.info(I18n.t('vagrant_zones.setting_pci_configurations') + path.path)
-        #  puts config.ppt
-        #  puts config.config.ppt
-        #  ppt_attr = %(
-        # add device
-        #  set match=/dev/ppt0
-        # end
-        # add attr
-        #  set name=ppt0
-        #  set type=string
-        #  set value='slot0'
-        # end
-        #  }
-        #  ppt_data_attr = %(
-        # {ppt_data}
-        #  }
-
-        #  File.open("#{name}.zoneconfig", 'a') do |f|
-        #    f.puts ppt_data_attr
-        #  end
-        # end
 
         ## CDROM Configurations
         unless config.cdroms.nil?
