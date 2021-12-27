@@ -957,16 +957,18 @@ module VagrantPlugins
             rmcr = "#{@pfexec} crontab -l | grep -v "
             sfr = opts[:set_frequency_rtn]
             if opts[:list]
-                puts cronjobs[:hourly] unless cronjobs[:hourly].nil? || opts[:list] == 'all'
-                puts cronjobs[:daily] unless cronjobs[:daily].nil? || opts[:list] == 'all'
-                puts cronjobs[:weekly] unless cronjobs[:weekly].nil? || opts[:list] == 'all'
-                puts cronjobs[:monthly] unless cronjobs[:monthly].nil? || opts[:list] == 'all'
-              
+              if opts[:list] == 'all'
+                puts opts[:list]
+                puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
+                puts cronjobs[:daily] unless cronjobs[:daily].nil?
+                puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
+                puts cronjobs[:monthly] unless cronjobs[:monthly].nil?
+              else
                 puts cronjobs[:hourly] if opts[:list] == 'hourly'
                 puts cronjobs[:daily] if opts[:list] == 'daily'
                 puts cronjobs[:weekly] if opts[:list] == 'weekly'
                 puts cronjobs[:monthly] if opts[:list] == 'monthly'
-              
+              end
             elsif opts[:delete]
               removecron = ''
               if opts[:delete] == 'all'
