@@ -85,9 +85,7 @@ module VagrantPlugins
               b2.use NotCreated
               next
             end
-
             if env[:result]
-              # VM is running, halt it
               b2.use Halt
             end
           end
@@ -157,14 +155,12 @@ module VagrantPlugins
 
       def self.action_delete_zfs_snapshots
         Vagrant::Action::Builder.new.tap do |b|
-          # b.use ConfigValidate # is this per machine?
           b.use DeleteSnapshots
         end
       end
 
       def self.action_configure_zfs_snapshots
         Vagrant::Action::Builder.new.tap do |b|
-          # b.use ConfigValidate # is this per machine?
           b.use ConfigureSnapshots
         end
       end
