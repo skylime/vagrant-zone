@@ -187,4 +187,8 @@ en:
          
     zfs_snapshot_cron: |-
       Listing Configured Cron Jobs
+    zfs_snapshot_create: |-
+      Creating ZFS Snapshot(s)
+       
+
        
