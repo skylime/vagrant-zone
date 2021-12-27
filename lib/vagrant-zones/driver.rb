@@ -381,9 +381,10 @@ module VagrantPlugins
           sparse = '-s '
           sparse = '' unless disk['sparse']
           ## If the root data set doesn't exist create it
-          addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }' | head -n 1 || true")        
+          addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }' | head -n 1 || true")
           cinfo = "#{disk['array']}/#{disk['dataset']}/#{name}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo) unless addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
+          ## Create the Additional volume
           execute(false, "#{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}") unless addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
           cinfo = "#{dataset}, #{disk['size']}"
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
@@ -537,8 +538,6 @@ module VagrantPlugins
           if console != 'disabled'
             port = if %w[console].include?(console) && config.consoleport.nil?
                      'socket,/tmp/vm.com1'
-                   elsif %w[console].include?(console) && !config.consoleport.nil?
-                     config.consoleport
                    elsif %w[webvnc].include?(console) || %w[vnc].include?(console)
                      console = 'vnc'
                      'on'
