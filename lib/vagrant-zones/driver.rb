@@ -363,7 +363,7 @@ module VagrantPlugins
           Util::Subprocess.new commandtransfer do |_stdout, stderr, _thread|
             uiinfo.rewriting do |uiprogress|
               uiprogress.clear_line
-              uiprogress.info(I18n.t('vagrant_zones.importing_box_image_to_disk') + "#{datasetroot.to_s} ", new_line: false)
+              uiprogress.info(I18n.t('vagrant_zones.importing_box_image_to_disk') + "#{datasetroot} ", new_line: false)
               uiprogress.report_progress(stderr, 100, false)
             end
           end
@@ -378,8 +378,8 @@ module VagrantPlugins
 
         config.additional_disks.each do |disk|
           dataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
-          sparse = "-s "
-          sparse = "" unless disk['sparse']
+          sparse = '-s '
+          sparse = '' unless disk['sparse']
           addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }'  | head -n 1 || true")
           unless addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
             cinfo = "#{disk['array']}/#{disk['dataset']}/#{name}"
