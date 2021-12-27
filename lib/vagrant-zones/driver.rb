@@ -438,21 +438,38 @@ module VagrantPlugins
         uiinfo.info(I18n.t('vagrant_zones.root_dataset_nil')) unless dataset_root_exists == zp.to_s
       end
 
-      ############# REFACTOR #################
-      # This helps us set the zone configurations for the zone
-      def zonecfg(machine, uiinfo)
-        name = @machine.name
-        ## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console
-        config = machine.provider_config
-        # datadir = machine.data_dir
+      ############# REFACTOR #################################################################################################################################
 
+      ## zonecfg function for bhyve
+      def zonecfgbhyve(uiinfo, name, config, _opts, zcfg)
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
-        mem = config.memory
-        zcfg = "#{@pfexec} zonecfg -z #{name} "
-        case config.brand
-        when 'lx'
+        if config.brand == 'bhyve'
+          ## Bhyve
+          execute(false, %(#{zcfg}"create ; set zonepath=/#{datasetpath}/path"))
+          execute(false, %(#{zcfg}"set brand=#{config.brand}"))
+          execute(false, %(#{zcfg}"set autoboot=#{config.autoboot}"))
+          execute(false, %(#{zcfg}"set ip-type=exclusive"))
+          execute(false, %(#{zcfg}"add attr; set name=acpi; set value=#{config.acpi}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=ram; set value=#{config.memory}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=bootrom; set value=#{firmware(config)}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=hostbridge; set value=#{config.hostbridge}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=diskif; set value=#{config.diskif}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=netif; set value=#{config.netif}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=bootdisk; set value=#{datasetroot.delete_prefix('/')}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=type; set value=#{config.os_type}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add device; set match=/dev/zvol/rdsk/#{datasetroot}; end;"))
+          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
+        end
+      end
+      
+      ## zonecfg function for lx
+      def zonecfglx(uiinfo, name, config, opts, zcfg)
+        bootconfigs = config.boot
+        datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
+        datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
+        if config.brand == 'lx'
           uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
           machine.config.vm.networks.each do |adaptertype, opts|
             next unless adaptertype.to_s == 'public_network'
@@ -462,39 +479,35 @@ module VagrantPlugins
             @network = NetAddr.parse_net(cinfo)
             @defrouter = opts[:gateway]
           end
-          ## LX Zone
           execute(false, %(#{zcfg}"create ; set zonepath=/#{datasetpath}/path"))
           execute(false, %(#{zcfg}"set brand=#{config.brand}"))
           execute(false, %(#{zcfg}"set autoboot=#{config.autoboot}"))
           execute(false, %(#{zcfg}"add attr; set name=kernel-version; set value=#{config.kernel}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add capped-memory; set physical=#{mem}; set swap=#{config.kernel}; set locked=#{mem}; end;"))
+          cmss = " add capped-memory; set physical="
+          execute(false, %(#{zcfg + cmss}"#{config.memory}; set swap=#{config.kernel}; set locked=#{config.memory}; end;"))
           execute(false, %(#{zcfg}"add dataset; set name=#{datasetroot}; end;"))
           execute(false, %(#{zcfg}"set max-lwps=2000"))
-        when 'bhyve'
-          ## Bhyve
-          execute(false, %(#{zcfg}"create ; set zonepath=/#{datasetpath}/path"))
-          execute(false, %(#{zcfg}"set brand=#{config.brand}"))
-          execute(false, %(#{zcfg}"set autoboot=#{config.autoboot}"))
-          execute(false, %(#{zcfg}"set ip-type=exclusive"))
-          execute(false, %(#{zcfg}"add attr; set name=acpi; set value=#{config.acpi}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add attr; set name=ram; set value=#{mem}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add attr; set name=bootrom; set value=#{firmware(machine)}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add attr; set name=hostbridge; set value=#{config.hostbridge}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add attr; set name=diskif; set value=#{config.diskif}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add attr; set name=netif; set value=#{config.netif}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add attr; set name=bootdisk; set value=#{datasetroot.delete_prefix('/')}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add attr; set name=type; set value=#{config.os_type}; set type=string; end;"))
-          execute(false, %(#{zcfg}"add device; set match=/dev/zvol/rdsk/#{datasetroot}; end;"))
-          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_config_gen'))
         end
+      end
+      
+      ## zonecfg function for KVM
+      def zonecfgkvm(uiinfo, name, config, opts, zcfg)
+        bootconfigs = config.boot
+        datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
+        datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
+        ###### RESERVED ######
+      end
 
-        ## Shared Disk Configurations
+      ## zonecfg function for Shared Disk Configurations
+      def zonecfgshareddisks(uiinfo, name, config, _opts, zcfg)
         if config.shared_disk_enabled
           uiinfo.info(I18n.t('vagrant_zones.setting_alt_shared_disk_configurations') + path.path)
           execute(false, %(#{zcfg}"add fs; set dir=/vagrant; set special=#{config.shared_dir}; set type=lofs; end;"))
         end
+      end
 
-        ## CPU Configurations
+      ## zonecfg function for CPU Configurations
+      def zonecfgcpu(uiinfo, name, config, _opts, zcfg)
         if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm')
           execute(false, %(#{zcfg}"add attr; set name=vcpus; set value=#{config.cpus}; set type=string; end;"))
         elsif config.cpu_configuration == 'complex' && (config.brand == 'bhyve' || config.brand == 'kvm')
@@ -502,10 +515,10 @@ module VagrantPlugins
           cstring = "sockets=#{hash['sockets']},cores=#{hash['cores']},threads=#{hash['threads']}"
           execute(false, %(#{zcfg}"add attr; set name=vcpus; set value=#{cstring}; set type=string; end;"))
         end
+      end
 
-        ### Passthrough PCI Devices
-
-        ## CDROM Configurations
+      ## zonecfg function for CDROM Configurations
+      def zonecfgcdrom(uiinfo, name, config, _opts, zcfg)
         unless config.cdroms.nil?
           cdroms = config.cdroms
           cdrun = 0
@@ -514,14 +527,20 @@ module VagrantPlugins
             uiinfo.info(I18n.t('vagrant_zones.setting_cd_rom_configurations') + cdrom['path'])
             cdname += cdrun.to_s if cdrun.positive?
             cdrun += 1
-            strt = "#{@pfexec} zonecfg -z #{name} "
             shrtstrng = 'set type=lofs; add options nodevices; add options ro; end;'
-            execute(false, %(#{strt}"add attr; set name=#{cdname}; set value=#{cdrom['path']}; set type=string; end;"))
-            execute(false, %(#{strt}"add fs; set dir=#{cdrom['path']}; set special=#{cdrom['path']}; #{shrtstrng}"))
+            execute(false, %(#{zcfg}"add attr; set name=#{cdname}; set value=#{cdrom['path']}; set type=string; end;"))
+            execute(false, %(#{zcfg}"add fs; set dir=#{cdrom['path']}; set special=#{cdrom['path']}; #{shrtstrng}"))
           end
         end
+      end
 
-        ## Additional Disk Configurations
+      ## zonecfg function for PCI Configurations
+      def zonecfgpci(uiinfo, name, config, opts, zcfg)
+        ##### RESERVED
+      end
+
+      ## zonecfg function for AdditionalDisks
+      def zonecfgadditionaldisks(uiinfo, name, config, _opts, zcfg)
         unless config.additional_disks.nil?
           disks = config.additional_disks
           diskrun = 0
@@ -532,12 +551,14 @@ module VagrantPlugins
             uiinfo.info(I18n.t('vagrant_zones.setting_additional_disks_configurations') + cinfo)
             diskname += diskrun.to_s if diskrun.positive?
             diskrun += 1
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add device; set match=/dev/zvol/rdsk/#{dset}; end;"))
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=#{diskname}; set value=#{dset}; set type=string; end;"))
+            execute(false, %(#{zcfg}"add device; set match=/dev/zvol/rdsk/#{dset}; end;"))
+            execute(false, %(#{zcfg}"add attr; set name=#{diskname}; set value=#{dset}; set type=string; end;"))
           end
         end
+      end
 
-        ## Console access configuration
+      ## zonecfg function for Console Access
+      def zonecfgconsole(uiinfo, name, config, _opts, zcfg)
         unless config.console.nil?
           console = config.console
           if console != 'disabled'
@@ -549,15 +570,16 @@ module VagrantPlugins
                    else
                      config.consoleport
                    end
-
             port += ',wait' if config.console_onboot
             cinfo = "Console type: #{console}, State: #{port}, Port: #{config.consoleport}"
             uiinfo.info(I18n.t('vagrant_zones.setting_console_access') + cinfo)
-            execute(false, %(#{@pfexec} zonecfg -z #{name} "add attr; set name=#{console}; set value=#{port}; set type=string; end;"))
+            execute(false, %(#{zcfg}"add attr; set name=#{console}; set value=#{port}; set type=string; end;"))
           end
         end
+      end
 
-        ## Cloud-init settings
+      ## zonecfg function for Cloud-init
+      def zonecfgcloudinit(uiinfo, name, config, _opts, zcfg)
         if config.cloud_init_enabled
           cloudconfig = case config.cloud_init_enabled
                         when 'on'
@@ -591,13 +613,37 @@ module VagrantPlugins
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cinfo)
           execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
         end
+      end
 
+      # This helps us set the zone configurations for the zone
+      def zonecfg(machine, uiinfo)
+        name = @machine.name
+        config = machine.provider_config
+        ## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console      
+        zcfg = "#{@pfexec} zonecfg -z #{name} "
+        zonecfglx(uiinfo, name, config, opts, zcfg)
+        zonecfgbhyve(uiinfo, name, config, opts, zcfg)
+        zonecfgkvm(uiinfo, name, config, opts, zcfg)
+        ## Shared Disk Configurations
+        zonecfgshareddisks(uiinfo, name, config, opts, zcfg)
+        ## CPU Configurations
+        zonecfgcpu(uiinfo, name, config, opts, zcfg)
+        ## CDROM Configurations
+        zonecfgcdrom(uiinfo, name, config, opts, zcfg)
+        ### Passthrough PCI Devices
+        zonecfgpci(uiinfo, name, config, opts, zcfg)
+        ## Additional Disk Configurations
+        zonecfgadditionaldisks(uiinfo, name, config, opts, zcfg)
+        ## Console access configuration
+        zonecfgconsole(uiinfo, name, config, opts, zcfg)
+        ## Cloud-init settings
+        zonecfgcloudinit(uiinfo, name, config, opts, zcfg)
         ## Nic Configurations
         uiinfo.info(I18n.t('vagrant_zones.networking_int_add'))
         network(@machine, uiinfo, 'config')
         uiinfo.info(I18n.t('vagrant_zones.exporting_bhyve_zone_config_gen'))
       end
-      ############# REFACTOR #################
+      ############# REFACTOR ######################################################################################
 
       # This ensures the zone is safe to boot
       def check_zone_support(machine, uiinfo)
@@ -792,8 +838,7 @@ module VagrantPlugins
       end
 
       # This filters the firmware
-      def firmware(machine)
-        config = machine.provider_config
+      def firmware(config)
         ft = case config.firmware_type
              when /compatability/
                'BHYVE_RELEASE_CSM'
