@@ -910,7 +910,7 @@ module VagrantPlugins
           end
           ## Specify the Dataset by path
           cmd = "#{@pfexec} zfs destroy #{opts[:dataset]}@#{opts[:snapshot_name]}"
-          execute(false, cmd ) if datasets.include?("#{opts[:dataset]}@#{opts[:snapshot_name]}")
+          execute(false, cmd) if datasets.include?("#{opts[:dataset]}@#{opts[:snapshot_name]}")
         end
       end
 
