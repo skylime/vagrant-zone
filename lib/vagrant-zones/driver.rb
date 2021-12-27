@@ -951,7 +951,7 @@ module VagrantPlugins
       end
 
       ## This will set Cron Jobs for Snapshots to take place
-      def zfssnapcronset(disk, config, opts, _uiinfo, cronjobs)
+      def zfssnapcronset(disk, config, opts, name, cronjobs)
         spshtr = config.snapshot_script.to_s
         hourlytrn = 24
         dailytrn = 8
@@ -1024,9 +1024,9 @@ module VagrantPlugins
               cronjobs.merge!(monthly: monthly)
             end
           end
-          zfssnapcronlist(disk, config, opts, uiinfo, cronjobs)
-          zfssnapcrondelete(disk, config, opts, uiinfo, cronjobs)
-          zfssnapcronset(disk, config, opts, uiinfo, cronjobs)
+          zfssnapcronlist(disk, config, opts, name, cronjobs)
+          zfssnapcrondelete(disk, config, opts, name, cronjobs)
+          zfssnapcronset(disk, config, opts, name, cronjobs)
         end
       end
 
