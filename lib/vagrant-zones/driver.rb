@@ -929,10 +929,10 @@ module VagrantPlugins
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
             puts disk
             cronjobs = {}
-            hourlycron = "0  1-23  *  *  *  #{spshtr} -p hourly -r -n #{hourlytrn} #{disk} # #{machine.name}"
-            dailycron = "0  0  *  *  0-5  #{spshtr} -p daily -r -n #{dailytrn} #{disk} # #{machine.name}"
-            weeklycron = "0  0  *  *  6   #{spshtr} -p weekly -r -n #{weeklytrn} #{disk} # #{machine.name}"
-            monthlycron = "0  0  1  *  *   #{spshtr} -p monthly -r -n #{monthlytrn} #{disk} # #{machine.name}"
+            hourlycron = "0 1-23 * * * #{spshtr} -p hourly -r -n #{hourlytrn} #{disk} # #{machine.name}"
+            dailycron = "0 0 * * 0-5 #{spshtr} -p daily -r -n #{dailytrn} #{disk} # #{machine.name}"
+            weeklycron = "0 0 * * 6 #{spshtr} -p weekly -r -n #{weeklytrn} #{disk} # #{machine.name}"
+            monthlycron = "0 0 1 * * #{spshtr} -p monthly -r -n #{monthlytrn} #{disk} # #{machine.name}"
             crons.each do |tasks|
               next if tasks.empty?
 
