@@ -814,6 +814,7 @@ module VagrantPlugins
         config = machine.provider_config
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
+
 ####################### REFACTOR THIS ###############################
       # This helps us create ZFS Snapshots
       def zfs(machine, uiinfo, job, opts)
