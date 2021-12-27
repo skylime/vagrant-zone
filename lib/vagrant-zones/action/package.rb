@@ -26,8 +26,8 @@ module VagrantPlugins
 
         def call(env)
           @machine = env[:machine]
-          @driver  = @machine.provider.driver
-          config  = @machine.provider_config
+          @driver = @machine.provider.driver
+          config = @machine.provider_config
           name = @machine.name
           boxname = env['package.output']
           boxshortname = @machine.provider_config.boxshortname
@@ -69,18 +69,17 @@ module VagrantPlugins
           end
 
           Dir.chdir(tmp_dir)
-          File.write("./metadata.json", metadata_content(brand, kernel, vagrant_cloud_creator, boxshortname))
-          File.write("./Vagrantfile", vagrantfile_content(brand, kernel, datasetpath))
+          File.write('./metadata.json', metadata_content(brand, kernel, vagrant_cloud_creator, boxshortname))
+          File.write('./Vagrantfile', vagrantfile_content(brand, kernel, datasetpath))
           assemble_box(boxname, extra)
           FileUtils.mv("#{tmp_dir}/#{boxname}", "../#{boxname}")
           FileUtils.rm_rf(tmp_dir)
-          env[:ui].info('Box created, You can now add the box:')
-          env[:ui].info("vagrant box add #{boxname} --name any_name_you_want")
+          env[:ui].info('Box created, You can now add the box: vagrant box add #{boxname} --nameofnewbox')
           @app.call(env)
         end
 
         def snapshot_create(datasetpath, datetime)
-          result = execute(true, "#{@pfexec} zfs snapshot -r #{datasetpath}/boot@vagrant_box#{datetime}")           
+          result = execute(true, "#{@pfexec} zfs snapshot -r #{datasetpath}/boot@vagrant_box#{datetime}")
           puts "pfexec zfs snapshot -r #{datasetpath}/boot@vagrant_box#{datetime}" if result.zero?
           puts "#{@pfexec} zfs snapshot -r #{datasetpath}/boot@vagrant_box#{datetime}"
         end
