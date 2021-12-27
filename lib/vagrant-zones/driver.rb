@@ -816,7 +816,206 @@ module VagrantPlugins
       end
 
       ####################### REFACTOR THIS ###############################
+      ## List ZFS Snapshots
+      def zfssnaplist (datasets, config, opts, uiinfo)
+        uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
+        datasets.each_with_index do |disk, index|
+          puts "\n Disk Number: #{index}\n Disk Path: #{disk}"
+          zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk} || true")
+          break if zfs_snapshots.nil?
 
+          unless opts[:dataset].nil?
+            selectdataset = opts[:dataset]
+            next unless selectdataset.to_i == index
+
+          end
+          zfssnapshots = zfs_snapshots.split(/\n/)
+          zfssnapshots = zfssnapshots.reverse
+          zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
+          pml, rml, aml, uml, sml = 0
+          zfssnapshots.reverse.each do |snapshot|
+            ar = snapshot.gsub(/\s+/m, ' ').strip.split
+            sml = ar[0].length.to_i if ar[0].length.to_i > sml.to_i
+            uml = ar[1].length.to_i if ar[1].length.to_i > uml.to_i
+            aml = ar[2].length.to_i if ar[2].length.to_i > aml.to_i
+            rml = ar[3].length.to_i if ar[3].length.to_i > rml.to_i
+            pml = ar[4].length.to_i if ar[4].length.to_i > pml.to_i
+          end
+          zfssnapshots.reverse.each_with_index do |snapshot, si|
+            ar = snapshot.gsub(/\s+/m, ' ').strip.split
+            if si.zero?
+              puts format "%<sym>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
+            else
+              puts format "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", si: si - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
+            end
+          end
+        end
+      end
+
+      ## Create ZFS Snapshots
+      def zfssnapcreate (datasets, config, opts, uiinfo)
+        if opts[:dataset] == 'all'
+          datasets.each do |disk|
+            uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
+            execute(false, "#{@pfexec} zfs snapshot #{disk}@#{opts[:snapshot_name]}")
+          end
+        else
+          uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
+          ## Specify the Dataset by path
+          execute(false, "#{@pfexec} zfs snapshot #{opts[:dataset]}@#{opts[:snapshot_name]}") if datasets.include?(opts[:dataset])
+          ## Specify the dataset by number
+          datasets.each_with_index do |disk, index|
+            execute(false, "#{@pfexec} zfs snapshot #{disk}@#{opts[:snapshot_name]}") if opts[:dataset].to_i == index.to_i
+          end
+        end
+      end
+
+      ## Destroy ZFS Snapshots
+      def zfssnapdestroy (datasets, config, opts, uiinfo)
+        if opts[:dataset].to_s == 'all'
+          datasets.each do |disk|
+            uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
+            output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
+            ## Never delete the source when doing all
+            output = output.split(/\n/).drop(1)
+            output.reverse.each do |snaps|
+              execute(false, "#{@pfexec} zfs destroy #{snaps}")
+              uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
+            end
+          end
+        else
+          uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
+          ## Specify the dataset by number
+          datasets.each_with_index do |disk, dindex|
+            next unless dindex.to_i == opts[:dataset].to_i
+
+            output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
+            output = output.split(/\n/).drop(1)
+            output.each_with_index do |snaps, spindex|
+              if opts[:snapshot_name].to_i == spindex && opts[:snapshot_name].to_s != 'all'
+                puts "\t#{spindex}\t#{snaps}\t"
+                execute(false, "#{@pfexec} zfs destroy #{snaps}")
+                uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
+              end
+              if opts[:snapshot_name].to_s == 'all'
+                puts "\t#{spindex}\t#{snaps}\t"
+                execute(false, "#{@pfexec} zfs destroy #{snaps}")
+              end
+            end
+          end
+          ## Specify the Dataset by path
+          execute(false, "#{@pfexec} zfs destroy #{opts[:dataset]}@#{opts[:snapshot_name]}") if datasets.include?("#{opts[:dataset]}@#{opts[:snapshot_name]}")
+        end
+      end
+
+      ## Configure ZFS Snapshots Crons
+      def zfssnapcron (datasets, config, opts, uiinfo)
+        crons = execute(false, "#{@pfexec} crontab -l").split("\n")
+        spshtr = config.snapshot_script.to_s
+        hourlytrn = 24
+        dailytrn = 8
+        weeklytrn = 5
+        monthlytrn = 1
+        rtnregex = '-p (weekly|monthly|daily|hourly)'
+        opts[:dataset] = 'all' if opts[:dataset].nil?
+
+        ## Insert Verification Check here that Dataset is in Zoneconfiguration
+        datasets.each do |disk|
+          uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
+          puts disk
+          cronjobs = {}
+          hourlycron = "0 1-23 * * * #{spshtr} -p hourly -r -n #{hourlytrn} #{disk} # #{machine.name}"
+          dailycron = "0 0 * * 0-5 #{spshtr} -p daily -r -n #{dailytrn} #{disk} # #{machine.name}"
+          weeklycron = "0 0 * * 6 #{spshtr} -p weekly -r -n #{weeklytrn} #{disk} # #{machine.name}"
+          monthlycron = "0 0 1 * * #{spshtr} -p monthly -r -n #{monthlytrn} #{disk} # #{machine.name}"
+          crons.each do |tasks|
+            next if tasks.empty?
+
+            name = machine.name
+            case tasks[/#{rtnregex}/, 1]
+            when 'hourly'
+              hourly = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
+              cronjobs.merge!(hourly: hourly)
+            when 'daily'
+              daily = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
+              cronjobs.merge!(daily: daily)
+            when 'weekly'
+              weekly = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
+              cronjobs.merge!(weekly: weekly)
+            when 'monthly'
+              monthly = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
+              cronjobs.merge!(monthly: monthly)
+            end
+          end
+          shrtcr = "( #{@pfexec} crontab -l; echo "
+          rmcr = "#{@pfexec} crontab -l | grep -v "
+          sfr = opts[:set_frequency_rtn]
+          removecron = ''
+          if opts[:list] == 'all'
+            puts opts[:list]
+            puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
+            puts cronjobs[:daily] unless cronjobs[:daily].nil?
+            puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
+            puts cronjobs[:monthly] unless cronjobs[:monthly].nil?
+          else
+            puts cronjobs[:hourly] if opts[:list] == 'hourly'
+            puts cronjobs[:daily] if opts[:list] == 'daily'
+            puts cronjobs[:weekly] if opts[:list] == 'weekly'
+            puts cronjobs[:monthly] if opts[:list] == 'monthly'
+          end
+          if opts[:delete] == 'all'
+            removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:hourly].nil?
+            puts removecron unless cronjobs[:hourly].nil?
+            execute(false, removecron) unless cronjobs[:hourly].nil?
+            removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:daily].nil?
+            puts removecron unless cronjobs[:daily].nil?
+            execute(false, removecron) unless cronjobs[:daily].nil?
+            removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:weekly].nil?
+            puts removecron unless cronjobs[:weekly].nil?
+            execute(false, removecron) unless cronjobs[:weekly].nil?
+            removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:monthly].nil?
+            puts removecron unless cronjobs[:monthly].nil?
+            execute(false, removecron) unless cronjobs[:monthly].nil?
+          else
+            removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:hourly] && opts[:delete] == 'hourly'
+            removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:daily] && opts[:delete] == 'daily'
+            removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:weekly] && opts[:delete] == 'weekly'
+            removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:monthly] && opts[:delete] == 'monthly'
+            puts removecron
+            execute(false, removecron)
+          end
+          if opts[:set_frequency] && opts[:set_frequency] == 'all'
+            hourlycron = "0  1-23  *  *  *  #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+            dailycron = "0  0  *  *  0-5  #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+            weeklycron = "0  0  *  *  6   #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+            monthlycron = "0  0  1  *  *   #{spshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+            setcron = "#{shrtcr}'#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil?
+            puts setcron if cronjobs[:hourly].nil?
+            execute(false, setcron) if cronjobs[:hourly].nil?
+            setcron = "#{shrtcr}'#{dailycron}' ) | #{@pfexec} crontab" if cronjobs[:daily].nil?
+            puts setcron if cronjobs[:daily].nil?
+            execute(false, setcron) if cronjobs[:daily].nil?
+            setcron = "#{shrtcr}'#{weeklycron}' ) | #{@pfexec} crontab" if cronjobs[:weekly].nil?
+            puts setcron if cronjobs[:weekly].nil?
+            execute(false, setcron) if cronjobs[:weekly].nil?
+            setcron = "#{shrtcr}'#{monthlycron}' ) | #{@pfexec} crontab" if cronjobs[:monthly].nil?
+            puts setcron if cronjobs[:monthly].nil?
+            execute(false, setcron) if cronjobs[:monthly].nil?
+          elsif opts[:set_frequency]
+            hourlycron = "0  1-23  *  *  *  #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+            dailycron = "0  0  *  *  0-5  #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+            weeklycron = "0  0  *  *  6   #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+            monthlycron = "0  0  1  *  *   #{spshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+            setcron = "#{shrtcr}'#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil? && opts[:set_frequency] == 'hourly'
+            setcron = "#{shrtcr}'#{dailycron}' ) | #{@pfexec} crontab" if cronjobs[:daily].nil? && opts[:set_frequency] == 'daily'
+            setcron = "#{shrtcr}'#{weeklycron}' ) | #{@pfexec} crontab" if cronjobs[:weekly].nil? && opts[:set_frequency] == 'weekly'
+            setcron = "#{shrtcr}'#{monthlycron}' ) | #{@pfexec} crontab" if cronjobs[:monthly].nil? && opts[:set_frequency] == 'monthly'
+            puts setcron
+            execute(false, setcron)
+          end
+        end
+      end 
+      
       # This helps us create ZFS Snapshots
       def zfs(machine, uiinfo, job, opts)
         name = machine.name
@@ -831,195 +1030,16 @@ module VagrantPlugins
           additionaldataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
           datasets << additionaldataset.to_s
         end
+
         case job
         when 'list'
-          uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
-          datasets.each_with_index do |disk, index|
-            puts "\n Disk Number: #{index}\n Disk Path: #{disk}"
-            zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk} || true")
-            break if zfs_snapshots.nil?
-
-            unless opts[:dataset].nil?
-              selectdataset = opts[:dataset]
-              next unless selectdataset.to_i == index
-
-            end
-            zfssnapshots = zfs_snapshots.split(/\n/)
-            zfssnapshots = zfssnapshots.reverse
-            zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
-            pml, rml, aml, uml, sml = 0
-            zfssnapshots.reverse.each do |snapshot|
-              ar = snapshot.gsub(/\s+/m, ' ').strip.split
-              sml = ar[0].length.to_i if ar[0].length.to_i > sml.to_i
-              uml = ar[1].length.to_i if ar[1].length.to_i > uml.to_i
-              aml = ar[2].length.to_i if ar[2].length.to_i > aml.to_i
-              rml = ar[3].length.to_i if ar[3].length.to_i > rml.to_i
-              pml = ar[4].length.to_i if ar[4].length.to_i > pml.to_i
-            end
-            zfssnapshots.reverse.each_with_index do |snapshot, si|
-              ar = snapshot.gsub(/\s+/m, ' ').strip.split
-              if si.zero?
-                puts format "%<sym>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
-              else
-                puts format "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s", si: si - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
-              end
-            end
-          end
+          zfssnaplist(datasets, config, opts, uiinfo))
         when 'create'
-          if opts[:dataset] == 'all'
-            datasets.each do |disk|
-              uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
-              execute(false, "#{@pfexec} zfs snapshot #{disk}@#{opts[:snapshot_name]}")
-            end
-          else
-            uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
-            ## Specify the Dataset by path
-            execute(false, "#{@pfexec} zfs snapshot #{opts[:dataset]}@#{opts[:snapshot_name]}") if datasets.include?(opts[:dataset])
-            ## Specify the dataset by number
-            datasets.each_with_index do |disk, index|
-              execute(false, "#{@pfexec} zfs snapshot #{disk}@#{opts[:snapshot_name]}") if opts[:dataset].to_i == index.to_i
-            end
-          end
+          zfssnapcreate(datasets, config, opts, uiinfo))
         when 'destroy'
-          if opts[:dataset].to_s == 'all'
-            datasets.each do |disk|
-              uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
-              output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
-              ## Never delete the source when doing all
-              output = output.split(/\n/).drop(1)
-              output.reverse.each do |snaps|
-                execute(false, "#{@pfexec} zfs destroy #{snaps}")
-                uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
-              end
-            end
-          else
-            uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
-            ## Specify the dataset by number
-            datasets.each_with_index do |disk, dindex|
-              next unless dindex.to_i == opts[:dataset].to_i
-
-              output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
-              output = output.split(/\n/).drop(1)
-              output.each_with_index do |snaps, spindex|
-                if opts[:snapshot_name].to_i == spindex && opts[:snapshot_name].to_s != 'all'
-                  puts "\t#{spindex}\t#{snaps}\t"
-                  execute(false, "#{@pfexec} zfs destroy #{snaps}")
-                  uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
-                end
-                if opts[:snapshot_name].to_s == 'all'
-                  puts "\t#{spindex}\t#{snaps}\t"
-                  execute(false, "#{@pfexec} zfs destroy #{snaps}")
-                end
-              end
-            end
-            ## Specify the Dataset by path
-            execute(false, "#{@pfexec} zfs destroy #{opts[:dataset]}@#{opts[:snapshot_name]}") if datasets.include?("#{opts[:dataset]}@#{opts[:snapshot_name]}")
-          end
+          zfssnapdestroy(datasets, config, opts, uiinfo))
         when 'cron'
-          crons = execute(false, "#{@pfexec} crontab -l").split("\n")
-          spshtr = config.snapshot_script.to_s
-          hourlytrn = 24
-          dailytrn = 8
-          weeklytrn = 5
-          monthlytrn = 1
-          rtnregex = '-p (weekly|monthly|daily|hourly)'
-          opts[:dataset] = 'all' if opts[:dataset].nil?
-
-          ## Insert Verification Check here that Dataset is in Zoneconfiguration
-          datasets.each do |disk|
-            uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
-            puts disk
-            cronjobs = {}
-            hourlycron = "0 1-23 * * * #{spshtr} -p hourly -r -n #{hourlytrn} #{disk} # #{machine.name}"
-            dailycron = "0 0 * * 0-5 #{spshtr} -p daily -r -n #{dailytrn} #{disk} # #{machine.name}"
-            weeklycron = "0 0 * * 6 #{spshtr} -p weekly -r -n #{weeklytrn} #{disk} # #{machine.name}"
-            monthlycron = "0 0 1 * * #{spshtr} -p monthly -r -n #{monthlytrn} #{disk} # #{machine.name}"
-            crons.each do |tasks|
-              next if tasks.empty?
-
-              name = machine.name
-              case tasks[/#{rtnregex}/, 1]
-              when 'hourly'
-                hourly = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
-                cronjobs.merge!(hourly: hourly)
-              when 'daily'
-                daily = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
-                cronjobs.merge!(daily: daily)
-              when 'weekly'
-                weekly = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
-                cronjobs.merge!(weekly: weekly)
-              when 'monthly'
-                monthly = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
-                cronjobs.merge!(monthly: monthly)
-              end
-            end
-            shrtcr = "( #{@pfexec} crontab -l; echo "
-            rmcr = "#{@pfexec} crontab -l | grep -v "
-            sfr = opts[:set_frequency_rtn]
-            removecron = ''
-            if opts[:list] == 'all'
-              puts opts[:list]
-              puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
-              puts cronjobs[:daily] unless cronjobs[:daily].nil?
-              puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
-              puts cronjobs[:monthly] unless cronjobs[:monthly].nil?
-            else
-              puts cronjobs[:hourly] if opts[:list] == 'hourly'
-              puts cronjobs[:daily] if opts[:list] == 'daily'
-              puts cronjobs[:weekly] if opts[:list] == 'weekly'
-              puts cronjobs[:monthly] if opts[:list] == 'monthly'
-            end
-            if opts[:delete] == 'all'
-              removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:hourly].nil?
-              puts removecron unless cronjobs[:hourly].nil?
-              execute(false, removecron) unless cronjobs[:hourly].nil?
-              removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:daily].nil?
-              puts removecron unless cronjobs[:daily].nil?
-              execute(false, removecron) unless cronjobs[:daily].nil?
-              removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:weekly].nil?
-              puts removecron unless cronjobs[:weekly].nil?
-              execute(false, removecron) unless cronjobs[:weekly].nil?
-              removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:monthly].nil?
-              puts removecron unless cronjobs[:monthly].nil?
-              execute(false, removecron) unless cronjobs[:monthly].nil?
-            else
-              removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:hourly] && opts[:delete] == 'hourly'
-              removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:daily] && opts[:delete] == 'daily'
-              removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:weekly] && opts[:delete] == 'weekly'
-              removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:monthly] && opts[:delete] == 'monthly'
-              puts removecron
-              execute(false, removecron)
-            end
-            if opts[:set_frequency] && opts[:set_frequency] == 'all'
-              hourlycron = "0  1-23  *  *  *  #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-              dailycron = "0  0  *  *  0-5  #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-              weeklycron = "0  0  *  *  6   #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-              monthlycron = "0  0  1  *  *   #{spshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-              setcron = "#{shrtcr}'#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil?
-              puts setcron if cronjobs[:hourly].nil?
-              execute(false, setcron) if cronjobs[:hourly].nil?
-              setcron = "#{shrtcr}'#{dailycron}' ) | #{@pfexec} crontab" if cronjobs[:daily].nil?
-              puts setcron if cronjobs[:daily].nil?
-              execute(false, setcron) if cronjobs[:daily].nil?
-              setcron = "#{shrtcr}'#{weeklycron}' ) | #{@pfexec} crontab" if cronjobs[:weekly].nil?
-              puts setcron if cronjobs[:weekly].nil?
-              execute(false, setcron) if cronjobs[:weekly].nil?
-              setcron = "#{shrtcr}'#{monthlycron}' ) | #{@pfexec} crontab" if cronjobs[:monthly].nil?
-              puts setcron if cronjobs[:monthly].nil?
-              execute(false, setcron) if cronjobs[:monthly].nil?
-            elsif opts[:set_frequency]
-              hourlycron = "0  1-23  *  *  *  #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-              dailycron = "0  0  *  *  0-5  #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-              weeklycron = "0  0  *  *  6   #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-              monthlycron = "0  0  1  *  *   #{spshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-              setcron = "#{shrtcr}'#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil? && opts[:set_frequency] == 'hourly'
-              setcron = "#{shrtcr}'#{dailycron}' ) | #{@pfexec} crontab" if cronjobs[:daily].nil? && opts[:set_frequency] == 'daily'
-              setcron = "#{shrtcr}'#{weeklycron}' ) | #{@pfexec} crontab" if cronjobs[:weekly].nil? && opts[:set_frequency] == 'weekly'
-              setcron = "#{shrtcr}'#{monthlycron}' ) | #{@pfexec} crontab" if cronjobs[:monthly].nil? && opts[:set_frequency] == 'monthly'
-              puts setcron
-              execute(false, setcron)
-            end
-          end
+          zfssnapcron(datasets, config, opts, uiinfo))
         end
       end
       ####################### REFACTOR THIS ###############################
