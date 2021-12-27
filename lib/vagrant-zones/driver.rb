@@ -380,15 +380,17 @@ module VagrantPlugins
           dataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
           sparse = '-s '
           sparse = '' unless disk['sparse']
+          ## If the root data set doesn't exist create it
           addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }' | head -n 1 || true")
+
           unless addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
             cinfo = "#{disk['array']}/#{disk['dataset']}/#{name}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo)
             execute(false, "#{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}")
-            cinfo = "#{dataset}, #{disk['size']}"
-            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-            execute(false, "#{@pfexec} zfs create #{sparse} -V #{disk['size']} #{dataset}")
           end
+          cinfo = "#{dataset}, #{disk['size']}"
+          uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
+          execute(false, "#{@pfexec} zfs create #{sparse} -V #{disk['size']} #{dataset}")
         end
       end
 
@@ -993,23 +995,23 @@ module VagrantPlugins
                 puts removecron
                 execute(false, removecron)
               end
-            elsif opts[:set_frequency] && if opts[:set_frequency] == 'all'
-                                            hourlycron = "0 1-23 * * * #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-                                            dailycron = "0 0 * * 0-5 #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-                                            weeklycron = "0 0 * * 6  #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-                                            monthlycron = "0 0 1 * *  #{spshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-                                            setcron = "#{shrtcr}'#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil?
-                                            puts setcron if cronjobs[:hourly].nil?
-                                            execute(false, setcron) if cronjobs[:hourly].nil?
-                                            setcron = "#{shrtcr}'#{dailycron}' ) | #{@pfexec} crontab" if cronjobs[:daily].nil?
-                                            puts setcron if cronjobs[:daily].nil?
-                                            execute(false, setcron) if cronjobs[:daily].nil?
-                                            setcron = "#{shrtcr}'#{weeklycron}' ) | #{@pfexec} crontab" if cronjobs[:weekly].nil?
-                                            puts setcron if cronjobs[:weekly].nil?
-                                            execute(false, setcron) if cronjobs[:weekly].nil?
-                                            setcron = "#{shrtcr}'#{monthlycron}' ) | #{@pfexec} crontab" if cronjobs[:monthly].nil?
-                                            puts setcron if cronjobs[:monthly].nil?
-                                            execute(false, setcron) if cronjobs[:monthly].nil?
+          elsif opts[:set_frequency] && if opts[:set_frequency] == 'all'
+                hourlycron = "0  1-23  *  *  *  #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+                dailycron = "0  0  *  *  0-5  #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+                weeklycron = "0  0  *  *  6   #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+                monthlycron = "0  0  1  *  *   #{spshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+                setcron = "#{shrtcr}'#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil?
+                puts setcron if cronjobs[:hourly].nil?
+                execute(false, setcron) if cronjobs[:hourly].nil?
+                setcron = "#{shrtcr}'#{dailycron}' ) | #{@pfexec} crontab" if cronjobs[:daily].nil?
+                puts setcron if cronjobs[:daily].nil?
+                execute(false, setcron) if cronjobs[:daily].nil?
+                setcron = "#{shrtcr}'#{weeklycron}' ) | #{@pfexec} crontab" if cronjobs[:weekly].nil?
+                puts setcron if cronjobs[:weekly].nil?
+                execute(false, setcron) if cronjobs[:weekly].nil?
+                setcron = "#{shrtcr}'#{monthlycron}' ) | #{@pfexec} crontab" if cronjobs[:monthly].nil?
+                puts setcron if cronjobs[:monthly].nil?
+                execute(false, setcron) if cronjobs[:monthly].nil?
           elsif opts[:set_frequency]
                 hourlycron = "0  1-23  *  *  *  #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
                 dailycron = "0  0  *  *  0-5  #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
