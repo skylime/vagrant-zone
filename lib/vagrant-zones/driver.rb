@@ -951,10 +951,18 @@ module VagrantPlugins
       end
 
       ## This will set Cron Jobs for Snapshots to take place
-      def zfssnapcronset(_datasets, _config, opts, _uiinfo, cronjobs)
+      def zfssnapcronset(_datasets, config, opts, _uiinfo, cronjobs)
+        spshtr = config.snapshot_script.to_s
+        hourlytrn = 24
+        dailytrn = 8
+        weeklytrn = 5
+        monthlytrn = 1
         shrtcr = "( #{@pfexec} crontab -l; echo "
-        rmcr = "#{@pfexec} crontab -l | grep -v "
         sfr = opts[:set_frequency_rtn]
+        hourlycron = "0 1-23 * * * #{spshtr} -p hourly -r -n #{hourlytrn} #{disk} # #{name}"
+        dailycron = "0 0 * * 0-5 #{spshtr} -p daily -r -n #{dailytrn} #{disk} # #{name}"
+        weeklycron = "0 0 * * 6 #{spshtr} -p weekly -r -n #{weeklytrn} #{disk} # #{name}"
+        monthlycron = "0 0 1 * * #{spshtr} -p monthly -r -n #{monthlytrn} #{disk} # #{name}"
         if opts[:set_frequency] && opts[:set_frequency] == 'all'
           hourlycron = "0  1-23  *  *  *  #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           dailycron = "0  0  *  *  0-5  #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
@@ -989,11 +997,7 @@ module VagrantPlugins
       ## Configure ZFS Snapshots Crons
       def zfssnapcron(datasets, config, opts, uiinfo, name)
         crons = execute(false, "#{@pfexec} crontab -l").split("\n")
-        spshtr = config.snapshot_script.to_s
-        hourlytrn = 24
-        dailytrn = 8
-        weeklytrn = 5
-        monthlytrn = 1
+
         rtnregex = '-p (weekly|monthly|daily|hourly)'
         opts[:dataset] = 'all' if opts[:dataset].nil?
 
@@ -1002,10 +1006,7 @@ module VagrantPlugins
           uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_cron'))
           puts disk
           cronjobs = {}
-          hourlycron = "0 1-23 * * * #{spshtr} -p hourly -r -n #{hourlytrn} #{disk} # #{name}"
-          dailycron = "0 0 * * 0-5 #{spshtr} -p daily -r -n #{dailytrn} #{disk} # #{name}"
-          weeklycron = "0 0 * * 6 #{spshtr} -p weekly -r -n #{weeklytrn} #{disk} # #{name}"
-          monthlycron = "0 0 1 * * #{spshtr} -p monthly -r -n #{monthlytrn} #{disk} # #{name}"
+
           crons.each do |tasks|
             next if tasks.empty?
 
