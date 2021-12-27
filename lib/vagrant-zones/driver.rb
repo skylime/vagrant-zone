@@ -907,7 +907,6 @@ module VagrantPlugins
           execute(false, "#{@pfexec} zfs destroy #{opts[:dataset]}@#{opts[:snapshot_name]}") if datasets.include?("#{opts[:dataset]}@#{opts[:snapshot_name]}")
         end
       end
-      ####################### REFACTOR THIS ###############################
 
       ## This will list Cron Jobs for Snapshots to take place
       def zfssnapcronlist(datasets, _config, opts, uiinfo, cronjobs)
@@ -993,7 +992,6 @@ module VagrantPlugins
         end
       end
 
-
       ## Configure ZFS Snapshots Crons
       def zfssnapcron(datasets, config, opts, uiinfo, name)
         crons = execute(false, "#{@pfexec} crontab -l").split("\n")
@@ -1037,8 +1035,6 @@ module VagrantPlugins
           zfssnapcronset(datasets, config, opts, uiinfo, cronjobs)
         end
       end
-      ####################### REFACTOR THIS ###############################
-
 
       # This helps us create ZFS Snapshots
       def zfs(machine, uiinfo, job, opts)
