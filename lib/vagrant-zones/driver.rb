@@ -909,7 +909,7 @@ module VagrantPlugins
       end
 
       ## Configure ZFS Snapshots Crons
-      def zfssnapcron (datasets, config, opts, uiinfo)
+      def zfssnapcron (datasets, config, opts, uiinfo, name)
         crons = execute(false, "#{@pfexec} crontab -l").split("\n")
         spshtr = config.snapshot_script.to_s
         hourlytrn = 24
