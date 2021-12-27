@@ -621,23 +621,23 @@ module VagrantPlugins
         config = machine.provider_config
         ## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console      
         zcfg = "#{@pfexec} zonecfg -z #{name} "
-        zonecfglx(uiinfo, name, config, opts, zcfg)
-        zonecfgbhyve(uiinfo, name, config, opts, zcfg)
-        zonecfgkvm(uiinfo, name, config, opts, zcfg)
+        zonecfglx(uiinfo, name, config, zcfg)
+        zonecfgbhyve(uiinfo, name, config, zcfg)
+        zonecfgkvm(uiinfo, name, config, zcfg)
         ## Shared Disk Configurations
-        zonecfgshareddisks(uiinfo, name, config, opts, zcfg)
+        zonecfgshareddisks(uiinfo, name, config, zcfg)
         ## CPU Configurations
-        zonecfgcpu(uiinfo, name, config, opts, zcfg)
+        zonecfgcpu(uiinfo, name, config, zcfg)
         ## CDROM Configurations
-        zonecfgcdrom(uiinfo, name, config, opts, zcfg)
+        zonecfgcdrom(uiinfo, name, config, zcfg)
         ### Passthrough PCI Devices
-        zonecfgpci(uiinfo, name, config, opts, zcfg)
+        zonecfgpci(uiinfo, name, config, zcfg)
         ## Additional Disk Configurations
-        zonecfgadditionaldisks(uiinfo, name, config, opts, zcfg)
+        zonecfgadditionaldisks(uiinfo, name, config, zcfg)
         ## Console access configuration
-        zonecfgconsole(uiinfo, name, config, opts, zcfg)
+        zonecfgconsole(uiinfo, name, config, zcfg)
         ## Cloud-init settings
-        zonecfgcloudinit(uiinfo, name, config, opts, zcfg)
+        zonecfgcloudinit(uiinfo, name, config, zcfg)
         ## Nic Configurations
         uiinfo.info(I18n.t('vagrant_zones.networking_int_add'))
         network(@machine, uiinfo, 'config')
