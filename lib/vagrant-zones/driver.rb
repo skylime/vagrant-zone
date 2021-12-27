@@ -817,7 +817,7 @@ module VagrantPlugins
 
       ####################### REFACTOR THIS ###############################
       ## List ZFS Snapshots
-      def zfssnaplist (datasets, config, opts, uiinfo, name)
+      def zfssnaplist(datasets, _config, opts, uiinfo, _name)
         uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
         datasets.each_with_index do |disk, index|
           puts "\n Disk Number: #{index}\n Disk Path: #{disk}"
@@ -853,7 +853,7 @@ module VagrantPlugins
       end
 
       ## Create ZFS Snapshots
-      def zfssnapcreate (datasets, config, opts, uiinfo, name)
+      def zfssnapcreate(datasets, _config, opts, uiinfo, _name)
         if opts[:dataset] == 'all'
           datasets.each do |disk|
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
@@ -871,7 +871,7 @@ module VagrantPlugins
       end
 
       ## Destroy ZFS Snapshots
-      def zfssnapdestroy (datasets, config, opts, uiinfo, name)
+      def zfssnapdestroy(datasets, _config, opts, uiinfo, _name)
         if opts[:dataset].to_s == 'all'
           datasets.each do |disk|
             uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
@@ -909,7 +909,7 @@ module VagrantPlugins
       end
 
       ## Configure ZFS Snapshots Crons
-      def zfssnapcron (datasets, config, opts, uiinfo, name)
+      def zfssnapcron(datasets, config, opts, uiinfo, name)
         crons = execute(false, "#{@pfexec} crontab -l").split("\n")
         spshtr = config.snapshot_script.to_s
         hourlytrn = 24
@@ -931,7 +931,6 @@ module VagrantPlugins
           crons.each do |tasks|
             next if tasks.empty?
 
-            name = name
             case tasks[/#{rtnregex}/, 1]
             when 'hourly'
               hourly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
