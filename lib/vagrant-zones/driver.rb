@@ -417,7 +417,7 @@ module VagrantPlugins
           disks.each do |disk|
             diskpath = "#{disk['array']}/#{disk['dataset']}/#{name}"
             addataset = "#{diskpath}/#{disk['volume_name']}"
-            cinfo = "#{addataset}"
+            cinfo = addataset.to_s
             dataset_exists = execute(false, "#{@pfexec} zfs list | grep #{addataset} | awk '{ print $1 }' || true")
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_destroy') + cinfo) if dataset_exists == addataset
             execute(false, "#{@pfexec} zfs destroy -r #{addataset}") if dataset_exists == addataset
