@@ -910,7 +910,6 @@ module VagrantPlugins
       ## This will list Cron Jobs for Snapshots to take place
       def zfssnapcronlist(_datasets, _config, opts, _uiinfo, cronjobs)
         if opts[:list] == 'all'
-          puts opts[:list]
           puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
           puts cronjobs[:daily] unless cronjobs[:daily].nil?
           puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
@@ -1055,7 +1054,6 @@ module VagrantPlugins
           zfssnapcron(datasets, config, opts, uiinfo, name)
         end
       end
-
 
       # Halts the Zone, first via shutdown command, then a halt.
       def halt(machine, uiinfo)
