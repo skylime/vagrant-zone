@@ -7,7 +7,6 @@ module VagrantPlugins
   module ProviderZone
     # Run actions against the machine
     module Action
-      # Include the built-in modules so we can use them as top-level things.
       include Vagrant::Action::Builtin
       @logger = Log4r::Logger.new('vagrant_zones::action')
 
@@ -27,7 +26,6 @@ module VagrantPlugins
               b2.use WaitTillBoot
               b2.use Setup
               b2.use WaitTillUp
-              # Counter intuitive, but Provision must go before SyncFolders for some reason  . .
               b2.use Provision
               b2.use SyncedFolders
               b2.use SyncedFolderCleanup
@@ -36,8 +34,7 @@ module VagrantPlugins
         end
       end
 
-      # Assuming VM is created, just start it. This action is not called
-      # directly by any subcommand.
+      # Assuming VM is created, just start it. This action is not called directly by any subcommand.
       def self.action_start
         Vagrant::Action::Builder.new.tap do |b|
           b.use Call, IsState, :running do |env, b1|
@@ -80,8 +77,7 @@ module VagrantPlugins
         end
       end
 
-      # This is the action that is primarily responsible for halting the
-      # virtual machine.
+      # This is the action that is primarily responsible for halting the virtual machine.
       def self.action_halt
         Vagrant::Action::Builder.new.tap do |b|
           b.use Call, IsCreated do |env, b2|
@@ -111,16 +107,14 @@ module VagrantPlugins
         end
       end
 
-      # This action is called when you try to package an existing virtual
-      # machine to an box image.
+      # This action is called when you try to package an existing virtual machine to an box image.
       def self.action_package
         Vagrant::Action::Builder.new.tap do |b|
           b.use Package
         end
       end
 
-      # This is the action that is primarily responsible for completely
-      # freeing the resources of the underlying virtual machine.
+      # This is the action that is primarily responsible for completely freeing the resources of the underlying virtual machine.
       def self.action_destroy
         Vagrant::Action::Builder.new.tap do |b|
           b.use Call, IsCreated do |_env, b2|
@@ -140,8 +134,7 @@ module VagrantPlugins
         end
       end
 
-      # This is the action implements the reload command
-      # It uses the halt and start actions
+      # This is the action implements the reload command It uses the halt and start actions
       def self.action_reload
         Vagrant::Action::Builder.new.tap do |b|
           b.use Call, IsCreated do |env, b2|
