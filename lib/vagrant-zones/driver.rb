@@ -295,9 +295,9 @@ module VagrantPlugins
             uiinfo.info(I18n.t('vagrant_zones.vnic_setup') + vnic_name)
             case config.brand
             when 'lx'
-              strt="#{@pfexec} zonecfg -z #{name} "
-              shrtstr1=%(set allowed-address=#{allowed_address}; add property (name=gateway,value="#{defrouter}"); )
-              shrtstr2=%(add property (name=ips,value="#{allowed_address}"); add property (name=primary,value="true"); end;)
+              strt = "#{@pfexec} zonecfg -z #{name} "
+              shrtstr1 = %(set allowed-address=#{allowed_address}; add property (name=gateway,value="#{defrouter}"); )
+              shrtstr2 = %(add property (name=ips,value="#{allowed_address}"); add property (name=primary,value="true"); end;)
               execute(false, %(#{strt}"add net; set physical=#{vnic_name}; set global-nic=auto; #{shrtstr1} #{shrtstr1}"))
             when 'bhyve'
               execute(false, %(#{@pfexec} zonecfg -z #{name} "add net; set physical=#{vnic_name}; set allowed-address=#{allowed_address}; end;"))
@@ -337,9 +337,9 @@ module VagrantPlugins
         datadir = machine.data_dir
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
-        datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"      
-        sparse = "-s " if bootconfigs['sparse']
-        sparse = "" unless bootconfigs['sparse']
+        datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
+        sparse = '-s ' if bootconfigs['sparse']
+        sparse = '' unless bootconfigs['sparse']
         uiinfo.info(I18n.t('vagrant_zones.begin_create_datasets'))
         ## Create Boot Volume
         case config.brand
@@ -359,9 +359,7 @@ module VagrantPlugins
           ## Import template to boot volume
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + datasetroot)
           commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss')} | #{@pfexec} zfs recv -u -v -F #{datasetroot} "
-
           uiinfo.info(I18n.t('vagrant_zones.template_import_path') + "#{datadir}/box.zss")
-          
           Util::Subprocess.new commandtransfer do |_stdout, stderr, _thread|
             uiinfo.rewriting do |uiprogress|
               uiprogress.clear_line
@@ -383,11 +381,7 @@ module VagrantPlugins
           sparse = "-s "
           sparse = "" unless disk['sparse']
           addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{disk['array']}/#{disk['dataset']}/#{name} | awk '{ print $1 }'  | head -n 1 || true")
-          if addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
-            cinfo = "#{dataset}, #{disk['size']}"
-            uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume') + cinfo)
-            execute(false, "#{@pfexec} zfs create #{sparse} -V #{disk['size']} #{dataset}")
-          else
+          unless addsrtexists == "#{disk['array']}/#{disk['dataset']}/#{name}"
             cinfo = "#{disk['array']}/#{disk['dataset']}/#{name}"
             uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_additional_volume_root') + cinfo)
             execute(false, "#{@pfexec} zfs create #{disk['array']}/#{disk['dataset']}/#{name}")
