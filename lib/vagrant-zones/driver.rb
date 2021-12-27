@@ -441,7 +441,7 @@ module VagrantPlugins
       ############# REFACTOR #################################################################################################################################
 
       ## zonecfg function for bhyve
-      def zonecfgbhyve(uiinfo, name, config, _opts, zcfg)
+      def zonecfgbhyve(uiinfo, name, config, zcfg)
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
@@ -465,7 +465,7 @@ module VagrantPlugins
       end
       
       ## zonecfg function for lx
-      def zonecfglx(uiinfo, name, config, opts, zcfg)
+      def zonecfglx(uiinfo, name, config, zcfg)
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
@@ -491,7 +491,7 @@ module VagrantPlugins
       end
       
       ## zonecfg function for KVM
-      def zonecfgkvm(uiinfo, name, config, opts, zcfg)
+      def zonecfgkvm(uiinfo, name, config, zcfg)
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
@@ -499,7 +499,7 @@ module VagrantPlugins
       end
 
       ## zonecfg function for Shared Disk Configurations
-      def zonecfgshareddisks(uiinfo, name, config, _opts, zcfg)
+      def zonecfgshareddisks(uiinfo, name, config, zcfg)
         if config.shared_disk_enabled
           uiinfo.info(I18n.t('vagrant_zones.setting_alt_shared_disk_configurations') + path.path)
           execute(false, %(#{zcfg}"add fs; set dir=/vagrant; set special=#{config.shared_dir}; set type=lofs; end;"))
@@ -507,7 +507,7 @@ module VagrantPlugins
       end
 
       ## zonecfg function for CPU Configurations
-      def zonecfgcpu(uiinfo, name, config, _opts, zcfg)
+      def zonecfgcpu(uiinfo, name, config, zcfg)
         if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm')
           execute(false, %(#{zcfg}"add attr; set name=vcpus; set value=#{config.cpus}; set type=string; end;"))
         elsif config.cpu_configuration == 'complex' && (config.brand == 'bhyve' || config.brand == 'kvm')
@@ -518,7 +518,7 @@ module VagrantPlugins
       end
 
       ## zonecfg function for CDROM Configurations
-      def zonecfgcdrom(uiinfo, name, config, _opts, zcfg)
+      def zonecfgcdrom(uiinfo, name, config, zcfg)
         unless config.cdroms.nil?
           cdroms = config.cdroms
           cdrun = 0
@@ -535,12 +535,12 @@ module VagrantPlugins
       end
 
       ## zonecfg function for PCI Configurations
-      def zonecfgpci(uiinfo, name, config, opts, zcfg)
+      def zonecfgpci(_uiinfo, _name, _config,  _zcfg)
         ##### RESERVED
       end
 
       ## zonecfg function for AdditionalDisks
-      def zonecfgadditionaldisks(uiinfo, name, config, _opts, zcfg)
+      def zonecfgadditionaldisks(uiinfo, name, config, zcfg)
         unless config.additional_disks.nil?
           disks = config.additional_disks
           diskrun = 0
@@ -558,7 +558,7 @@ module VagrantPlugins
       end
 
       ## zonecfg function for Console Access
-      def zonecfgconsole(uiinfo, name, config, _opts, zcfg)
+      def zonecfgconsole(uiinfo, name, config, zcfg)
         unless config.console.nil?
           console = config.console
           if console != 'disabled'
@@ -579,7 +579,7 @@ module VagrantPlugins
       end
 
       ## zonecfg function for Cloud-init
-      def zonecfgcloudinit(uiinfo, name, config, _opts, zcfg)
+      def zonecfgcloudinit(uiinfo, name, config, zcfg)
         if config.cloud_init_enabled
           cloudconfig = case config.cloud_init_enabled
                         when 'on'
