@@ -30,6 +30,10 @@ module VagrantPlugins
           config = @machine.provider_config
           name = @machine.name
           boxname = env['package.output']
+          brand = config.brand
+          kernel = config.kernel
+          vcc = config.vagrant_cloud_creator
+          boxshortname = config.boxshortname
           raise "#{boxname}: Already exists" if File.exist?(boxname)
 
           tmp_dir = "#{Dir.pwd}/_tmp_package"
@@ -64,8 +68,8 @@ module VagrantPlugins
           end
 
           Dir.chdir(tmp_dir)
-          File.write('./metadata.json', metadata_content(config.brand, config.kernel,  config.vagrant_cloud_creator, config.boxshortname))
-          File.write('./Vagrantfile', vagrantfile_content(config.brand, config.kernel, datasetpath))
+          File.write('./metadata.json', metadata_content(brand, kernel, vcc, boxshortname))
+          File.write('./Vagrantfile', vagrantfile_content(brand, kernel, datasetpath))
           assemble_box(boxname, extra)
           FileUtils.mv("#{tmp_dir}/#{boxname}", "../#{boxname}")
           FileUtils.rm_rf(tmp_dir)
@@ -89,22 +93,22 @@ module VagrantPlugins
           puts "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}" if result.zero?
         end
 
-        def metadata_content(config.brand, _config.kernel,  config.vagrant_cloud_creator, config.boxshortname)
+        def metadata_content(brand, _kernel, vcc, boxshortname)
           <<-ZONEBOX
           {
             "provider": "zone",
             "format": "zss",
-            "config.brand": "#{config.brand}",
-            "url": "https://app.vagrantup.com/#{ config.vagrant_cloud_creator}/boxes/#{config.boxshortname}"
+            "brand": "#{brand}",
+            "url": "https://app.vagrantup.com/#{ vcc}/boxes/#{boxshortname}"
           }
           ZONEBOX
         end
 
-        def vagrantfile_content(config.brand, _config.kernel, datasetpath)
+        def vagrantfile_content(brand, _kernel, datasetpath)
           <<-ZONEBOX
           Vagrant.configure('2') do |config|
             config.vm.provider :zone do |zone|
-              zone.config.brand = "#{config.brand}"
+              zone.brand = "#{brand}"
               zone.datasetpath = "#{datasetpath}"
             end
           end
