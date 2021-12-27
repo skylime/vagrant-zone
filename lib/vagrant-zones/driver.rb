@@ -933,22 +933,22 @@ module VagrantPlugins
             dailycron = "0  0  *  *  0-5  #{spshtr} -p daily -r -n #{dailytrn} #{disk} # #{machine.name}"
             weeklycron = "0  0  *  *  6   #{spshtr} -p weekly -r -n #{weeklytrn} #{disk} # #{machine.name}"
             monthlycron = "0  0  1  *  *   #{spshtr} -p monthly -r -n #{monthlytrn} #{disk} # #{machine.name}"
-            crons.each do |job|
-              next if job.empty?
+            crons.each do |tasks|
+              next if tasks.empty?
 
               name = machine.name
-              case job[/#{rtnregex}/, 1]
+              case tasks[/#{rtnregex}/, 1]
               when 'hourly'
-                hourly = job if job[/#{machine.name}/] && job[/#{disk}/]
+                hourly = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
                 cronjobs.merge!(hourly: hourly)
               when 'daily'
-                daily = job if job[/#{machine.name}/] && job[/#{disk}/]
+                daily = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
                 cronjobs.merge!(daily: daily)
               when 'weekly'
-                weekly = job if job[/#{machine.name}/] && job[/#{disk}/]
+                weekly = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
                 cronjobs.merge!(weekly: weekly)
               when 'monthly'
-                monthly = job if job[/#{machine.name}/] && job[/#{disk}/]
+                monthly = tasks if tasks[/#{machine.name}/] && tasks[/#{disk}/]
                 cronjobs.merge!(monthly: monthly)
               end
             end
