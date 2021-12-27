@@ -559,20 +559,20 @@ module VagrantPlugins
       def zonecfgconsole(uiinfo, _name, config, zcfg)
         return if config.console.nil?
 
-        console = config.console
-        return unless console != 'disabled'
-        port = if %w[console].include?(console) && config.consoleport.nil?
+        return unless config.console != 'disabled'
+
+        port = if %w[console].include?(config.console) && config.consoleport.nil?
                  'socket,/tmp/vm.com1'
-               elsif %w[webvnc].include?(console) || %w[vnc].include?(console)
-                 console = 'vnc'
+               elsif %w[webvnc].include?(config.console) || %w[vnc].include?(config.console)
+                config.console = 'vnc'
                  'on'
                else
                  config.consoleport
                end
         port += ',wait' if config.console_onboot
-        cinfo = "Console type: #{console}, State: #{port}, Port: #{config.consoleport}"
+        cinfo = "Console type: #{config.console}, State: #{port}, Port: #{config.consoleport}"
         uiinfo.info(I18n.t('vagrant_zones.setting_console_access') + cinfo)
-        execute(false, %(#{zcfg}"add attr; set name=#{console}; set value=#{port}; set type=string; end;"))
+        execute(false, %(#{zcfg}"add attr; set name=#{config.console}; set value=#{port}; set type=string; end;"))
       end
 
       ## zonecfg function for Cloud-init
