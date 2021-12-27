@@ -132,7 +132,7 @@ module VagrantPlugins
             Process.wait pid if detach == 'no'
             Process.detach(pid) if detach == 'yes'
             time = Time.new.strftime('%Y-%m-%d-%H:%M:%S')
-            File.open('console.pid', 'w') { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == 'yes'
+            File.write('console.pid', "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}") if detach == 'yes'
             puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
           when 'vnc'
             run = "pfexec zadm vnc #{netport} #{name}"
@@ -140,10 +140,10 @@ module VagrantPlugins
             Process.wait pid if detach == 'no'
             Process.detach(pid) if detach == 'yes'
             time = Time.new.strftime('%Y-%m-%d-%H:%M:%S')
-            File.open('console.pid', 'w') { |f| f.write "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}" } if detach == 'yes'
+            File.write('console.pid', "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}") if detach == 'yes'
             puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
           when 'zlogin'
-            run = "pfexec zadm console #{name}"
+            run = "#{@pfexec} zadm console #{name}"
             exec(run)
           end
         end
