@@ -18,7 +18,7 @@ module VagrantPlugins
               env[:halt_on_error] = true
               b2.use action_start
             elsif !env[:result]
-              # b2.use BoxUpdate
+              b2.use BoxUpdate
               b2.use Import
               b2.use Create
               b2.use Network
@@ -177,7 +177,7 @@ module VagrantPlugins
           b.use Builtin::BoxRemove
         end
       end
-      
+
       action_root = Pathname.new(File.expand_path('action', __dir__))
       # autoload :BoxUpdate, action_root.join('box_update')
       autoload :BoxAdd,    "vagrant/action/builtin/box_add"
