@@ -956,43 +956,41 @@ module VagrantPlugins
             shrtcr = "( #{@pfexec} crontab -l; echo "
             rmcr = "#{@pfexec} crontab -l | grep -v "
             sfr = opts[:set_frequency_rtn]
-            if opts[:list]
-              if opts[:list] == 'all'
-                puts opts[:list]
-                puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
-                puts cronjobs[:daily] unless cronjobs[:daily].nil?
-                puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
-                puts cronjobs[:monthly] unless cronjobs[:monthly].nil?
-              else
-                puts cronjobs[:hourly] if opts[:list] == 'hourly'
-                puts cronjobs[:daily] if opts[:list] == 'daily'
-                puts cronjobs[:weekly] if opts[:list] == 'weekly'
-                puts cronjobs[:monthly] if opts[:list] == 'monthly'
-              end
-            elsif opts[:delete]
-              removecron = ''
-              if opts[:delete] == 'all'
-                removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:hourly].nil?
-                puts removecron unless cronjobs[:hourly].nil?
-                execute(false, removecron) unless cronjobs[:hourly].nil?
-                removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:daily].nil?
-                puts removecron unless cronjobs[:daily].nil?
-                execute(false, removecron) unless cronjobs[:daily].nil?
-                removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:weekly].nil?
-                puts removecron unless cronjobs[:weekly].nil?
-                execute(false, removecron) unless cronjobs[:weekly].nil?
-                removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:monthly].nil?
-                puts removecron unless cronjobs[:monthly].nil?
-                execute(false, removecron) unless cronjobs[:monthly].nil?
-              else
-                removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:hourly] && opts[:delete] == 'hourly'
-                removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:daily] && opts[:delete] == 'daily'
-                removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:weekly] && opts[:delete] == 'weekly'
-                removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:monthly] && opts[:delete] == 'monthly'
-                puts removecron
-                execute(false, removecron)
-              end
-            elsif opts[:set_frequency] && opts[:set_frequency] == 'all'
+            removecron = ''
+            if opts[:list] == 'all'
+              puts opts[:list]
+              puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
+              puts cronjobs[:daily] unless cronjobs[:daily].nil?
+              puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
+              puts cronjobs[:monthly] unless cronjobs[:monthly].nil?
+            else
+              puts cronjobs[:hourly] if opts[:list] == 'hourly'
+              puts cronjobs[:daily] if opts[:list] == 'daily'
+              puts cronjobs[:weekly] if opts[:list] == 'weekly'
+              puts cronjobs[:monthly] if opts[:list] == 'monthly'
+            end
+            if opts[:delete] == 'all'
+              removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:hourly].nil?
+              puts removecron unless cronjobs[:hourly].nil?
+              execute(false, removecron) unless cronjobs[:hourly].nil?
+              removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:daily].nil?
+              puts removecron unless cronjobs[:daily].nil?
+              execute(false, removecron) unless cronjobs[:daily].nil?
+              removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:weekly].nil?
+              puts removecron unless cronjobs[:weekly].nil?
+              execute(false, removecron) unless cronjobs[:weekly].nil?
+              removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" unless cronjobs[:monthly].nil?
+              puts removecron unless cronjobs[:monthly].nil?
+              execute(false, removecron) unless cronjobs[:monthly].nil?
+            else
+              removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:hourly] && opts[:delete] == 'hourly'
+              removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:daily] && opts[:delete] == 'daily'
+              removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:weekly] && opts[:delete] == 'weekly'
+              removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{@pfexec} crontab" if cronjobs[:monthly] && opts[:delete] == 'monthly'
+              puts removecron
+              execute(false, removecron)
+            end
+            if opts[:set_frequency] && opts[:set_frequency] == 'all'
               hourlycron = "0  1-23  *  *  *  #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
               dailycron = "0  0  *  *  0-5  #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
               weeklycron = "0  0  *  *  6   #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
