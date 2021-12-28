@@ -363,7 +363,7 @@ module VagrantPlugins
           ## Import template to boot volume
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + datasetroot)
           commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss')} | #{@pfexec} zfs recv -u -v -F #{datasetroot} "
-          uiinfo.info(I18n.t('vagrant_zones.template_import_path') + "#{datadir}/box.zss")
+          uiinfo.info(I18n.t('vagrant_zones.template_import_path') + "#{@machine.box.directory.join('box.zss')}")
           Util::Subprocess.new commandtransfer do |_stdout, stderr, _thread|
             uiinfo.rewriting do |uiprogress|
               uiprogress.clear_line
