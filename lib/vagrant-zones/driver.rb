@@ -21,7 +21,7 @@ module VagrantPlugins
     class Driver
       attr_accessor :executor
 
-      def initialize(machine)
+      def initialize(machine, env)
         @logger = Log4r::Logger.new('vagrant_zones::driver')
         @machine = machine
         @executor = Executor::Exec.new
