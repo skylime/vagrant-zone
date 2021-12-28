@@ -581,12 +581,13 @@ module VagrantPlugins
 
       ## zonecfg function for Cloud-init
       def zonecfgcloudinit(uiinfo, _name, config, zcfg)
-        return if config.cloud_init_enabled == 'off'
-        cloudconfig = case config.cloud_init_enabled
-                      when true
+
+        return unless config.cloud_init_enabled
+        cloudconfig = case config.cloud_init_conf
+                      when nil
                         'on'
-                      when false
-                        'off'
+                      else
+                        config.cloud_init_conf.to_s
                       end
 
         unless config.cloud_init_dnsdomain.nil?
