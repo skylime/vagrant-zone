@@ -582,9 +582,12 @@ module VagrantPlugins
       ## zonecfg function for Cloud-init
       def zonecfgcloudinit(uiinfo, _name, config, zcfg)
         return unless config.cloud_init_enabled
-
+        
         cloudconfig = "#{config.cloud_init_conf.to_s}"
         cloudconfig = 'on' if config.cloud_init_conf.nil? || config.cloud_init_conf
+        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cloudconfig.to_s)
+        execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig.to_s}; set type=string; end;"))
+
         unless config.cloud_init_dnsdomain.nil?
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + config.cloud_init_dnsdomain.to_s)
           execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{config.cloud_init_dnsdomain.to_s}; set type=string; end;"))
@@ -601,8 +604,6 @@ module VagrantPlugins
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + config.cloud_init_sshkey.to_s)
           execute(false, %(#{zcfg}"add attr; set name=sshkey; set value=#{config.cloud_init_sshkey.to_s}; set type=string; end;"))
         end
-        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cloudconfig.to_s)
-        execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig.to_s}; set type=string; end;"))
       end
 
       # This helps us set the zone configurations for the zone
@@ -708,7 +709,7 @@ module VagrantPlugins
         case config.brand
         when 'bhyve'
           return if config.cloud_init_enabled
-          
+
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           bcheck = 'Last login: ' if config.bcheck_string.nil?
             zlogin_write.printf("\n")
