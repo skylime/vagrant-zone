@@ -490,10 +490,10 @@ module VagrantPlugins
 
       ## zonecfg function for KVM
       def zonecfgkvm(_uiinfo, name, config, _zcfg)
+        return unless config.brand == "kvm"
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
-        puts datasetroot if config.brand == "kvm"
         ###### RESERVED ######
       end
 
