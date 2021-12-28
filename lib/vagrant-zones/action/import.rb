@@ -92,7 +92,7 @@ module VagrantPlugins
               ## Insert Future Code to try to convert existing box
               ui.info(I18n.t('vagrant_zones.detected_ovf_format'))
             end
-            puts env[:machine].box.metadata.inspect
+            puts env[:machine].box.inspect
 
             ui.info(I18n.t('vagrant_zones.vagrant_cloud_box_detected') + image)
             ui.clear_line
