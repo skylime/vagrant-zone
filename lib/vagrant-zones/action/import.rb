@@ -85,15 +85,12 @@ module VagrantPlugins
           ## If it's a regular name (everything else), try to find it on Vagrant Cloud
           else
             # Support zss format only for now, use other images and convert later
-            puts image_url unless image_url.nil?
             box_format = env[:machine].box.metadata['format'] unless env[:machine].box.metadata['format'].nil?
 
             if box_format == 'ovf'
               ## Insert Future Code to try to convert existing box
               ui.info(I18n.t('vagrant_zones.detected_ovf_format'))
             end
-            puts env[:machine].box.inspect
-
             ui.info(I18n.t('vagrant_zones.vagrant_cloud_box_detected') + image)
             ui.clear_line
             ## Check if local repo exist, if not try to download

@@ -66,7 +66,7 @@ module VagrantPlugins
           results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
           raise 'You appear to not have the LX Package installed in this Machine' if results.include? 'unknown brand'
         when 'bhyve'
-          execute(false, "#{@pfexec} zoneadm -z #{name} install")
+          results = execute(false, "#{@pfexec} zoneadm -z #{name} install")
           raise 'You appear to not have the bhyve Package installed in this Machine' if results.include? 'unknown brand'
         when 'kvm' || 'illumos'
           raise Errors::NotYetImplemented
