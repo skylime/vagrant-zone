@@ -37,6 +37,14 @@ class Hosts
             end
           end
 
+          # Nameservers
+          if host.has_key?('dns')
+            dservers = []
+            host['dns'].each do |ns|
+              dservers.append(ns['nameserver'])
+            end
+          end
+
           # Vagrant-Zone machine configuration
           server.vm.provider :zone do |vm|
                   vm.brand                                = host['brand']
@@ -75,7 +83,7 @@ class Hosts
                   vm.boot                                 = host['boot']
                   vm.snapshot_script                      = host['snapshot_script']
                   vm.cloud_init_enabled                   = host['cloud_init_enabled']
-                  vm.cloud_init_dnsdomain                 = host['cloud_init_dnsdomain']
+                  vm.cloud_init_dnsdomain                 = dservers.join(',')
                   vm.cloud_init_password                  = host['vagrant_user_pass']
                   vm.cloud_init_resolvers                 = "#{host['dns']},#{host['dns']}"
                   vm.cloud_init_sshkey                    = host['vagrant_user_private_key_path']
@@ -91,7 +99,7 @@ class Hosts
               server.vm.synced_folder folder['map'], folder ['to'], type: folder['type'], owner: folder['owner'] ||= host['vagrant_user'], group: folder['group'] ||= host['vagrant_user'], mount_options: mount_opts
               end
           end
-  
+ 
           # Add Branch Files to Vagrant Share on VM Change to Git folders to pull
           if host.has_key?('branch') && host['shell_provision']
               server.vm.provision 'shell' do |s|
