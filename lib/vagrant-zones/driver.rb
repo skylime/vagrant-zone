@@ -583,7 +583,7 @@ module VagrantPlugins
       def zonecfgcloudinit(uiinfo, _name, config, zcfg)
         puts config.cloud_init_enabled
         puts config.cloud_init_enabled.to_s
-        
+
         return if config.cloud_init_enabled == 'off'
         cloudconfig = case config.cloud_init_enabled
                       when 'on'
@@ -610,8 +610,8 @@ module VagrantPlugins
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + config.cloud_init_sshkey.to_s)
           execute(false, %(#{zcfg}"add attr; set name=sshkey; set value=#{config.cloud_init_sshkey}; set type=string; end;"))
         end
-        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cloudconfig)
-        execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
+        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cloudconfig.to_s)
+        execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig.to_s}; set type=string; end;"))
       end
 
       # This helps us set the zone configurations for the zone
