@@ -515,7 +515,7 @@ module VagrantPlugins
         elsif config.cpu_configuration == 'complex' && (config.brand == 'bhyve' || config.brand == 'kvm')
           hash = config.complex_cpu_conf[0]
           cstring = %(sockets=#{hash['sockets']},cores=#{hash['cores']},threads=#{hash['threads']})
-          execute(false, %(#{zcfg}"add attr; set name=vcpus; set value=\"#{cstring}\"; set type=string; end;"))
+          execute(false, %(#{zcfg}'add attr; set name=vcpus; set value="#{cstring}"; set type=string; end;'))
         end
       end
 
