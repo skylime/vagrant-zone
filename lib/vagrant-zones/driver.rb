@@ -707,6 +707,8 @@ module VagrantPlugins
         responses = []
         case config.brand
         when 'bhyve'
+          return if config.cloud_init_enabled
+          
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           bcheck = 'Last login: ' if config.bcheck_string.nil?
             zlogin_write.printf("\n")
