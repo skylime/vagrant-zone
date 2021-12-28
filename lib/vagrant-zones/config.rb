@@ -7,7 +7,7 @@ module VagrantPlugins
     # This is used define the variables for the project
     class Config < Vagrant.plugin('2', :config)
       # rubocop:disable Layout/LineLength
-      attr_accessor :brand, :autoboot, :boxshortname, :kernel, :bcheck_string, :snapshot_script, :diskif, :netif, :cdroms, :disk1path, :disk1size, :cpus, :cpu_configuration, :boot, :complex_cpu_conf, :memory, :vagrant_user, :vagrant_user_private_key_path, :setup_wait, :clean_shutdown_time, :dhcp, :vagrant_user_pass, :firmware_type, :vm_type, :partition_id, :shared_disk_enabled, :shared_dir, :acpi, :os_type, :console, :consoleport, :console_onboot, :hostbridge, :sshport, :rdpport, :override, :additional_disks, :cloud_init_enabled, :dns, :box, :vagrant_cloud_creator
+      attr_accessor :brand, :autoboot, :boxshortname, :kernel, :bcheck_string, :snapshot_script, :diskif, :netif, :cdroms, :disk1path, :disk1size, :cpus, :cpu_configuration, :boot, :complex_cpu_conf, :memory, :vagrant_user, :vagrant_user_private_key_path, :setup_wait, :clean_shutdown_time, :dhcp, :vagrant_user_pass, :firmware_type, :vm_type, :partition_id, :shared_disk_enabled, :shared_dir, :acpi, :os_type, :console, :consoleport, :console_onboot, :hostbridge, :sshport, :rdpport, :override, :additional_disks, :cloud_init_resolvers, :cloud_init_enabled, :cloud_init_dnsdomain, :cloud_init_password,:dns, :box, :vagrant_cloud_creator
 
       # rubocop:enable Layout/LineLength
 
@@ -51,7 +51,6 @@ module VagrantPlugins
         @cloud_init_dnsdomain = nil
         @cloud_init_password = vagrant_user_pass
         @cloud_init_resolvers = nil
-        @cloud_init_dnsdomain = nil
         @cloud_init_sshkey = nil
         @firmware_type = 'compatability'
         @vm_type = 'production'

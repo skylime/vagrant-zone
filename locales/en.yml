@@ -50,7 +50,7 @@ en:
     no_removing_vnic: |-
       - No VNIC to Remove
     network_setup: |-
-      Preparing zone OS networking interfaces:
+      Preparing zone OS networking interfaces via zlogin:
     delete_disks: |-
       Removing associated disks:
     installing_zone: |-
