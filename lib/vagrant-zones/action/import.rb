@@ -30,6 +30,8 @@ module VagrantPlugins
           @executor = Executor::Exec.new
           image = @machine.config.vm.box
           image_url = @machine.config.vm.box_url
+          puts "Box URL"
+          puts env[:box_url]
           curdir = Dir.pwd
           datadir = @machine.data_dir
           @driver = @machine.provider.driver
