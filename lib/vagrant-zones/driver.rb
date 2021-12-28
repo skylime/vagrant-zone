@@ -259,7 +259,7 @@ module VagrantPlugins
           config.dns.each do |ns|
             dservers.append(ns['nameserver'])
           end
-          puts dservers
+          puts dservers[0]
 
           dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
           servers = []
