@@ -21,11 +21,10 @@ module VagrantPlugins
     class Driver
       attr_accessor :executor
 
-      def initialize(machine, env)
+      def initialize(machine)
         @logger = Log4r::Logger.new('vagrant_zones::driver')
         @machine = machine
         @executor = Executor::Exec.new
-        @ui = env[:ui]
         @pfexec = if Process.uid.zero?
                     ''
                   elsif system('sudo -v')
@@ -58,7 +57,7 @@ module VagrantPlugins
       end
 
       ## Begin installation for zone
-      def install(machine)
+      def install(machine, uiinfo)
         config = machine.provider_config
         name = @machine.name
         case config.brand
@@ -72,18 +71,18 @@ module VagrantPlugins
         when 'kvm' || 'illumos'
           raise Errors::NotYetImplemented
         end
-        @ui.info(I18n.t('vagrant_zones.installing_zone') + config.brand)
+        uiinfo.info(I18n.t('vagrant_zones.installing_zone') + config.brand)
       end
 
       ## Control the zone from inside the zone OS
-      def control(control)
+      def control(machine, control)
         case control
         when 'restart'
           command = 'sudo shutdown -r'
-          ssh_run_command(@machine, command)
+          ssh_run_command(machine, command)
         when 'shutdown'
           command = 'sudo init 0 || true'
-          ssh_run_command(@machine, command)
+          ssh_run_command(machine, command)
         else
           puts 'No Command specified'
         end

@@ -17,10 +17,10 @@ module VagrantPlugins
 
         def call(env)
           @machine = env[:machine]
-          @driver  = @machine.provider.driver
+          @driver = @machine.provider.driver
           ui = env[:ui]
           ui.info(I18n.t('vagrant_zones.graceful_restart'))
-          @driver.control('restart')
+          @driver.control(@machine, 'restart')
 
           env[:metrics] ||= {}
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
