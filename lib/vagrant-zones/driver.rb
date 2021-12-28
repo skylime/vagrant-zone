@@ -284,7 +284,7 @@ module VagrantPlugins
           case state
           # Create the VNIC
           when 'create'
-            zoneniccreate(uiinfo, vnic_name, opts, mac, vlan)
+            zoneniccreate(uiinfo, vnic_name, opts, mac)
           when 'delete'
             zonenicdel(uiinfo, vnic_name)
           when 'config'
