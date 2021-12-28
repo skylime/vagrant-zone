@@ -49,7 +49,7 @@ module VagrantPlugins
         @vagrant_user_private_key_path = './id_rsa'
         @override = false
         @cloud_init_enabled = false
-        @cloud_init_conf = nil
+        @cloud_init_conf = 'on'
         @cloud_init_dnsdomain = nil
         @cloud_init_password = nil
         @cloud_init_resolvers = nil

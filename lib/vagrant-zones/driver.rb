@@ -581,7 +581,6 @@ module VagrantPlugins
 
       ## zonecfg function for Cloud-init
       def zonecfgcloudinit(uiinfo, _name, config, zcfg)
-        puts config.cloud_init_enabled
         return unless config.cloud_init_enabled
 
         cloudconfig = config.cloud_init_conf.to_s

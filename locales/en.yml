@@ -191,7 +191,7 @@ en:
     zfs_snapshot_create: |-
       Creating ZFS Snapshot(s)
     setting_cloud_dnsdomain: |-
-      Setting cloud-init DNS Domain:
+      Setting cloud-init DNS Domain: 
     setting_cloud_password: |-        
       Setting cloud-init password: 
     setting_cloud_resolvers: |-
