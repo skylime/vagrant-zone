@@ -608,6 +608,9 @@ module VagrantPlugins
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + config.cloud_init_sshkey.to_s)
           execute(false, %(#{zcfg}"add attr; set name=sshkey; set value=#{config.cloud_init_sshkey}; set type=string; end;"))
         end
+        puts cloudconfig
+        puts cloudconfig.to_s
+        puts config.cloud_init_enabled
         uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cloudconfig)
         execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
       end
