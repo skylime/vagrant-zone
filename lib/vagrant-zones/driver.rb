@@ -179,7 +179,7 @@ module VagrantPlugins
       end
 
       # This filters the NIC Types
-      def vtype(opts)
+      def nictype(opts)
         nictype = if opts[:nictype].nil?
                     'external'
                   else
@@ -285,7 +285,7 @@ module VagrantPlugins
             end
           end
           puts servers.inspect
-          vnic_name = "vnic#{vtype(opts)}#{vtype(machine)}_#{config.partition_id}_#{opts[:nic_number]}"
+          vnic_name = "vnic#{nictype(opts)}#{vtype(machine)}_#{config.partition_id}_#{opts[:nic_number]}"
 
           case state
           # Create the VNIC
