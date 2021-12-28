@@ -42,9 +42,9 @@ module VagrantPlugins
           dash = '-'
           colon = ':'
           datetime = t.year.to_s + dash + t.month.to_s + dash + t.day.to_s + dash + t.hour.to_s + colon + t.min.to_s + colon + t.sec.to_s
-          env[:ui].info("==> #{name}: Creating a Snapshot of the box.")
+          env[:ui].info("Creating a Snapshot of the box.")
           snapshot_create(datasetpath, datetime)
-          env[:ui].info("==> #{name}: Sending Snapshot to ZFS Send Sream image.")
+          env[:ui].info("Sending Snapshot to ZFS Send Sream image.")
           snapshot_send(datasetpath, "#{tmp_dir}/box.zss", datetime)
           snapshot_delete(datasetpath, datetime)
           extra = ''

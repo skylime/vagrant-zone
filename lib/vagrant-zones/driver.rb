@@ -58,6 +58,8 @@ module VagrantPlugins
       def install(machine, uiinfo)
         config = machine.provider_config
         box  = "#{@machine.data_dir}/#{@machine.config.vm.box}"
+        puts box.inspect
+        puts @machine.data_dir
         name = @machine.name
         case config.brand
         when 'lx'
@@ -65,13 +67,14 @@ module VagrantPlugins
           raise 'You appear to not have the LX Package installed in this Machine' if results.include? 'unknown brand'
         when 'bhyve'
           execute(false, "#{@pfexec} zoneadm -z #{name} install")
+          raise 'You appear to not have the bhyve Package installed in this Machine' if results.include? 'unknown brand'
         when 'kvm' || 'illumos'
           raise Errors::NotYetImplemented
         end
         uiinfo.info(I18n.t('vagrant_zones.installing_zone') + config.brand)
       end
 
-      ## Control the Machine from inside the machine
+      ## Control the zone from inside the zone OS
       def control(machine, control)
         case control
         when 'restart'
@@ -85,6 +88,7 @@ module VagrantPlugins
         end
       end
 
+      ## Run commands over SSH instead of ZLogin
       def ssh_run_command(machine, command)
         ip = get_ip_address(machine)
         user = user(machine)
@@ -96,6 +100,7 @@ module VagrantPlugins
         execute(true, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' ")
       end
 
+      ## Function to provide console, vnc, or webvnc access 
       def console(machine, command, ip, port, exit)
         detach = exit[:detach]
         kill = exit[:kill]
@@ -293,14 +298,13 @@ module VagrantPlugins
           # Set Zonecfg Settings
           when 'config'
             uiinfo.info('  ' + I18n.t('vagrant_zones.vnic_setup') + vnic_name)
+            strt = "#{@pfexec} zonecfg -z #{name} "
             case config.brand
-            when 'lx'
-              strt = "#{@pfexec} zonecfg -z #{name} "
+            when 'lx'              
               shrtstr1 = %(set allowed-address=#{allowed_address}; add property (name=gateway,value="#{defrouter}"); )
               shrtstr2 = %(add property (name=ips,value="#{allowed_address}"); add property (name=primary,value="true"); end;)
               execute(false, %(#{strt}"add net; set physical=#{vnic_name}; set global-nic=auto; #{shrtstr1} #{shrtstr2}"))
             when 'bhyve'
-              strt = "#{@pfexec} zonecfg -z #{name} "
               execute(false, %(#{strt}"add net; set physical=#{vnic_name}; set allowed-address=#{allowed_address}; end;"))
             end
           # Setup Interface in the VM
