@@ -411,6 +411,7 @@ module VagrantPlugins
         ## Destroy Boot dataset
         uiinfo.info(I18n.t('vagrant_zones.destroy_dataset') + datasetroot.to_s) if dataset_boot_exists == datasetroot.to_s
         execute(false, "#{@pfexec} zfs destroy -r #{datasetroot}") if dataset_boot_exists == datasetroot.to_s
+        ## Insert Error Checking Here in case disk is busy
         uiinfo.info(I18n.t('vagrant_zones.boot_dataset_nil')) unless dataset_boot_exists == datasetroot.to_s
 
         ## Destroy Additional Disks
