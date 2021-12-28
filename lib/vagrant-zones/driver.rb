@@ -283,7 +283,7 @@ module VagrantPlugins
           case state
           # Create the VNIC
           when 'create'
-            zoneniccreate(uiinfo, vnic_name, opts, mac,  vlan)
+            zoneniccreate(uiinfo, vnic_name, opts, mac, vlan)
             #if opts[:vlan].nil?
             #  execute(false, "#{@pfexec} dladm create-vnic -l #{opts[:bridge]} -m #{mac} #{vnic_name}")
             #else
@@ -341,7 +341,7 @@ module VagrantPlugins
       end
     
       ## Setup vnics for Zones using Zlogin
-      def zonenicstpzlogin(_uiinfo, name, config, _zcfg)
+      def zonenicstpzlogin(uiinfo, vnic_name, opts, mac, ip, defrouter, servers, machine)
         ## Remove old installer netplan config
         uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
         zlogin(machine, 'rm -rf /etc/netplan/*.yaml')
@@ -369,7 +369,7 @@ ethernets:
       end
 
       ## Delete vnics for Zones
-      def zonenicdel(_uiinfo, name, config, _zcfg)
+      def zonenicdel(uiinfo, vnic_name)
         ## create loop 
         vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
         uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name) if vnic_configured == vnic_name.to_s
@@ -378,7 +378,7 @@ ethernets:
       end
 
       ## Create vnics for Zones
-      def zoneniccreate(_uiinfo, name, config, _zcfg)
+      def zoneniccreate(uiinfo, vnic_name, opts, mac, vlan)
         cie = config.cloud_init_enabled
         strt = "#{@pfexec} zonecfg -z #{name} "
         ## create loop 
@@ -392,7 +392,7 @@ ethernets:
       end
 
       ## zonecfg function for for Networking
-      def zonecfgnicsetup(_uiinfo, name, config, _zcfg)
+      def zonecfgnicsetup(uiinfo, vnic_name, config, name, allowed_address, defrouter)
         ## Create Loop for Networks        
         uiinfo.info(" #{I18n.t('vagrant_zones.vnic_setup')}#{vnic_name}")
         strt = "#{@pfexec} zonecfg -z #{name} "
