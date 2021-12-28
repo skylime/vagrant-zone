@@ -586,29 +586,27 @@ module VagrantPlugins
 
         return if config.cloud_init_enabled == 'off'
         cloudconfig = case config.cloud_init_enabled.to_s
-                      when 'on'
+                      when true
                         'on'
-                      when 'off'
+                      when false
                         'off'
-                      else
-                        config.cloud_init_enabled.to_s
                       end
 
         unless config.cloud_init_dnsdomain.nil?
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + config.cloud_init_dnsdomain.to_s)
-          execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{config.cloud_init_dnsdomain}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{config.cloud_init_dnsdomain.to_s}; set type=string; end;"))
         end
         unless config.cloud_init_password.nil?
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_password') + config.cloud_init_password.to_s)
-          execute(false, %(#{zcfg}"add attr; set name=password; set value=#{config.cloud_init_password}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=password; set value=#{config.cloud_init_password.to_s}; set type=string; end;"))
         end
         unless config.cloud_init_resolvers.nil?
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_resolvers') + config.cloud_init_resolvers.to_s)
-          execute(false, %(#{zcfg}"add attr; set name=resolvers; set value=#{config.cloud_init_resolvers}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=resolvers; set value=#{config.cloud_init_resolvers.to_s}; set type=string; end;"))
         end
         unless config.cloud_init_sshkey.nil?
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + config.cloud_init_sshkey.to_s)
-          execute(false, %(#{zcfg}"add attr; set name=sshkey; set value=#{config.cloud_init_sshkey}; set type=string; end;"))
+          execute(false, %(#{zcfg}"add attr; set name=sshkey; set value=#{config.cloud_init_sshkey.to_s}; set type=string; end;"))
         end
         uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cloudconfig.to_s)
         execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig.to_s}; set type=string; end;"))
