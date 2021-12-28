@@ -33,7 +33,8 @@ class Hosts
           ## Note Do not place two IPs in the same subnet on both nics at the same time, They must be different subnets or on a different network segment(ie VLAN, physical seperation for Linux VMs)
           if host.has_key?('networks')
             host['networks'].each_with_index do |network, netindex|
-              server.vm.network "public_network", ip: network['address'], dhcp: network['dhcp4'], dhcp6: network['dhcp6'], bridge: network['bridge'], auto_config: false, :netmask => network['netmask'], :mac => network['mac'], gateway: network['gateway'], nictype: network['type'], nic_number: netindex, managed: network['is_control'], vlan: network['vlan']
+                server.vm.network "public_network", ip: network['address'], dhcp: network['dhcp4'], dhcp6: network['dhcp6'], bridge: network['bridge'], auto_config: false, :netmask => network['netmask'], :mac => network['mac'], gateway: network['gateway'], nictype: network['type'], nic_number: netindex, managed: network['is_control'], vlan: network['vlan'] if network['type'] == 'external'
+                server.vm.network "public_network", ip: network['address'], dhcp: network['dhcp4'], dhcp6: network['dhcp6'], bridge: network['bridge'], auto_config: false, :netmask => network['netmask'], :mac => network['mac'], gateway: network['gateway'], nictype: network['type'], nic_number: netindex, managed: network['is_control'], vlan: network['vlan'] if network['type'] == 'hostonly'
             end
           end
 
