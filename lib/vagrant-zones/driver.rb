@@ -178,6 +178,27 @@ module VagrantPlugins
         end
       end
 
+      # This filters the NIC Types
+      def vtype(opts)
+        nictype = if opts[:nictype].nil?
+                    'external'
+                  else
+                    opts[:nictype]
+                  end
+        nic_type = case nictype
+                   when /external/
+                     'e'
+                   when /internal/
+                     'i'
+                   when /carp/
+                     'c'
+                   when /management/
+                     'm'
+                   when /host/
+                     'h'
+                   end
+      end
+
       def get_ip_address(machine)
         config = machine.provider_config
         name = @machine.name
@@ -244,42 +265,27 @@ module VagrantPlugins
           next unless adaptertype.to_s == 'public_network'
 
           ip = opts[:ip].to_s
-          defrouter = opts[:gateway].to_s
+          puts ip
           allowed_address = "#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
           ip = if ip.empty?
                  nil
                else
                  ip.gsub(/\t/, '')
                end
+          puts ip
+          defrouter = opts[:gateway].to_s
           regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
           mac = opts[:mac] unless opts[:mac].nil?
           mac = 'auto' unless mac.match(regex)
-          dns = config.dns
           dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
           servers = []
-          unless dns&.nil?
-            dns.each do |server|
+          unless config.dns&.nil?
+            config.dns.each do |server|
               servers.append(server)
             end
           end
-          nictype = if opts[:nictype].nil?
-                      'external'
-                    else
-                      opts[:nictype]
-                    end
-          nic_type = case nictype
-                     when /external/
-                       'e'
-                     when /internal/
-                       'i'
-                     when /carp/
-                       'c'
-                     when /management/
-                       'm'
-                     when /host/
-                       'h'
-                     end
-          vnic_name = "vnic#{nic_type}#{vtype(machine)}_#{config.partition_id}_#{opts[:nic_number]}"
+          puts servers.inspect
+          vnic_name = "vnic#{vtype(opts)}#{vtype(machine)}_#{config.partition_id}_#{opts[:nic_number]}"
 
           case state
           # Create the VNIC

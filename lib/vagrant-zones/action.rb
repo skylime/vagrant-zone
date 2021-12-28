@@ -20,7 +20,7 @@ module VagrantPlugins
             elsif !env[:result]
               b2.use Import
               b2.use BoxCheckOutdated
-              b2.use Create
+              b2.use Create 
               b2.use Network
               b2.use Start
               b2.use WaitTillBoot
