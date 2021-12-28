@@ -493,7 +493,7 @@ module VagrantPlugins
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
-        puts datasetroot
+        puts datasetroot if config.brand == "kvm"
         ###### RESERVED ######
       end
 

@@ -45,7 +45,7 @@ en:
     networking_int_remove: |-
       Removing network devices:
     networking_int_add: |-
-      Adding network devices:
+      - Adding network devices:
     removing_vnic: |-
       - Deleting VNIC
         
@@ -183,7 +183,7 @@ en:
     zone_gracefully_stopped_waiting_for_boot: |-
       Zone gracefully shutdown, now waiting for boot
     setting_console_access: |-
-       - Setting Console access port
+       - Setting Console access port:
          
     zfs_snapshot_cron: |-
       Listing Configured Cron Jobs
