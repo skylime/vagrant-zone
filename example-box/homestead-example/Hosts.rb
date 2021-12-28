@@ -82,9 +82,7 @@ class Hosts
                   vm.cloud_init_conf                      = host['cloud_init_conf']
           end
   
-          host['dns'].each do |ns|
-            puts ns['nameserver'] 
-          end
+
 
           # Register shared folders
           if host.has_key?('folders')
