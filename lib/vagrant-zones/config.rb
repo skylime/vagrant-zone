@@ -13,7 +13,6 @@ module VagrantPlugins
 
       def initialize
         super
-        # pkgsrc, lx, bhyve, kvm, illumos
         @brand = 'bhyve'
         @additional_disks = UNSET_VALUE
         @autoboot = true
