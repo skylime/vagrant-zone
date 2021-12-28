@@ -24,7 +24,7 @@ module VagrantPlugins
         @bcheck_string = 'Last login: '
         @shared_disk_enabled = true
         @consoleport = nil
-        @consolehost = 0.0.0.0
+        @consolehost = '0.0.0.0'
         @console_onboot = 'false'
         @console = 'webvnc'
         @memory = '4G'
