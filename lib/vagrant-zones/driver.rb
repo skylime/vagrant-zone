@@ -584,14 +584,6 @@ module VagrantPlugins
       def zonecfgcloudinit(uiinfo, _name, config, zcfg)
         return unless config.cloud_init_enabled
 
-        cloudconfig = case config.cloud_init_enabled
-                      when 'on'
-                        'on'
-                      when 'off'
-                        'off'
-                      else
-                        config.cloud_init_enabled
-                      end
         unless config.cloud_init_dnsdomain.nil?
           cinfo = "Cloud-init dns-domain: #{config.cloud_init_dnsdomain}"
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + cinfo)
@@ -612,9 +604,9 @@ module VagrantPlugins
           cinfo = "Cloud-init SSH Key: #{config.cloud_init_sshkey}"
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + cinfo)
         end
-        cinfo = "Cloud Config: #{cloudconfig}"
+        cinfo = "Cloud Config: #{config.cloud_init_enabled}"
         uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cinfo)
-        execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
+        execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{config.cloud_init_enabled}; set type=string; end;"))
       end
 
       # This helps us set the zone configurations for the zone
@@ -651,7 +643,7 @@ module VagrantPlugins
         uiinfo.info(I18n.t('vagrant_zones.preflight_checks'))
         config = machine.provider_config
         ## Detect if Virtualbox is Running
-        ## Kernel, KVM, and Bhyve cannot run conncurently with Virtualbox:
+        ## LX, KVM, and Bhyve cannot run conncurently with Virtualbox:
         ### https://illumos.topicbox-beta.com/groups/omnios-discuss/Tce3bbd08cace5349-M5fc864e9c1a7585b94a7c080
         uiinfo.info(I18n.t('vagrant_zones.vbox_run_check'))
         result = execute(true, "#{@pfexec} VBoxManage list runningvms")
