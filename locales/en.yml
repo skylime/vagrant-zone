@@ -190,3 +190,6 @@ en:
     zfs_snapshot_create: |-
       Creating ZFS Snapshot(s)
          
+    booted_login_prompt: |-
+      Checking for the string: 
+        
