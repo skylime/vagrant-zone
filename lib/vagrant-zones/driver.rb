@@ -608,9 +608,9 @@ module VagrantPlugins
       end
 
       # This helps us set the zone configurations for the zone
-      def zonecfg(machine, uiinfo)
+      def zonecfg(uiinfo)
         name = @machine.name
-        config = machine.provider_config
+        config = @machine.provider_config
         ## Seperate commands out to individual functions like Network, Dataset, and Emergency Console
         zcfg = "#{@pfexec} zonecfg -z #{name} "
         zonecfglx(uiinfo, name, config, zcfg)
