@@ -83,14 +83,12 @@ class Hosts
                   vm.boot                                 = host['boot']
                   vm.snapshot_script                      = host['snapshot_script']
                   vm.cloud_init_enabled                   = host['cloud_init_enabled']
-                  vm.cloud_init_dnsdomain                 = dservers.join(',')
+                  vm.cloud_init_dnsdomain                 = host['cloud_init_dnsdomain']
                   vm.cloud_init_password                  = host['vagrant_user_pass']
-                  vm.cloud_init_resolvers                 = "#{host['dns']},#{host['dns']}"
+                  vm.cloud_init_resolvers                 = dservers.join(',')
                   vm.cloud_init_sshkey                    = host['vagrant_user_private_key_path']
                   vm.cloud_init_conf                      = host['cloud_init_conf']
           end
-  
-
 
           # Register shared folders
           if host.has_key?('folders')
