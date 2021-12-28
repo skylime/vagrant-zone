@@ -75,14 +75,14 @@ module VagrantPlugins
       end
 
       ## Control the zone from inside the zone OS
-      def control(machine, control)
+      def control(control)
         case control
         when 'restart'
           command = 'sudo shutdown -r'
-          ssh_run_command(machine, command)
+          ssh_run_command(@machine, command)
         when 'shutdown'
           command = 'sudo init 0 || true'
-          ssh_run_command(machine, command)
+          ssh_run_command(@machine, command)
         else
           puts 'No Command specified'
         end
@@ -297,7 +297,6 @@ module VagrantPlugins
             uiinfo.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == vnic_name.to_s
           # Set Zonecfg Settings
           when 'config'
-
             uiinfo.info(" #{I18n.t('vagrant_zones.vnic_setup')}#{vnic_name}")
             strt = "#{@pfexec} zonecfg -z #{name} "
             case config.brand
