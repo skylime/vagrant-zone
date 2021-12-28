@@ -585,7 +585,7 @@ module VagrantPlugins
         return unless config.cloud_init_enabled
 
         cloudconfig = config.cloud_init_conf.to_s
-        cloudconfig = 'off' if config.cloud_init_conf.nil? || config.cloud_init_conf.empty?
+        cloudconfig = 'off' if config.cloud_init_conf.nil? 
         unless config.cloud_init_dnsdomain.nil?
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + config.cloud_init_dnsdomain.to_s)
           execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{config.cloud_init_dnsdomain.to_s}; set type=string; end;"))
