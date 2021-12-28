@@ -75,7 +75,6 @@ class Hosts
                   vm.boot                                 = host['boot']
                   vm.snapshot_script                      = host['snapshot_script']
                   vm.cloud_init_enabled                   = host['cloud_init_enabled']
-                  dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
                   vm.cloud_init_dnsdomain                 = host['cloud_init_dnsdomain']
                   vm.cloud_init_password                  = host['vagrant_user_pass']
                   vm.cloud_init_resolvers                 = "#{host['dns']},#{host['dns']}"
