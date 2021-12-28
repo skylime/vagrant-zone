@@ -587,8 +587,8 @@ module VagrantPlugins
       ## zonecfg function for Cloud-init
       def zonecfgcloudinit(uiinfo, _name, config, zcfg)
         return unless config.cloud_init_enabled
-        
-        cloudconfig = "#{config.cloud_init_conf.to_s}"
+
+        cloudconfig = config.cloud_init_conf.to_s
         cloudconfig = 'on' if config.cloud_init_conf.nil? || config.cloud_init_conf
         uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cloudconfig.to_s)
         execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
@@ -596,8 +596,8 @@ module VagrantPlugins
         ccid = config.cloud_init_dnsdomain
         uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + ccid.to_s) unless ccid.nil?
         execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{ccid}; set type=string; end;")) unless ccid.nil?
-        
-        cidd = config.cloud_init_password
+
+        ccip = config.cloud_init_password
         uiinfo.info(I18n.t('vagrant_zones.setting_cloud_password') + ccip.to_s) unless ccip.nil?
         execute(false, %(#{zcfg}"add attr; set name=password; set value=#{ccip}; set type=string; end;")) unless ccip.nil?
 
