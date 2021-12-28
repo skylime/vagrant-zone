@@ -51,18 +51,18 @@ module VagrantPlugins
         end
       end
 
+      # Execute System commands
       def execute(*cmd, **opts, &block)
         @executor.execute(*cmd, **opts, &block)
       end
 
+      ## Begin installation for zone
       def install(machine, uiinfo)
         config = machine.provider_config
-        box  = "#{@machine.data_dir}/#{@machine.config.vm.box}"
-        puts box.inspect
-        puts @machine.data_dir
         name = @machine.name
         case config.brand
         when 'lx'
+          box  = "#{@machine.data_dir}/#{@machine.config.vm.box}"
           results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
           raise 'You appear to not have the LX Package installed in this Machine' if results.include? 'unknown brand'
         when 'bhyve'
