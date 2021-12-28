@@ -325,7 +325,6 @@ module VagrantPlugins
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
             cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
-            # errormessage = "\n==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
             infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
             uiinfo.info(infomessage) if zlogin(machine, cmd)
             ## Apply the Configuration
@@ -697,7 +696,7 @@ module VagrantPlugins
       def setup(machine, uiinfo)
         config = machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.network_setup')) if config.brand == 'bhyve'
-        network(@machine, uiinfo, 'setup') if config.brand == 'bhyve'
+        network(@machine, uiinfo, 'setup') if config.brand == 'bhyve' && config.cloud_init_enabled == "off"
       end
 
       # This helps up wait for the boot of the vm by using zlogin

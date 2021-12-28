@@ -49,7 +49,11 @@ module VagrantPlugins
         @vagrant_user_private_key_path = './id_rsa'
         @override = false
         @cloud_init_enabled = false
-        @vagrant_cloud_creator = UNSET_VALUE
+        @cloud_init_dnsdomain = UNSET_VALUE
+        @cloud_init_password = vagrant_user_pass
+        @cloud_init_resolvers = UNSET_VALUE
+        @cloud_init_dnsdomain = UNSET_VALUE
+        @cloud_init_sshkey = UNSET_VALUE
         @firmware_type = 'compatability'
         @vm_type = 'production'
         @snapshot_script = '/opt/vagrant/bin/Snapshooter.sh'
