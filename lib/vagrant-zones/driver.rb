@@ -581,15 +581,12 @@ module VagrantPlugins
 
       ## zonecfg function for Cloud-init
       def zonecfgcloudinit(uiinfo, _name, config, zcfg)
-
         return unless config.cloud_init_enabled
-        cloudconfig = case config.cloud_init_conf
-                      when nil
-                        'on'
-                      else
-                        config.cloud_init_conf.to_s
-                      end
 
+        cloudconfig = config.cloud_init_conf.to_s
+        cloudconfig = 'on' if config.cloud_init_conf.nil?
+
+        puts cloudconfig
         unless config.cloud_init_dnsdomain.nil?
           uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + config.cloud_init_dnsdomain.to_s)
           execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{config.cloud_init_dnsdomain.to_s}; set type=string; end;"))
