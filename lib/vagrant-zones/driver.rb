@@ -591,7 +591,7 @@ module VagrantPlugins
                       when 'off'
                         'off'
                       else
-                        config.cloud_init_enabled
+                        config.cloud_init_enabled.to_s
                       end
 
         unless config.cloud_init_dnsdomain.nil?
