@@ -574,7 +574,7 @@ module VagrantPlugins
                  config.consoleport
                end
         port += ',wait' if config.console_onboot
-        cinfo = "Console type: #{config.console}, State: #{port}, Port: #{config.consoleport}"
+        cinfo = "Console type: #{config.console}, State: #{port}, Port: #{config.consoleport},  Host: #{config.consolehost}"
         uiinfo.info(I18n.t('vagrant_zones.setting_console_access') + cinfo)
         execute(false, %(#{zcfg}"add attr; set name=#{config.console}; set value=#{port}; set type=string; end;"))
       end
@@ -600,7 +600,8 @@ module VagrantPlugins
           execute(false, %(#{zcfg}"add attr; set name=sshkey; set value=#{config.cloud_init_sshkey}; set type=string; end;"))
         end
         uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + config.cloud_init_enabled.to_s)
-        execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{config.cloud_init_enabled}; set type=string; end;"))
+        execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{config.cloud_init_enabled.to_s}; set type=string; end;"))
+        puts %(#{zcfg}"add attr; set name=cloud-init; set value=#{config.cloud_init_enabled.to_s}; set type=string; end;")
       end
 
       # This helps us set the zone configurations for the zone
