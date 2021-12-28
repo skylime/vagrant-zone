@@ -44,6 +44,10 @@ class Hosts
           # Vagrant-Zone machine configuration
           server.vm.provider :zone do |vm|
                   vm.cloud_init_enabled                   = host['cloud_init_enabled']
+                  vm.cloud_init_dnsdomain                 = host['cloud_init_dnsdomain']
+                  vm.cloud_init_password                  = host['cloud_init_password']
+                  vm.cloud_init_resolvers                 = host['cloud_init_resolvers']
+                  vm.cloud_init_sshkey                    = host['cloud_init_sshkey']
                   vm.brand                                = host['brand']
                   vm.vagrant_cloud_creator                = host['cloud_creator']
                   vm.boxshortname                         = host['boxshortname']
