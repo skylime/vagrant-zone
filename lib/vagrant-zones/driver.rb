@@ -334,7 +334,6 @@ ethernets:
 
       ## Create vnics for Zones
       def zoneniccreate(uiinfo, vnic_name, opts, mac, vlan)
-
         strt = "#{@pfexec} zonecfg -z #{name} "
         ## create loop 
         if opts[:vlan].nil?
