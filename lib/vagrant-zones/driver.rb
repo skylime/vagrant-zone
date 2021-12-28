@@ -297,7 +297,8 @@ module VagrantPlugins
             uiinfo.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == vnic_name.to_s
           # Set Zonecfg Settings
           when 'config'
-            uiinfo.info('  ' + I18n.t('vagrant_zones.vnic_setup') + vnic_name)
+ 
+            uiinfo.info(" #{I18n.t('vagrant_zones.vnic_setup')}#{vnic_name}")
             strt = "#{@pfexec} zonecfg -z #{name} "
             case config.brand
             when 'lx'
