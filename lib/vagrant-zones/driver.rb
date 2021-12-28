@@ -713,11 +713,10 @@ module VagrantPlugins
         case config.brand
         when 'bhyve'
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-            uiinfo.info(I18n.t('vagrant_zones.booted_login_prompt') + config.bcheck_string)
-            bcheck = 'Last login: ' if config.bcheck_string.nil?
+          bcheck = 'Last login: ' if config.bcheck_string.nil?
             zlogin_write.printf("\n")
             if zlogin_read.expect(/#{bcheck}/)
-              uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access'))
+              uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{config.bcheck_string}'")
               Timeout.timeout(config.setup_wait) do
                 loop do
                   zlogin_read.expect(/\n/) { |line| responses.push line }
