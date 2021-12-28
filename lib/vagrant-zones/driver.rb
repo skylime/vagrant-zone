@@ -575,9 +575,13 @@ module VagrantPlugins
                  config.consoleport
                end
         port += ',wait' if config.console_onboot
-        cinfo = "Console type: #{config.console}, State: #{port}, Port: #{config.consoleport},  Host: #{config.consolehost}, Wait: #{config.console_onboot}"
+        cp = config.consoleport
+        ch = config.consolehost
+        cb = config.console_onboot
+        ct = config.console
+        cinfo = "Console type: #{ct}, State: #{port}, Port: #{cp},  Host: #{ch}, Wait: #{cb}"
         uiinfo.info(I18n.t('vagrant_zones.setting_console_access') + cinfo)
-        execute(false, %(#{zcfg}"add attr; set name=#{config.console}; set value=#{port}; set type=string; end;"))
+        execute(false, %(#{zcfg}"add attr; set name=#{ct}; set value=#{port}; set type=string; end;"))
       end
 
       ## zonecfg function for Cloud-init
@@ -586,21 +590,24 @@ module VagrantPlugins
         
         cloudconfig = "#{config.cloud_init_conf.to_s}"
         cloudconfig = 'on' if config.cloud_init_conf.nil? || config.cloud_init_conf
-
         uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cloudconfig.to_s)
         execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
+
+        ccid = config.cloud_init_dnsdomain
+        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + ccid.to_s) unless ccid.nil?
+        execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{ccid}; set type=string; end;")) unless ccid.nil?
         
-        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + config.cloud_init_dnsdomain.to_s) unless config.cloud_init_dnsdomain.nil?
-        execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{config.cloud_init_dnsdomain}; set type=string; end;")) unless config.cloud_init_dnsdomain.nil?
+        cidd = config.cloud_init_password
+        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_password') + ccip.to_s) unless ccip.nil?
+        execute(false, %(#{zcfg}"add attr; set name=password; set value=#{ccip}; set type=string; end;")) unless ccip.nil?
 
-        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_password') + config.cloud_init_password.to_s) unless config.cloud_init_password.nil?
-        execute(false, %(#{zcfg}"add attr; set name=password; set value=#{config.cloud_init_password}; set type=string; end;")) unless config.cloud_init_password.nil?
+        cclir = config.cloud_init_resolvers
+        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_resolvers') + cclir.to_s) unless cclir.nil?
+        execute(false, %(#{zcfg}"add attr; set name=resolvers; set value=#{cclir}; set type=string; end;")) unless cclir.nil?
 
-        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_resolvers') + config.cloud_init_resolvers.to_s) unless config.cloud_init_resolvers.nil?
-        execute(false, %(#{zcfg}"add attr; set name=resolvers; set value=#{config.cloud_init_resolvers}; set type=string; end;")) unless config.cloud_init_resolvers.nil?
-
-        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + config.cloud_init_sshkey.to_s) unless config.cloud_init_sshkey.nil?
-        execute(false, %(#{zcfg}"add attr; set name=sshkey; set value=#{config.cloud_init_sshkey}; set type=string; end;")) unless config.cloud_init_sshkey.nil?
+        ccisk = config.cloud_init_sshkey
+        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + ccisk.to_s) unless ccisk.nil?
+        execute(false, %(#{zcfg}"add attr; set name=sshkey; set value=#{ccisk}; set type=string; end;")) unless ccisk.nil?
       end
 
       # This helps us set the zone configurations for the zone
@@ -693,8 +700,8 @@ module VagrantPlugins
       # This helps us set up the networking of the VM
       def setup(machine, uiinfo)
         config = machine.provider_config
-        uiinfo.info(I18n.t('vagrant_zones.network_setup')) if config.brand == 'bhyve' && config.cloud_init_enabled == "off"
-        network(@machine, uiinfo, 'setup') if config.brand == 'bhyve' && config.cloud_init_enabled == "off"
+        uiinfo.info(I18n.t('vagrant_zones.network_setup')) if config.brand == 'bhyve' && config.cloud_init_enabled == 'off'
+        network(@machine, uiinfo, 'setup') if config.brand == 'bhyve' && config.cloud_init_enabled == 'off'
       end
 
       # This helps up wait for the boot of the vm by using zlogin
@@ -708,7 +715,7 @@ module VagrantPlugins
           return if config.cloud_init_enabled
 
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-          bcheck = 'Last login: ' if config.bcheck_string.nil?
+            bcheck = 'Last login: ' if config.bcheck_string.nil?
             zlogin_write.printf("\n")
             if zlogin_read.expect(/#{bcheck}/)
               uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{config.bcheck_string}'")
