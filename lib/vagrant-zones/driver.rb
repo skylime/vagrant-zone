@@ -254,9 +254,13 @@ module VagrantPlugins
           mac = opts[:mac] unless opts[:mac].nil?
           mac = 'auto' unless mac.match(regex)
           dns = config.dns
+          
+          dservers = []
           config.dns.each do |ns|
-            puts ns['nameserver'] 
+            dservers.append(ns['nameserver'])
           end
+          puts dservers
+
           dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
           servers = []
           unless dns&.nil?
