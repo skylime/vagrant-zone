@@ -80,7 +80,7 @@ en:
     bhyve_zone_dataset_boot_volume: |-
       - Importing template to:
         
-    setting_cd_rom_configurations |-
+    setting_cd_rom_configurations: |-
       - Setting CDROM Configurations:
         
     setting_additional_disks_configurations: |-
