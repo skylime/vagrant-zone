@@ -584,7 +584,7 @@ module VagrantPlugins
         puts config.cloud_init_enabled
         return unless config.cloud_init_enabled
         cloudconfig = case config.cloud_init_enabled
-                      when 'on'
+                      when 'true'
                         'on'
                       when 'off'
                         'off'
@@ -616,7 +616,7 @@ module VagrantPlugins
       def zonecfg(machine, uiinfo)
         name = @machine.name
         config = machine.provider_config
-        ## Seperate commands out to indvidual functions like Network, Dataset, and Emergency Console
+        ## Seperate commands out to individual functions like Network, Dataset, and Emergency Console
         zcfg = "#{@pfexec} zonecfg -z #{name} "
         zonecfglx(uiinfo, name, config, zcfg)
         zonecfgbhyve(uiinfo, name, config, zcfg)
