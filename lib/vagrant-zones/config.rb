@@ -7,7 +7,7 @@ module VagrantPlugins
     # This is used define the variables for the project
     class Config < Vagrant.plugin('2', :config)
       # rubocop:disable Layout/LineLength
-      attr_accessor :brand, :autoboot, :boxshortname, :kernel, :bcheck_string, :snapshot_script, :diskif, :netif, :cdroms, :disk1path, :disk1size, :cpus, :cpu_configuration, :boot, :complex_cpu_conf, :memory, :vagrant_user, :vagrant_user_private_key_path, :setup_wait, :clean_shutdown_time, :dhcp, :vagrant_user_pass, :firmware_type, :vm_type, :partition_id, :shared_disk_enabled, :shared_dir, :acpi, :os_type, :console, :consoleport, :console_onboot, :hostbridge, :sshport, :rdpport, :override, :additional_disks, :cloud_init_resolvers, :cloud_init_enabled, :cloud_init_dnsdomain, :cloud_init_password, :cloud_init_sshkey, :dns, :box, :vagrant_cloud_creator
+      attr_accessor :brand, :autoboot, :boxshortname, :kernel, :bcheck_string, :snapshot_script, :diskif, :netif, :cdroms, :disk1path, :disk1size, :cpus, :cpu_configuration, :boot, :complex_cpu_conf, :memory, :vagrant_user, :vagrant_user_private_key_path, :setup_wait, :clean_shutdown_time, :dhcp, :vagrant_user_pass, :firmware_type, :vm_type, :partition_id, :shared_disk_enabled, :shared_dir, :acpi, :os_type, :console, :consolehost, :consoleport, :console_onboot, :hostbridge, :sshport, :rdpport, :override, :additional_disks, :cloud_init_resolvers, :cloud_init_enabled, :cloud_init_dnsdomain, :cloud_init_password, :cloud_init_sshkey, :cloud_init_conf, :dns, :box, :vagrant_cloud_creator
 
       # rubocop:enable Layout/LineLength
 
@@ -24,6 +24,7 @@ module VagrantPlugins
         @bcheck_string = 'Last login: '
         @shared_disk_enabled = true
         @consoleport = nil
+        @consolehost = 0.0.0.0
         @console_onboot = 'false'
         @console = 'webvnc'
         @memory = '4G'
