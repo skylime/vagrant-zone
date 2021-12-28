@@ -36,7 +36,7 @@ module VagrantPlugins
         @boot = UNSET_VALUE
         @hostbridge = 'i440fx'
         @acpi = 'on'
-        @setup_wait = 60
+        @setup_wait = 90
         @box = UNSET_VALUE
         @clean_shutdown_time = 300
         @dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '1.0.0.1' }]
@@ -49,11 +49,11 @@ module VagrantPlugins
         @vagrant_user_private_key_path = './id_rsa'
         @override = false
         @cloud_init_enabled = nil
-        @cloud_init_conf = 'off'
-        @cloud_init_dnsdomain = 'local'
-        @cloud_init_password = vagrant_user_pass
-        @cloud_init_resolvers = '1.1.1.1,1.0.0.1'
-        @cloud_init_sshkey = vagrant_user_private_key_path
+        @cloud_init_conf = nil
+        @cloud_init_dnsdomain = UNSET_VALUE
+        @cloud_init_password = UNSET_VALUE
+        @cloud_init_resolvers = UNSET_VALUE
+        @cloud_init_sshkey = UNSET_VALUE
         @firmware_type = 'compatability'
         @vm_type = 'production'
         @snapshot_script = '/opt/vagrant/bin/Snapshooter.sh'
