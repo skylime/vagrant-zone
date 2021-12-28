@@ -27,7 +27,7 @@ module VagrantPlugins
           result.stderr.gsub!("\r\n", "\n")
           result.stdout.gsub!("\r\n", "\n")
           puts "Command Failed: #{cmd}" if result.exit_code != 0 || interrupted
-          p "Exit Results: #{result}" if result.exit_code != 0 || interrupted
+          result.each { |key, value| puts value} if result.exit_code != 0 || interrupted
           raise Errors::ExecuteError if result.exit_code != 0 || interrupted
 
           result.stdout[0..-2]
