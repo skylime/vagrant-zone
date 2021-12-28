@@ -193,10 +193,10 @@ en:
     setting_cloud_dnsdomain: |-
       Setting cloud-init DNS Domain:
     setting_cloud_password: |-        
-      Setting cloud-init password:
+      Setting cloud-init password: 
     setting_cloud_resolvers: |-
-      Setting cloud-init Resolvers:
+      Setting cloud-init Resolvers: 
     setting_cloud_ssh_key: |-
-      Setting cloud-init SSH Key:
+      Setting cloud-init SSH Key: 
     setting_cloud_init_access: |-
-      Enabling cloud-init:
+      Enabling cloud-init: 
