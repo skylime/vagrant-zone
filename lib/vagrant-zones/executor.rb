@@ -30,8 +30,7 @@ module VagrantPlugins
           puts "Exit Results: #{result.exit_code}" if result.exit_code != 0 || interrupted
           puts "Exit Results: #{stdout[0..-2]}" if result.exit_code != 0 || interrupted
           raise Errors::ExecuteError if result.exit_code != 0 || interrupted
-
-
+          
           result.stdout[0..-2]
         end
       end
