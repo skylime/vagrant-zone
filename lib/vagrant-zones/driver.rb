@@ -574,7 +574,7 @@ module VagrantPlugins
                  config.consoleport
                end
         port += ',wait' if config.console_onboot
-        cinfo = "Console type: #{config.console}, State: #{port}, Port: #{config.consoleport},  Host: #{config.consolehost}"
+        cinfo = "Console type: #{config.console}, State: #{port}, Port: #{config.consoleport},  Host: #{config.consolehost}, Wait: #{config.console_onboot}"
         uiinfo.info(I18n.t('vagrant_zones.setting_console_access') + cinfo)
         execute(false, %(#{zcfg}"add attr; set name=#{config.console}; set value=#{port}; set type=string; end;"))
       end

@@ -39,12 +39,6 @@ class Hosts
 
           # Vagrant-Zone machine configuration
           server.vm.provider :zone do |vm|
-                  vm.cloud_init_enabled                   = host['cloud_init_enabled']
-                  vm.cloud_init_dnsdomain                 = host['cloud_init_dnsdomain']
-                  vm.cloud_init_password                  = host['cloud_init_password']
-                  vm.cloud_init_resolvers                 = host['cloud_init_resolvers']
-                  vm.cloud_init_sshkey                    = host['cloud_init_sshkey']
-                  vm.cloud_init_conf                      = host['cloud_init_conf']
                   vm.brand                                = host['brand']
                   vm.vagrant_cloud_creator                = host['cloud_creator']
                   vm.boxshortname                         = host['boxshortname']
@@ -80,8 +74,19 @@ class Hosts
                   vm.additional_disks                     = host['additional_disks']
                   vm.boot                                 = host['boot']
                   vm.snapshot_script                      = host['snapshot_script']
+                  vm.cloud_init_enabled                   = host['cloud_init_enabled']
+                  dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
+                  vm.cloud_init_dnsdomain                 = host['cloud_init_dnsdomain']
+                  vm.cloud_init_password                  = host['vagrant_user_pass']
+                  vm.cloud_init_resolvers                 = "#{host['dns']},#{host['dns']}"
+                  vm.cloud_init_sshkey                    = host['vagrant_user_private_key_path']
+                  vm.cloud_init_conf                      = host['cloud_init_conf']
           end
   
+          host['dns'].each do |ns|
+            puts ns['nameserver'] 
+          end
+
           # Register shared folders
           if host.has_key?('folders')
             host['folders'].each do |folder|
