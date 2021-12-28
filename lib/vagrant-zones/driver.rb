@@ -25,6 +25,7 @@ module VagrantPlugins
         @logger = Log4r::Logger.new('vagrant_zones::driver')
         @machine = machine
         @executor = Executor::Exec.new
+        @ui = env[:ui]
         @pfexec = if Process.uid.zero?
                     ''
                   elsif system('sudo -v')
@@ -57,7 +58,7 @@ module VagrantPlugins
       end
 
       ## Begin installation for zone
-      def install(machine, uiinfo)
+      def install(machine)
         config = machine.provider_config
         name = @machine.name
         case config.brand
@@ -71,7 +72,7 @@ module VagrantPlugins
         when 'kvm' || 'illumos'
           raise Errors::NotYetImplemented
         end
-        uiinfo.info(I18n.t('vagrant_zones.installing_zone') + config.brand)
+        @ui.info(I18n.t('vagrant_zones.installing_zone') + config.brand)
       end
 
       ## Control the zone from inside the zone OS
