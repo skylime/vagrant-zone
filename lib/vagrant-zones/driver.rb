@@ -371,6 +371,7 @@ ethernets:
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
         sparse = '-s ' if bootconfigs['sparse']
         sparse = '' unless bootconfigs['sparse']
+        puts sparse
         uiinfo.info(I18n.t('vagrant_zones.begin_create_datasets'))
         ## Create Boot Volume
         case config.brand
@@ -412,6 +413,7 @@ ethernets:
           dataset = "#{shrtpath}/#{disk['volume_name']}"
           sparse = '-s '
           sparse = '' unless disk['sparse']
+          puts sparse
           ## If the root data set doesn't exist create it
           addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{shrtpath} | awk '{ print $1 }' | head -n 1 || true")
           cinfo = shrtpath.to_s
