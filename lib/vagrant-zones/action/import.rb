@@ -30,8 +30,7 @@ module VagrantPlugins
           @executor = Executor::Exec.new
           image = @machine.config.vm.box
           image_url = @machine.config.vm.box_url
-          puts "Box URL"
-          puts env[:box_url]
+
           curdir = Dir.pwd
           datadir = @machine.data_dir
           @driver = @machine.provider.driver
@@ -39,6 +38,28 @@ module VagrantPlugins
           ui.info(I18n.t('vagrant_zones.meeting'))
           ui.info(I18n.t('vagrant_zones.datadir') + datadir.to_s)
           ui.info(I18n.t('vagrant_zones.detecting_box'))
+
+
+          url = Array(env[:box_url]).map do |u|
+            u = u.gsub("\\", "/")
+            if Util::Platform.windows? && u =~ /^[a-z]:/i
+              # On Windows, we need to be careful about drive letters
+              u = "file:///#{@parser.escape(u)}"
+            end
+
+            if u =~ /^[a-z0-9]+:.*$/i && !u.start_with?("file://")
+              # This is not a file URL... carry on
+              next u
+            end
+
+            # Expand the path and try to use that, if possible
+            p = File.expand_path(@parser.unescape(u.gsub(/^file:\/\//, "")))
+            p = Util::Platform.cygwin_windows_path(p)
+            next "file://#{@parser.escape(p.gsub("\\", "/"))}" if File.file?(p)
+
+            u
+          end
+          puts url
 
           # If image ends on '.zss' it's a local ZFS snapshot which should be used
           if image[-4, 4] == '.zss'
