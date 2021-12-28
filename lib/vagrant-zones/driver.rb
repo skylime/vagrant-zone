@@ -585,7 +585,7 @@ module VagrantPlugins
         puts config.cloud_init_enabled.to_s
 
         return if config.cloud_init_enabled == 'off'
-        cloudconfig = case config.cloud_init_enabled
+        cloudconfig = case config.cloud_init_enabled.to_s
                       when 'on'
                         'on'
                       when 'off'
