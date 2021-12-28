@@ -168,7 +168,7 @@ module VagrantPlugins
           b.use Builtin::BoxCheckOutdated
         end
       end
-  
+
       # This is the action that will remove a box given a name (and optionally
       # a provider). This middleware sequence is built-in to Vagrant. Plugins
       # can hook into this like any other middleware sequence.
@@ -180,10 +180,10 @@ module VagrantPlugins
 
       action_root = Pathname.new(File.expand_path('action', __dir__))
       # autoload :BoxUpdate, action_root.join('box_update')
-      autoload :BoxAdd,    "vagrant/action/builtin/box_add"
-      autoload :BoxCheckOutdated, "vagrant/action/builtin/box_check_outdated"
-      autoload :BoxRemove, "vagrant/action/builtin/box_remove"
-      autoload :BoxUpdate, "vagrant/action/builtin/box_update"
+      autoload :BoxAdd,    'vagrant/action/builtin/box_add'
+      autoload :BoxCheckOutdated, 'vagrant/action/builtin/box_check_outdated'
+      autoload :BoxRemove, 'vagrant/action/builtin/box_remove'
+      autoload :BoxUpdate, 'vagrant/action/builtin/box_update'
       autoload :Import, action_root.join('import')
       autoload :Create, action_root.join('create')
       autoload :Network, action_root.join('network')

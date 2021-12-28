@@ -53,7 +53,7 @@ Metrics/BlockLength:
 
 Metrics/ModuleLength:
  Description: 'Limit Block to 150 Characters'
- Max: 150
+ Max: 165
 
 Metrics/AbcSize:
   Description: >-

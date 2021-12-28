@@ -17,22 +17,22 @@ module VagrantPlugins
         end
 
         def terminate(env)
-          if env[:machine].state.id != :not_created
-            # If we're not supposed to destroy on error then just return
-            return unless env[:destroy_on_error]
+          return unless env[:machine].state.id != :not_created
+        
+          # If we're not supposed to destroy on error then just return
+          return unless env[:destroy_on_error]
 
             if env[:halt_on_error]
-              halt_env = env.dup
-              halt_env.delete(:interrupted)
-              halt_env[:config_validate] = false
-              env[:action_runner].run(Action.action_halt, halt_env)
-            else
-              destroy_env = env.dup
-              destroy_env.delete(:interrupted)
-              destroy_env[:config_validate] = false
-              destroy_env[:force_confirm_destroy] = true
-              env[:action_runner].run(Action.action_destroy, destroy_env)
-            end
+            halt_env = env.dup
+            halt_env.delete(:interrupted)
+            halt_env[:config_validate] = false
+            env[:action_runner].run(Action.action_halt, halt_env)
+          else
+            destroy_env = env.dup
+            destroy_env.delete(:interrupted)
+            destroy_env[:config_validate] = false
+            destroy_env[:force_confirm_destroy] = true
+            env[:action_runner].run(Action.action_destroy, destroy_env)
           end
         end
 

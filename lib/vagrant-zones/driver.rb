@@ -62,7 +62,7 @@ module VagrantPlugins
         name = @machine.name
         case config.brand
         when 'lx'
-          box  = "#{@machine.data_dir}/#{@machine.config.vm.box}"
+          box = "#{@machine.data_dir}/#{@machine.config.vm.box}"
           results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
           raise 'You appear to not have the LX Package installed in this Machine' if results.include? 'unknown brand'
         when 'bhyve'
@@ -100,7 +100,7 @@ module VagrantPlugins
         execute(true, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' ")
       end
 
-      ## Function to provide console, vnc, or webvnc access 
+      ## Function to provide console, vnc, or webvnc access
       def console(machine, command, ip, port, exit)
         detach = exit[:detach]
         kill = exit[:kill]
@@ -300,7 +300,7 @@ module VagrantPlugins
             uiinfo.info('  ' + I18n.t('vagrant_zones.vnic_setup') + vnic_name)
             strt = "#{@pfexec} zonecfg -z #{name} "
             case config.brand
-            when 'lx'              
+            when 'lx'
               shrtstr1 = %(set allowed-address=#{allowed_address}; add property (name=gateway,value="#{defrouter}"); )
               shrtstr2 = %(add property (name=ips,value="#{allowed_address}"); add property (name=primary,value="true"); end;)
               execute(false, %(#{strt}"add net; set physical=#{vnic_name}; set global-nic=auto; #{shrtstr1} #{shrtstr2}"))
@@ -337,7 +337,6 @@ module VagrantPlugins
       def create_dataset(machine, uiinfo)
         config = machine.provider_config
         name = machine.name
-        datadir = machine.data_dir
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
@@ -362,7 +361,7 @@ module VagrantPlugins
           ## Import template to boot volume
           uiinfo.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + datasetroot)
           commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss')} | #{@pfexec} zfs recv -u -v -F #{datasetroot} "
-          uiinfo.info(I18n.t('vagrant_zones.template_import_path') + "#{@machine.box.directory.join('box.zss')}")
+          uiinfo.info(I18n.t('vagrant_zones.template_import_path') + @machine.box.directory.join('box.zss').to_s)
           Util::Subprocess.new commandtransfer do |_stdout, stderr, _thread|
             uiinfo.rewriting do |uiprogress|
               uiprogress.clear_line
@@ -493,10 +492,12 @@ module VagrantPlugins
 
       ## zonecfg function for KVM
       def zonecfgkvm(_uiinfo, name, config, _zcfg)
-        return unless config.brand == "kvm"
+        return unless config.brand == 'kvm'
+
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
+        puts datasetroot
         ###### RESERVED ######
       end
 
@@ -585,25 +586,21 @@ module VagrantPlugins
         
         cloudconfig = "#{config.cloud_init_conf.to_s}"
         cloudconfig = 'on' if config.cloud_init_conf.nil? || config.cloud_init_conf
-        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cloudconfig.to_s)
-        execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig.to_s}; set type=string; end;"))
 
-        unless config.cloud_init_dnsdomain.nil?
-          uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + config.cloud_init_dnsdomain.to_s)
-          execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{config.cloud_init_dnsdomain.to_s}; set type=string; end;"))
-        end
-        unless config.cloud_init_password.nil?
-          uiinfo.info(I18n.t('vagrant_zones.setting_cloud_password') + config.cloud_init_password.to_s)
-          execute(false, %(#{zcfg}"add attr; set name=password; set value=#{config.cloud_init_password.to_s}; set type=string; end;"))
-        end
-        unless config.cloud_init_resolvers.nil?
-          uiinfo.info(I18n.t('vagrant_zones.setting_cloud_resolvers') + config.cloud_init_resolvers.to_s)
-          execute(false, %(#{zcfg}"add attr; set name=resolvers; set value=#{config.cloud_init_resolvers.to_s}; set type=string; end;"))
-        end
-        unless config.cloud_init_sshkey.nil?
-          uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + config.cloud_init_sshkey.to_s)
-          execute(false, %(#{zcfg}"add attr; set name=sshkey; set value=#{config.cloud_init_sshkey.to_s}; set type=string; end;"))
-        end
+        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cloudconfig.to_s)
+        execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
+        
+        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain') + config.cloud_init_dnsdomain.to_s) unless config.cloud_init_dnsdomain.nil?
+        execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{config.cloud_init_dnsdomain}; set type=string; end;")) unless config.cloud_init_dnsdomain.nil?
+
+        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_password') + config.cloud_init_password.to_s) unless config.cloud_init_password.nil?
+        execute(false, %(#{zcfg}"add attr; set name=password; set value=#{config.cloud_init_password}; set type=string; end;")) unless config.cloud_init_password.nil?
+
+        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_resolvers') + config.cloud_init_resolvers.to_s) unless config.cloud_init_resolvers.nil?
+        execute(false, %(#{zcfg}"add attr; set name=resolvers; set value=#{config.cloud_init_resolvers}; set type=string; end;")) unless config.cloud_init_resolvers.nil?
+
+        uiinfo.info(I18n.t('vagrant_zones.setting_cloud_ssh_key') + config.cloud_init_sshkey.to_s) unless config.cloud_init_sshkey.nil?
+        execute(false, %(#{zcfg}"add attr; set name=sshkey; set value=#{config.cloud_init_sshkey}; set type=string; end;")) unless config.cloud_init_sshkey.nil?
       end
 
       # This helps us set the zone configurations for the zone
