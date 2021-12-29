@@ -772,9 +772,11 @@ ethernets:
         case config.brand
         when 'bhyve'
           return if config.cloud_init_enabled
+          
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-            puts "test1"
+            bcheck = config.bcheck_string
             bcheck = 'Last login: ' if config.bcheck_string.nil?
+            puts bcheck
             zlogin_write.printf("\n")
             puts "test2"
             if zlogin_read.expect(/#{bcheck}/)
