@@ -185,7 +185,7 @@ module VagrantPlugins
       end
 
       action_root = Pathname.new(File.expand_path('action', __dir__))
-      #autoload :BoxAdd, action_root.join('box_add')
+      autoload :BoxAdd, action_root.join('box_add')
       autoload :BoxCheckOutdated, 'vagrant/action/builtin/box_check_outdated'
       autoload :BoxRemove, 'vagrant/action/builtin/box_remove'
       autoload :BoxUpdate, 'vagrant/action/builtin/box_update'
