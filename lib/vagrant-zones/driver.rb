@@ -218,6 +218,9 @@ module VagrantPlugins
         regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
         mac = opts[:mac] unless opts[:mac].nil?
         mac = 'auto' unless mac.match(regex)
+        puts opts[:mac]
+        puts mac
+        mac
       end
 
       # This Sanitizes the IP Address
