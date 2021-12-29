@@ -221,7 +221,7 @@ module VagrantPlugins
         mac
       end
 
-      # This Sanitizes the IP Address
+      # This Sanitizes the IP Address to set
       def ipaddress(opts)
         ip = if opts[:ip].empty?
                nil
@@ -230,7 +230,7 @@ module VagrantPlugins
              end
       end
 
-
+      ## If DHCP and Zlogin, get the IP address
       def get_ip_address(machine)
         config = @machine.provider_config
         name = @machine.name
@@ -298,27 +298,16 @@ module VagrantPlugins
           next unless adaptertype.to_s == 'public_network'
 
           ip = ipaddress(opts)
-          puts ip
           allowed_address = "#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
-          puts allowed_address
           defrouter = opts[:gateway].to_s
           mac = macaddress(opts)
-          puts mac
           servers = dnsservers()
-          puts servers
           vnic_name = "vnic#{nictype(opts)}#{vtype(@machine)}_#{config.partition_id}_#{opts[:nic_number]}"
 
-          case state
-          # Create the VNIC
-          when 'create'
-            zoneniccreate(uiinfo, vnic_name, opts, mac)
-          when 'delete'
-            zonenicdel(uiinfo, vnic_name)
-          when 'config'
-            zonecfgnicconfig(uiinfo, vnic_name, config, name, allowed_address, defrouter)
-          when 'setup'
-            zonenicstpzlogin(uiinfo, vnic_name, opts, mac, ip, defrouter, servers, @machine)
-          end
+          zoneniccreate(uiinfo, vnic_name, opts, mac) if state == 'create'
+          zonenicdel(uiinfo, vnic_name) if state == 'delete'
+          zonecfgnicconfig(uiinfo, vnic_name, config, name, allowed_address, defrouter) if state == 'config'
+          zonenicstpzloginsetup(uiinfo, vnic_name, opts, mac, ip, defrouter, servers) if state == 'setup'
         end
         #####################################################################################
       end
@@ -673,7 +662,7 @@ module VagrantPlugins
       end
 
       ## Setup vnics for Zones using Zlogin
-      def zonenicstpzlogin(uiinfo, vnic_name, opts, mac, ip, defrouter, servers, machine)
+      def zonenicstpzloginsetup(uiinfo, vnic_name, opts, mac, ip, defrouter, servers)
         ## Remove old installer netplan config
         #uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
         #zlogin(machine, 'rm -rf /etc/netplan/*.yaml')
