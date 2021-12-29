@@ -785,7 +785,7 @@ ethernets:
             puts "test22"
             uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'") if zlogin_read.expect(/#{lcheck}/)
             puts "test3"
-            uiinfo.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{almatch}'") if zlogin_read.expect(almatch)
+            uiinfo.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{almatch}'") if zlogin_read.expect(/#{almatch}/)
             Process.kill('HUP', pid)
           end
 ####################################################
