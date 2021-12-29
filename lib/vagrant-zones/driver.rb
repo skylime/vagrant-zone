@@ -199,6 +199,37 @@ module VagrantPlugins
                    end
       end
 
+      # This Sanitizes the DNS Records
+      def dnsservers()
+        config = @machine.provider_config
+        servers = []
+        unless config.dns&.nil?
+          config.dns.each do |server|
+            servers.append(server)
+          end
+        else
+          servers = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
+        end
+        servers
+      end
+
+      # This Sanitizes the Mac Address
+      def macaddress(opts)
+        regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
+        mac = opts[:mac] unless opts[:mac].nil?
+        mac = 'auto' unless mac.match(regex)
+      end
+
+      # This Sanitizes the IP Address
+      def ipaddress(opts)
+        ip = if opts[:ip].empty?
+               nil
+             else
+              opts[:ip].gsub(/\t/, '')
+             end
+      end
+
+
       def get_ip_address(machine)
         config = @machine.provider_config
         name = @machine.name
@@ -253,38 +284,27 @@ module VagrantPlugins
 
       ## Manage Network Interfaces
       def network(uiinfo, state)
-        config = @machine.provider_config
-        name = @machine.name
         if state == 'setup'
           ## Remove old installer netplan config
           uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
           zlogin(@machine, 'rm -rf /etc/netplan/*.yaml')
         end
-
+        
+        #####################################################################################
+        config = @machine.provider_config
+        name = @machine.name
         @machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
 
-          ip = opts[:ip].to_s
+          ip = ipaddress(opts)
           puts ip
           allowed_address = "#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
-          ip = if ip.empty?
-                 nil
-               else
-                 ip.gsub(/\t/, '')
-               end
-          puts ip
+          puts allowed_address
           defrouter = opts[:gateway].to_s
-          regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
-          mac = opts[:mac] unless opts[:mac].nil?
-          mac = 'auto' unless mac.match(regex)
-          dns = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
-          servers = []
-          unless config.dns&.nil?
-            config.dns.each do |server|
-              servers.append(server)
-            end
-          end
-          puts servers.inspect
+          mac = macaddress(opts)
+          puts mac
+          servers = dnsservers()
+          puts servers
           vnic_name = "vnic#{nictype(opts)}#{vtype(@machine)}_#{config.partition_id}_#{opts[:nic_number]}"
 
           case state
@@ -299,6 +319,7 @@ module VagrantPlugins
             zonenicstpzlogin(uiinfo, vnic_name, opts, mac, ip, defrouter, servers, @machine)
           end
         end
+        #####################################################################################
       end
     
       ## Delete vnics for Zones
