@@ -759,33 +759,33 @@ ethernets:
         name = @machine.name
         config = @machine.provider_config
         responses = []
+        bcheck = config.bcheck_string
+        bcheck = 'Last login: ' if config.bcheck_string.nil?
+        lcheck = /:~#/
+        
         case config.brand
         when 'bhyve'
           return if config.cloud_init_enabled
 ####################################################
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-            bcheck = config.bcheck_string
-            bcheck = 'Last login: ' if config.bcheck_string.nil?
-            puts bcheck
             zlogin_write.printf("\n")
-            if zlogin_read.expect(/ OK /)
+            if zlogin_read.expect(/#{bcheck}/) || zlogin_read.expect(/ OK /)
               uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{bcheck}'")
             end
             Process.kill('HUP', pid)
           end
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             zlogin_write.printf("\n")
-            puts "test22"
-            if zlogin_read.expect(/:~#/)
-              puts "test44"
-              uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{bcheck}'")
+            if zlogin_read.expect(lcheck)
+              uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'")
+              ## Code to try to login with username and password
+              #almatch = config.almatchstring
+              #almatch = 'login: ' if config.almatchstring.nil?
+              #uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access_auto_login')) if responses[-1].to_s.match(/#{almatch}/)
             end
             Process.kill('HUP', pid)
           end
-
 ####################################################
-
-          
         when 'lx'
           unless user_exists?(@machine, config.vagrant_user)
             zlogincommand(@machine, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
