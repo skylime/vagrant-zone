@@ -241,7 +241,6 @@ module VagrantPlugins
         config = @machine.provider_config
         vnic_name = "vnic#{nictype(opts)}#{vtype(@machine)}_#{config.partition_id}_#{opts[:nic_number]}"
       end
-
       
       ## If DHCP and Zlogin, get the IP address
       def get_ip_address(machine)
@@ -303,10 +302,8 @@ module VagrantPlugins
           uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
           zlogin(@machine, 'rm -rf /etc/netplan/*.yaml')
         end
-        
         #####################################################################################
         config = @machine.provider_config
-        name = @machine.name
         @machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
 
@@ -315,10 +312,10 @@ module VagrantPlugins
           defrouter = opts[:gateway].to_s
           mac = macaddress(opts)
           vnic_name = vname(opts)
-
           zoneniccreate(uiinfo, vnic_name, opts, mac) if state == 'create'
           zonenicdel(uiinfo, vnic_name) if state == 'delete'
-          zonecfgnicconfig(uiinfo, vnic_name, config, name, allowed_address, defrouter) if state == 'config'
+          zonecfgnicconfig(uiinfo, vnic_name, config, @machine.name, allowed_address, defrouter) if state == 'config'
+          #zonecfgnicconfig(uiinfo, name, config, zcfg)
           zonenicstpzloginsetup(uiinfo, vnic_name, opts, mac, ip, defrouter) if state == 'setup'
         end
         #####################################################################################
@@ -668,8 +665,7 @@ module VagrantPlugins
         ## Nic Configurations
         uiinfo.info(I18n.t('vagrant_zones.networking_int_add'))
         network(uiinfo, 'config')
-        #zonecfgnicconfig(uiinfo, vnic_name, config, name, allowed_address, defrouter)
-        #zonecfgnicconfig(uiinfo, vnic_name, config, name, allowed_address, defrouter)
+        #zonecfgnicconfig(uiinfo, name, config, zcfg)
         uiinfo.info(I18n.t('vagrant_zones.exporting_bhyve_zone_config_gen'))
       end
 
@@ -762,6 +758,7 @@ ethernets:
         config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.network_setup')) if config.brand == 'bhyve' && config.cloud_init_enabled == 'off'
         network(uiinfo, 'setup') if config.brand == 'bhyve' && config.cloud_init_enabled == 'off'
+        #zonenicstpzloginsetup(uiinfo, vnic_name, opts, mac, ip, defrouter)
       end
 
       # This helps up wait for the boot of the vm by using zlogin
@@ -772,9 +769,11 @@ ethernets:
         responses = []
         case config.brand
         when 'bhyve'
+          puts "test1"
           return if config.cloud_init_enabled
-
+          puts "test2"
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+            puts "test1"
             bcheck = 'Last login: ' if config.bcheck_string.nil?
             zlogin_write.printf("\n")
             if zlogin_read.expect(/#{bcheck}/)
@@ -1217,6 +1216,7 @@ ethernets:
         state = 'delete'
         id.info(I18n.t('vagrant_zones.networking_int_remove'))
         network(id, state)
+        #zonenicdel(uiinfo, vnic_name)
       end
     end
   end
