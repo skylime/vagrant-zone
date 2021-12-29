@@ -770,12 +770,11 @@ ethernets:
             zlogin_write.printf("\n")
             puts "test2"
             if zlogin_read.expect(/ OK /)
-              puts "test3"
-              uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{config.bcheck_string}'")
+              puts "test4"
+              uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{bcheck}'")
               Timeout.timeout(config.setup_wait) do
                 loop do
                   zlogin_read.expect(/\n/) { |line| responses.push line }
-                  puts "test4"
                   break if responses[-1].to_s.match(/:~#/)
 
                   ## Code to try to login with username and password
