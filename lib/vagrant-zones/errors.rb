@@ -41,8 +41,20 @@ module VagrantPlugins
         error_key(:not_yet_implemented)
       end
 
-      class InvalidBrand < VagrantZonesError
-        error_key(:invalid_brand)
+      class TimeoutHalt < VagrantZonesError
+        error_key(:halt_timeout)
+      end
+
+      class InvalidbhyveBrand < VagrantZonesError
+        error_key(:invalidbhyve_brand)
+      end
+
+      class InvalidLXBrand < VagrantZonesError
+        error_key(:invalidLX_brand)
+      end
+
+      class ConsoleFailed < VagrantZonesError
+        error_key(:console_failed_exit)
       end
     end
   end

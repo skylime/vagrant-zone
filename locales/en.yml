@@ -8,8 +8,16 @@ en:
     errors:
       not_yet_implemented: |-
         Your configuration is not yet implemented
-      invalid_brand: |-
-        Invalid brand detected
+      halt_timeout: |-
+        Zone failed to halt in alloted time after waiting for
+      invalidLX_brand: |-
+        Invalid LX brand configuration detected
+      invalidbhyve_brand: |-
+        Invalid bhyve configuration detected
+      console_failed: |-
+        Failed to access console
+      console_failed_exit: |-
+        Exiting
       execute_error: |-
         Failed when execute commands
       timeout_error: |-

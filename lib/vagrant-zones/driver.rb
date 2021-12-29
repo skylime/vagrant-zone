@@ -64,10 +64,10 @@ module VagrantPlugins
         when 'lx'
           box = "#{@machine.data_dir}/#{@machine.config.vm.box}"
           results = execute(false, "#{@pfexec} zoneadm -z #{name} install -s #{box}")
-          raise 'You appear to not have the LX Package installed in this Machine' if results.include? 'unknown brand'
+          raise Errors::InvalidLXBrand if results.include? 'unknown brand'
         when 'bhyve'
           results = execute(false, "#{@pfexec} zoneadm -z #{name} install")
-          raise 'You appear to not have the bhyve Package installed in this Machine' if results.include? 'unknown brand'
+          raise Errors::InvalidbhyveBrand if results.include? 'unknown brand'
         when 'kvm' || 'illumos'
           raise Errors::NotYetImplemented
         end
@@ -299,7 +299,7 @@ module VagrantPlugins
       def network(uiinfo, state)
         uiinfo.info(I18n.t('vagrant_zones.networking_int_add')) if state == 'setup'
         uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))  if state == 'setup'
-        zlogin(@machine, 'rm -rf /etc/netplan/*.yaml') if state == 'setup'
+        zlogin(uuinfo, 'rm -rf /etc/netplan/*.yaml') if state == 'setup'
         config = @machine.provider_config
         @machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
@@ -686,9 +686,9 @@ ethernets:
     addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
         cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
         infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
-        uiinfo.info(infomessage) if zlogin(@machine, cmd)
+        uiinfo.info(infomessage) if zlogin(uuinfo, cmd)
         ## Apply the Configuration
-        uiinfo.info(I18n.t('vagrant_zones.netplan_applied')) if zlogin(@machine, 'netplan apply')
+        uiinfo.info(I18n.t('vagrant_zones.netplan_applied')) if zlogin(uuinfo, 'netplan apply')
       end
 
       # This ensures the zone is safe to boot
@@ -830,19 +830,20 @@ ethernets:
       end
 
       # This gives us a console to the VM
-      def zlogin(machine, cmd)
+      def zlogin(uuinfo, cmd)
         name = @machine.name
         config = @machine.provider_config
-        responses = []
+        rsp = []
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           zlogin_read.expect(/\n/) { zlogin_write.printf("#{cmd} \; echo \"Error Code: $?\"\n") }
           Timeout.timeout(config.setup_wait) do
             loop do
-              zlogin_read.expect(/\r\n/) { |line| responses.push line }
-              break if responses[-1].to_s.match(/Error Code: 0/)
+              zlogin_read.expect(/\r\n/) { |line| rsp.push line }
+              break if rsp[-1].to_s.match(/Error Code: 0/)
 
-              errormessage = "==> #{name} ==> Command ==> #{cmd} \nFailed with ==> #{responses[-1]}"
-              raise errormessage if responses[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
+              em = "#{cmd} \nFailed with ==> #{rsp[-1]}"
+              uiinfo.info(I18n.t('vagrant_zones.console_failed') + em) if rsp[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
+              raise Errors::ConsoleFailed if rsp[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
             end
           end
           Process.kill('HUP', pid)
@@ -1178,7 +1179,7 @@ ethernets:
               execute(false, "#{@pfexec} zoneadm -z #{name} halt")
             end
           rescue Timeout::Error
-            raise "==> #{name}: VM failed to halt in alloted time #{config.setup_wait} after waiting for #{config.clean_shutdown_time}"
+            raise Errors::TimeoutHalt
           end
         end
       end
