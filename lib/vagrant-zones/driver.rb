@@ -300,7 +300,6 @@ module VagrantPlugins
         uiinfo.info(I18n.t('vagrant_zones.networking_int_add')) if state == 'setup'
         uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))  if state == 'setup'
         zlogin(@machine, 'rm -rf /etc/netplan/*.yaml') if state == 'setup'
-        #####################################################################################
         config = @machine.provider_config
         @machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
@@ -310,7 +309,6 @@ module VagrantPlugins
           zonenicstpzloginsetup(uiinfo, opts) if state == 'setup'
           zonenicdel(uiinfo, opts) if state == 'delete'
         end
-        #####################################################################################
       end
     
       ## Delete vnics for Zones
@@ -617,7 +615,7 @@ module VagrantPlugins
         allowed_address = allowedaddress(opts)
         defrouter = opts[:gateway].to_s
         vnic_name = vname(opts)
-
+        config = @machine.provider_config
         uiinfo.info(" #{I18n.t('vagrant_zones.vnic_setup')}#{vnic_name}")
         strt = "#{@pfexec} zonecfg -z #{@machine.name} "
         cie = config.cloud_init_enabled
