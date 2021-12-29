@@ -35,7 +35,7 @@ module VagrantPlugins
       end
 
       def state(machine)
-        name = machine.name
+        name = @machine.name
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
         case vm_state
         when 'running'
@@ -58,7 +58,7 @@ module VagrantPlugins
 
       ## Begin installation for zone
       def install(machine, uiinfo)
-        config = machine.provider_config
+        config = @machine.provider_config
         name = @machine.name
         case config.brand
         when 'lx'
@@ -79,10 +79,10 @@ module VagrantPlugins
         case control
         when 'restart'
           command = 'sudo shutdown -r'
-          ssh_run_command(machine, command)
+          ssh_run_command(@machine, command)
         when 'shutdown'
           command = 'sudo init 0 || true'
-          ssh_run_command(machine, command)
+          ssh_run_command(@machine, command)
         else
           puts 'No Command specified'
         end
@@ -90,12 +90,12 @@ module VagrantPlugins
 
       ## Run commands over SSH instead of ZLogin
       def ssh_run_command(machine, command)
-        ip = get_ip_address(machine)
-        user = user(machine)
-        key = userprivatekeypath(machine).to_s
-        password = vagrantuserpass(machine).to_s
-        port = sshport(machine).to_s
-        port = 22 if sshport(machine).to_s.nil?
+        ip = get_ip_address(@machine)
+        user = user(@machine)
+        key = userprivatekeypath(@machine).to_s
+        password = vagrantuserpass(@machine).to_s
+        port = sshport(@machine).to_s
+        port = 22 if sshport(@machine).to_s.nil?
         puts "#{password} not used for this connection at this time"
         execute(true, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' ")
       end
@@ -104,8 +104,8 @@ module VagrantPlugins
       def console(machine, command, ip, port, exit)
         detach = exit[:detach]
         kill = exit[:kill]
-        name = machine.name
-        config = machine.provider_config
+        name = @machine.name
+        config = @machine.provider_config
         if port.nil?
           port = if config.consoleport.nil?
                    ''
@@ -156,14 +156,14 @@ module VagrantPlugins
 
       ## Boot the Machine
       def boot(machine, uiinfo)
-        name = machine.name
+        name = @machine.name
         uiinfo.info(I18n.t('vagrant_zones.starting_zone'))
         execute(false, "#{@pfexec} zoneadm -z #{name} boot")
       end
 
       # This filters the firmware
       def vtype(machine)
-        config = machine.provider_config
+        config = @machine.provider_config
         case config.vm_type
         when /template/
           '1'
@@ -200,9 +200,9 @@ module VagrantPlugins
       end
 
       def get_ip_address(machine)
-        config = machine.provider_config
+        config = @machine.provider_config
         name = @machine.name
-        machine.config.vm.networks.each do |adaptertype, opts|
+        @machine.config.vm.networks.each do |adaptertype, opts|
           responses = []
           nictype = if opts[:nictype].nil?
                       'external'
@@ -222,7 +222,7 @@ module VagrantPlugins
                        'h'
                      end
           if opts[:dhcp] && opts[:managed] && adaptertype.to_s == 'public_network'
-            vnic_name = "vnic#{nic_type}#{vtype(machine)}_#{config.partition_id}_#{opts[:nic_number]}"
+            vnic_name = "vnic#{nic_type}#{vtype(@machine)}_#{config.partition_id}_#{opts[:nic_number]}"
             PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
               command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1 | awk '{ print $2 }' | cut -f1 -d\"/\" \n"
               zlogin_read.expect(/\n/) { zlogin_write.printf(command) }
@@ -258,7 +258,7 @@ module VagrantPlugins
         if state == 'setup'
           ## Remove old installer netplan config
           uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
-          zlogin(machine, 'rm -rf /etc/netplan/*.yaml')
+          zlogin(@machine, 'rm -rf /etc/netplan/*.yaml')
         end
 
         @machine.config.vm.networks.each do |adaptertype, opts|
@@ -887,13 +887,13 @@ ethernets:
 
       # This filters the rdpport
       def rdpport(machine)
-        config = machine.provider_config
+        config = @machine.provider_config
         config.rdpport.to_s unless config.rdpport.to_s.nil?
       end
 
       # This filters the vagrantuserpass
       def vagrantuserpass(machine)
-        config = machine.provider_config
+        config = @machine.provider_config
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
 
@@ -1116,9 +1116,9 @@ ethernets:
 
       # This helps us create ZFS Snapshots
       def zfs(machine, uiinfo, job, opts)
-        name = machine.name
+        name = @machine.name
         ## get disks configurations
-        config = machine.provider_config
+        config = @machine.provider_config
         bootconfigs = config.boot
         datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}/#{bootconfigs['volume_name']}"
         datasets = []
@@ -1143,8 +1143,8 @@ ethernets:
 
       # Halts the Zone, first via shutdown command, then a halt.
       def halt(machine, uiinfo)
-        name = machine.name
-        config = machine.provider_config
+        name = @machine.name
+        config = @machine.provider_config
 
         ## Check state in zoneadm
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
@@ -1167,7 +1167,7 @@ ethernets:
 
       # Destroys the Zone configurations and path
       def destroy(machine, id)
-        name = machine.name
+        name = @machine.name
 
         id.info(I18n.t('vagrant_zones.leaving'))
         id.info(I18n.t('vagrant_zones.destroy_zone'))
