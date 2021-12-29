@@ -307,19 +307,10 @@ module VagrantPlugins
         @machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
 
-          ip = ipaddress(opts)
-          allowed_address = allowedaddress(opts)
-          defrouter = opts[:gateway].to_s
-          mac = macaddress(opts)
-          vnic_name = vname(opts)
-
-          
-
-          zoneniccreate(uiinfo, vnic_name, opts, mac) if state == 'create'
-          zonenicdel(uiinfo, vnic_name) if state == 'delete'
-          zonecfgnicconfig(uiinfo, vnic_name, config, @machine.name, allowed_address, defrouter) if state == 'config'
-          #zonecfgnicconfig(uiinfo, name, config)
-          zonenicstpzloginsetup(uiinfo, vnic_name, opts, mac, ip, defrouter) if state == 'setup'
+          zoneniccreate(uiinfo, opts) if state == 'create'
+          zonecfgnicconfig(uiinfo, opts) if state == 'config'
+          zonenicstpzloginsetup(uiinfo, opts) if state == 'setup'
+          zonenicdel(uiinfo, opts) if state == 'delete'
         end
         #####################################################################################
       end
@@ -334,8 +325,10 @@ module VagrantPlugins
       end
 
       ## Create vnics for Zones
-      def zoneniccreate(uiinfo, vnic_name, opts, mac)
-        ## create loop 
+      def zoneniccreate(uiinfo, opts)
+        allowed_address = allowedaddress(opts)
+        mac = macaddress(opts)
+        vnic_name = vname(opts)
         if opts[:vlan].nil?
           execute(false, "#{@pfexec} dladm create-vnic -l #{opts[:bridge]} -m #{mac} #{vnic_name}")
         else
@@ -622,8 +615,11 @@ module VagrantPlugins
       end
 
       ## zonecfg function for for Networking
-      def zonecfgnicconfig(uiinfo, vnic_name, config, name, allowed_address, defrouter)
-        ## Create Loop for Networks        
+      def zonecfgnicconfig(uiinfo, opts)
+        allowed_address = allowedaddress(opts)
+        defrouter = opts[:gateway].to_s
+        vnic_name = vname(opts)
+
         uiinfo.info(" #{I18n.t('vagrant_zones.vnic_setup')}#{vnic_name}")
         strt = "#{@pfexec} zonecfg -z #{name} "
         cie = config.cloud_init_enabled
@@ -667,16 +663,16 @@ module VagrantPlugins
         ## Nic Configurations
         uiinfo.info(I18n.t('vagrant_zones.networking_int_add'))
         network(uiinfo, 'config')
-        #zonecfgnicconfig(uiinfo, name, config, zcfg)
         uiinfo.info(I18n.t('vagrant_zones.exporting_bhyve_zone_config_gen'))
       end
 
       ## Setup vnics for Zones using Zlogin
-      def zonenicstpzloginsetup(uiinfo, vnic_name, opts, mac, ip, defrouter)
-        ## Remove old installer netplan config
-        #uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
-        #zlogin(machine, 'rm -rf /etc/netplan/*.yaml')
-        ## create loop 
+      def zonenicstpzloginsetup(uiinfo, opts)
+        ip = ipaddress(opts)
+        defrouter = opts[:gateway].to_s
+        mac = macaddress(opts)
+        vnic_name = vname(opts)
+
         uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
         servers = dnsservers()
         netplan = %(network:
@@ -760,7 +756,6 @@ ethernets:
         config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.network_setup')) if config.brand == 'bhyve' && config.cloud_init_enabled == 'off'
         network(uiinfo, 'setup') if config.brand == 'bhyve' && config.cloud_init_enabled == 'off'
-        #zonenicstpzloginsetup(uiinfo, vnic_name, opts, mac, ip, defrouter)
       end
 
       # This helps up wait for the boot of the vm by using zlogin
@@ -772,7 +767,7 @@ ethernets:
         case config.brand
         when 'bhyve'
           return if config.cloud_init_enabled
-          
+
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             bcheck = config.bcheck_string
             bcheck = 'Last login: ' if config.bcheck_string.nil?
@@ -1221,7 +1216,6 @@ ethernets:
         state = 'delete'
         id.info(I18n.t('vagrant_zones.networking_int_remove'))
         network(id, state)
-        #zonenicdel(uiinfo, vnic_name)
       end
     end
   end
