@@ -312,8 +312,8 @@ module VagrantPlugins
       end
     
       ## Delete vnics for Zones
-      def zonenicdel(uiinfo, vnic_name)
-        ## create loop 
+      def zonenicdel(uiinfo, opts)
+        vnic_name = vname(opts)
         vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
         uiinfo.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name) if vnic_configured == vnic_name.to_s
         execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
