@@ -751,7 +751,7 @@ ethernets:
         config = @machine.provider_config
         puts config.cloud_init_enabled
         uiinfo.info(I18n.t('vagrant_zones.network_setup')) if config.brand == 'bhyve' && config.cloud_init_enabled == 'off' || false
-        network(uiinfo, 'setup') if config.brand == 'bhyve' && config.cloud_init_enabled == 'off' || false
+        network(uiinfo, 'setup') if config.brand == 'bhyve' 
       end
 
       # This helps up wait for the boot of the vm by using zlogin
