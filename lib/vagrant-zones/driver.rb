@@ -760,7 +760,7 @@ ethernets:
         responses = []
         bcheck = config.bcheck_string
         bcheck = 'Last login: ' if config.bcheck_string.nil?
-        lcheck = /:~#/
+        lcheck = ":~#"
         almatch = config.almatchstring
         almatch = 'login: ' if config.almatchstring.nil?
         uiinfo.info(I18n.t('vagrant_zones.wait_for_boot') + lcheck)
@@ -769,14 +769,20 @@ ethernets:
           return if config.cloud_init_enabled
 ####################################################
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+            puts "test1"
             zlogin_write.printf("\n")
+            puts "test12"
             uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{bcheck}'") if zlogin_read.expect(/#{bcheck}/ || / OK /)
-            puts "test"
+            puts "test123"
             Process.kill('HUP', pid)
           end
+          puts "test1.5"
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+            puts "test21"
             zlogin_write.printf("\n")
-            uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'") if zlogin_read.expect(lcheck)
+            puts "test22"
+            uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'") if zlogin_read.expect(/#{lcheck}/)
+            puts "test3"
             uiinfo.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{almatch}'") if zlogin_read.expect(almatch)
             Process.kill('HUP', pid)
           end
