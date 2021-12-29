@@ -769,7 +769,7 @@ ethernets:
 ####################################################
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             zlogin_write.printf("\n")
-            if zlogin_read.expect(/#{bcheck}/) || zlogin_read.expect(/ OK /)
+            if zlogin_read.expect(/#{bcheck}/ || / OK /)
               uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{bcheck}'")
             end
             Process.kill('HUP', pid)
