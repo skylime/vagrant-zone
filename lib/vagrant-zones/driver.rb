@@ -755,7 +755,6 @@ ethernets:
 
       # This helps up wait for the boot of the vm by using zlogin
       def waitforboot(machine, uiinfo)
-        uiinfo.info(I18n.t('vagrant_zones.wait_for_boot'))
         name = @machine.name
         config = @machine.provider_config
         responses = []
@@ -764,6 +763,7 @@ ethernets:
         lcheck = /:~#/
         almatch = config.almatchstring
         almatch = 'login: ' if config.almatchstring.nil?
+        uiinfo.info(I18n.t('vagrant_zones.wait_for_boot') + lcheck)
         case config.brand
         when 'bhyve'
           return if config.cloud_init_enabled
