@@ -769,7 +769,7 @@ ethernets:
             puts bcheck
             zlogin_write.printf("\n")
             puts "test2"
-            if zlogin_read.expect(/OK/)
+            if zlogin_read.expect(/ OK /)
               puts "test3"
               uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{config.bcheck_string}'")
               Timeout.timeout(config.setup_wait) do
