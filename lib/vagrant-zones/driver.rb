@@ -749,7 +749,6 @@ module VagrantPlugins
       # This helps us set up the networking of the VM
       def setup(machine, uiinfo)
         config = @machine.provider_config
-        puts config.cloud_init_enabled
         uiinfo.info(I18n.t('vagrant_zones.network_setup')) if config.brand && !config.cloud_init_enabled
         network(uiinfo, 'setup') if config.brand == 'bhyve' && !config.cloud_init_enabled 
       end
@@ -767,6 +766,8 @@ module VagrantPlugins
         when 'bhyve'
           return if config.cloud_init_enabled
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+            zlogin_write.printf("\n")
+            uiinfo.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{almatch}'") if zlogin_read.expect(/#{almatch}/)
             zlogin_write.printf("\n")
             uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'") if zlogin_read.expect(/#{lcheck}/)
             Process.kill('HUP', pid)
