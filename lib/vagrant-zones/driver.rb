@@ -261,7 +261,7 @@ module VagrantPlugins
           zlogin(machine, 'rm -rf /etc/netplan/*.yaml')
         end
 
-        machine.config.vm.networks.each do |adaptertype, opts|
+        @machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
 
           ip = opts[:ip].to_s
@@ -285,7 +285,7 @@ module VagrantPlugins
             end
           end
           puts servers.inspect
-          vnic_name = "vnic#{nictype(opts)}#{vtype(machine)}_#{config.partition_id}_#{opts[:nic_number]}"
+          vnic_name = "vnic#{nictype(opts)}#{vtype(@machine)}_#{config.partition_id}_#{opts[:nic_number]}"
 
           case state
           # Create the VNIC
@@ -296,7 +296,7 @@ module VagrantPlugins
           when 'config'
             zonecfgnicconfig(uiinfo, vnic_name, config, name, allowed_address, defrouter)
           when 'setup'
-            zonenicstpzlogin(uiinfo, vnic_name, opts, mac, ip, defrouter, servers, machine)
+            zonenicstpzlogin(uiinfo, vnic_name, opts, mac, ip, defrouter, servers, @machine)
           end
         end
       end
@@ -324,8 +324,8 @@ module VagrantPlugins
 
       # This helps us create all the datasets for the zone
       def create_dataset(machine, uiinfo)
-        config = machine.provider_config
-        name = machine.name
+        config = @machine.provider_config
+        name = @machine.name
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
@@ -387,8 +387,8 @@ module VagrantPlugins
 
       # This helps us delete any associated datasets of the zone
       def delete_dataset(machine, uiinfo)
-        config = machine.provider_config
-        name = machine.name
+        config = @machine.provider_config
+        name = @machine.name
         # datadir = machine.data_dir
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
@@ -461,7 +461,7 @@ module VagrantPlugins
         return unless config.brand == 'lx'
 
         uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
-        machine.config.vm.networks.each do |adaptertype, opts|
+        @machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
 
           @ip = opts[:ip].to_s
@@ -673,15 +673,15 @@ ethernets:
     addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
         cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
         infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
-        uiinfo.info(infomessage) if zlogin(machine, cmd)
+        uiinfo.info(infomessage) if zlogin(@machine, cmd)
         ## Apply the Configuration
-        uiinfo.info(I18n.t('vagrant_zones.netplan_applied')) if zlogin(machine, 'netplan apply')
+        uiinfo.info(I18n.t('vagrant_zones.netplan_applied')) if zlogin(@machine, 'netplan apply')
       end
 
       # This ensures the zone is safe to boot
       def check_zone_support(machine, uiinfo)
         uiinfo.info(I18n.t('vagrant_zones.preflight_checks'))
-        config = machine.provider_config
+        config = @machine.provider_config
         ## Detect if Virtualbox is Running
         ## LX, KVM, and Bhyve cannot run conncurently with Virtualbox:
         ### https://illumos.topicbox-beta.com/groups/omnios-discuss/Tce3bbd08cace5349-M5fc864e9c1a7585b94a7c080
@@ -735,7 +735,7 @@ ethernets:
 
       # This helps us set up the networking of the VM
       def setup(machine, uiinfo)
-        config = machine.provider_config
+        config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.network_setup')) if config.brand == 'bhyve' && config.cloud_init_enabled == 'off'
         network(uiinfo, 'setup') if config.brand == 'bhyve' && config.cloud_init_enabled == 'off'
       end
@@ -744,7 +744,7 @@ ethernets:
       def waitforboot(machine, uiinfo)
         uiinfo.info(I18n.t('vagrant_zones.wait_for_boot'))
         name = @machine.name
-        config = machine.provider_config
+        config = @machine.provider_config
         responses = []
         case config.brand
         when 'bhyve'
@@ -770,14 +770,14 @@ ethernets:
             Process.kill('HUP', pid)
           end
         when 'lx'
-          unless user_exists?(machine, config.vagrant_user)
-            zlogincommand(machine, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
-            zlogincommand(machine, %('echo nameserver 1.0.0.1 >> /etc/resolv.conf'))
-            zlogincommand(machine, 'useradd -m -s /bin/bash -U vagrant')
-            zlogincommand(machine, 'echo "vagrant ALL=(ALL:ALL) NOPASSWD:ALL" \\> /etc/sudoers.d/vagrant')
-            zlogincommand(machine, 'mkdir -p /home/vagrant/.ssh')
+          unless user_exists?(@machine, config.vagrant_user)
+            zlogincommand(@machine, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
+            zlogincommand(@machine, %('echo nameserver 1.0.0.1 >> /etc/resolv.conf'))
+            zlogincommand(@machine, 'useradd -m -s /bin/bash -U vagrant')
+            zlogincommand(@machine, 'echo "vagrant ALL=(ALL:ALL) NOPASSWD:ALL" \\> /etc/sudoers.d/vagrant')
+            zlogincommand(@machine, 'mkdir -p /home/vagrant/.ssh')
             key_url = 'https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant.pub'
-            zlogincommand(machine, "curl #{key_url} -O /home/vagrant/.ssh/authorized_keys")
+            zlogincommand(@machine, "curl #{key_url} -O /home/vagrant/.ssh/authorized_keys")
 
             id_rsa = 'https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant'
             command = "#{@pfexec} curl #{id_rsa} -O id_rsa"
@@ -789,15 +789,15 @@ ethernets:
               end
             end
             uiinfo.clear_line
-            zlogincommand(machine, 'chown -R vagrant:vagrant /home/vagrant/.ssh')
-            zlogincommand(machine, 'chmod 600 /home/vagrant/.ssh/authorized_keys')
+            zlogincommand(@machine, 'chown -R vagrant:vagrant /home/vagrant/.ssh')
+            zlogincommand(@machine, 'chmod 600 /home/vagrant/.ssh/authorized_keys')
           end
         end
       end
 
       # This checks if the user exists on the VM, usually for LX zones
       def user_exists?(machine, user = 'vagrant')
-        name = machine.name
+        name = @machine.name
         ret = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
         return true if ret.zero?
 
@@ -807,14 +807,14 @@ ethernets:
 
       # This gives the user a terminal console
       def zlogincommand(machine, cmd)
-        name = machine.name
+        name = @machine.name
         execute(false, "#{@pfexec} zlogin #{name} #{cmd}")
       end
 
       # This gives us a console to the VM
       def zlogin(machine, cmd)
-        name = machine.name
-        config = machine.provider_config
+        name = @machine.name
+        config = @machine.provider_config
         responses = []
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           zlogin_read.expect(/\n/) { zlogin_write.printf("#{cmd} \; echo \"Error Code: $?\"\n") }
@@ -833,7 +833,7 @@ ethernets:
 
       # This filters the vagrantuser
       def user(machine)
-        config = machine.provider_config
+        config = @machine.provider_config
         user = config.vagrant_user unless config.vagrant_user.nil?
         user = 'vagrant' if config.vagrant_user.nil?
         user
@@ -841,7 +841,7 @@ ethernets:
 
       # This filters the userprivatekeypath
       def userprivatekeypath(machine)
-        config = machine.provider_config
+        config = @machine.provider_config
         userkey = config.vagrant_user_private_key_path.to_s
         if config.vagrant_user_private_key_path.to_s.nil?
           id_rsa = 'https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant'
@@ -862,7 +862,7 @@ ethernets:
 
       # This filters the sshport
       def sshport(machine)
-        config = machine.provider_config
+        config = @machine.provider_config
         sshport = '22'
         sshport = config.sshport.to_s unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
         sshport
