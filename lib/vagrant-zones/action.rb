@@ -18,9 +18,9 @@ module VagrantPlugins
               env[:halt_on_error] = true
               b2.use action_start
             elsif !env[:result]
-              b2.use BoxAdd
               b2.use Import
               b2.use BoxCheckOutdated
+              b2.use BoxUpdate
               b2.use Create 
               b2.use Network
               b2.use Start
@@ -180,8 +180,7 @@ module VagrantPlugins
       end
 
       action_root = Pathname.new(File.expand_path('action', __dir__))
-      # autoload :BoxUpdate, action_root.join('box_update')
-      autoload :BoxAdd, 'vagrant/action/builtin/box_add'
+      #autoload :BoxAdd, action_root.join('box_add')
       autoload :BoxCheckOutdated, 'vagrant/action/builtin/box_check_outdated'
       autoload :BoxRemove, 'vagrant/action/builtin/box_remove'
       autoload :BoxUpdate, 'vagrant/action/builtin/box_update'
