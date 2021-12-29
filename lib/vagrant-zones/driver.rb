@@ -763,7 +763,7 @@ ethernets:
         lcheck = ":~#"
         almatch = config.almatchstring
         almatch = 'login: ' if config.almatchstring.nil?
-        uiinfo.info(I18n.t('vagrant_zones.wait_for_boot') + lcheck)
+        uiinfo.info(I18n.t('vagrant_zones.wait_for_boot') + bcheck)
         case config.brand
         when 'bhyve'
           return if config.cloud_init_enabled
@@ -772,8 +772,10 @@ ethernets:
             puts "test1"
             zlogin_write.printf("\n")
             puts "test12"
-            uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{bcheck}'") if zlogin_read.expect(/#{bcheck}/ || / OK /)
-            puts "test123"
+            uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{bcheck}'") if zlogin_read.expect(/#{bcheck}/)
+            puts "test1234"
+            uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{bcheck}'") if zlogin_read.expect(/ OK /)
+            puts "test1234"
             Process.kill('HUP', pid)
           end
           puts "test1.5"
