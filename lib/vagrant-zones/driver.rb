@@ -750,7 +750,7 @@ ethernets:
       def setup(machine, uiinfo)
         config = @machine.provider_config
         puts config.cloud_init_enabled
-        uiinfo.info(I18n.t('vagrant_zones.network_setup')) if config.brand == 'bhyve' && config.cloud_init_enabled 
+        uiinfo.info(I18n.t('vagrant_zones.network_setup')) if config.brand 
         network(uiinfo, 'setup') if config.brand == 'bhyve' 
       end
 
