@@ -312,10 +312,13 @@ module VagrantPlugins
           defrouter = opts[:gateway].to_s
           mac = macaddress(opts)
           vnic_name = vname(opts)
+
+          
+
           zoneniccreate(uiinfo, vnic_name, opts, mac) if state == 'create'
           zonenicdel(uiinfo, vnic_name) if state == 'delete'
           zonecfgnicconfig(uiinfo, vnic_name, config, @machine.name, allowed_address, defrouter) if state == 'config'
-          #zonecfgnicconfig(uiinfo, name, config, zcfg)
+          #zonecfgnicconfig(uiinfo, name, config)
           zonenicstpzloginsetup(uiinfo, vnic_name, opts, mac, ip, defrouter) if state == 'setup'
         end
         #####################################################################################
@@ -351,7 +354,6 @@ module VagrantPlugins
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
         sparse = '-s ' if bootconfigs['sparse']
         sparse = '' unless bootconfigs['sparse']
-        puts sparse
         uiinfo.info(I18n.t('vagrant_zones.begin_create_datasets'))
         ## Create Boot Volume
         case config.brand
@@ -769,18 +771,19 @@ ethernets:
         responses = []
         case config.brand
         when 'bhyve'
-          puts "test1"
           return if config.cloud_init_enabled
-          puts "test2"
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             puts "test1"
             bcheck = 'Last login: ' if config.bcheck_string.nil?
             zlogin_write.printf("\n")
+            puts "test2"
             if zlogin_read.expect(/#{bcheck}/)
+              puts "test3"
               uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{config.bcheck_string}'")
               Timeout.timeout(config.setup_wait) do
                 loop do
                   zlogin_read.expect(/\n/) { |line| responses.push line }
+                  puts "test4"
                   break if responses[-1].to_s.match(/:~#/)
 
                   ## Code to try to login with username and password
