@@ -299,7 +299,7 @@ module VagrantPlugins
       def network(uiinfo, state)
         uiinfo.info(I18n.t('vagrant_zones.networking_int_add')) if state == 'setup'
         uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))  if state == 'setup'
-        zlogin(uuinfo, 'rm -rf /etc/netplan/*.yaml') if state == 'setup'
+        zlogin(uiinfo, 'rm -rf /etc/netplan/*.yaml') if state == 'setup'
         config = @machine.provider_config
         @machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
@@ -686,9 +686,9 @@ ethernets:
     addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
         cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
         infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
-        uiinfo.info(infomessage) if zlogin(uuinfo, cmd)
+        uiinfo.info(infomessage) if zlogin(uiinfo, cmd)
         ## Apply the Configuration
-        uiinfo.info(I18n.t('vagrant_zones.netplan_applied')) if zlogin(uuinfo, 'netplan apply')
+        uiinfo.info(I18n.t('vagrant_zones.netplan_applied')) if zlogin(uiinfo, 'netplan apply')
       end
 
       # This ensures the zone is safe to boot
@@ -814,7 +814,7 @@ ethernets:
       end
 
       # This gives us a console to the VM
-      def zlogin(uuinfo, cmd)
+      def zlogin(uiinfo, cmd)
         name = @machine.name
         config = @machine.provider_config
         rsp = []
