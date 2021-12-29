@@ -297,11 +297,9 @@ module VagrantPlugins
 
       ## Manage Network Interfaces
       def network(uiinfo, state)
-        if state == 'setup'
-          ## Remove old installer netplan config
-          uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
-          zlogin(@machine, 'rm -rf /etc/netplan/*.yaml')
-        end
+        uiinfo.info(I18n.t('vagrant_zones.networking_int_add')) if state == 'setup'
+        uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))  if state == 'setup'
+        zlogin(@machine, 'rm -rf /etc/netplan/*.yaml') if state == 'setup'
         #####################################################################################
         config = @machine.provider_config
         @machine.config.vm.networks.each do |adaptertype, opts|
@@ -621,7 +619,7 @@ module VagrantPlugins
         vnic_name = vname(opts)
 
         uiinfo.info(" #{I18n.t('vagrant_zones.vnic_setup')}#{vnic_name}")
-        strt = "#{@pfexec} zonecfg -z #{name} "
+        strt = "#{@pfexec} zonecfg -z #{@machine.name} "
         cie = config.cloud_init_enabled
         case config.brand
         when 'lx'
@@ -661,7 +659,6 @@ module VagrantPlugins
         ## Cloud-init settings
         zonecfgcloudinit(uiinfo, name, config, zcfg)
         ## Nic Configurations
-        uiinfo.info(I18n.t('vagrant_zones.networking_int_add'))
         network(uiinfo, 'config')
         uiinfo.info(I18n.t('vagrant_zones.exporting_bhyve_zone_config_gen'))
       end
