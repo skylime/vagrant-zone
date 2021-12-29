@@ -34,7 +34,7 @@ module VagrantPlugins
                   end
       end
 
-      def state(machine)
+      def state()
         name = @machine.name
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
         case vm_state
