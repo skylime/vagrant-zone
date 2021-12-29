@@ -758,8 +758,6 @@ ethernets:
         name = @machine.name
         config = @machine.provider_config
         responses = []
-        bcheck = config.bcheck_string
-        bcheck = 'Last login: ' if config.bcheck_string.nil?
         lcheck = ":~#"
         almatch = config.almatchstring
         almatch = 'login: ' if config.almatchstring.nil?
@@ -768,17 +766,6 @@ ethernets:
         when 'bhyve'
           return if config.cloud_init_enabled
 ####################################################
-          #PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-          #  puts "test1"
-          #  zlogin_write.printf("\n")
-          #  puts "test12"
-          #  uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{bcheck}'") if zlogin_read.expect(/#{bcheck}/)
-          #  puts "test1234"
-          # uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{bcheck}'") if zlogin_read.expect(/ OK /)
-          #  puts "test1234"
-          #  Process.kill('HUP', pid)
-          #end
-          #puts "test1.5"
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             puts "test21"
             zlogin_write.printf("\n")
