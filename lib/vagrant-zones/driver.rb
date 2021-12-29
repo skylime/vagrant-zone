@@ -230,6 +230,19 @@ module VagrantPlugins
              end
       end
 
+      # This Sanitizes the AllowedIP Address to set for Cloudinit
+      def allowedaddress(opts)
+        ip = ipaddress(opts)
+        allowed_address = "#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
+      end
+      
+      # This Sanitizes the AllowedIP Address to set for Cloudinit
+      def vname(opts)
+        config = @machine.provider_config
+        vnic_name = "vnic#{nictype(opts)}#{vtype(@machine)}_#{config.partition_id}_#{opts[:nic_number]}"
+      end
+
+      
       ## If DHCP and Zlogin, get the IP address
       def get_ip_address(machine)
         config = @machine.provider_config
@@ -298,16 +311,15 @@ module VagrantPlugins
           next unless adaptertype.to_s == 'public_network'
 
           ip = ipaddress(opts)
-          allowed_address = "#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
+          allowed_address = allowedaddress(opts)
           defrouter = opts[:gateway].to_s
           mac = macaddress(opts)
-          servers = dnsservers()
-          vnic_name = "vnic#{nictype(opts)}#{vtype(@machine)}_#{config.partition_id}_#{opts[:nic_number]}"
+          vnic_name = vname(opts)
 
           zoneniccreate(uiinfo, vnic_name, opts, mac) if state == 'create'
           zonenicdel(uiinfo, vnic_name) if state == 'delete'
           zonecfgnicconfig(uiinfo, vnic_name, config, name, allowed_address, defrouter) if state == 'config'
-          zonenicstpzloginsetup(uiinfo, vnic_name, opts, mac, ip, defrouter, servers) if state == 'setup'
+          zonenicstpzloginsetup(uiinfo, vnic_name, opts, mac, ip, defrouter) if state == 'setup'
         end
         #####################################################################################
       end
@@ -662,12 +674,13 @@ module VagrantPlugins
       end
 
       ## Setup vnics for Zones using Zlogin
-      def zonenicstpzloginsetup(uiinfo, vnic_name, opts, mac, ip, defrouter, servers)
+      def zonenicstpzloginsetup(uiinfo, vnic_name, opts, mac, ip, defrouter)
         ## Remove old installer netplan config
         #uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))
         #zlogin(machine, 'rm -rf /etc/netplan/*.yaml')
         ## create loop 
         uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
+        servers = dnsservers()
         netplan = %(network:
 version: 2
 ethernets:
