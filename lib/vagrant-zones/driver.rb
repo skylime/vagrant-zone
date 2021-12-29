@@ -749,6 +749,7 @@ ethernets:
       # This helps us set up the networking of the VM
       def setup(machine, uiinfo)
         config = @machine.provider_config
+        puts config.cloud_init_enabled
         uiinfo.info(I18n.t('vagrant_zones.network_setup')) if config.brand == 'bhyve' && config.cloud_init_enabled == 'off'
         network(uiinfo, 'setup') if config.brand == 'bhyve' && config.cloud_init_enabled == 'off'
       end
@@ -765,13 +766,11 @@ ethernets:
         case config.brand
         when 'bhyve'
           return if config.cloud_init_enabled
-####################################################
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             zlogin_write.printf("\n")
             uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'") if zlogin_read.expect(/#{lcheck}/)
             Process.kill('HUP', pid)
           end
-####################################################
         when 'lx'
           unless user_exists?(@machine, config.vagrant_user)
             zlogincommand(@machine, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
