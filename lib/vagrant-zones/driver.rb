@@ -671,19 +671,19 @@ module VagrantPlugins
         uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
         servers = dnsservers()
         netplan = %(network:
-version: 2
-ethernets:
-#{vnic_name}:
-  match:
-    macaddress: #{mac}
-  dhcp-identifier: mac
-  dhcp4: #{opts[:dhcp]}
-  dhcp6: #{opts[:dhcp6]}
-  set-name: #{vnic_name}
-  addresses: [#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}]
-  gateway4: #{defrouter}
-  nameservers:
-    addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
+  version: 2
+  ethernets:
+    #{vnic_name}:
+      match:
+        macaddress: #{mac}
+      dhcp-identifier: mac
+      dhcp4: #{opts[:dhcp]}
+      dhcp6: #{opts[:dhcp6]}
+      set-name: #{vnic_name}
+      addresses: [#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}]
+      gateway4: #{defrouter}
+      nameservers:
+        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
         cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
         infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
         uiinfo.info(infomessage) if zlogin(uiinfo, cmd)
