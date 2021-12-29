@@ -20,7 +20,6 @@ module VagrantPlugins
             elsif !env[:result]
               b2.use Import
               b2.use BoxCheckOutdated
-              b2.use BoxUpdate
               b2.use Create 
               b2.use Network
               b2.use Start
@@ -161,6 +160,12 @@ module VagrantPlugins
       def self.action_configure_zfs_snapshots
         Vagrant::Action::Builder.new.tap do |b|
           b.use ConfigureSnapshots
+        end
+      end
+
+      def self.action_box_add
+        Builder.new.tap do |b|
+          b.use Builtin::BoxAdd
         end
       end
 
