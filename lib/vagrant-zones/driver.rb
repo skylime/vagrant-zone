@@ -124,7 +124,7 @@ module VagrantPlugins
           time_started = File.readlines('console.pid')[2].strip
           vmname = File.readlines('console.pid')[3].strip
           nport = File.readlines('console.pid')[4].strip
-          uiinfo.info(I18n.t('vagrant_zones.consolerunning')) if vmname[name.to_s]
+          uiinfo.info(I18n.t('vagrant_zones.consolerunning'))
           puts "VM is running with PID: #{pid} since: #{time_started} as console type: #{ctype} served at: #{nport}" if vmname[name.to_s]
           if kill == 'yes'
             File.delete('console.pid') if File.exist?('console.pid')
@@ -173,7 +173,6 @@ module VagrantPlugins
       # This filters the firmware
       def vtype(uiinfo)
         config = @machine.provider_config
-        uiinfo.info(I18n.t('vagrant_zones.vtype')) if config.debug
         case config.vm_type
         when /template/
           '1'
@@ -190,7 +189,6 @@ module VagrantPlugins
 
       # This filters the NIC Types
       def nictype(uiinfo, opts)
-        uiinfo.info(I18n.t('vagrant_zones.ntype')) if config.debug
         nictype = if opts[:nictype].nil?
                     'external'
                   else
@@ -208,12 +206,12 @@ module VagrantPlugins
                    when /host/
                      'h'
                    end
+        nic_type
       end
 
       # This Sanitizes the DNS Records
       def dnsservers(uiinfo)
         config = @machine.provider_config
-        uiinfo.info(I18n.t('vagrant_zones.dnservers')) if config.debug
         servers = []
         config.dns.each do |server|
           servers.append(server)
@@ -224,7 +222,6 @@ module VagrantPlugins
 
       # This Sanitizes the Mac Address
       def macaddress(uiinfo, opts)
-        uiinfo.info(I18n.t('vagrant_zones.macaddress')) if config.debug
         regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
         mac = opts[:mac] unless opts[:mac].nil?
         mac = 'auto' unless mac.match(regex)
@@ -233,18 +230,19 @@ module VagrantPlugins
 
       # This Sanitizes the IP Address to set
       def ipaddress(uiinfo, opts)
-        uiinfo.info(I18n.t('vagrant_zones.ipaddress')) if config.debug
         ip = if opts[:ip].empty?
                nil
              else
                opts[:ip].gsub(/\t/, '')
              end
+        ip
       end
 
       # This Sanitizes the AllowedIP Address to set for Cloudinit
       def allowedaddress(uiinfo, opts)
         ip = ipaddress(uiinfo, opts)
         allowed_address = "#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
+        allowed_address
       end
 
       # This Sanitizes the VNIC Name
@@ -382,8 +380,8 @@ module VagrantPlugins
         vnic_name = vname(uiinfo, opts)
         allowed_address = allowedaddress(uiinfo, opts)
         uiinfo.info(I18n.t('vagrant_zones.configuring_nat') + "#{vnic_name}_stubc")
-        # line1 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32  portmap tcp/udp auto)
-        # line2 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32)
+        #line1 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32  portmap tcp/udp auto)
+        #line2 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32)
         # /etc/ipf/ipnat.conf
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
       end
@@ -391,7 +389,7 @@ module VagrantPlugins
       ## Create dhcp entries for the zone
       def zonedhcpentries(uiinfo, opts)
         vnic_name = vname(uiinfo, opts)
-        # allowed_address = allowedaddress(uiinfo, opts)
+        #allowed_address = allowedaddress(uiinfo, opts)
         uiinfo.info(I18n.t('vagrant_zones.configuring_dhcp') + "#{vnic_name}_stubc")
         # subnet 1.1.1.0 netmask 255.255.255.224 {
         # range 1.1.1.10 1.1.1.20;
@@ -845,7 +843,7 @@ module VagrantPlugins
       def waitforboot(uiinfo)
         name = @machine.name
         config = @machine.provider_config
-        int = 5
+        int = 5 
         alm = false
         uiinfo.info(I18n.t('vagrant_zones.wait_for_boot'))
         case config.brand
@@ -856,7 +854,7 @@ module VagrantPlugins
             int.times do
               alm = zwaitforboot(uiinfo, zlogin_read, zlogin_write, alm)
               break if alm
-            end
+            end 
             Process.kill('HUP', pid)
           end
         when 'lx'
@@ -909,7 +907,6 @@ module VagrantPlugins
       # This checks if the user exists on the VM, usually for LX zones
       def user_exists?(uiinfo, user = 'vagrant')
         name = @machine.name
-        uiinfo.info(I18n.t('vagrant_zones.userexists')) if config.debug
         ret = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
         return true if ret.zero?
 
@@ -919,7 +916,6 @@ module VagrantPlugins
       # This gives the user a terminal console
       def zlogincommand(uiinfo, cmd)
         name = @machine.name
-        uiinfo.info(I18n.t('vagrant_zones.zlogincommand')) if config.debug
         execute(false, "#{@pfexec} zlogin #{name} #{cmd}")
       end
 
@@ -928,7 +924,6 @@ module VagrantPlugins
         config = @machine.provider_config
         user = config.vagrant_user unless config.vagrant_user.nil?
         user = 'vagrant' if config.vagrant_user.nil?
-        uiinfo.info(I18n.t('vagrant_zones.user')) if config.debug
         user
       end
 
@@ -957,7 +952,6 @@ module VagrantPlugins
       def sshport(uiinfo)
         config = @machine.provider_config
         sshport = '22'
-        uiinfo.info(I18n.t('vagrant_zones.ssh')) if config.debug
         sshport = config.sshport.to_s unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
         sshport
       end
@@ -965,7 +959,6 @@ module VagrantPlugins
       # This filters the firmware
       def firmware(uiinfo)
         config = @machine.provider_config
-        uiinfo.info(I18n.t('vagrant_zones.firmware')) if config.debug
         ft = case config.firmware_type
              when /compatability/
                'BHYVE_RELEASE_CSM'
@@ -984,14 +977,12 @@ module VagrantPlugins
       # This filters the rdpport
       def rdpport(uiinfo)
         config = @machine.provider_config
-        uiinfo.info(I18n.t('vagrant_zones.rdpport')) if config.debug
         config.rdpport.to_s unless config.rdpport.to_s.nil?
       end
 
       # This filters the vagrantuserpass
       def vagrantuserpass(uiinfo)
         config = @machine.provider_config
-        uiinfo.info(I18n.t('vagrant_zones.vagrantuserpass')) if config.debug
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
 
