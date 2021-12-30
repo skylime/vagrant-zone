@@ -767,10 +767,7 @@ module VagrantPlugins
                 zlogin_write.printf("\n") 
               end
             end
-            
-            
-
-            Process.kill('HUP', pid) if loginstring.expect(/#{lcheck}/) || loginstring.expect(/#{almatch}/)
+            Process.kill('HUP', pid)
           end
         when 'lx'
           unless user_exists?(config.vagrant_user)
