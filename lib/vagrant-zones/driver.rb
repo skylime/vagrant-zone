@@ -1173,7 +1173,6 @@ module VagrantPlugins
         h[:daily] = {rtn: rtn[:d], ct: ct[:d]}
         h[:weekly] = {rtn: rtn[:w], ct: ct[:w]}
         h[:monthly] = {rtn: rtn[:m], ct: ct[:m]}
-        puts h.inspect
 
         h.each do |k, d|
           puts k.to_s
