@@ -186,12 +186,7 @@ module VagrantPlugins
       def nictype(uiinfo, opts)
         config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.nictype')) if config.debug
-        nictype = if opts[:nictype].nil?
-                    'external'
-                  else
-                    opts[:nictype]
-                  end
-        nic_type = case nictype
+        nic_type = case opts[:nictype]
                    when /external/
                      'e'
                    when /internal/
@@ -202,6 +197,8 @@ module VagrantPlugins
                      'm'
                    when /host/
                      'h'
+                   when nil
+                     'e'
                    end
       end
 
