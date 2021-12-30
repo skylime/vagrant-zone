@@ -764,7 +764,8 @@ module VagrantPlugins
                 alm = false if rsp[-1].to_s.match(/#{lcheck}/)
                 break if rsp[-1].to_s.match(/#{lcheck}/)
 
-                zlogin_write.printf("\n") if rsp[-1].to_s.match(/\r\n/)
+                sleep 5 if rsp[-1].to_s.match(/ OK /)
+                zlogin_write.printf("\n")
               end
             end          
             Process.kill('HUP', pid) if loginstring.expect(/#{lcheck}/) || loginstring.expect(/#{almatch}/)
