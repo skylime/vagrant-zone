@@ -577,7 +577,6 @@ module VagrantPlugins
       ## zonecfg function for CPU Configurations
       ## Future To-Do: Fix LX Zone CPU configs if any
       def zonecfgcpu(uiinfo, _name, config, zcfg)
-        config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.zonecfgcpu')) if config.debug
         if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm')
           execute(false, %(#{zcfg}"add attr; set name=vcpus; set value=#{config.cpus}; set type=string; end;"))
