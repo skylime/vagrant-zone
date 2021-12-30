@@ -40,6 +40,7 @@ module VagrantPlugins
               vm_state = @driver.state(@machine)
               sleep 1 if vm_state == :running
               puts vm_state
+              ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete')) unless vm_state == :running
             end
           end
           @driver.halt(env[:ui])
