@@ -35,11 +35,11 @@ module VagrantPlugins
           
           10.times do
             state_id = @driver.state(@machine)
+            
+            puts state_id.inspect
             ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete')) unless state_id == 'running'
-            puts state_id
             sleep 10 if state_id == 'running'
             break  unless state_id == 'running'
-
           end
 
           env[:metrics] ||= {}
