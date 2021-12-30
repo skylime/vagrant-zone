@@ -339,7 +339,7 @@ module VagrantPlugins
       def zonenatniccreate(uiinfo, opts, etherstub)
         vnic_name = vname(uiinfo, opts)
         uiinfo.info(I18n.t('vagrant_zones.creating_ethervnic') + "#{vnic_name}_stubc")
-        execute(false, "#{@pfexec} dladm create-vnic -l #{vnic_name}_stubc #{vnic_name}")
+        execute(false, "#{@pfexec} dladm create-vnic -l  etherstub #{vnic_name}")
       end
 
       ## zonecfg function for for Networking
@@ -362,32 +362,31 @@ module VagrantPlugins
       end
 
       ## Set NatForwarding on global interface
-      def zonenatforward(uiinfo, opts, etherstub)
+      def zonenatforward(uiinfo, opts)
         vnic_name = vname(uiinfo, opts)
         uiinfo.info(I18n.t('vagrant_zones.forwarding_nat') + "#{vnic_name}_stubc")
         execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{vnic_name}_stubc")
       end
 
       ## Create nat entries for the zone
-      def zonenatentries(uiinfo, opts, etherstub)
-        vnic_name = vname(uiinfo, opts)        
+      def zonenatentries(uiinfo, opts)
+        vnic_name = vname(uiinfo, opts)
         allowed_address = allowedaddress(uiinfo, opts)
         uiinfo.info(I18n.t('vagrant_zones.configuring_nat') + "#{vnic_name}_stubc")
-        line1 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32  portmap tcp/udp auto)
-        line2 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32)
+        #line1 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32  portmap tcp/udp auto)
+        #line2 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32)
         # /etc/ipf/ipnat.conf
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
       end
 
       ## Create dhcp entries for the zone
-      def zonedhcpentries(uiinfo, opts, etherstub)
-        vnic_name = vname(uiinfo, opts)        
-        allowed_address = allowedaddress(uiinfo, opts)
+      def zonedhcpentries(uiinfo, opts)
+        vnic_name = vname(uiinfo, opts)
+        #allowed_address = allowedaddress(uiinfo, opts)
         uiinfo.info(I18n.t('vagrant_zones.configuring_dhcp') + "#{vnic_name}_stubc")
         # subnet 1.1.1.0 netmask 255.255.255.224 {
         # range 1.1.1.10 1.1.1.20;
         # }
-        # 
         # /etc/inet/dhcpd4.conf
         execute(false, "#{@pfexec} svcadm refresh dhcp")
       end
@@ -505,7 +504,7 @@ module VagrantPlugins
       def zonecfgbhyve(uiinfo, name, config, zcfg)
         return unless config.brand == 'bhyve'
 
-        bootconfigs = config.boot 
+        bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
         execute(false, %(#{zcfg}"create ; set zonepath=/#{datasetpath}/path"))
@@ -514,7 +513,7 @@ module VagrantPlugins
         execute(false, %(#{zcfg}"set ip-type=exclusive"))
         execute(false, %(#{zcfg}"add attr; set name=acpi; set value=#{config.acpi}; set type=string; end;"))
         execute(false, %(#{zcfg}"add attr; set name=ram; set value=#{config.memory}; set type=string; end;"))
-        execute(false, %(#{zcfg}"add attr; set name=bootrom; set value=#{firmware()}; set type=string; end;"))
+        execute(false, %(#{zcfg}"add attr; set name=bootrom; set value=#{firmware(uiinfo)}; set type=string; end;"))
         execute(false, %(#{zcfg}"add attr; set name=hostbridge; set value=#{config.hostbridge}; set type=string; end;"))
         execute(false, %(#{zcfg}"add attr; set name=diskif; set value=#{config.diskif}; set type=string; end;"))
         execute(false, %(#{zcfg}"add attr; set name=netif; set value=#{config.netif}; set type=string; end;"))
@@ -805,11 +804,10 @@ module VagrantPlugins
       def setup(uiinfo)
         config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.network_setup')) if config.brand && !config.cloud_init_enabled
-        network(uiinfo, 'setup') if config.brand == 'bhyve' && !config.cloud_init_enabled 
+        network(uiinfo, 'setup') if config.brand == 'bhyve' && !config.cloud_init_enabled
       end
 
       def zwaitforboot(uiinfo, zlogin_read, zlogin_write, alm)
-        name = @machine.name
         config = @machine.provider_config
         lcheck = config.lcheck
         lcheck = ':~#' if config.lcheck.nil?
@@ -828,7 +826,7 @@ module VagrantPlugins
             alm = true if rsp[-1].to_s.match(/#{lcheck}/)
             break if rsp[-1].to_s.match(/#{lcheck}/)
 
-            puts rsp[-1] if config.debug_boot 
+            puts rsp[-1] if config.debug_boot
           end
         end
         alm
@@ -838,7 +836,7 @@ module VagrantPlugins
       def waitforboot(uiinfo)
         name = @machine.name
         config = @machine.provider_config
-        int = 5        
+        int = 5 
         alm = false
         uiinfo.info(I18n.t('vagrant_zones.wait_for_boot'))
         case config.brand
