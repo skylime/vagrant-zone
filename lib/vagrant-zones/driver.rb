@@ -179,6 +179,8 @@ module VagrantPlugins
           '4'
         when /other/
           '5'
+        when nil
+          '3'
         end
       end
 
@@ -186,20 +188,20 @@ module VagrantPlugins
       def nictype(uiinfo, opts)
         config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.nictype')) if config.debug
-        nic_type = case opts[:nictype]
-                   when /external/
-                     'e'
-                   when /internal/
-                     'i'
-                   when /carp/
-                     'c'
-                   when /management/
-                     'm'
-                   when /host/
-                     'h'
-                   when nil
-                     'e'
-                   end
+        case opts[:nictype]
+        when /external/
+          'e'
+        when /internal/
+          'i'
+        when /carp/
+          'c'
+        when /management/
+          'm'
+        when /host/
+          'h'
+        when nil
+          'e'
+        end
       end
 
       # This Sanitizes the DNS Records
