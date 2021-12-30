@@ -735,7 +735,7 @@ module VagrantPlugins
         network(uiinfo, 'setup') if config.brand == 'bhyve' && !config.cloud_init_enabled 
       end
 
-      def zwaitforboot(uiinfo, int, zlogin_read, zlogin_write)
+      def zwaitforboot(uiinfo, zlogin_read, zlogin_write)
         name = @machine.name
         config = @machine.provider_config
         counter = 0
@@ -773,7 +773,10 @@ module VagrantPlugins
           return if config.cloud_init_enabled
 
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-            zwaitforboot(uiinfo, int)
+            int.times do
+              zwaitforboot(uiinfo)
+            end 
+            
             Process.kill('HUP', pid)
           end
         when 'lx'
