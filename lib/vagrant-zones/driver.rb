@@ -1173,15 +1173,17 @@ module VagrantPlugins
         h[:daily] = {rtn: rtn[:d], ct: ct[:d]}
         h[:weekly] = {rtn: rtn[:w], ct: ct[:w]}
         h[:monthly] = {rtn: rtn[:m], ct: ct[:m]}
+
         h.each do |k, d|
           cj = "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{sfr} #{disk} # #{name}" unless sfr.nil?
           cj = "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{d[:rtn]} #{disk} # #{name}" if sfr.nil?
           h[k] = {rtn: rtn[:h], ct: ct[:h], cj: cj}
+        end
+        h.each do |k, d|
           setcron = "#{shrtcr}'#{d[:cj].to_s}' ) | #{@pfexec} crontab" if cronjobs[k].nil?
           uii.info("Setting Cron: #{setcron}\n") if k.to_s == opts[:set_frequency] || opts[:set_frequency] == 'all'
           execute(false, setcron)
         end
-
       end
 
       ## Configure ZFS Snapshots Crons
