@@ -1164,6 +1164,9 @@ module VagrantPlugins
         # name = @machine.name
         puts cronjobs.inspect
         snpshtr = config.snapshot_script.to_s
+        rtn = {hourly: 24, daily: 8, weekly: 5, monthly: 1}
+        puts rtn[hourly:]
+        puts rtn.inspect
         hourlytrn = 24
         dailytrn = 8
         weeklytrn = 5
