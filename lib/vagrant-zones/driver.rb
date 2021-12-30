@@ -738,20 +738,19 @@ module VagrantPlugins
       def zwaitforboot(uiinfo, zlogin_read, zlogin_write)
         name = @machine.name
         config = @machine.provider_config
-        counter = 0
-        responses = []
-        lcheck = ":~#"
-        almatch = config.almatchstring
-        almatch = 'login: ' if config.almatchstring.nil?
+        lcheck = config.lcheck
+        lcheck = ':~#' if config.lcheck.nil?
+        alcheck = config.alcheck
+        alcheck = 'login: ' if config.alcheck.nil?
         alm = false
         zlogin_write.printf("\n")
         Timeout.timeout(config.setup_wait) do
           rsp = []
           loop do
             zlogin_read.expect(/\r\n/) { |line| rsp.push line }
-            uiinfo.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{almatch}'") if rsp[-1].to_s.match(/#{almatch}/)
-            alm = true if rsp[-1].to_s.match(/#{almatch}/)
-            break if rsp[-1].to_s.match(/#{almatch}/)
+            uiinfo.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{alcheck}'") if rsp[-1].to_s.match(/#{alcheck}/)
+            alm = true if rsp[-1].to_s.match(/#{alcheck}/)
+            break if rsp[-1].to_s.match(/#{alcheck}/)
 
             uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'") if rsp[-1].to_s.match(/#{lcheck}/)
             alm = false if rsp[-1].to_s.match(/#{lcheck}/)
