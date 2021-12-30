@@ -11,6 +11,7 @@ require 'vagrant/util/numeric'
 require 'pty'
 require 'expect'
 require 'vagrant'
+require 'resolv'
 require 'vagrant-zones/util/timer'
 require 'vagrant-zones/util/subprocess'
 require 'vagrant/util/retryable'
@@ -120,9 +121,8 @@ module VagrantPlugins
                    config.consoleport
                  end
         end
-        
-        consolehost = ('0.0.0.0' unless config.consolehost.match(Resolv::IPv4::Regex))
-        ip = ('0.0.0.0' unless ip.match(Resolv::IPv4::Regex))
+        ip = (config.consolehost unless (config.consolehost =~ Resolv::IPv4::Regex))
+        ip = ('0.0.0.0' unless (ip =~ Resolv::IPv4::Regex))
         netport = "#{ip}:#{port}"
         pid = 0
         if File.exist?('console.pid')
