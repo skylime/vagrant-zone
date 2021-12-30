@@ -1181,11 +1181,12 @@ module VagrantPlugins
         end
 
         if opts[:set_frequency] == 'all'
-          h.each do |k, d|
-            puts k
-            puts d
-          end
+        
+        h.each do |k, d|
+          puts k opts[:set_frequency] == 'all' || k
+          puts d opts[:set_frequency] == 'all' || k
         end
+
 
         
         if opts[:set_frequency] && opts[:set_frequency] == 'all'
