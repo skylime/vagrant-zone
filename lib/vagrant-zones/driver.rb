@@ -758,7 +758,7 @@ module VagrantPlugins
             puts rsp[-1] if config.debug_boot 
           end
         end
-        return alm
+        alm
       end
 
       # This helps up wait for the boot of the vm by using zlogin
@@ -774,7 +774,7 @@ module VagrantPlugins
 
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             int.times do
-              alm = zwaitforboot(uiinfo, zlogin_read, zlogin_write)
+              alm = zwaitforboot(uiinfo, zlogin_read, zlogin_write, alm)
               break if alm
             end 
             Process.kill('HUP', pid)
