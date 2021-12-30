@@ -1009,7 +1009,9 @@ module VagrantPlugins
 
       ## List ZFS Snapshots
       ## Future To-Do: Cleanup Output
-      def zfssnaplist(datasets, _config, opts, uii, _name)
+      def zfssnaplist(datasets, opts, uii)
+        # config = @machine.provider_config
+        # name = @machine.name
         uii.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
         datasets.each_with_index do |disk, index|
           puts "\n Disk Number: #{index}\n Disk Path: #{disk}"
@@ -1047,7 +1049,9 @@ module VagrantPlugins
       end
 
       ## Create ZFS Snapshots
-      def zfssnapcreate(datasets, _config, opts, uii, _name)
+      def zfssnapcreate(datasets, opts, uii)
+        # config = @machine.provider_config
+        # name = @machine.name
         if opts[:dataset] == 'all'
           datasets.each do |disk|
             uii.info(I18n.t('vagrant_zones.zfs_snapshot_create') + "#{disk}@#{opts[:snapshot_name]}")
@@ -1066,7 +1070,9 @@ module VagrantPlugins
       end
 
       ## Destroy ZFS Snapshots
-      def zfssnapdestroy(datasets, _config, opts, uii, _name)
+      def zfssnapdestroy(datasets, opts, uii)
+        # config = @machine.provider_config
+        # name = @machine.name
         if opts[:dataset].to_s == 'all'
           datasets.each do |disk|
             uii.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
@@ -1105,7 +1111,9 @@ module VagrantPlugins
       end
 
       ## This will list Cron Jobs for Snapshots to take place
-      def zfssnapcronlist(_datasets, _config, opts, _uii, cronjobs)
+      def zfssnapcronlist(_datasets, opts, _uii, cronjobs)
+        # config = @machine.provider_config
+        # name = @machine.name
         if opts[:list] == 'all'
           puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
           puts cronjobs[:daily] unless cronjobs[:daily].nil?
@@ -1120,7 +1128,9 @@ module VagrantPlugins
       end
 
       ## This will delete Cron Jobs for Snapshots to take place
-      def zfssnapcrondelete(_datasets, _config, opts, _uii, cronjobs)
+      def zfssnapcrondelete(_datasets, opts, _uii, cronjobs)
+        # config = @machine.provider_config
+        # name = @machine.name
         removecron = ''
         sc = "#{@pfexec} crontab"
         rmcr = "#{sc} -l | grep -v "
@@ -1149,8 +1159,9 @@ module VagrantPlugins
 
       ## This will set Cron Jobs for Snapshots to take place
       ## Future To-Do: Simplify
-      def zfssnapcronset(uii, disk, config, opts, cronjobs)
-        config = @machine.provider_config
+      def zfssnapcronset(uii, disk, opts, cronjobs)
+        # config = @machine.provider_config
+        # name = @machine.name
         spshtr = config.snapshot_script.to_s
         hourlytrn = 24
         dailytrn = 8
@@ -1163,10 +1174,10 @@ module VagrantPlugins
         weeklycron = "0 0 * * 6 #{spshtr} -p weekly -r -n #{weeklytrn} #{disk} # #{name}"
         monthlycron = "0 0 1 * * #{spshtr} -p monthly -r -n #{monthlytrn} #{disk} # #{name}"
         if opts[:set_frequency] && opts[:set_frequency] == 'all'
-          hourlycron = "0  1-23  *  *  *  #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-          dailycron = "0  0  *  *  0-5  #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-          weeklycron = "0  0  *  *  6   #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-          monthlycron = "0  0  1  *  *   #{spshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          hourlycron = "0 1-23 * * * #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          dailycron = "0 0 * * 0-5 #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          weeklycron = "0 0 * * 6 #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          monthlycron = "0 0 1 * * #{spshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           setcron = "#{shrtcr}'#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil?
           uii.info(setcron) if cronjobs[:hourly].nil?
           execute(false, setcron) if cronjobs[:hourly].nil?
@@ -1179,7 +1190,7 @@ module VagrantPlugins
           setcron = "#{shrtcr}'#{monthlycron}' ) | #{@pfexec} crontab" if cronjobs[:monthly].nil?
           uii.info(setcron) if cronjobs[:monthly].nil?
           execute(false, setcron) if cronjobs[:monthly].nil?
-        elsif opts[:set_frequency]
+        elsif opts[:set_frequency] !& opts[:set_frequency] == 'all'
           hourlycron = "0 1-23 * * * #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           dailycron = "0 0 * * 0-5 #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           weeklycron = "0 0 * * 6 #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
@@ -1194,7 +1205,9 @@ module VagrantPlugins
       end
 
       ## Configure ZFS Snapshots Crons
-      def zfssnapcron(datasets, config, opts, uii, name)
+      def zfssnapcron(datasets, opts, uii)
+        name = @machine.name
+        config = @machine.provider_config
         crons = execute(false, "#{@pfexec} crontab -l").split("\n")
         rtnregex = '-p (weekly|monthly|daily|hourly)'
         opts[:dataset] = 'all' if opts[:dataset].nil?
@@ -1221,9 +1234,9 @@ module VagrantPlugins
               cronjobs.merge!(monthly: monthly)
             end
           end
-          zfssnapcronlist(disk, config, opts, name, cronjobs)
-          zfssnapcrondelete(disk, config, opts, name, cronjobs)
-          zfssnapcronset(uii, disk, config, opts, cronjobs)
+          zfssnapcronlist(disk, opts, cronjobs)
+          zfssnapcrondelete(disk, opts, cronjobs)
+          zfssnapcronset(uii, disk, opts, cronjobs)
         end
       end
 
@@ -1241,13 +1254,13 @@ module VagrantPlugins
         end
         case job
         when 'list'
-          zfssnaplist(datasets, config, opts, uii, name)
+          zfssnaplist(datasets, opts, uii)
         when 'create'
-          zfssnapcreate(datasets, config, opts, uii, name)
+          zfssnapcreate(datasets, opts, uii)
         when 'destroy'
-          zfssnapdestroy(datasets, config, opts, uii, name)
+          zfssnapdestroy(datasets, opts, uii)
         when 'cron'
-          zfssnapcron(datasets, config, opts, uii, name)
+          zfssnapcron(datasets, opts, uii)
         end
       end
 
