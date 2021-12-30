@@ -35,12 +35,11 @@ module VagrantPlugins
           env[:metrics] ||= {}
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
             retryable(on: Errors::TimeoutError, tries: 300) do
-              # If we're interrupted don't worry about waiting
               vm_state = @driver.state(@machine)
               sleep 1 if vm_state.match(/running/)
               puts vm_state
-              
-              next if env[:interrupted]
+              # If we're interrupted don't worry about waiting
+              break if env[:interrupted]
               break unless vm_state.match(/running/)
             end
             ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete'))
