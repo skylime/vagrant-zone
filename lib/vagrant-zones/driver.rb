@@ -1163,20 +1163,19 @@ module VagrantPlugins
         config = @machine.provider_config
         name = @machine.name
         snpshtr = config.snapshot_script.to_s
-
-        rtn = {h: 24, d: 8, w: 5, m: 1}
-        ct = {h: "0 1-23 * * * ", d: "0 0 * * 0-5 ", w: "0 0 * * 6 ", m: "0 0 1 * * "}
-        h = Hash.new
-        h[:hourly] = {rtn: rtn[:h], ct: ct[:h] }
-        h[:daily] = {rtn: rtn[:d], ct: ct[:d] }
-        h[:weekly] = {rtn: rtn[:w], ct: ct[:w] }
-        h[:monthly] = {rtn: rtn[:m], ct: ct[:m] }
-        puts h.inspect
         shrtcr = "( #{@pfexec} crontab -l; echo "
         sfr = opts[:set_frequency_rtn]
-        crons = Hash.new
-        rtn.each do |k, d|
-          crons[:key] = "#{snpshtr} -p hourly -r -n #{rtn[:hourly]} #{disk} # #{name}"
+
+        h = Hash.new
+        rtn = {h: 24, d: 8, w: 5, m: 1}
+        ct = {h: "0 1-23 * * * ", d: "0 0 * * 0-5 ", w: "0 0 * * 6 ", m: "0 0 1 * * "}
+        h[:hourly] = {rtn: rtn[:h], ct: ct[:h]}
+        h[:daily] = {rtn: rtn[:d], ct: ct[:d]}
+        h[:weekly] = {rtn: rtn[:w], ct: ct[:w]}
+        h[:monthly] = {rtn: rtn[:m], ct: ct[:m]}
+        puts h.inspect
+
+        h.each do |k, d|
           puts k.to_s
           puts d
         end
