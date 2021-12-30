@@ -1178,8 +1178,11 @@ module VagrantPlugins
           cj = "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{sfr} #{disk} # #{name}" unless sfr.nil?
           cj = "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{d[:rtn]} #{disk} # #{name}" if sfr.nil?
           h[k] = {rtn: rtn[:h], ct: ct[:h], cj: cj}
-          puts h[k][k]
+        end
 
+        h.each do |k, d|
+          puts k
+          puts d
         end
 
 
