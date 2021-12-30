@@ -43,9 +43,10 @@ module VagrantPlugins
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
             retryable(on: Errors::TimeoutError, tries: 300) do
               # If we're interrupted don't worry about waiting
-              vm_state = 'installed'
+              vm_state = @driver.state(@machine)
+              sleep 10 if vm_state == 'running'
               next if env[:interrupted]
-              break if spawn("pfexec zoneadm -z #{name} list -p | awk -F: '{ print $3 }'") == vm_state
+              break unless vm_state == 'running'
             end
           end
           state_id = @driver.state(@machine)
