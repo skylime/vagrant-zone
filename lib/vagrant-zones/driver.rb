@@ -1163,6 +1163,8 @@ module VagrantPlugins
         config = @machine.provider_config
         name = @machine.name
         snpshtr = config.snapshot_script.to_s
+        rtn = {hourly: 24, daily: 8, weekly: 5, monthly: 1}
+        puts rtn[:hourly]
         hourlytrn = 24
         dailytrn = 8
         weeklytrn = 5
