@@ -39,7 +39,6 @@ module VagrantPlugins
               sleep 1 if vm_state.match(/running/)
               puts vm_state if vm_state.match(/running/)
               # If we're interrupted don't worry about waiting
-              break if env[:interrupted]
               break unless vm_state.match(/running/)
             end
             ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete'))
