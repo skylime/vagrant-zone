@@ -767,6 +767,10 @@ module VagrantPlugins
           return if config.cloud_init_enabled
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             zlogin_write.printf("\n")
+            loginstring = zlogin_read
+            puts loginstring
+            puts loginstring  if loginstring.expect(/#{almatch}/)
+            puts loginstring  if loginstring.expect(/#{lcheck}/)
             uiinfo.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{almatch}'") if zlogin_read.expect(/#{almatch}/)
             zlogin_write.printf("\n")
             uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'") if zlogin_read.expect(/#{lcheck}/)
