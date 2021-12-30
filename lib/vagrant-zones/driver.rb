@@ -1167,10 +1167,10 @@ module VagrantPlugins
         rtn = {h: 24, d: 8, w: 5, m: 1}
         ct = {h: "0 1-23 * * * ", d: "0 0 * * 0-5 ", w: "0 0 * * 6 ", m: "0 0 1 * * "}
         h = Hash.new
-        h[hourly:] = {rtn: rtn[:h], ct: ct[:h] }
-        h[daily:] = {rtn: rtn[:d], ct: ct[:d] }
-        h[weekly:] = {rtn: rtn[:w], ct: ct[:w] }
-        h[monthly:] = {rtn: rtn[:m], ct: ct[:m] }
+        h[:hourly] = {rtn: rtn[:h], ct: ct[:h] }
+        h[:daily] = {rtn: rtn[:d], ct: ct[:d] }
+        h[:weekly] = {rtn: rtn[:w], ct: ct[:w] }
+        h[:monthly] = {rtn: rtn[:m], ct: ct[:m] }
         puts h.inspect
         shrtcr = "( #{@pfexec} crontab -l; echo "
         sfr = opts[:set_frequency_rtn]
