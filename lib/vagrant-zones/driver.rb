@@ -1174,7 +1174,7 @@ module VagrantPlugins
         rtn.each do |k, d|
           crons[:key] = "#{snpshtr} -p hourly -r -n #{rtn[:hourly]} #{disk} # #{name}"
           puts k.to_s
-          puts data
+          puts d
         end
 
 
