@@ -1181,9 +1181,9 @@ module VagrantPlugins
         end
 
         h.each do |k, d|
-
           puts k if opts[:set_frequency] == 'all' || k
           puts d if opts[:set_frequency] == 'all' || k
+          uii.info(d['cj']) if opts[:set_frequency] == 'all' || k
         end
 
 
