@@ -95,7 +95,7 @@ module VagrantPlugins
       def ssh_run_command(uiinfo, command)
         config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.ssh_run_command')) if config.debug
-        ip = get_ip_address('runsshcommmand)
+        ip = get_ip_address('runsshcommmand')
         user = user(@machine)
         key = userprivatekeypath(@machine).to_s
         password = vagrantuserpass(@machine).to_s
