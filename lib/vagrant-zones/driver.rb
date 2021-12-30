@@ -214,6 +214,7 @@ module VagrantPlugins
 
       # This Sanitizes the Mac Address
       def macaddress(uiinfo, opts)
+        config = @machine.provider_config
         regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
         mac = opts[:mac] unless opts[:mac].nil?
         mac = 'auto' unless mac.match(regex)
@@ -234,6 +235,7 @@ module VagrantPlugins
 
       # This Sanitizes the AllowedIP Address to set for Cloudinit
       def allowedaddress(uiinfo, opts)
+        config = @machine.provider_config
         ip = ipaddress(uiinfo, opts)
         allowed_address = "#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         uiinfo.info(I18n.t('vagrant_zones.allowedaddress')) if config.debug
