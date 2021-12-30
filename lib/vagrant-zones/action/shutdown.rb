@@ -23,13 +23,7 @@ module VagrantPlugins
 
           ui.info(I18n.t('vagrant_zones.graceful_shutdown_started'))
           @driver.control(ui, 'shutdown')
-
-          10.times do
-            state_id = @driver.state(@machine)
-            sleep 10 if state_id == 'running'
-            puts state_id
-          end
-
+        
           env[:metrics] ||= {}
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
             retryable(on: Errors::TimeoutError, tries: 300) do
@@ -41,11 +35,13 @@ module VagrantPlugins
           
           10.times do
             state_id = @driver.state(@machine)
-            sleep 10 if state_id == 'running'
             ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete')) unless state_id == 'running'
             puts state_id
+            sleep 10 if state_id == 'running'
+            break  unless state_id == 'running'
+
           end
-         
+
           env[:metrics] ||= {}
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
             retryable(on: Errors::TimeoutError, tries: 300) do
