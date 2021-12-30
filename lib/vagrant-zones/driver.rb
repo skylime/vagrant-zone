@@ -95,7 +95,7 @@ module VagrantPlugins
       def ssh_run_command(uiinfo, command)
         config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.ssh_run_command')) if config.debug
-        ip = get_ip_address(@machine)
+        ip = get_ip_address("runsshcommmand")
         user = user(@machine)
         key = userprivatekeypath(@machine).to_s
         password = vagrantuserpass(@machine).to_s
@@ -187,9 +187,9 @@ module VagrantPlugins
       end
 
       # This filters the NIC Types
-      def nictype(uiinfo, opts)
+      def nictype(opts)
         config = @machine.provider_config
-        uiinfo.info(I18n.t('vagrant_zones.nictype')) if config.debug
+        # uiinfo.info(I18n.t('vagrant_zones.nictype')) if config.debug
         case opts[:nictype]
         when /external/ || nil
           'e'
@@ -250,19 +250,19 @@ module VagrantPlugins
       # This Sanitizes the VNIC Name
       def vname(uiinfo, opts)
         config = @machine.provider_config
-        vnic_name = "vnic#{nictype(uiinfo, opts)}#{vtype(uiinfo)}_#{config.partition_id}_#{opts[:nic_number]}"
+        vnic_name = "vnic#{nictype(opts)}#{vtype(uiinfo)}_#{config.partition_id}_#{opts[:nic_number]}"
         uiinfo.info(I18n.t('vagrant_zones.vnic_name')) if config.debug
         vnic_name
       end
 
       ## If DHCP and Zlogin, get the IP address
-      def get_ip_address(machine)
-        config = machine.provider_config
+      def get_ip_address(_function)
+        config = @machine.provider_config
         name = @machine.name
         # uiinfo.info(I18n.t('vagrant_zones.get_ip_address')) if config.debug
         @machine.config.vm.networks.each do |adaptertype, opts|
           responses = []
-          nic_type = nictype(uiinfo, opts)
+          nic_type = nictype(opts)
           if opts[:dhcp] && opts[:managed] && adaptertype.to_s == 'public_network'
             vnic_name = "vnic#{nic_type}#{vtype(uiinfo)}_#{config.partition_id}_#{opts[:nic_number]}"
             PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
