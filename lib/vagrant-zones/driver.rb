@@ -1180,11 +1180,12 @@ module VagrantPlugins
           h[k] = {rtn: rtn[:h], ct: ct[:h], cj: cj}
         end
 
-        h.each do |k, d|
-          puts k
-          puts d
+        if opts[:set_frequency] == 'all'
+          h.each do |k, d|
+            puts k
+            puts d
+          end
         end
-
 
         
         if opts[:set_frequency] && opts[:set_frequency] == 'all'
