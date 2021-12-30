@@ -47,7 +47,7 @@ module VagrantPlugins
         # Attempt to get the action method from the Action class if it
         # exists, otherwise return nil to show that we don't support the
         # given action
-        action_method = "action_#{name}"
+        action_method = "action_#v{name}"
         return Action.send(action_method) if Action.respond_to?(action_method)
 
         nil
@@ -66,7 +66,7 @@ module VagrantPlugins
       def state
         state_id = nil
         state_id = :not_created unless @machine.id
-        state_id = driver.state() if @machine.id && !state_id
+        state_id = driver.state(@machine) if @machine.id && !state_id
         # This is a special pseudo-state so that we don't set the
         # NOT_CREATED_ID while we're setting up the machine. This avoids
         # clearing the data dir.
