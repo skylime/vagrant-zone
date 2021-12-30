@@ -1085,7 +1085,6 @@ module VagrantPlugins
       ## Configure ZFS Snapshots Crons
       def zfssnapcron(datasets, config, opts, uiinfo, name)
         crons = execute(false, "#{@pfexec} crontab -l").split("\n")
-
         rtnregex = '-p (weekly|monthly|daily|hourly)'
         opts[:dataset] = 'all' if opts[:dataset].nil?
 
