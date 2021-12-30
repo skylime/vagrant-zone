@@ -77,6 +77,8 @@ module VagrantPlugins
       ## Control the zone from inside the zone OS
       ## Future To-Do: Make commands specifiable by user.
       def control(control)
+        config = @machine.provider_config
+        uiinfo.info(I18n.t('vagrant_zones.control')) if config.debug
         case control
         when 'restart'
           command = 'sudo shutdown -r'
@@ -91,6 +93,8 @@ module VagrantPlugins
 
       ## Run commands over SSH instead of ZLogin
       def ssh_run_command(uiinfo, command)
+        config = @machine.provider_config
+        uiinfo.info(I18n.t('vagrant_zones.ssh_run_command')) if config.debug
         ip = get_ip_address(@machine)
         user = user(@machine)
         key = userprivatekeypath(@machine).to_s
@@ -104,6 +108,7 @@ module VagrantPlugins
       ## Function to provide console, vnc, or webvnc access
       ## Future To-Do: Should probably split this up
       def console(uiinfo, command, ip, port, exit)
+        config = @machine.provider_config
         detach = exit[:detach]
         kill = exit[:kill]
         name = @machine.name
@@ -253,7 +258,7 @@ module VagrantPlugins
 
       ## If DHCP and Zlogin, get the IP address
       def get_ip_address(machine)
-        config = @machine.provider_config
+        config = machine.provider_config
         name = @machine.name
         uiinfo.info(I18n.t('vagrant_zones.get_ip_address')) if config.debug
         @machine.config.vm.networks.each do |adaptertype, opts|
@@ -399,7 +404,7 @@ module VagrantPlugins
       end
 
       ## Check if Address shows up in lease list
-      def zonedhcpentries(uiinfo, opts)
+      def zonedhcpcheckaddr(uiinfo, opts)
         vnic_name = vname(uiinfo, opts)
         # allowed_address = allowedaddress(uiinfo, opts)
         uiinfo.info(I18n.t('vagrant_zones.configuring_dhcp') + vnic_name.to_s)
@@ -940,7 +945,7 @@ module VagrantPlugins
 
       # This filters the vagrantuser
       def user(machine)
-        config = @machine.provider_config
+        config = machine.provider_config
         user = config.vagrant_user unless config.vagrant_user.nil?
         user = 'vagrant' if config.vagrant_user.nil?
         uiinfo.info(I18n.t('vagrant_zones.user')) if config.debug
@@ -949,7 +954,7 @@ module VagrantPlugins
 
       # This filters the userprivatekeypath
       def userprivatekeypath(machine)
-        config = @machine.provider_config
+        config = machine.provider_config
         userkey = config.vagrant_user_private_key_path.to_s
         if config.vagrant_user_private_key_path.to_s.nil?
           id_rsa = 'https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant'
@@ -970,7 +975,7 @@ module VagrantPlugins
 
       # This filters the sshport
       def sshport(machine)
-        config = @machine.provider_config
+        config = machine.provider_config
         sshport = '22'
         sshport = config.sshport.to_s unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
         uiinfo.info(I18n.t('vagrant_zones.sshport')) if config.debug
@@ -1005,7 +1010,7 @@ module VagrantPlugins
 
       # This filters the vagrantuserpass
       def vagrantuserpass(machine)
-        config = @machine.provider_config
+        config = machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.vagrantuserpass')) if config.debug
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
