@@ -1166,7 +1166,8 @@ module VagrantPlugins
         rtn = {hourly: 24, daily: 8, weekly: 5, monthly: 1}
         shrtcr = "( #{@pfexec} crontab -l; echo "
         sfr = opts[:set_frequency_rtn]
-        puts sfr.inspect
+        
+        
         
         hourlycron = "0 1-23 * * * #{snpshtr} -p hourly -r -n #{rtn[:hourly]} #{disk} # #{name}"
         dailycron = "0 0 * * 0-5 #{snpshtr} -p daily -r -n #{rtn[:daily]} #{disk} # #{name}"
