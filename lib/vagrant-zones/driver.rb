@@ -1178,6 +1178,8 @@ module VagrantPlugins
           cj = "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{sfr} #{disk} # #{name}" unless sfr.nil?
           cj = "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{d[:rtn]} #{disk} # #{name}" if sfr.nil?
           h[k] = {rtn: rtn[:h], ct: ct[:h], cj: cj}
+        end
+        h.each do |k, d|
           puts k if k == 'all' || opts[:set_frequency]
           puts d if k == 'all' || opts[:set_frequency]
           uii.info(d[:cj].to_s) if k == 'all' || opts[:set_frequency]     
