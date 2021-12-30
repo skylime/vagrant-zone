@@ -756,7 +756,6 @@ module VagrantPlugins
               counter += 1
               loop do
                 zlogin_read.expect(/\r\n/) { |line| rsp.push line }
-                puts rsp[-1]
                 uiinfo.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{almatch}'") if rsp[-1].to_s.match(/#{almatch}/)
                 alm = true if rsp[-1].to_s.match(/#{almatch}/)
                 break if rsp[-1].to_s.match(/#{almatch}/)
