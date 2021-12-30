@@ -1173,7 +1173,7 @@ module VagrantPlugins
         crons = Hash.new
         rtn.each do |k, d|
           crons[:key] = "#{snpshtr} -p hourly -r -n #{rtn[:hourly]} #{disk} # #{name}"
-          puts key.to_s
+          puts k.to_s
           puts data
         end
 
