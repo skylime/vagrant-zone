@@ -224,6 +224,7 @@ module VagrantPlugins
 
       # This Sanitizes the IP Address to set
       def ipaddress(uiinfo, opts)
+        config = @machine.provider_config
         ip = if opts[:ip].empty?
                nil
              else
