@@ -80,10 +80,10 @@ module VagrantPlugins
         case control
         when 'restart'
           command = 'sudo shutdown -r'
-          ssh_run_command(uiinfo, command)
+          ssh_run_command(uiinfo,command)
         when 'shutdown'
           command = 'sudo init 0 || true'
-          ssh_run_command(uiinfo, command)
+          ssh_run_command(uiinfo,command)
         else
           puts 'No Command specified'
         end
@@ -124,17 +124,12 @@ module VagrantPlugins
           time_started = File.readlines('console.pid')[2].strip
           vmname = File.readlines('console.pid')[3].strip
           nport = File.readlines('console.pid')[4].strip
-          uiinfo.info(I18n.t('vagrant_zones.consolerunning'))
           puts "VM is running with PID: #{pid} since: #{time_started} as console type: #{ctype} served at: #{nport}" if vmname[name.to_s]
           if kill == 'yes'
             File.delete('console.pid') if File.exist?('console.pid')
             Process.kill 'TERM', pid.to_i
             Process.detach pid.to_i
             puts 'Session Terminated'
-            uiinfo.info(I18n.t('vagrant_zones.sessionterminated'))
-          end
-        else
-
           end
         else
           case command
@@ -145,7 +140,6 @@ module VagrantPlugins
             Process.detach(pid) if detach == 'yes'
             time = Time.new.strftime('%Y-%m-%d-%H:%M:%S')
             File.write('console.pid', "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}") if detach == 'yes'
-            uiinfo.info(I18n.t('vagrant_zones.consolerunning'))
             puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
           when 'vnc'
             run = "pfexec zadm vnc #{netport} #{name}"
@@ -154,7 +148,6 @@ module VagrantPlugins
             Process.detach(pid) if detach == 'yes'
             time = Time.new.strftime('%Y-%m-%d-%H:%M:%S')
             File.write('console.pid', "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}") if detach == 'yes'
-            uiinfo.info(I18n.t('vagrant_zones.consolerunning'))
             puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
           when 'zlogin'
             run = "#{@pfexec} zadm console #{name}"
@@ -346,7 +339,7 @@ module VagrantPlugins
       def zonenatniccreate(uiinfo, opts, etherstub)
         vnic_name = vname(uiinfo, opts)
         uiinfo.info(I18n.t('vagrant_zones.creating_ethervnic') + "#{vnic_name}_stubc")
-        execute(false, "#{@pfexec} dladm create-vnic -l  etherstub #{vnic_name}")
+        execute(false, "#{@pfexec} dladm create-vnic -l #{vnic_name}_stubc #{vnic_name}")
       end
 
       ## zonecfg function for for Networking
@@ -369,19 +362,19 @@ module VagrantPlugins
       end
 
       ## Set NatForwarding on global interface
-      def zonenatforward(uiinfo, opts)
+      def zonenatforward(uiinfo, opts, etherstub)
         vnic_name = vname(uiinfo, opts)
         uiinfo.info(I18n.t('vagrant_zones.forwarding_nat') + "#{vnic_name}_stubc")
         execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{vnic_name}_stubc")
       end
 
       ## Create nat entries for the zone
-      def zonenatentries(uiinfo, opts)
+      def zonenatentries(uiinfo, opts, etherstub)
         vnic_name = vname(uiinfo, opts)
         allowed_address = allowedaddress(uiinfo, opts)
         uiinfo.info(I18n.t('vagrant_zones.configuring_nat') + "#{vnic_name}_stubc")
-        #line1 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32  portmap tcp/udp auto)
-        #line2 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32)
+        line1 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32  portmap tcp/udp auto)
+        line2 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32)
         # /etc/ipf/ipnat.conf
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
       end
