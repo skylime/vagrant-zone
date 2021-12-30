@@ -1202,6 +1202,7 @@ module VagrantPlugins
           setcron = "#{shrtcr}'#{weeklycron}' ) | #{@pfexec} crontab" if cronjobs[:weekly].nil? && opts[:set_frequency] == 'weekly'
           setcron = "#{shrtcr}'#{monthlycron}' ) | #{@pfexec} crontab" if cronjobs[:monthly].nil? && opts[:set_frequency] == 'monthly'
           uii.info(setcron)
+          puts setcron
           execute(false, setcron)
         end
       end
