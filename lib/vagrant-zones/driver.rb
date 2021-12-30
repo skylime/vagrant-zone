@@ -260,7 +260,7 @@ module VagrantPlugins
       def get_ip_address(machine)
         config = machine.provider_config
         name = @machine.name
-        uiinfo.info(I18n.t('vagrant_zones.get_ip_address')) if config.debug
+        # uiinfo.info(I18n.t('vagrant_zones.get_ip_address')) if config.debug
         @machine.config.vm.networks.each do |adaptertype, opts|
           responses = []
           nic_type = nictype(uiinfo, opts)
@@ -978,7 +978,7 @@ module VagrantPlugins
         config = machine.provider_config
         sshport = '22'
         sshport = config.sshport.to_s unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
-        uiinfo.info(I18n.t('vagrant_zones.sshport')) if config.debug
+        # uiinfo.info(I18n.t('vagrant_zones.sshport')) if config.debug
         sshport
       end
 
