@@ -506,7 +506,7 @@ module VagrantPlugins
       def zonecfgbhyve(uiinfo, name, config, zcfg)
         return unless config.brand == 'bhyve'
 
-        bootconfigs = config.boot
+        bootconfigs = config.boot 
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
         execute(false, %(#{zcfg}"create ; set zonepath=/#{datasetpath}/path"))
