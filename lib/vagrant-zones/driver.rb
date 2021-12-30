@@ -34,7 +34,7 @@ module VagrantPlugins
                   end
       end
 
-      def state()
+      def state
         name = @machine.name
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
         case vm_state
@@ -164,7 +164,7 @@ module VagrantPlugins
       end
 
       # This filters the firmware
-      def vtype()
+      def vtype
         config = @machine.provider_config
         case config.vm_type
         when /template/
@@ -202,7 +202,7 @@ module VagrantPlugins
       end
 
       # This Sanitizes the DNS Records
-      def dnsservers()
+      def dnsservers
         config = @machine.provider_config
         servers = []
         unless config.dns&.nil?
@@ -245,7 +245,7 @@ module VagrantPlugins
       end
       
       ## If DHCP and Zlogin, get the IP address
-      def get_ip_address()
+      def get_ip_address
         config = @machine.provider_config
         name = @machine.name
         @machine.config.vm.networks.each do |adaptertype, opts|
@@ -327,7 +327,7 @@ module VagrantPlugins
       end
 
       ## Create etherstubs IP for Zones DHCP
-      def etherstubcreate(uiinfo, opts, etherstub)
+      def etherstubcreateint(uiinfo, opts, etherstub)
         vnic_name = vname(opts)
         uiinfo.info(I18n.t('vagrant_zones.creating_etherhostvnic') + "#{vnic_name}_stubh")
         execute(false, "#{@pfexec} dladm create-vnic -l #{etherstub} #{vnic_name}_stubh")
@@ -916,7 +916,7 @@ module VagrantPlugins
       end
 
       # This filters the vagrantuser
-      def user()
+      def user
         config = @machine.provider_config
         user = config.vagrant_user unless config.vagrant_user.nil?
         user = 'vagrant' if config.vagrant_user.nil?
@@ -924,7 +924,7 @@ module VagrantPlugins
       end
 
       # This filters the userprivatekeypath
-      def userprivatekeypath()
+      def userprivatekeypath
         config = @machine.provider_config
         userkey = config.vagrant_user_private_key_path.to_s
         if config.vagrant_user_private_key_path.to_s.nil?
@@ -945,7 +945,7 @@ module VagrantPlugins
       end
 
       # This filters the sshport
-      def sshport()
+      def sshport
         config = @machine.provider_config
         sshport = '22'
         sshport = config.sshport.to_s unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
@@ -953,7 +953,7 @@ module VagrantPlugins
       end
 
       # This filters the firmware
-      def firmware()
+      def firmware
         config = @machine.provider_config
         ft = case config.firmware_type
              when /compatability/
@@ -971,13 +971,13 @@ module VagrantPlugins
       end
 
       # This filters the rdpport
-      def rdpport()
+      def rdpport
         config = @machine.provider_config
         config.rdpport.to_s unless config.rdpport.to_s.nil?
       end
 
       # This filters the vagrantuserpass
-      def vagrantuserpass()
+      def vagrantuserpass
         config = @machine.provider_config
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
