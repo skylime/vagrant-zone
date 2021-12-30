@@ -82,6 +82,7 @@ class Hosts
                   vm.lcheck                               = host['lcheck_string']
                   vm.alcheck                              = host['alcheck_string']
                   vm.debug_boot                           = host['debug_boot']
+                  vm.debug                                = host['debug']
                   vm.cdroms                               = host['cdroms']
                   vm.additional_disks                     = host['additional_disks']
                   vm.boot                                 = host['boot']

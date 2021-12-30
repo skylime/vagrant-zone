@@ -203,7 +203,6 @@ module VagrantPlugins
                    when /host/
                      'h'
                    end
-        nic_type
       end
 
       # This Sanitizes the DNS Records
@@ -348,7 +347,7 @@ module VagrantPlugins
       ## Create vnics for Zones
       def zonenatniccreate(uiinfo, opts, etherstub)
         vnic_name = vname(uiinfo, opts)
-        uiinfo.info(I18n.t('vagrant_zones.creating_ethervnic') + "#{vnic_name}")
+        uiinfo.info(I18n.t('vagrant_zones.creating_ethervnic') + vnic_name.to_s)
         execute(false, "#{@pfexec} dladm create-vnic -l #{etherstub} #{vnic_name}")
       end
 
@@ -374,7 +373,7 @@ module VagrantPlugins
       ## Set NatForwarding on global interface
       def zonenatforward(uiinfo, opts)
         vnic_name = vname(uiinfo, opts)
-        uiinfo.info(I18n.t('vagrant_zones.forwarding_nat') + "#{vnic_name}")
+        uiinfo.info(I18n.t('vagrant_zones.forwarding_nat') + vnic_name.to_s)
         execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{vnic_name}")
       end
 
