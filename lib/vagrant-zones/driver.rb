@@ -1175,8 +1175,10 @@ module VagrantPlugins
         h[:monthly] = {rtn: rtn[:m], ct: ct[:m]}
 
         h.each do |k, d|
-          puts "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{sfr} #{disk} # #{name}" unless sfr.nil?
-          puts "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{d[:rtn]} #{disk} # #{name}" if sfr.nil?
+          cj = "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{sfr} #{disk} # #{name}" unless sfr.nil?
+          cj = "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{d[:rtn]} #{disk} # #{name}" if sfr.nil?
+          h[k] = {rtn: rtn[:h], ct: ct[:h], cj: cj}
+          puts h[k]
         end
 
         
