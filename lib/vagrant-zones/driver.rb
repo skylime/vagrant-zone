@@ -1164,11 +1164,7 @@ module VagrantPlugins
         name = @machine.name
         snpshtr = config.snapshot_script.to_s
         rtn = {hourly: 24, daily: 8, weekly: 5, monthly: 1}
-        puts rtn[:hourly]
-        hourlytrn = 24
-        dailytrn = 8
-        weeklytrn = 5
-        monthlytrn = 1
+
         shrtcr = "( #{@pfexec} crontab -l; echo "
         sfr = opts[:set_frequency_rtn]
 
