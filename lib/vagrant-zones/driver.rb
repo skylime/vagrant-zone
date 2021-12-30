@@ -75,6 +75,7 @@ module VagrantPlugins
       end
 
       ## Control the zone from inside the zone OS
+      ## Future To-Do: Make commands specifiable by user.
       def control(control)
         case control
         when 'restart'
@@ -101,6 +102,7 @@ module VagrantPlugins
       end
 
       ## Function to provide console, vnc, or webvnc access
+      ## Future To-Do: Should probably split this up
       def console(command, ip, port, exit)
         detach = exit[:detach]
         kill = exit[:kill]
@@ -248,23 +250,7 @@ module VagrantPlugins
         name = @machine.name
         @machine.config.vm.networks.each do |adaptertype, opts|
           responses = []
-          nictype = if opts[:nictype].nil?
-                      'external'
-                    else
-                      opts[:nictype]
-                    end
-          nic_type = case nictype
-                     when /external/
-                       'e'
-                     when /internal/
-                       'i'
-                     when /carp/
-                       'c'
-                     when /management/
-                       'm'
-                     when /host/
-                       'h'
-                     end
+          nic_type= nictype(opts)
           if opts[:dhcp] && opts[:managed] && adaptertype.to_s == 'public_network'
             vnic_name = "vnic#{nic_type}#{vtype()}_#{config.partition_id}_#{opts[:nic_number]}"
             PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
@@ -300,7 +286,6 @@ module VagrantPlugins
         uiinfo.info(I18n.t('vagrant_zones.networking_int_add')) if state == 'setup'
         uiinfo.info(I18n.t('vagrant_zones.netplan_remove'))  if state == 'setup'
         zlogin(uiinfo, 'rm -rf /etc/netplan/*.yaml') if state == 'setup'
-        config = @machine.provider_config
         @machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
 
@@ -335,6 +320,7 @@ module VagrantPlugins
       end
 
       # This helps us create all the datasets for the zone
+      ## Future To-Do: Should probably split this up and clean it up
       def create_dataset(uiinfo)
         config = @machine.provider_config
         name = @machine.name
@@ -397,6 +383,7 @@ module VagrantPlugins
       end
 
       # This helps us delete any associated datasets of the zone
+      ## Future To-Do: Should probably split this up and clean it up
       def delete_dataset(uiinfo)
         config = @machine.provider_config
         name = @machine.name
@@ -443,11 +430,11 @@ module VagrantPlugins
 
       ## zonecfg function for bhyve
       def zonecfgbhyve(uiinfo, name, config, zcfg)
+        return unless config.brand == 'bhyve'
+
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
-        return unless config.brand == 'bhyve'
-
         execute(false, %(#{zcfg}"create ; set zonepath=/#{datasetpath}/path"))
         execute(false, %(#{zcfg}"set brand=#{config.brand}"))
         execute(false, %(#{zcfg}"set autoboot=#{config.autoboot}"))
@@ -466,11 +453,10 @@ module VagrantPlugins
 
       ## zonecfg function for lx
       def zonecfglx(uiinfo, name, config, zcfg)
-        bootconfigs = config.boot
-        datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
-        datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
         return unless config.brand == 'lx'
 
+        datasetpath = "#{config.boot['array']}/#{config.boot['dataset']}/#{name}"
+        datasetroot = "#{datasetpath}/#{config.boot['volume_name']}"
         uiinfo.info(I18n.t('vagrant_zones.lx_zone_config_gen'))
         @machine.config.vm.networks.each do |adaptertype, opts|
           next unless adaptertype.to_s == 'public_network'
@@ -510,6 +496,7 @@ module VagrantPlugins
       end
 
       ## zonecfg function for CPU Configurations
+      ## Future To-Do: Fix LX Zone CPU configs if any
       def zonecfgcpu(_uiinfo, _name, config, zcfg)
         if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm')
           execute(false, %(#{zcfg}"add attr; set name=vcpus; set value=#{config.cpus}; set type=string; end;"))
@@ -546,9 +533,8 @@ module VagrantPlugins
       def zonecfgadditionaldisks(uiinfo, name, config, zcfg)
         return if config.additional_disks.nil?
 
-        disks = config.additional_disks
         diskrun = 0
-        disks.each do |disk|
+        config.additional_disks.each do |disk|
           diskname = 'disk'
           dset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
           cinfo = "#{dset}, #{disk['size']}"
@@ -562,9 +548,7 @@ module VagrantPlugins
 
       ## zonecfg function for Console Access
       def zonecfgconsole(uiinfo, _name, config, zcfg)
-        return if config.console.nil?
-
-        return unless config.console != 'disabled'
+        return if config.console.nil? || config.console == 'disabled'
 
         port = if %w[console].include?(config.console) && config.consoleport.nil?
                  'socket,/tmp/vm.com1'
@@ -635,12 +619,11 @@ module VagrantPlugins
         name = @machine.name
         config = @machine.provider_config
         zcfg = "#{@pfexec} zonecfg -z #{name} "
-        ## Seperate commands out to individual functions like Network, Dataset, and Emergency Console
-        ## Function to create LX zonecfg
+        ## Create LX zonecfg
         zonecfglx(uiinfo, name, config, zcfg)
-        ## Function to create bhyve zonecfg
+        ## Create bhyve zonecfg
         zonecfgbhyve(uiinfo, name, config, zcfg)
-        ## Function to create kvm zonecfg
+        ## Create kvm zonecfg
         zonecfgkvm(uiinfo, name, config, zcfg)
         ## Shared Disk Configurations
         zonecfgshareddisks(uiinfo, name, config, zcfg)
@@ -916,6 +899,7 @@ module VagrantPlugins
       end
 
       ## List ZFS Snapshots
+      ## Future To-Do: Cleanup Output
       def zfssnaplist(datasets, _config, opts, uiinfo, _name)
         uiinfo.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
         datasets.each_with_index do |disk, index|
@@ -1054,6 +1038,7 @@ module VagrantPlugins
       end
 
       ## This will set Cron Jobs for Snapshots to take place
+      ## Future To-Do: Simplify
       def zfssnapcronset(disk, config, opts, name, cronjobs)
         spshtr = config.snapshot_script.to_s
         hourlytrn = 24
@@ -1135,18 +1120,15 @@ module VagrantPlugins
       # This helps us create ZFS Snapshots
       def zfs(uiinfo, job, opts)
         name = @machine.name
-        ## get disks configurations
         config = @machine.provider_config
         bootconfigs = config.boot
         datasetroot = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}/#{bootconfigs['volume_name']}"
         datasets = []
         datasets << datasetroot.to_s
         config.additional_disks&.each do |disk|
-          ## Check if Parent Dataset exists
           additionaldataset = "#{disk['array']}/#{disk['dataset']}/#{name}/#{disk['volume_name']}"
           datasets << additionaldataset.to_s
         end
-
         case job
         when 'list'
           zfssnaplist(datasets, config, opts, uiinfo, name)
@@ -1186,11 +1168,8 @@ module VagrantPlugins
       # Destroys the Zone configurations and path
       def destroy(id)
         name = @machine.name
-
         id.info(I18n.t('vagrant_zones.leaving'))
         id.info(I18n.t('vagrant_zones.destroy_zone'))
-
-        ## Check state in zoneadm
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
 
         ## If state is installed, uninstall from zoneadm and destroy from zonecfg
