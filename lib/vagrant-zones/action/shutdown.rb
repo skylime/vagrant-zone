@@ -31,17 +31,19 @@ module VagrantPlugins
               break unless env[:machine].communicate.ready?
             end
           end
-          ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete'))
+          
           env[:metrics] ||= {}
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
             retryable(on: Errors::TimeoutError, tries: 300) do
               # If we're interrupted don't worry about waiting
               vm_state = @driver.state(@machine)
-              sleep 10 if vm_state == 'running'
+              sleep 10 if vm_state.match(/running/)
               puts vm_state
+              
               next if env[:interrupted]
-              break unless vm_state == 'running'
+              break unless vm_state.match(/running/)
             end
+            ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete'))
           end
           @driver.halt(env[:ui])
           @app.call(env)
