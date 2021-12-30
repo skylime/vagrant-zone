@@ -1173,6 +1173,7 @@ module VagrantPlugins
         dailycron = "0 0 * * 0-5 #{snpshtr} -p daily -r -n #{dailytrn} #{disk} # #{name}"
         weeklycron = "0 0 * * 6 #{snpshtr} -p weekly -r -n #{weeklytrn} #{disk} # #{name}"
         monthlycron = "0 0 1 * * #{snpshtr} -p monthly -r -n #{monthlytrn} #{disk} # #{name}"
+        puts "test"
         if opts[:set_frequency] && opts[:set_frequency] == 'all'
           hourlycron = "0 1-23 * * * #{snpshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           dailycron = "0 0 * * 0-5 #{snpshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
