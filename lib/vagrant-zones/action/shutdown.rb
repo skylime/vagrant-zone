@@ -18,12 +18,9 @@ module VagrantPlugins
         def call(env)
           @machine = env[:machine]
           @driver  = @machine.provider.driver
-          name = @machine.name
           ui = env[:ui]
-
           ui.info(I18n.t('vagrant_zones.graceful_shutdown_started'))
           @driver.control(ui, 'shutdown')
-        
           env[:metrics] ||= {}
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
             retryable(on: Errors::TimeoutError, tries: 300) do
@@ -32,7 +29,6 @@ module VagrantPlugins
               break unless env[:machine].communicate.ready?
             end
           end
-          
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
             300.times do
               state_id = @driver.state(@machine)
