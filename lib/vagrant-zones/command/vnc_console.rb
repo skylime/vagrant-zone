@@ -39,7 +39,7 @@ module VagrantPlugins
             kill = 'yes'
             kill = 'no' unless options[:kill] == 'yes'
             exit = { detach: detach, kill: kill }
-            driver.console('vnc', options[:ip], options[:port], exit)
+            driver.console(@env.ui, 'vnc', options[:ip], options[:port], exit)
           end
         end
       end

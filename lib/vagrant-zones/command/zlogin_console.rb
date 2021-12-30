@@ -31,7 +31,7 @@ module VagrantPlugins
             detach = 'no'
             kill = 'no'
             exit = { detach: detach, kill: kill }
-            driver.console('zlogin', options[:ip], options[:port], exit)
+            driver.console(@env.ui, 'zlogin', options[:ip], options[:port], exit)
           end
         end
       end
