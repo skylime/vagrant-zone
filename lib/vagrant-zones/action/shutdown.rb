@@ -18,10 +18,17 @@ module VagrantPlugins
         def call(env)
           @machine = env[:machine]
           @driver  = @machine.provider.driver
+          name = @machine.name
           ui = env[:ui]
 
           ui.info(I18n.t('vagrant_zones.graceful_shutdown_started'))
           @driver.control(ui, 'shutdown')
+
+          10.times do
+            state_id = @driver.state(@machine)
+            sleep 10 if state_id == 'running'
+            puts state_id
+          end
 
           env[:metrics] ||= {}
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
@@ -32,16 +39,22 @@ module VagrantPlugins
             end
           end
           
+          10.times do
+            state_id = @driver.state(@machine)
+            sleep 10 if state_id == 'running'
+            ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete')) unless state_id == 'running'
+            puts state_id
+          end
+         
           env[:metrics] ||= {}
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
             retryable(on: Errors::TimeoutError, tries: 300) do
-              vm_state = @driver.state(@machine)
-              sleep 1 if vm_state.match(/running/)
-              puts vm_state if vm_state.match(/running/)
               # If we're interrupted don't worry about waiting
-              break if env[:interrupted]
+              vm_state = @driver.state(@machine)
+              sleep 10 if vm_state == 'running'
+              next if env[:interrupted]
+              break unless vm_state == 'running'
             end
-            ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete'))
           end
           @driver.halt(env[:ui])
           @app.call(env)
