@@ -1173,8 +1173,9 @@ module VagrantPlugins
         dailycron = "0 0 * * 0-5 #{snpshtr} -p daily -r -n #{rtn[:daily]} #{disk} # #{name}"
         weeklycron = "0 0 * * 6 #{snpshtr} -p weekly -r -n #{rtn[:weekly]} #{disk} # #{name}"
         monthlycron = "0 0 1 * * #{snpshtr} -p monthly -r -n #{rtn[:monthly]} #{disk} # #{name}"
-        puts "test"
+        
         if opts[:set_frequency] && opts[:set_frequency] == 'all'
+          puts "test1"
           hourlycron = "0 1-23 * * * #{snpshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           dailycron = "0 0 * * 0-5 #{snpshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           weeklycron = "0 0 * * 6 #{snpshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
@@ -1192,6 +1193,7 @@ module VagrantPlugins
           uii.info(setcron) if cronjobs[:monthly].nil?
           execute(false, setcron) if cronjobs[:monthly].nil?
         elsif opts[:set_frequency] && opts[:set_frequency] != 'all'
+          puts "test2"
           hourlycron = "0 1-23 * * * #{snpshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           dailycron = "0 0 * * 0-5 #{snpshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           weeklycron = "0 0 * * 6 #{snpshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
