@@ -1176,7 +1176,8 @@ module VagrantPlugins
 
         h.each do |k, d|
           puts k.to_s
-          puts d
+          puts d[:rtn]
+          puts d[:ct]
         end
 
 
