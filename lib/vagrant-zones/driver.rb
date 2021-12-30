@@ -768,9 +768,9 @@ module VagrantPlugins
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             zlogin_write.printf("\n")
             loginstring = zlogin_read
-            puts loginstring
-            puts loginstring  if loginstring.expect(/#{almatch}/)
-            puts loginstring  if loginstring.expect(/#{lcheck}/)
+            puts loginstring.inspect
+            puts loginstring if loginstring.expect(/#{almatch}/)
+            puts loginstring if loginstring.expect(/#{lcheck}/)
             uiinfo.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{almatch}'") if loginstring.expect(/#{almatch}/)
             uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'") if loginstring.expect(/#{lcheck}/)
             Process.kill('HUP', pid) if loginstring.expect(/#{lcheck}/) || loginstring.expect(/#{almatch}/)
