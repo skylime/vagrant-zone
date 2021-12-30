@@ -21,9 +21,9 @@ end
 begin
   require 'vagrant'
 rescue LoadError
-  raise 'The Vagrant Libvirt plugin must be run within Vagrant.'
+  raise 'The Vagrant vagrant-zones plugin must be run within Vagrant.'
 end
 
-raise 'The Vagrant Libvirt plugin is only compatible with Vagrant 2+.' if Vagrant::VERSION < '2'
+raise 'The Vagrant vagrant-zones plugin is only compatible with Vagrant 2+.' if Vagrant::VERSION < '2'
 
 require 'vagrant-zones/plugin'

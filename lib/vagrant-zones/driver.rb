@@ -319,6 +319,80 @@ module VagrantPlugins
         end
       end
 
+      ## Create etherstubs for Zones
+      def etherstubcreate(uiinfo, opts)
+        vnic_name = vname(opts)
+        uiinfo.info(I18n.t('vagrant_zones.creating_etherstub') + vnic_name)
+        execute(false, "#{@pfexec} dladm create-etherstub #{vnic_name}_stub")
+      end
+
+      ## Create etherstubs IP for Zones DHCP
+      def etherstubcreate(uiinfo, opts, etherstub)
+        vnic_name = vname(opts)
+        uiinfo.info(I18n.t('vagrant_zones.creating_etherhostvnic') + "#{vnic_name}_stubh")
+        execute(false, "#{@pfexec} dladm create-vnic -l #{etherstub} #{vnic_name}_stubh")
+        execute(false, "#{@pfexec} ipadm create-ip #{vnic_name}_stubh")
+        execute(false, "#{@pfexec} ipadm create-addr -T static -a local=172.16.0.1/16 #{vnic_name}_stubh/v4")
+      end
+
+
+      ## Create vnics for Zones
+      def zonenatniccreate(uiinfo, opts, etherstub)
+        vnic_name = vname(opts)
+        uiinfo.info(I18n.t('vagrant_zones.creating_ethervnic') + "#{vnic_name}_stubc")
+        execute(false, "#{@pfexec} dladm create-vnic -l #{vnic_name}_stubc #{vnic_name}")
+      end
+
+      ## zonecfg function for for Networking
+      def natnicconfig(uiinfo, opts)
+        allowed_address = allowedaddress(opts)
+        defrouter = opts[:gateway].to_s
+        vnic_name = vname(opts)
+        config = @machine.provider_config
+        uiinfo.info(" #{I18n.t('vagrant_zones.nat_vnic_setup')}#{vnic_name}_stubc")
+        strt = "#{@pfexec} zonecfg -z #{@machine.name} "
+        cie = config.cloud_init_enabled
+        case config.brand
+        when 'lx'
+          shrtstr1 = %(set allowed-address=#{allowed_address}; add property (name=gateway,value="#{defrouter}"); )
+          shrtstr2 = %(add property (name=ips,value="#{allowed_address}"); add property (name=primary,value="true"); end;)
+          execute(false, %(#{strt}set global-nic=auto; #{shrtstr1} #{shrtstr2}"))
+        when 'bhyve'
+          execute(false, %(#{strt}"add net; set physical=#{vnic_name}_stubc; end;")) unless cie
+        end
+      end
+
+      ## Set NatForwarding on global interface
+      def zonenatforward(uiinfo, opts, etherstub)
+        vnic_name = vname(opts)
+        uiinfo.info(I18n.t('vagrant_zones.forwarding_nat') + "#{vnic_name}_stubc")
+        execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{vnic_name}_stubc")
+      end
+
+      ## Create nat entries for the zone
+      def zonenatentries(uiinfo, opts, etherstub)
+        vnic_name = vname(opts)        
+        allowed_address = allowedaddress(opts)
+        uiinfo.info(I18n.t('vagrant_zones.configuring_nat') + "#{vnic_name}_stubc")
+        line1 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32  portmap tcp/udp auto)
+        line2 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32)
+        # /etc/ipf/ipnat.conf
+        execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
+      end
+
+      ## Create dhcp entries for the zone
+      def zonedhcpentries(uiinfo, opts, etherstub)
+        vnic_name = vname(opts)        
+        allowed_address = allowedaddress(opts)
+        uiinfo.info(I18n.t('vagrant_zones.configuring_dhcp') + "#{vnic_name}_stubc")
+        # subnet 1.1.1.0 netmask 255.255.255.224 {
+        # range 1.1.1.10 1.1.1.20;
+        # }
+        # 
+        # /etc/inet/dhcpd4.conf
+        execute(false, "#{@pfexec} svcadm refresh dhcp")
+      end
+
       # This helps us create all the datasets for the zone
       ## Future To-Do: Should probably split this up and clean it up
       def create_dataset(uiinfo)
