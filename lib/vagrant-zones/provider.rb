@@ -66,7 +66,7 @@ module VagrantPlugins
       def state
         state_id = nil
         state_id = :not_created unless @machine.id
-        state_id = driver.state() if @machine.id && !state_id
+        state_id = driver.state(@machine) if @machine.id && !state_id
         # This is a special pseudo-state so that we don't set the
         # NOT_CREATED_ID while we're setting up the machine. This avoids
         # clearing the data dir.
