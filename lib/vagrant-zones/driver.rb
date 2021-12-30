@@ -121,9 +121,11 @@ module VagrantPlugins
                    config.consoleport
                  end
         end
-        ip = (config.consolehost unless (config.consolehost =~ Resolv::IPv4::Regex))
-        ip = ('0.0.0.0' unless (ip =~ Resolv::IPv4::Regex))
-        netport = "#{ip}:#{port}"
+
+        ipaddr = '0.0.0.0'
+        ipaddr = (config.consolehost if (config.consolehost =~ Resolv::IPv4::Regex))
+        ipaddr = (ipaddr if (ip =~ Resolv::IPv4::Regex))
+        netport = "#{ipaddr}:#{port}"
         pid = 0
         if File.exist?('console.pid')
           pid = File.readlines('console.pid')[0].strip
