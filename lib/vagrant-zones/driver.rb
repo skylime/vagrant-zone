@@ -1169,7 +1169,7 @@ module VagrantPlugins
         
         
         
-        hourlycron = "0 1-23 * * * #{snpshtr} -p hourly -r -n #{rtn[:hourly]} #{disk} # #{name}"
+        hourlycron = "0 1-23 * * * #{snpshtr} -p hourly -r -n #{rtn[:hourly].to_s} #{disk} # #{name}"
         dailycron = "0 0 * * 0-5 #{snpshtr} -p daily -r -n #{rtn[:daily].to_s} #{disk} # #{name}"
         weeklycron = "0 0 * * 6 #{snpshtr} -p weekly -r -n #{rtn[:weekly].to_s} #{disk} # #{name}"
         monthlycron = "0 0 1 * * #{snpshtr} -p monthly -r -n #{rtn[:monthly].to_s} #{disk} # #{name}"
