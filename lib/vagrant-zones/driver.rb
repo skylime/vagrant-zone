@@ -765,7 +765,7 @@ module VagrantPlugins
                 break if rsp[-1].to_s.match(/#{lcheck}/)
 
                 puts rsp[-1]
-                zlogin_write.printf("\n") if ((config.setup_wait - counter) < 20 )
+                zlogin_write.printf("\n") if (counter < (config.setup_wait - 15) )
               end
             end
             Process.kill('HUP', pid)
