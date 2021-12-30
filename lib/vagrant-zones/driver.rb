@@ -80,10 +80,10 @@ module VagrantPlugins
         case control
         when 'restart'
           command = 'sudo shutdown -r'
-          ssh_run_command(uiinfo,command)
+          ssh_run_command(uiinfo, command)
         when 'shutdown'
           command = 'sudo init 0 || true'
-          ssh_run_command(uiinfo,command)
+          ssh_run_command(uiinfo, command)
         else
           puts 'No Command specified'
         end
@@ -108,6 +108,7 @@ module VagrantPlugins
         kill = exit[:kill]
         name = @machine.name
         config = @machine.provider_config
+        uiinfo.info(I18n.t('vagrant_zones.console')) if config.debug
         if port.nil?
           port = if config.consoleport.nil?
                    ''
@@ -166,6 +167,7 @@ module VagrantPlugins
       # This filters the firmware
       def vtype(uiinfo)
         config = @machine.provider_config
+        uiinfo.info(I18n.t('vagrant_zones.vtype')) if config.debug
         case config.vm_type
         when /template/
           '1'
@@ -182,6 +184,8 @@ module VagrantPlugins
 
       # This filters the NIC Types
       def nictype(uiinfo, opts)
+        config = @machine.provider_config
+        uiinfo.info(I18n.t('vagrant_zones.nictype')) if config.debug
         nictype = if opts[:nictype].nil?
                     'external'
                   else
@@ -210,6 +214,7 @@ module VagrantPlugins
           servers.append(server)
         end
         servers = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
+        uiinfo.info(I18n.t('vagrant_zones.nsservers')) if config.debug
         servers
       end
 
@@ -218,6 +223,7 @@ module VagrantPlugins
         regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
         mac = opts[:mac] unless opts[:mac].nil?
         mac = 'auto' unless mac.match(regex)
+        uiinfo.info(I18n.t('vagrant_zones.mac')) if config.debug
         mac
       end
 
@@ -228,6 +234,7 @@ module VagrantPlugins
              else
                opts[:ip].gsub(/\t/, '')
              end
+        uiinfo.info(I18n.t('vagrant_zones.ipaddress')) if config.debug
         ip
       end
 
@@ -235,6 +242,7 @@ module VagrantPlugins
       def allowedaddress(uiinfo, opts)
         ip = ipaddress(uiinfo, opts)
         allowed_address = "#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
+        uiinfo.info(I18n.t('vagrant_zones.allowedaddress')) if config.debug
         allowed_address
       end
 
@@ -242,6 +250,7 @@ module VagrantPlugins
       def vname(uiinfo, opts)
         config = @machine.provider_config
         vnic_name = "vnic#{nictype(uiinfo, opts)}#{vtype(uiinfo)}_#{config.partition_id}_#{opts[:nic_number]}"
+        uiinfo.info(I18n.t('vagrant_zones.vnic_name')) if config.debug
         vnic_name
       end
 
@@ -249,6 +258,7 @@ module VagrantPlugins
       def get_ip_address(uiinfo)
         config = @machine.provider_config
         name = @machine.name
+        uiinfo.info(I18n.t('vagrant_zones.get_ip_address')) if config.debug
         @machine.config.vm.networks.each do |adaptertype, opts|
           responses = []
           nic_type = nictype(uiinfo, opts)
@@ -549,13 +559,13 @@ module VagrantPlugins
       end
 
       ## zonecfg function for KVM
-      def zonecfgkvm(_uiinfo, name, config, _zcfg)
+      def zonecfgkvm(uiinfo, name, config, _zcfg)
         return unless config.brand == 'kvm'
 
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
-        puts datasetroot
+        uiinfo.info(I18n.t('vagrant_zones.kvm')) if config.debug
         ###### RESERVED ######
       end
 
@@ -569,7 +579,8 @@ module VagrantPlugins
 
       ## zonecfg function for CPU Configurations
       ## Future To-Do: Fix LX Zone CPU configs if any
-      def zonecfgcpu(_uiinfo, _name, config, zcfg)
+      def zonecfgcpu(uiinfo, _name, config, zcfg)
+        uiinfo.info(I18n.t('vagrant_zones.zonecfgcpu')) if config.debug
         if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm')
           execute(false, %(#{zcfg}"add attr; set name=vcpus; set value=#{config.cpus}; set type=string; end;"))
         elsif config.cpu_configuration == 'complex' && (config.brand == 'bhyve' || config.brand == 'kvm')
@@ -597,7 +608,8 @@ module VagrantPlugins
       end
 
       ## zonecfg function for PCI Configurations
-      def zonecfgpci(_uiinfo, _name, _config, _zcfg)
+      def zonecfgpci(uiinfo, _name, _config, _zcfg)
+        uiinfo.info(I18n.t('vagrant_zones.pci')) if config.debug
         ##### RESERVED
       end
 
@@ -901,6 +913,7 @@ module VagrantPlugins
       def user_exists?(uiinfo, user = 'vagrant')
         name = @machine.name
         ret = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
+        uiinfo.info(I18n.t('vagrant_zones.userexists')) if config.debug
         return true if ret.zero?
 
         false
@@ -909,6 +922,7 @@ module VagrantPlugins
       # This gives the user a terminal console
       def zlogincommand(uiinfo, cmd)
         name = @machine.name
+        uiinfo.info(I18n.t('vagrant_zones.zonelogincmd')) if config.debug
         execute(false, "#{@pfexec} zlogin #{name} #{cmd}")
       end
 
@@ -917,6 +931,7 @@ module VagrantPlugins
         config = @machine.provider_config
         user = config.vagrant_user unless config.vagrant_user.nil?
         user = 'vagrant' if config.vagrant_user.nil?
+        uiinfo.info(I18n.t('vagrant_zones.user')) if config.debug
         user
       end
 
@@ -929,10 +944,10 @@ module VagrantPlugins
           file = './id_rsa'
           command = "#{@pfexec} curl #{id_rsa} -O #{file}"
           Util::Subprocess.new command do |_stdout, stderr, _thread|
-            uiinfo.rewriting do |ui|
-              ui.clear_line
-              ui.info(I18n.t('vagrant_zones.importing_vagrant_key'), new_line: false)
-              ui.report_progress(stderr, 100, false)
+            uiinfo.rewriting do |uipkp|
+              uipkp.clear_line
+              uipkp.info(I18n.t('vagrant_zones.importing_vagrant_key'), new_line: false)
+              uipkp.report_progress(stderr, 100, false)
             end
           end
           uiinfo.clear_line
@@ -946,12 +961,14 @@ module VagrantPlugins
         config = @machine.provider_config
         sshport = '22'
         sshport = config.sshport.to_s unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
+        uiinfo.info(I18n.t('vagrant_zones.sshport')) if config.debug
         sshport
       end
 
       # This filters the firmware
       def firmware(uiinfo)
         config = @machine.provider_config
+        uiinfo.info(I18n.t('vagrant_zones.firmware')) if config.debug
         ft = case config.firmware_type
              when /compatability/
                'BHYVE_RELEASE_CSM'
@@ -970,12 +987,14 @@ module VagrantPlugins
       # This filters the rdpport
       def rdpport(uiinfo)
         config = @machine.provider_config
+        uiinfo.info(I18n.t('vagrant_zones.rdpport')) if config.debug
         config.rdpport.to_s unless config.rdpport.to_s.nil?
       end
 
       # This filters the vagrantuserpass
       def vagrantuserpass(uiinfo)
         config = @machine.provider_config
+        uiinfo.info(I18n.t('vagrant_zones.vagrantuserpass')) if config.debug
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
 
