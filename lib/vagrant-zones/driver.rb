@@ -173,14 +173,12 @@ module VagrantPlugins
           '1'
         when /development/
           '2'
-        when /production/
+        when /production/ || nil
           '3'
         when /firewall/
           '4'
         when /other/
           '5'
-        when nil
-          '3'
         end
       end
 
@@ -189,7 +187,7 @@ module VagrantPlugins
         config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.nictype')) if config.debug
         case opts[:nictype]
-        when /external/
+        when /external/ || nil
           'e'
         when /internal/
           'i'
@@ -199,8 +197,6 @@ module VagrantPlugins
           'm'
         when /host/
           'h'
-        when nil
-          'e'
         end
       end
 
