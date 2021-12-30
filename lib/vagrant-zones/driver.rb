@@ -252,7 +252,7 @@ module VagrantPlugins
       end
 
       ## If DHCP and Zlogin, get the IP address
-      def get_ip_address(@machine)
+      def get_ip_address(machine)
         config = @machine.provider_config
         name = @machine.name
         uiinfo.info(I18n.t('vagrant_zones.get_ip_address')) if config.debug
@@ -939,7 +939,7 @@ module VagrantPlugins
       end
 
       # This filters the vagrantuser
-      def user(@machine)
+      def user(machine)
         config = @machine.provider_config
         user = config.vagrant_user unless config.vagrant_user.nil?
         user = 'vagrant' if config.vagrant_user.nil?
@@ -948,7 +948,7 @@ module VagrantPlugins
       end
 
       # This filters the userprivatekeypath
-      def userprivatekeypath(@machine)
+      def userprivatekeypath(machine)
         config = @machine.provider_config
         userkey = config.vagrant_user_private_key_path.to_s
         if config.vagrant_user_private_key_path.to_s.nil?
@@ -969,7 +969,7 @@ module VagrantPlugins
       end
 
       # This filters the sshport
-      def sshport(@machine)
+      def sshport(machine)
         config = @machine.provider_config
         sshport = '22'
         sshport = config.sshport.to_s unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
@@ -1004,7 +1004,7 @@ module VagrantPlugins
       end
 
       # This filters the vagrantuserpass
-      def vagrantuserpass(@machine)
+      def vagrantuserpass(machine)
         config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.vagrantuserpass')) if config.debug
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
