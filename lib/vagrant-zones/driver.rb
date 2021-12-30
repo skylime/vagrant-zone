@@ -1175,9 +1175,6 @@ module VagrantPlugins
         h[:monthly] = {rtn: rtn[:m], ct: ct[:m]}
 
         h.each do |k, d|
-          puts 
-          puts d[:rtn]
-          puts d[:ct]
           puts "0 1-23 * * * #{snpshtr} -p hourly -r -n #{sfr} #{disk} # #{name}"
           puts "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{sfr} #{disk} # #{name}"
           puts "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{d[:rtn]} #{disk} # #{name}"
