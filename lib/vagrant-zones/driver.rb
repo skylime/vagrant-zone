@@ -1011,7 +1011,7 @@ module VagrantPlugins
       # This filters the vagrantuserpass
       def vagrantuserpass(machine)
         config = machine.provider_config
-        uiinfo.info(I18n.t('vagrant_zones.vagrantuserpass')) if config.debug
+        # uiinfo.info(I18n.t('vagrant_zones.vagrantuserpass')) if config.debug
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
 
