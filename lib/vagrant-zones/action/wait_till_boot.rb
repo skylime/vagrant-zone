@@ -44,7 +44,7 @@ module VagrantPlugins
           env[:metrics] ||= {}
           env[:metrics]['instance_boot_time'] = Util::Timer.time do
             break if env[:interrupted]
-            break if @driver.waitforboot(@machine, ui)
+            break if @driver.waitforboot(ui)
           end
 
           return terminate(env) if env[:interrupted]

@@ -15,8 +15,8 @@ module VagrantPlugins
         def call(env)
           @machine = env[:machine]
           @driver  = @machine.provider.driver
-          @driver.check_zone_support(@machine, env[:ui])
-          @driver.boot(@machine, env[:ui])
+          @driver.check_zone_support(env[:ui])
+          @driver.boot(env[:ui])
           @app.call(env)
         end
       end

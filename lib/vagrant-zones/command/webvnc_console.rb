@@ -40,7 +40,7 @@ module VagrantPlugins
             kill = 'yes'
             kill = 'no' unless options[:kill] == 'yes'
             exit = { detach: detach, kill: kill }
-            driver.console(machine, 'webvnc', options[:ip], options[:port], exit)
+            driver.console('webvnc', options[:ip], options[:port], exit)
           end
         end
       end

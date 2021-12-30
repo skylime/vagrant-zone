@@ -22,7 +22,7 @@ module VagrantPlugins
           ui = env[:ui]
 
           ui.info(I18n.t('vagrant_zones.graceful_shutdown_started'))
-          @driver.control(@machine, 'shutdown')
+          @driver.control('shutdown')
 
           env[:metrics] ||= {}
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
@@ -42,7 +42,7 @@ module VagrantPlugins
               break if spawn("pfexec zoneadm -z #{name} list -p | awk -F: '{ print $3 }'") == vm_state
             end
           end
-          @driver.halt(@machine, env[:ui])
+          @driver.halt(env[:ui])
           @app.call(env)
         end
       end

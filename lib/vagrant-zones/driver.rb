@@ -57,7 +57,7 @@ module VagrantPlugins
       end
 
       ## Begin installation for zone
-      def install(machine, uiinfo)
+      def install(uiinfo)
         config = @machine.provider_config
         name = @machine.name
         case config.brand
@@ -75,33 +75,33 @@ module VagrantPlugins
       end
 
       ## Control the zone from inside the zone OS
-      def control(machine, control)
+      def control(control)
         case control
         when 'restart'
           command = 'sudo shutdown -r'
-          ssh_run_command(@machine, command)
+          ssh_run_command(command)
         when 'shutdown'
           command = 'sudo init 0 || true'
-          ssh_run_command(@machine, command)
+          ssh_run_command(command)
         else
           puts 'No Command specified'
         end
       end
 
       ## Run commands over SSH instead of ZLogin
-      def ssh_run_command(machine, command)
-        ip = get_ip_address(@machine)
-        user = user(@machine)
-        key = userprivatekeypath(@machine).to_s
-        password = vagrantuserpass(@machine).to_s
-        port = sshport(@machine).to_s
-        port = 22 if sshport(@machine).to_s.nil?
+      def ssh_run_command(command)
+        ip = get_ip_address()
+        user = user()
+        key = userprivatekeypath().to_s
+        password = vagrantuserpass().to_s
+        port = sshport().to_s
+        port = 22 if sshport().to_s.nil?
         puts "#{password} not used for this connection at this time"
         execute(true, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' ")
       end
 
       ## Function to provide console, vnc, or webvnc access
-      def console(machine, command, ip, port, exit)
+      def console(command, ip, port, exit)
         detach = exit[:detach]
         kill = exit[:kill]
         name = @machine.name
@@ -155,14 +155,14 @@ module VagrantPlugins
       end
 
       ## Boot the Machine
-      def boot(machine, uiinfo)
+      def boot(uiinfo)
         name = @machine.name
         uiinfo.info(I18n.t('vagrant_zones.starting_zone'))
         execute(false, "#{@pfexec} zoneadm -z #{name} boot")
       end
 
       # This filters the firmware
-      def vtype(machine)
+      def vtype()
         config = @machine.provider_config
         case config.vm_type
         when /template/
@@ -239,11 +239,11 @@ module VagrantPlugins
       # This Sanitizes the AllowedIP Address to set for Cloudinit
       def vname(opts)
         config = @machine.provider_config
-        vnic_name = "vnic#{nictype(opts)}#{vtype(@machine)}_#{config.partition_id}_#{opts[:nic_number]}"
+        vnic_name = "vnic#{nictype(opts)}#{vtype()}_#{config.partition_id}_#{opts[:nic_number]}"
       end
       
       ## If DHCP and Zlogin, get the IP address
-      def get_ip_address(machine)
+      def get_ip_address()
         config = @machine.provider_config
         name = @machine.name
         @machine.config.vm.networks.each do |adaptertype, opts|
@@ -266,7 +266,7 @@ module VagrantPlugins
                        'h'
                      end
           if opts[:dhcp] && opts[:managed] && adaptertype.to_s == 'public_network'
-            vnic_name = "vnic#{nic_type}#{vtype(@machine)}_#{config.partition_id}_#{opts[:nic_number]}"
+            vnic_name = "vnic#{nic_type}#{vtype()}_#{config.partition_id}_#{opts[:nic_number]}"
             PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
               command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1 | awk '{ print $2 }' | cut -f1 -d\"/\" \n"
               zlogin_read.expect(/\n/) { zlogin_write.printf(command) }
@@ -335,7 +335,7 @@ module VagrantPlugins
       end
 
       # This helps us create all the datasets for the zone
-      def create_dataset(machine, uiinfo)
+      def create_dataset(uiinfo)
         config = @machine.provider_config
         name = @machine.name
         bootconfigs = config.boot
@@ -397,7 +397,7 @@ module VagrantPlugins
       end
 
       # This helps us delete any associated datasets of the zone
-      def delete_dataset(machine, uiinfo)
+      def delete_dataset(uiinfo)
         config = @machine.provider_config
         name = @machine.name
         # datadir = machine.data_dir
@@ -454,7 +454,7 @@ module VagrantPlugins
         execute(false, %(#{zcfg}"set ip-type=exclusive"))
         execute(false, %(#{zcfg}"add attr; set name=acpi; set value=#{config.acpi}; set type=string; end;"))
         execute(false, %(#{zcfg}"add attr; set name=ram; set value=#{config.memory}; set type=string; end;"))
-        execute(false, %(#{zcfg}"add attr; set name=bootrom; set value=#{firmware(config)}; set type=string; end;"))
+        execute(false, %(#{zcfg}"add attr; set name=bootrom; set value=#{firmware()}; set type=string; end;"))
         execute(false, %(#{zcfg}"add attr; set name=hostbridge; set value=#{config.hostbridge}; set type=string; end;"))
         execute(false, %(#{zcfg}"add attr; set name=diskif; set value=#{config.diskif}; set type=string; end;"))
         execute(false, %(#{zcfg}"add attr; set name=netif; set value=#{config.netif}; set type=string; end;"))
@@ -667,9 +667,8 @@ module VagrantPlugins
         defrouter = opts[:gateway].to_s
         mac = macaddress(opts)
         vnic_name = vname(opts)
-
-        uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
         servers = dnsservers()
+        uiinfo.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
         netplan = %(network:
   version: 2
   ethernets:
@@ -692,7 +691,7 @@ module VagrantPlugins
       end
 
       # This ensures the zone is safe to boot
-      def check_zone_support(machine, uiinfo)
+      def check_zone_support(uiinfo)
         uiinfo.info(I18n.t('vagrant_zones.preflight_checks'))
         config = @machine.provider_config
         ## Detect if Virtualbox is Running
@@ -747,14 +746,14 @@ module VagrantPlugins
       end
 
       # This helps us set up the networking of the VM
-      def setup(machine, uiinfo)
+      def setup(uiinfo)
         config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.network_setup')) if config.brand && !config.cloud_init_enabled
         network(uiinfo, 'setup') if config.brand == 'bhyve' && !config.cloud_init_enabled 
       end
 
       # This helps up wait for the boot of the vm by using zlogin
-      def waitforboot(machine, uiinfo)
+      def waitforboot(uiinfo)
         name = @machine.name
         config = @machine.provider_config
         responses = []
@@ -788,14 +787,14 @@ module VagrantPlugins
             Process.kill('HUP', pid) if loginstring.expect(/#{lcheck}/) || loginstring.expect(/#{almatch}/)
           end
         when 'lx'
-          unless user_exists?(@machine, config.vagrant_user)
-            zlogincommand(@machine, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
-            zlogincommand(@machine, %('echo nameserver 1.0.0.1 >> /etc/resolv.conf'))
-            zlogincommand(@machine, 'useradd -m -s /bin/bash -U vagrant')
-            zlogincommand(@machine, 'echo "vagrant ALL=(ALL:ALL) NOPASSWD:ALL" \\> /etc/sudoers.d/vagrant')
-            zlogincommand(@machine, 'mkdir -p /home/vagrant/.ssh')
+          unless user_exists?(config.vagrant_user)
+            zlogincommand(%('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
+            zlogincommand(%('echo nameserver 1.0.0.1 >> /etc/resolv.conf'))
+            zlogincommand('useradd -m -s /bin/bash -U vagrant')
+            zlogincommand('echo "vagrant ALL=(ALL:ALL) NOPASSWD:ALL" \\> /etc/sudoers.d/vagrant')
+            zlogincommand('mkdir -p /home/vagrant/.ssh')
             key_url = 'https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant.pub'
-            zlogincommand(@machine, "curl #{key_url} -O /home/vagrant/.ssh/authorized_keys")
+            zlogincommand("curl #{key_url} -O /home/vagrant/.ssh/authorized_keys")
 
             id_rsa = 'https://raw.githubusercontent.com/hashicorp/vagrant/master/keys/vagrant'
             command = "#{@pfexec} curl #{id_rsa} -O id_rsa"
@@ -807,8 +806,8 @@ module VagrantPlugins
               end
             end
             uiinfo.clear_line
-            zlogincommand(@machine, 'chown -R vagrant:vagrant /home/vagrant/.ssh')
-            zlogincommand(@machine, 'chmod 600 /home/vagrant/.ssh/authorized_keys')
+            zlogincommand('chown -R vagrant:vagrant /home/vagrant/.ssh')
+            zlogincommand('chmod 600 /home/vagrant/.ssh/authorized_keys')
           end
         end
       end
@@ -835,23 +834,22 @@ module VagrantPlugins
       end
 
       # This checks if the user exists on the VM, usually for LX zones
-      def user_exists?(machine, user = 'vagrant')
+      def user_exists?(user = 'vagrant')
         name = @machine.name
         ret = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
         return true if ret.zero?
 
         false
-        # return false
       end
 
       # This gives the user a terminal console
-      def zlogincommand(machine, cmd)
+      def zlogincommand(cmd)
         name = @machine.name
         execute(false, "#{@pfexec} zlogin #{name} #{cmd}")
       end
 
       # This filters the vagrantuser
-      def user(machine)
+      def user()
         config = @machine.provider_config
         user = config.vagrant_user unless config.vagrant_user.nil?
         user = 'vagrant' if config.vagrant_user.nil?
@@ -859,7 +857,7 @@ module VagrantPlugins
       end
 
       # This filters the userprivatekeypath
-      def userprivatekeypath(machine)
+      def userprivatekeypath()
         config = @machine.provider_config
         userkey = config.vagrant_user_private_key_path.to_s
         if config.vagrant_user_private_key_path.to_s.nil?
@@ -880,7 +878,7 @@ module VagrantPlugins
       end
 
       # This filters the sshport
-      def sshport(machine)
+      def sshport()
         config = @machine.provider_config
         sshport = '22'
         sshport = config.sshport.to_s unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
@@ -888,7 +886,8 @@ module VagrantPlugins
       end
 
       # This filters the firmware
-      def firmware(config)
+      def firmware()
+        config = @machine.provider_config
         ft = case config.firmware_type
              when /compatability/
                'BHYVE_RELEASE_CSM'
@@ -905,13 +904,13 @@ module VagrantPlugins
       end
 
       # This filters the rdpport
-      def rdpport(machine)
+      def rdpport()
         config = @machine.provider_config
         config.rdpport.to_s unless config.rdpport.to_s.nil?
       end
 
       # This filters the vagrantuserpass
-      def vagrantuserpass(machine)
+      def vagrantuserpass()
         config = @machine.provider_config
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
@@ -1134,7 +1133,7 @@ module VagrantPlugins
       end
 
       # This helps us create ZFS Snapshots
-      def zfs(machine, uiinfo, job, opts)
+      def zfs(uiinfo, job, opts)
         name = @machine.name
         ## get disks configurations
         config = @machine.provider_config
@@ -1161,7 +1160,7 @@ module VagrantPlugins
       end
 
       # Halts the Zone, first via shutdown command, then a halt.
-      def halt(machine, uiinfo)
+      def halt(uiinfo)
         name = @machine.name
         config = @machine.provider_config
 
@@ -1185,7 +1184,7 @@ module VagrantPlugins
       end
 
       # Destroys the Zone configurations and path
-      def destroy(machine, id)
+      def destroy(id)
         name = @machine.name
 
         id.info(I18n.t('vagrant_zones.leaving'))

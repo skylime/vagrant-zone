@@ -18,9 +18,9 @@ module VagrantPlugins
           @machine = env[:machine]
           @driver  = @machine.provider.driver
           @machine.id = SecureRandom.uuid
-          @driver.create_dataset(@machine, env[:ui])
+          @driver.create_dataset(env[:ui])
           @driver.zonecfg(env[:ui]) 
-          @driver.install(@machine, env[:ui])
+          @driver.install(env[:ui])
           @app.call(env)
         end
       end

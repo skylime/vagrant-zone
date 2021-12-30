@@ -15,7 +15,7 @@ module VagrantPlugins
         def call(env)
           @machine = env[:machine]
           @driver  = @machine.provider.driver
-          @driver.halt(@machine, env[:ui])
+          @driver.halt(env[:ui])
           @app.call(env)
         end
       end
