@@ -1195,9 +1195,9 @@ module VagrantPlugins
         crons = execute(false, "#{@pfexec} crontab -l").split("\n")
         rtnregex = '-p (weekly|monthly|daily|hourly)'
         opts[:dataset] = 'all' if opts[:dataset].nil?
-
-        ## Insert Verification Check here that Dataset is in Zoneconfiguration
         datasets.each do |disk|
+          next if disk != opts[:dataset] || 'all'
+          
           uii.info(I18n.t('vagrant_zones.zfs_snapshot_cron') + disk.to_s)
           cronjobs = {}
           crons.each do |tasks|
