@@ -1168,7 +1168,6 @@ module VagrantPlugins
         sfr = opts[:set_frequency_rtn]
 
         
-        
         hourlycron = "0 1-23 * * * #{snpshtr} -p hourly -r -n #{rtn[:hourly]} #{disk} # #{name}"
         dailycron = "0 0 * * 0-5 #{snpshtr} -p daily -r -n #{rtn[:daily]} #{disk} # #{name}"
         weeklycron = "0 0 * * 6 #{snpshtr} -p weekly -r -n #{rtn[:weekly]} #{disk} # #{name}"
