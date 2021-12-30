@@ -1161,7 +1161,7 @@ module VagrantPlugins
       ## Future To-Do: Simplify
       def zfssnapcronset(uii, disk, opts, cronjobs)
         config = @machine.provider_config
-        # name = @machine.name
+        name = @machine.name
         snpshtr = config.snapshot_script.to_s
         hourlytrn = 24
         dailytrn = 8
