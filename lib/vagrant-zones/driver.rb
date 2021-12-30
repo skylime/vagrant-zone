@@ -121,9 +121,9 @@ module VagrantPlugins
                    config.consoleport
                  end
         end
-        ipaddr = '0.0.0.0' unless (config.consolehost =~ Resolv::IPv4::Regex)
-        ipaddr = config.consolehost if (config.consolehost =~ Resolv::IPv4::Regex)
-        ipaddr = ipaddr if (ip =~ Resolv::IPv4::Regex)
+        ipaddr = '0.0.0.0'
+        ipaddr = config.consolehost unless config.consolehost =~ Resolv::IPv4::Regex
+        ipaddr = ip unless ip =~ Resolv::IPv4::Regex
         netport = "#{ipaddr}:#{port}"
         pid = 0
         if File.exist?("#{vmname[name.to_s]}.pid")
@@ -1180,10 +1180,10 @@ module VagrantPlugins
           uii.info(setcron) if cronjobs[:monthly].nil?
           execute(false, setcron) if cronjobs[:monthly].nil?
         elsif opts[:set_frequency]
-          hourlycron = "0  1-23  *  *  *  #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-          dailycron = "0  0  *  *  0-5  #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-          weeklycron = "0  0  *  *  6   #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-          monthlycron = "0  0  1  *  *   #{spshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          hourlycron = "0 1-23 * * * #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          dailycron = "0 0 * * 0-5 #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          weeklycron = "0 0 * * 6 #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          monthlycron = "0 0 1 * * #{spshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           setcron = "#{shrtcr}'#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil? && opts[:set_frequency] == 'hourly'
           setcron = "#{shrtcr}'#{dailycron}' ) | #{@pfexec} crontab" if cronjobs[:daily].nil? && opts[:set_frequency] == 'daily'
           setcron = "#{shrtcr}'#{weeklycron}' ) | #{@pfexec} crontab" if cronjobs[:weekly].nil? && opts[:set_frequency] == 'weekly'
