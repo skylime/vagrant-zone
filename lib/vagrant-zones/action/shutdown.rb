@@ -32,6 +32,7 @@ module VagrantPlugins
               break unless env[:machine].communicate.ready?
             end
           end
+          sleep 10
           state_id = @driver.state(@machine)
           puts state_id
           ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete'))
@@ -44,6 +45,8 @@ module VagrantPlugins
               break if spawn("pfexec zoneadm -z #{name} list -p | awk -F: '{ print $3 }'") == vm_state
             end
           end
+          state_id = @driver.state(@machine)
+          puts state_id
           @driver.halt(env[:ui])
           @app.call(env)
         end
