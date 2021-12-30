@@ -751,8 +751,11 @@ module VagrantPlugins
 
           rsp = []
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+            counter = 0
             Timeout.timeout(config.setup_wait) do
               loop do
+                counter += 1
+                puts counter
                 zlogin_read.expect(/\r\n/) { |line| rsp.push line }
                 puts rsp[-1]
                 uiinfo.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{almatch}'") if rsp[-1].to_s.match(/#{almatch}/)
@@ -764,7 +767,7 @@ module VagrantPlugins
                 break if rsp[-1].to_s.match(/#{lcheck}/)
 
                 puts rsp[-1].inspect
-                zlogin_write.printf("\n") 
+                zlogin_write.printf("\n") if ((config.setup_wait - counter) < 20 )
               end
             end
             Process.kill('HUP', pid)
