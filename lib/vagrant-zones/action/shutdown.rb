@@ -39,6 +39,7 @@ module VagrantPlugins
               # If we're interrupted don't worry about waiting
               vm_state = @driver.state(@machine)
               sleep 1 if vm_state == :running
+              puts vm_state
               next if env[:interrupted]
               break unless vm_state == :running
             end
