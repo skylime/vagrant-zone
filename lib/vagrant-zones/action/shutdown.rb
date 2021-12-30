@@ -37,7 +37,7 @@ module VagrantPlugins
             retryable(on: Errors::TimeoutError, tries: 300) do
               # If we're interrupted don't worry about waiting
               vm_state = @driver.state(@machine)
-              sleep 10 if vm_state.match(/running/)
+              sleep 1 if vm_state.match(/running/)
               puts vm_state
               
               next if env[:interrupted]
