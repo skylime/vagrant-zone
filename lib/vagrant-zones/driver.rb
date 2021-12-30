@@ -1179,9 +1179,7 @@ module VagrantPlugins
           cj = "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{d[:rtn]} #{disk} # #{name}" if sfr.nil?
           h[k] = {rtn: rtn[:h], ct: ct[:h], cj: cj}
         end
-        h.each do |k, d|
-          puts d if k.to_s == opts[:set_frequency] || opts[:set_frequency] == 'all'
-          uii.info(d[:cj].to_s) if k == opts[:set_frequency] || opts[:set_frequency] == 'all'    
+        h.each do |k, d| 
           setcron = "#{shrtcr}'#{d[:cj].to_s}' ) | #{@pfexec} crontab" if cronjobs[k].nil?
           puts setcron if k == opts[:set_frequency] || opts[:set_frequency] == 'all'  
           # execute(false, setcron)
