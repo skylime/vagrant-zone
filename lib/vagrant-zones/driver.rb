@@ -380,8 +380,8 @@ module VagrantPlugins
       ## Create nat entries for the zone
       def zonenatentries(uiinfo, opts)
         vnic_name = vname(uiinfo, opts)
-        allowed_address = allowedaddress(uiinfo, opts)
-        uiinfo.info(I18n.t('vagrant_zones.configuring_nat') + "#{vnic_name}")
+        Makr91/vagrant-zones#12allowed_address = allowedaddress(uiinfo, opts)
+        uiinfo.info(I18n.t('vagrant_zones.configuring_nat') + vnic_name.to_s)
         # line1 = %(map #{vnic_name} #{allowed_address} -> 0/32  portmap tcp/udp auto)
         # line2 = %(map #{vnic_name} #{allowed_address} -> 0/32)
         # /etc/ipf/ipnat.conf
@@ -392,7 +392,7 @@ module VagrantPlugins
       def zonedhcpentries(uiinfo, opts)
         vnic_name = vname(uiinfo, opts)
         # allowed_address = allowedaddress(uiinfo, opts)
-        uiinfo.info(I18n.t('vagrant_zones.configuring_dhcp') + "#{vnic_name}")
+        uiinfo.info(I18n.t('vagrant_zones.configuring_dhcp') + vnic_name.to_s)
         # subnet 1.1.1.0 netmask 255.255.255.224 {
         # range 1.1.1.10 1.1.1.20;
         # }
@@ -607,7 +607,7 @@ module VagrantPlugins
       end
 
       ## zonecfg function for PCI Configurations
-      def zonecfgpci(uiinfo, _name, _config, _zcfg)
+      def zonecfgpci(uiinfo, _name, config, _zcfg)
         uiinfo.info(I18n.t('vagrant_zones.pci')) if config.debug
         ##### RESERVED
       end
