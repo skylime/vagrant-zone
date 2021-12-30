@@ -753,8 +753,8 @@ module VagrantPlugins
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             counter = 0
             Timeout.timeout(config.setup_wait) do
+              counter += 1
               loop do
-                counter += 1
                 puts counter
                 zlogin_read.expect(/\r\n/) { |line| rsp.push line }
                 puts rsp[-1]
