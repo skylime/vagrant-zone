@@ -755,7 +755,6 @@ module VagrantPlugins
             Timeout.timeout(config.setup_wait) do
               counter += 1
               loop do
-                puts counter
                 zlogin_read.expect(/\r\n/) { |line| rsp.push line }
                 puts rsp[-1]
                 uiinfo.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{almatch}'") if rsp[-1].to_s.match(/#{almatch}/)
@@ -766,7 +765,7 @@ module VagrantPlugins
                 alm = false if rsp[-1].to_s.match(/#{lcheck}/)
                 break if rsp[-1].to_s.match(/#{lcheck}/)
 
-                puts rsp[-1].inspect
+                puts rsp[-1]
                 zlogin_write.printf("\n") if ((config.setup_wait - counter) < 20 )
               end
             end
@@ -798,7 +797,7 @@ module VagrantPlugins
         end
       end
 
-      # This gives us a console to the VM
+      # This gives us a console to the VM to issue commands
       def zlogin(uiinfo, cmd)
         name = @machine.name
         config = @machine.provider_config

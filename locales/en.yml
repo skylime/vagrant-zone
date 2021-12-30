@@ -48,7 +48,7 @@ en:
       - Configuring the interface on the zone for VNIC
         
     vnic_setup: |-
-         Setting up VNIC: 
+          Setting up VNIC: 
     networking_int_remove: |-
       Removing network devices:
     networking_int_add: |-
