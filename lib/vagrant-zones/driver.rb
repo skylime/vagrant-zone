@@ -755,7 +755,7 @@ module VagrantPlugins
             alm = true if rsp[-1].to_s.match(/#{lcheck}/)
             break if rsp[-1].to_s.match(/#{lcheck}/)
 
-            puts rsp[-1]
+            puts rsp[-1] if config.debug_boot 
           end
         end
         return alm

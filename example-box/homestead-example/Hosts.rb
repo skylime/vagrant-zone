@@ -80,7 +80,8 @@ class Hosts
                   vm.hostname                             = host['name']
                   vm.name                                 = "#{host['partition_id']}--#{host['name']}"
                   vm.lcheck                               = host['lcheck_string']
-                  vm.alcheck                               = host['alcheck_string']
+                  vm.alcheck                              = host['alcheck_string']
+                  vm.debug_boot                           = host['debug_boot']
                   vm.cdroms                               = host['cdroms']
                   vm.additional_disks                     = host['additional_disks']
                   vm.boot                                 = host['boot']
