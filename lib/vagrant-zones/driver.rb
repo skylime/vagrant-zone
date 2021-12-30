@@ -1191,13 +1191,13 @@ module VagrantPlugins
           setcron = "#{shrtcr}'#{monthlycron}' ) | #{@pfexec} crontab" if cronjobs[:monthly].nil?
           uii.info(setcron) if cronjobs[:monthly].nil?
           execute(false, setcron) if cronjobs[:monthly].nil?
-        elsif opts[:set_frequency] && opts[:set_frequency] != 'all'
+        elsif opts[:set_frequency]
           
           hourlycron = "0 1-23 * * * #{snpshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           dailycron = "0 0 * * 0-5 #{snpshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           weeklycron = "0 0 * * 6 #{snpshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           monthlycron = "0 0 1 * * #{snpshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-          puts "test2"
+          
           setcron = "#{shrtcr}'#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil? && opts[:set_frequency] == 'hourly'
           setcron = "#{shrtcr}'#{dailycron}' ) | #{@pfexec} crontab" if cronjobs[:daily].nil? && opts[:set_frequency] == 'daily'
           setcron = "#{shrtcr}'#{weeklycron}' ) | #{@pfexec} crontab" if cronjobs[:weekly].nil? && opts[:set_frequency] == 'weekly'
