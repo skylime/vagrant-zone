@@ -1162,22 +1162,26 @@ module VagrantPlugins
       def zfssnapcronset(uii, disk, opts, cronjobs)
         # config = @machine.provider_config
         # name = @machine.name
-        spshtr = config.snapshot_script.to_s
+        puts cronjobs.inspect
+        snpshtr = config.snapshot_script.to_s
         hourlytrn = 24
         dailytrn = 8
         weeklytrn = 5
         monthlytrn = 1
         shrtcr = "( #{@pfexec} crontab -l; echo "
         sfr = opts[:set_frequency_rtn]
-        hourlycron = "0 1-23 * * * #{spshtr} -p hourly -r -n #{hourlytrn} #{disk} # #{name}"
-        dailycron = "0 0 * * 0-5 #{spshtr} -p daily -r -n #{dailytrn} #{disk} # #{name}"
-        weeklycron = "0 0 * * 6 #{spshtr} -p weekly -r -n #{weeklytrn} #{disk} # #{name}"
-        monthlycron = "0 0 1 * * #{spshtr} -p monthly -r -n #{monthlytrn} #{disk} # #{name}"
+
+
+
+        hourlycron = "0 1-23 * * * #{snpshtr} -p hourly -r -n #{hourlytrn} #{disk} # #{name}"
+        dailycron = "0 0 * * 0-5 #{snpshtr} -p daily -r -n #{dailytrn} #{disk} # #{name}"
+        weeklycron = "0 0 * * 6 #{snpshtr} -p weekly -r -n #{weeklytrn} #{disk} # #{name}"
+        monthlycron = "0 0 1 * * #{snpshtr} -p monthly -r -n #{monthlytrn} #{disk} # #{name}"
         if opts[:set_frequency] && opts[:set_frequency] == 'all'
-          hourlycron = "0 1-23 * * * #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-          dailycron = "0 0 * * 0-5 #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-          weeklycron = "0 0 * * 6 #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-          monthlycron = "0 0 1 * * #{spshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          hourlycron = "0 1-23 * * * #{snpshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          dailycron = "0 0 * * 0-5 #{snpshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          weeklycron = "0 0 * * 6 #{snpshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          monthlycron = "0 0 1 * * #{snpshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           setcron = "#{shrtcr}'#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil?
           uii.info(setcron) if cronjobs[:hourly].nil?
           execute(false, setcron) if cronjobs[:hourly].nil?
@@ -1191,10 +1195,10 @@ module VagrantPlugins
           uii.info(setcron) if cronjobs[:monthly].nil?
           execute(false, setcron) if cronjobs[:monthly].nil?
         elsif opts[:set_frequency] && opts[:set_frequency] != 'all'
-          hourlycron = "0 1-23 * * * #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-          dailycron = "0 0 * * 0-5 #{spshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-          weeklycron = "0 0 * * 6 #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
-          monthlycron = "0 0 1 * * #{spshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          hourlycron = "0 1-23 * * * #{snpshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          dailycron = "0 0 * * 0-5 #{snpshtr} -p daily -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          weeklycron = "0 0 * * 6 #{snpshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
+          monthlycron = "0 0 1 * * #{snpshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           setcron = "#{shrtcr}'#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil? && opts[:set_frequency] == 'hourly'
           setcron = "#{shrtcr}'#{dailycron}' ) | #{@pfexec} crontab" if cronjobs[:daily].nil? && opts[:set_frequency] == 'daily'
           setcron = "#{shrtcr}'#{weeklycron}' ) | #{@pfexec} crontab" if cronjobs[:weekly].nil? && opts[:set_frequency] == 'weekly'
@@ -1207,7 +1211,7 @@ module VagrantPlugins
       ## Configure ZFS Snapshots Crons
       def zfssnapcron(datasets, opts, uii)
         name = @machine.name
-        config = @machine.provider_config
+        # config = @machine.provider_config
         crons = execute(false, "#{@pfexec} crontab -l").split("\n")
         rtnregex = '-p (weekly|monthly|daily|hourly)'
         opts[:dataset] = 'all' if opts[:dataset].nil?
