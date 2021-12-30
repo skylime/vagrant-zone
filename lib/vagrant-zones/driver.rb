@@ -348,8 +348,8 @@ module VagrantPlugins
       ## Create vnics for Zones
       def zonenatniccreate(uiinfo, opts, etherstub)
         vnic_name = vname(uiinfo, opts)
-        uiinfo.info(I18n.t('vagrant_zones.creating_ethervnic') + "#{vnic_name}_stubc")
-        execute(false, "#{@pfexec} dladm create-vnic -l #{vnic_name}_stubc #{vnic_name}")
+        uiinfo.info(I18n.t('vagrant_zones.creating_ethervnic') + "#{vnic_name}")
+        execute(false, "#{@pfexec} dladm create-vnic -l #{etherstub} #{vnic_name}")
       end
 
       ## zonecfg function for for Networking
@@ -358,7 +358,7 @@ module VagrantPlugins
         defrouter = opts[:gateway].to_s
         vnic_name = vname(uiinfo, opts)
         config = @machine.provider_config
-        uiinfo.info(" #{I18n.t('vagrant_zones.nat_vnic_setup')}#{vnic_name}_stubc")
+        uiinfo.info(" #{I18n.t('vagrant_zones.nat_vnic_setup')}#{vnic_name}")
         strt = "#{@pfexec} zonecfg -z #{@machine.name} "
         cie = config.cloud_init_enabled
         case config.brand
@@ -367,24 +367,24 @@ module VagrantPlugins
           shrtstr2 = %(add property (name=ips,value="#{allowed_address}"); add property (name=primary,value="true"); end;)
           execute(false, %(#{strt}set global-nic=auto; #{shrtstr1} #{shrtstr2}"))
         when 'bhyve'
-          execute(false, %(#{strt}"add net; set physical=#{vnic_name}_stubc; end;")) unless cie
+          execute(false, %(#{strt}"add net; set physical=#{vnic_name}; end;")) unless cie
         end
       end
 
       ## Set NatForwarding on global interface
-      def zonenatforward(uiinfo, opts, etherstub)
+      def zonenatforward(uiinfo, opts)
         vnic_name = vname(uiinfo, opts)
-        uiinfo.info(I18n.t('vagrant_zones.forwarding_nat') + "#{vnic_name}_stubc")
-        execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{vnic_name}_stubc")
+        uiinfo.info(I18n.t('vagrant_zones.forwarding_nat') + "#{vnic_name}")
+        execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{vnic_name}")
       end
 
       ## Create nat entries for the zone
-      def zonenatentries(uiinfo, opts, etherstub)
+      def zonenatentries(uiinfo, opts)
         vnic_name = vname(uiinfo, opts)
         allowed_address = allowedaddress(uiinfo, opts)
-        uiinfo.info(I18n.t('vagrant_zones.configuring_nat') + "#{vnic_name}_stubc")
-        line1 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32  portmap tcp/udp auto)
-        line2 = %(map #{vnic_name}_stubc #{allowed_address} -> 0/32)
+        uiinfo.info(I18n.t('vagrant_zones.configuring_nat') + "#{vnic_name}")
+        # line1 = %(map #{vnic_name} #{allowed_address} -> 0/32  portmap tcp/udp auto)
+        # line2 = %(map #{vnic_name} #{allowed_address} -> 0/32)
         # /etc/ipf/ipnat.conf
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
       end
@@ -392,8 +392,8 @@ module VagrantPlugins
       ## Create dhcp entries for the zone
       def zonedhcpentries(uiinfo, opts)
         vnic_name = vname(uiinfo, opts)
-        #allowed_address = allowedaddress(uiinfo, opts)
-        uiinfo.info(I18n.t('vagrant_zones.configuring_dhcp') + "#{vnic_name}_stubc")
+        # allowed_address = allowedaddress(uiinfo, opts)
+        uiinfo.info(I18n.t('vagrant_zones.configuring_dhcp') + "#{vnic_name}")
         # subnet 1.1.1.0 netmask 255.255.255.224 {
         # range 1.1.1.10 1.1.1.20;
         # }
@@ -565,7 +565,7 @@ module VagrantPlugins
         bootconfigs = config.boot
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
-        uiinfo.info(I18n.t('vagrant_zones.kvm')) if config.debug
+        uiinfo.info(datasetroot) if config.debug
         ###### RESERVED ######
       end
 
@@ -848,7 +848,7 @@ module VagrantPlugins
       def waitforboot(uiinfo)
         name = @machine.name
         config = @machine.provider_config
-        int = 5 
+        int = 5
         alm = false
         uiinfo.info(I18n.t('vagrant_zones.wait_for_boot'))
         case config.brand
@@ -859,7 +859,7 @@ module VagrantPlugins
             int.times do
               alm = zwaitforboot(uiinfo, zlogin_read, zlogin_write, alm)
               break if alm
-            end 
+            end
             Process.kill('HUP', pid)
           end
         when 'lx'
