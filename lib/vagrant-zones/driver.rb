@@ -34,8 +34,8 @@ module VagrantPlugins
                   end
       end
 
-      def state
-        name = @machine.name
+      def state(machine)
+        name = machine.name
         vm_state = execute(false, "#{@pfexec} zoneadm -z #{name} list -p | awk -F: '{ print $3 }'")
         case vm_state
         when 'running'
@@ -164,7 +164,7 @@ module VagrantPlugins
         execute(false, "#{@pfexec} zoneadm -z #{name} boot")
       end
 
-      # This filters the firmware
+      # This filters the VM usage for VNIC Naming Purposes
       def vtype(uiinfo)
         config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.vtype')) if config.debug
@@ -375,7 +375,7 @@ module VagrantPlugins
       ## Create nat entries for the zone
       def zonenatentries(uiinfo, opts)
         vnic_name = vname(uiinfo, opts)
-        Makr91/vagrant-zones#12allowed_address = allowedaddress(uiinfo, opts)
+        # allowed_address = allowedaddress(uiinfo, opts)
         uiinfo.info(I18n.t('vagrant_zones.configuring_nat') + vnic_name.to_s)
         # line1 = %(map #{vnic_name} #{allowed_address} -> 0/32  portmap tcp/udp auto)
         # line2 = %(map #{vnic_name} #{allowed_address} -> 0/32)
