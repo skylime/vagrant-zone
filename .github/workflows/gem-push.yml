@@ -1,10 +1,9 @@
-name: Ruby Gem
+name: Ruby Gem publish
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    paths:
+      - 'vagrant-zones/lib/vagrant-zones/version.rb'
 
 jobs:
   build:
