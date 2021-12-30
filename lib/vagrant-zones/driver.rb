@@ -1111,7 +1111,7 @@ module VagrantPlugins
       end
 
       ## This will list Cron Jobs for Snapshots to take place
-      def zfssnapcronlist(_disk, opts, cronjobs)
+      def zfssnapcronlist(uii, _disk, opts, cronjobs)
         # config = @machine.provider_config
         # name = @machine.name
         if opts[:list] == 'all'
@@ -1128,7 +1128,7 @@ module VagrantPlugins
       end
 
       ## This will delete Cron Jobs for Snapshots to take place
-      def zfssnapcrondelete(_disk, opts, cronjobs)
+      def zfssnapcrondelete(uii, _disk, opts, cronjobs)
         # config = @machine.provider_config
         # name = @machine.name
         removecron = ''
@@ -1160,7 +1160,7 @@ module VagrantPlugins
       ## This will set Cron Jobs for Snapshots to take place
       ## Future To-Do: Simplify
       def zfssnapcronset(uii, disk, opts, cronjobs)
-        # config = @machine.provider_config
+        config = @machine.provider_config
         # name = @machine.name
         snpshtr = config.snapshot_script.to_s
         hourlytrn = 24
@@ -1236,8 +1236,8 @@ module VagrantPlugins
               cronjobs.merge!(monthly: monthly)
             end
           end
-          zfssnapcronlist(disk, opts, cronjobs)
-          zfssnapcrondelete(disk, opts, cronjobs)
+          zfssnapcronlist(uii, disk, opts, cronjobs)
+          zfssnapcrondelete(uii, disk, opts, cronjobs)
           zfssnapcronset(uii, disk, opts, cronjobs)
         end
       end
