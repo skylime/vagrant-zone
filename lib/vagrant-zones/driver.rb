@@ -735,14 +735,13 @@ module VagrantPlugins
         network(uiinfo, 'setup') if config.brand == 'bhyve' && !config.cloud_init_enabled 
       end
 
-      def zwaitforboot(uiinfo, zlogin_read, zlogin_write)
+      def zwaitforboot(uiinfo, zlogin_read, zlogin_write, alm)
         name = @machine.name
         config = @machine.provider_config
         lcheck = config.lcheck
         lcheck = ':~#' if config.lcheck.nil?
         alcheck = config.alcheck
         alcheck = 'login: ' if config.alcheck.nil?
-        alm = false
         zlogin_write.printf("\n")
         Timeout.timeout(config.setup_wait) do
           rsp = []
@@ -753,19 +752,21 @@ module VagrantPlugins
             break if rsp[-1].to_s.match(/#{alcheck}/)
 
             uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'") if rsp[-1].to_s.match(/#{lcheck}/)
-            alm = false if rsp[-1].to_s.match(/#{lcheck}/)
+            alm = true if rsp[-1].to_s.match(/#{lcheck}/)
             break if rsp[-1].to_s.match(/#{lcheck}/)
 
             puts rsp[-1]
           end
         end
+        return alm
       end
 
       # This helps up wait for the boot of the vm by using zlogin
       def waitforboot(uiinfo)
         name = @machine.name
         config = @machine.provider_config
-        int = 5
+        int = 5        
+        alm = false
         uiinfo.info(I18n.t('vagrant_zones.wait_for_boot'))
         case config.brand
         when 'bhyve'
@@ -773,7 +774,8 @@ module VagrantPlugins
 
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             int.times do
-              zwaitforboot(uiinfo, zlogin_read, zlogin_write)
+              alm = zwaitforboot(uiinfo, zlogin_read, zlogin_write)
+              break if alm
             end 
             Process.kill('HUP', pid)
           end
