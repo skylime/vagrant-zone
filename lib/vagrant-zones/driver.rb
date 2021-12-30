@@ -129,10 +129,10 @@ module VagrantPlugins
         if File.exist?("#{vmname[name.to_s]}.pid")
           pid = File.readlines("#{vmname[name.to_s]}.pid")[0].strip
           ctype = File.readlines("#{vmname[name.to_s]}.pid")[1].strip
-          time_started = File.readlines("#{vmname[name.to_s]}.pid")[2].strip
+          ts = File.readlines("#{vmname[name.to_s]}.pid")[2].strip
           vmname = File.readlines("#{vmname[name.to_s]}.pid")[3].strip
           nport = File.readlines("#{vmname[name.to_s]}.pid")[4].strip
-          puts "Zone is running with PID: #{pid} since: #{time_started} as console type: #{ctype} served at: #{nport} \n" if vmname[name.to_s]
+          puts "Zone is running with PID: #{pid} since: #{ts} as console type: #{ctype} served at: #{nport} \n" if vmname[name.to_s]
           if kill == 'yes'
             File.delete("#{vmname[name.to_s]}.pid") if File.exist?("#{vmname[name.to_s]}.pid")
             Process.kill 'TERM', pid.to_i
@@ -141,15 +141,7 @@ module VagrantPlugins
           end
         else
           case command
-          when 'webvnc'
-            run = "pfexec zadm #{command} #{netport} #{name}"
-            pid = spawn(run)
-            Process.wait pid if detach == 'no'
-            Process.detach(pid) if detach == 'yes'
-            time = Time.new.strftime('%Y-%m-%d-%H:%M:%S')
-            File.write("#{vmname[name.to_s]}.pid", "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}") if detach == 'yes'
-            puts "Zone is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
-          when 'vnc'
+          when 'webvnc' || 'vnc'
             run = "pfexec zadm #{command} #{netport} #{name}"
             pid = spawn(run)
             Process.wait pid if detach == 'no'
@@ -1062,7 +1054,6 @@ module VagrantPlugins
             execute(false, "#{@pfexec} zfs snapshot #{disk}@#{opts[:snapshot_name]}")
           end
         else
-          
           ## Specify the Dataset by path
           execute(false, "#{@pfexec} zfs snapshot #{opts[:dataset]}@#{opts[:snapshot_name]}") if datasets.include?(opts[:dataset])
           uii.info(I18n.t('vagrant_zones.zfs_snapshot_create') + "#{disk}@#{opts[:snapshot_name]}") if datasets.include?(opts[:dataset])
@@ -1158,7 +1149,8 @@ module VagrantPlugins
 
       ## This will set Cron Jobs for Snapshots to take place
       ## Future To-Do: Simplify
-      def zfssnapcronset(uii, disk, config, opts, name, cronjobs)
+      def zfssnapcronset(uii, disk, config, opts, cronjobs)
+        config = @machine.provider_config
         spshtr = config.snapshot_script.to_s
         hourlytrn = 24
         dailytrn = 8
@@ -1176,16 +1168,16 @@ module VagrantPlugins
           weeklycron = "0  0  *  *  6   #{spshtr} -p weekly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           monthlycron = "0  0  1  *  *   #{spshtr} -p monthly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
           setcron = "#{shrtcr}'#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil?
-          puts setcron if cronjobs[:hourly].nil?
+          uii.info(setcron) if cronjobs[:hourly].nil?
           execute(false, setcron) if cronjobs[:hourly].nil?
           setcron = "#{shrtcr}'#{dailycron}' ) | #{@pfexec} crontab" if cronjobs[:daily].nil?
-          puts setcron if cronjobs[:daily].nil?
+          uii.info(setcron) if cronjobs[:daily].nil?
           execute(false, setcron) if cronjobs[:daily].nil?
           setcron = "#{shrtcr}'#{weeklycron}' ) | #{@pfexec} crontab" if cronjobs[:weekly].nil?
-          puts setcron if cronjobs[:weekly].nil?
+          uii.info(setcron) if cronjobs[:weekly].nil?
           execute(false, setcron) if cronjobs[:weekly].nil?
           setcron = "#{shrtcr}'#{monthlycron}' ) | #{@pfexec} crontab" if cronjobs[:monthly].nil?
-          puts setcron if cronjobs[:monthly].nil?
+          uii.info(setcron) if cronjobs[:monthly].nil?
           execute(false, setcron) if cronjobs[:monthly].nil?
         elsif opts[:set_frequency]
           hourlycron = "0  1-23  *  *  *  #{spshtr} -p hourly -r -n #{sfr} #{disk} # #{name}" unless sfr.nil? || sfr == 'defaults'
@@ -1196,7 +1188,7 @@ module VagrantPlugins
           setcron = "#{shrtcr}'#{dailycron}' ) | #{@pfexec} crontab" if cronjobs[:daily].nil? && opts[:set_frequency] == 'daily'
           setcron = "#{shrtcr}'#{weeklycron}' ) | #{@pfexec} crontab" if cronjobs[:weekly].nil? && opts[:set_frequency] == 'weekly'
           setcron = "#{shrtcr}'#{monthlycron}' ) | #{@pfexec} crontab" if cronjobs[:monthly].nil? && opts[:set_frequency] == 'monthly'
-          puts setcron
+          uii.info(setcron)
           execute(false, setcron)
         end
       end
@@ -1231,7 +1223,7 @@ module VagrantPlugins
           end
           zfssnapcronlist(disk, config, opts, name, cronjobs)
           zfssnapcrondelete(disk, config, opts, name, cronjobs)
-          zfssnapcronset(uii, disk, config, opts, name, cronjobs)
+          zfssnapcronset(uii, disk, config, opts, cronjobs)
         end
       end
 
