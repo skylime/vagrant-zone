@@ -1111,7 +1111,7 @@ module VagrantPlugins
       end
 
       ## This will list Cron Jobs for Snapshots to take place
-      def zfssnapcronlist(_datasets, opts, _uii, cronjobs)
+      def zfssnapcronlist(_disk, opts, cronjobs)
         # config = @machine.provider_config
         # name = @machine.name
         if opts[:list] == 'all'
