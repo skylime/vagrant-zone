@@ -36,7 +36,6 @@ module VagrantPlugins
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
             300.times do
               state_id = @driver.state(@machine)
-              puts state_id.inspect unless state_id == :running
               ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete')) unless state_id == :running
               sleep 1 if state_id == :running
               break unless state_id == :running
