@@ -1174,9 +1174,6 @@ module VagrantPlugins
         h[:weekly] = { rtn: rtn[:w], ct: ct[:w] }
         h[:monthly] = { rtn: rtn[:m], ct: ct[:m] }
         h.each do |k, d|
-          
-          next if cronjobs[k].nil?
-
           puts cronjobs[k]
           cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{sf[:rtn]} #{disk} # #{name}" unless sf[:rtn].nil?
           cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{d[:rtn]} #{disk} # #{name}" if sf[:rtn].nil?
@@ -1184,7 +1181,7 @@ module VagrantPlugins
           
           setcron = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab" if cronjobs[k].nil?
           uii.info("Setting Cron: #{setcron}\n") if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
-          execute(false, setcron) if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
+          next execute(false, setcron) if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
         end
       end
 
