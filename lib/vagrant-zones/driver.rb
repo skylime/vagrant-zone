@@ -120,7 +120,8 @@ module VagrantPlugins
                    config.consoleport
                  end
         end
-        ip = ('0.0.0.0' unless ip =~ Resolv::IPv4::Regex ? true : false)
+        consolehost
+        ip = ('0.0.0.0' unless ip.match(Resolv::IPv4::Regex))
         netport = "#{ip}:#{port}"
         pid = 0
         if File.exist?('console.pid')
@@ -129,7 +130,7 @@ module VagrantPlugins
           time_started = File.readlines('console.pid')[2].strip
           vmname = File.readlines('console.pid')[3].strip
           nport = File.readlines('console.pid')[4].strip
-          puts "VM is running with PID: #{pid} since: #{time_started} as console type: #{ctype} served at: #{nport}" if vmname[name.to_s]
+          puts "Zone is running with PID: #{pid} since: #{time_started} as console type: #{ctype} served at: #{nport}" if vmname[name.to_s]
           if kill == 'yes'
             File.delete('console.pid') if File.exist?('console.pid')
             Process.kill 'TERM', pid.to_i
@@ -139,21 +140,21 @@ module VagrantPlugins
         else
           case command
           when 'webvnc'
-            run = "pfexec zadm webvnc #{netport} #{name}"
+            run = "pfexec zadm #{command} #{netport} #{name}"
             pid = spawn(run)
             Process.wait pid if detach == 'no'
             Process.detach(pid) if detach == 'yes'
             time = Time.new.strftime('%Y-%m-%d-%H:%M:%S')
             File.write('console.pid', "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}") if detach == 'yes'
-            puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
+            puts "Zone is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
           when 'vnc'
-            run = "pfexec zadm vnc #{netport} #{name}"
+            run = "pfexec zadm #{command} #{netport} #{name}"
             pid = spawn(run)
             Process.wait pid if detach == 'no'
             Process.detach(pid) if detach == 'yes'
             time = Time.new.strftime('%Y-%m-%d-%H:%M:%S')
             File.write('console.pid', "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}") if detach == 'yes'
-            puts "VM is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
+            puts "Zone is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
           when 'zlogin'
             run = "#{@pfexec} zadm console #{name}"
             exec(run)
@@ -1153,7 +1154,7 @@ module VagrantPlugins
 
       ## This will set Cron Jobs for Snapshots to take place
       ## Future To-Do: Simplify
-      def zfssnapcronset(disk, config, opts, name, cronjobs)
+      def zfssnapcronset(uiinfo, disk, config, opts, name, cronjobs)
         spshtr = config.snapshot_script.to_s
         hourlytrn = 24
         dailytrn = 8
@@ -1226,7 +1227,7 @@ module VagrantPlugins
           end
           zfssnapcronlist(disk, config, opts, name, cronjobs)
           zfssnapcrondelete(disk, config, opts, name, cronjobs)
-          zfssnapcronset(disk, config, opts, name, cronjobs)
+          zfssnapcronset(uiinfo, disk, config, opts, name, cronjobs)
         end
       end
 
