@@ -91,12 +91,12 @@ module VagrantPlugins
 
       ## Run commands over SSH instead of ZLogin
       def ssh_run_command(uiinfo, command)
-        ip = get_ip_address(uiinfo)
-        user = user(uiinfo)
-        key = userprivatekeypath(uiinfo).to_s
-        password = vagrantuserpass(uiinfo).to_s
-        port = sshport(uiinfo).to_s
-        port = 22 if sshport(uiinfo).to_s.nil?
+        ip = get_ip_address(@machine)
+        user = user(@machine)
+        key = userprivatekeypath(@machine).to_s
+        password = vagrantuserpass(@machine).to_s
+        port = sshport(@machine).to_s
+        port = 22 if sshport(@machine).to_s.nil?
         puts "#{password} not used for this connection at this time"
         execute(true, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' ")
       end
@@ -252,7 +252,7 @@ module VagrantPlugins
       end
 
       ## If DHCP and Zlogin, get the IP address
-      def get_ip_address(uiinfo)
+      def get_ip_address(@machine)
         config = @machine.provider_config
         name = @machine.name
         uiinfo.info(I18n.t('vagrant_zones.get_ip_address')) if config.debug
@@ -342,14 +342,14 @@ module VagrantPlugins
         execute(false, "#{@pfexec} ipadm create-addr -T static -a local=172.16.0.1/16 #{vnic_name}_stubh/v4")
       end
 
-      ## Create vnics for Zones
+      ## Create ethervnics for Zones
       def zonenatniccreate(uiinfo, opts, etherstub)
         vnic_name = vname(uiinfo, opts)
         uiinfo.info(I18n.t('vagrant_zones.creating_ethervnic') + vnic_name.to_s)
         execute(false, "#{@pfexec} dladm create-vnic -l #{etherstub} #{vnic_name}")
       end
 
-      ## zonecfg function for for Networking
+      ## zonecfg function for for nat Networking
       def natnicconfig(uiinfo, opts)
         allowed_address = allowedaddress(uiinfo, opts)
         defrouter = opts[:gateway].to_s
@@ -387,6 +387,18 @@ module VagrantPlugins
       end
 
       ## Create dhcp entries for the zone
+      def zonedhcpentries(uiinfo, opts)
+        vnic_name = vname(uiinfo, opts)
+        # allowed_address = allowedaddress(uiinfo, opts)
+        uiinfo.info(I18n.t('vagrant_zones.configuring_dhcp') + vnic_name.to_s)
+        # subnet 1.1.1.0 netmask 255.255.255.224 {
+        # range 1.1.1.10 1.1.1.20;
+        # }
+        # /etc/inet/dhcpd4.conf
+        execute(false, "#{@pfexec} svcadm refresh dhcp")
+      end
+
+      ## Check if Address shows up in lease list
       def zonedhcpentries(uiinfo, opts)
         vnic_name = vname(uiinfo, opts)
         # allowed_address = allowedaddress(uiinfo, opts)
@@ -927,7 +939,7 @@ module VagrantPlugins
       end
 
       # This filters the vagrantuser
-      def user(uiinfo)
+      def user(@machine)
         config = @machine.provider_config
         user = config.vagrant_user unless config.vagrant_user.nil?
         user = 'vagrant' if config.vagrant_user.nil?
@@ -936,7 +948,7 @@ module VagrantPlugins
       end
 
       # This filters the userprivatekeypath
-      def userprivatekeypath(uiinfo)
+      def userprivatekeypath(@machine)
         config = @machine.provider_config
         userkey = config.vagrant_user_private_key_path.to_s
         if config.vagrant_user_private_key_path.to_s.nil?
@@ -957,7 +969,7 @@ module VagrantPlugins
       end
 
       # This filters the sshport
-      def sshport(uiinfo)
+      def sshport(@machine)
         config = @machine.provider_config
         sshport = '22'
         sshport = config.sshport.to_s unless config.sshport.to_s.nil? || config.sshport.to_i.zero?
@@ -992,7 +1004,7 @@ module VagrantPlugins
       end
 
       # This filters the vagrantuserpass
-      def vagrantuserpass(uiinfo)
+      def vagrantuserpass(@machine)
         config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.vagrantuserpass')) if config.debug
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?

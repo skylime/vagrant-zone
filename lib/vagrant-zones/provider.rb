@@ -29,11 +29,11 @@ module VagrantPlugins
 
         passwordauth = 'passwordauth'
         ssh_info = {
-          host: driver.get_ip_address(@env.ui),
-          port: driver.sshport(@env.ui).to_s,
-          password: driver.vagrantuserpass(@env.ui).to_s,
-          username: driver.user(@env.ui),
-          private_key_path: driver.userprivatekeypath(@env.ui).to_s,
+          host: driver.get_ip_address(@machine),
+          port: driver.sshport(@machine).to_s,
+          password: driver.vagrantuserpass(@machine).to_s,
+          username: driver.user(@machine),
+          private_key_path: driver.userprivatekeypath(@machine).to_s,
           PasswordAuthentication: passwordauth
         }
         return ssh_info unless ssh_info.nil?
