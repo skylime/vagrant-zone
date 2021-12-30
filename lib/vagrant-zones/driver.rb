@@ -1181,8 +1181,10 @@ module VagrantPlugins
         end
 
         h.each do |k, d|
-          puts k opts[:set_frequency] == 'all' || k
-          puts d opts[:set_frequency] == 'all' || k
+          puts k
+          puts k.to_s
+          puts k opts[:set_frequency] == 'all' || k.to_s
+          puts d opts[:set_frequency] == 'all' || k.to_s
         end
 
 
