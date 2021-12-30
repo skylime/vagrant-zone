@@ -1178,7 +1178,7 @@ module VagrantPlugins
           cj = "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{sfr} #{disk} # #{name}" unless sfr.nil?
           cj = "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{d[:rtn]} #{disk} # #{name}" if sfr.nil?
           h[k] = {rtn: rtn[:h], ct: ct[:h], cj: cj}
-          puts k if k == 'all' || k
+          puts k if opts[:set_frequency] == 'all' || opts[:set_frequency]
           puts d if opts[:set_frequency] == 'all' || opts[:set_frequency]
           uii.info(d[:cj]) if opts[:set_frequency] == 'all' || opts[:set_frequency]     
           # setcron = "#{shrtcr}'#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil?
