@@ -188,8 +188,6 @@ module VagrantPlugins
 
       # This filters the NIC Types
       def nictype(opts)
-        # config = @machine.provider_config
-        # uiinfo.info(I18n.t('vagrant_zones.nictype')) if config.debug
         case opts[:nictype]
         when /external/ || nil
           'e'
