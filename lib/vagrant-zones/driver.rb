@@ -761,18 +761,28 @@ module VagrantPlugins
         lcheck = ":~#"
         almatch = config.almatchstring
         almatch = 'login: ' if config.almatchstring.nil?
+        alm = false
         uiinfo.info(I18n.t('vagrant_zones.wait_for_boot'))
         case config.brand
         when 'bhyve'
           return if config.cloud_init_enabled
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-            zlogin_write.printf("\n")
-            loginstring = zlogin_read
-            puts loginstring.inspect
-            puts loginstring if loginstring.expect(/#{almatch}/)
-            puts loginstring if loginstring.expect(/#{lcheck}/)
-            uiinfo.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{almatch}'") if loginstring.expect(/#{almatch}/)
-            uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'") if loginstring.expect(/#{lcheck}/)
+          zlogin_write.printf("\n")
+          ###################### NEW ###################
+            Timeout.timeout(config.setup_wait) do
+              loop do
+                zlogin_read.expect(/\r\n/) { |line| rsp.push line }
+                puts rsp[-1]
+                uiinfo.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{almatch}'") if rsp[-1].to_s.match(/#{almatch}/)
+                alm = true if rsp[-1].to_s.match(/#{almatch}/)
+                break if rsp[-1].to_s.match(/#{almatch}/)
+
+                uiinfo.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'") if rsp[-1].to_s.match(/#{lcheck}/)
+                alm = false if rsp[-1].to_s.match(/#{lcheck}/)
+                break if rsp[-1].to_s.match(/#{lcheck}/)
+
+              end
+            end          
             Process.kill('HUP', pid) if loginstring.expect(/#{lcheck}/) || loginstring.expect(/#{almatch}/)
           end
         when 'lx'
@@ -801,22 +811,6 @@ module VagrantPlugins
         end
       end
 
-      # This checks if the user exists on the VM, usually for LX zones
-      def user_exists?(machine, user = 'vagrant')
-        name = @machine.name
-        ret = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
-        return true if ret.zero?
-
-        false
-        # return false
-      end
-
-      # This gives the user a terminal console
-      def zlogincommand(machine, cmd)
-        name = @machine.name
-        execute(false, "#{@pfexec} zlogin #{name} #{cmd}")
-      end
-
       # This gives us a console to the VM
       def zlogin(uiinfo, cmd)
         name = @machine.name
@@ -836,6 +830,22 @@ module VagrantPlugins
           end
           Process.kill('HUP', pid)
         end
+      end
+
+      # This checks if the user exists on the VM, usually for LX zones
+      def user_exists?(machine, user = 'vagrant')
+        name = @machine.name
+        ret = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
+        return true if ret.zero?
+
+        false
+        # return false
+      end
+
+      # This gives the user a terminal console
+      def zlogincommand(machine, cmd)
+        name = @machine.name
+        execute(false, "#{@pfexec} zlogin #{name} #{cmd}")
       end
 
       # This filters the vagrantuser
