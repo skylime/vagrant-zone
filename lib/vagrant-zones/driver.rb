@@ -76,7 +76,7 @@ module VagrantPlugins
 
       ## Control the zone from inside the zone OS
       ## Future To-Do: Make commands specifiable by user.
-      def control(control)
+      def control(uiinfo, control)
         config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.control')) if config.debug
         case control
