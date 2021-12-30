@@ -38,7 +38,7 @@ module VagrantPlugins
             
             puts state_id.inspect
             ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete')) unless state_id == 'running'
-            sleep 10 if state_id == 'running'
+            sleep 1 if state_id == 'running'
             break  unless state_id == 'running'
           end
 
