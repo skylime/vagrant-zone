@@ -108,7 +108,6 @@ module VagrantPlugins
       ## Function to provide console, vnc, or webvnc access
       ## Future To-Do: Should probably split this up
       def console(uiinfo, command, ip, port, exit)
-        config = @machine.provider_config
         detach = exit[:detach]
         kill = exit[:kill]
         name = @machine.name
