@@ -1165,7 +1165,7 @@ module VagrantPlugins
         name = @machine.name
         snpshtr = config.snapshot_script.to_s
         shrtcr = "( #{@pfexec} crontab -l; echo "
-        sfr = opts[:set_frequency_rtn]
+        sf = {freq: opts[:set_frequency], rtn: opts[:set_frequency_rtn]}
         h = {}
         rtn = { h: 24, d: 8, w: 5, m: 1 }
         ct = { h: '0 1-23 * * * ', d: '0 0 * * 0-5 ', w: '0 0 * * 6 ', m: '0 0 1 * * ' }
@@ -1174,12 +1174,14 @@ module VagrantPlugins
         h[:weekly] = { rtn: rtn[:w], ct: ct[:w] }
         h[:monthly] = { rtn: rtn[:m], ct: ct[:m] }
         h.each do |k, d|
-          cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{sfr} #{disk} # #{name}" unless sfr.nil?
-          cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{d[:rtn]} #{disk} # #{name}" if sfr.nil?
+          next if cronjobs[k].nil?
+          
+          cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{sf[:rtn]} #{disk} # #{name}" unless sf[:rtn].nil?
+          cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{d[:rtn]} #{disk} # #{name}" if sf[:rtn].nil?
           h[k] = { rtn: rtn[:h], ct: ct[:h], cj: cj }
-          setcron = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab" if cronjobs[k].nil?
-          uii.info("Setting Cron: #{setcron}\n") if k.to_s == opts[:set_frequency] || opts[:set_frequency] == 'all'
-          execute(false, setcron)  if k.to_s == opts[:set_frequency] || opts[:set_frequency] == 'all'
+          setcron = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab" 
+          uii.info("Setting Cron: #{setcron}\n") if k.to_s == sf[:freq] || sf[:freq] == 'all'
+          execute(false, setcron)  if k.to_s == sf[:freq] || sf[:freq] == 'all'
         end
       end
 
