@@ -120,7 +120,8 @@ module VagrantPlugins
                    config.consoleport
                  end
         end
-        consolehost
+        
+        consolehost = ('0.0.0.0' unless config.consolehost.match(Resolv::IPv4::Regex))
         ip = ('0.0.0.0' unless ip.match(Resolv::IPv4::Regex))
         netport = "#{ip}:#{port}"
         pid = 0
