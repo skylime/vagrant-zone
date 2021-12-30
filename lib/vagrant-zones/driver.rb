@@ -766,6 +766,8 @@ module VagrantPlugins
         case config.brand
         when 'bhyve'
           return if config.cloud_init_enabled
+
+          rsp = []
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           zlogin_write.printf("\n")
           ###################### NEW ###################
