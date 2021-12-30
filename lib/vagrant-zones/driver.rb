@@ -1158,14 +1158,12 @@ module VagrantPlugins
       end
 
       ## This will set Cron Jobs for Snapshots to take place
-      ## Future To-Do: Simplify
       def zfssnapcronset(uii, disk, opts, cronjobs)
         config = @machine.provider_config
         name = @machine.name
         snpshtr = config.snapshot_script.to_s
         shrtcr = "( #{@pfexec} crontab -l; echo "
         sfr = opts[:set_frequency_rtn]
-
         h = Hash.new
         rtn = {h: 24, d: 8, w: 5, m: 1}
         ct = {h: "0 1-23 * * * ", d: "0 0 * * 0-5 ", w: "0 0 * * 6 ", m: "0 0 1 * * "}
@@ -1173,7 +1171,6 @@ module VagrantPlugins
         h[:daily] = {rtn: rtn[:d], ct: ct[:d]}
         h[:weekly] = {rtn: rtn[:w], ct: ct[:w]}
         h[:monthly] = {rtn: rtn[:m], ct: ct[:m]}
-
         h.each do |k, d|
           cj = "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{sfr} #{disk} # #{name}" unless sfr.nil?
           cj = "#{d[:ct]}#{snpshtr} -p #{k.to_s} -r -n #{d[:rtn]} #{disk} # #{name}" if sfr.nil?
