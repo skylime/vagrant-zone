@@ -33,8 +33,6 @@ module VagrantPlugins
             end
           end
           
-          
-          
           10.times do
             state_id = @driver.state(@machine)
             sleep 10 if state_id == 'running'
