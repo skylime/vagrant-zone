@@ -101,7 +101,7 @@ module VagrantPlugins
         password = vagrantuserpass(@machine).to_s
         port = sshport(@machine).to_s
         port = 22 if sshport(@machine).to_s.nil?
-        puts "#{password} not used for this connection at this time"
+        uiinfo.info(I18n.t('vagrant_zones.ssh_run_command') + password) if config.debug
         execute(true, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' ")
       end
 
