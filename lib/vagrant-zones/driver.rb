@@ -1163,7 +1163,6 @@ module VagrantPlugins
       def zfssnapcronset(uii, disk, opts, cronjobs)
         config = @machine.provider_config
         name = @machine.name
-        return unless disk == opts[:dataset] || opts[:dataset] == 'all' || nil
         snpshtr = config.snapshot_script.to_s
         shrtcr = "( #{@pfexec} crontab -l; echo "
         sf = {freq: opts[:set_frequency], rtn: opts[:set_frequency_rtn]}
@@ -1175,9 +1174,6 @@ module VagrantPlugins
         h[:weekly] = { rtn: rtn[:w], ct: ct[:w] }
         h[:monthly] = { rtn: rtn[:m], ct: ct[:m] }
         h.each do |k, d|
-          puts cronjobs[k]
-          next sum if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
-          puts sum
           cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{sf[:rtn]} #{disk} # #{name}" unless sf[:rtn].nil?
           cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{d[:rtn]} #{disk} # #{name}" if sf[:rtn].nil?
           h[k] = { rtn: rtn[:h], ct: ct[:h], cj: cj }
@@ -1198,7 +1194,7 @@ module VagrantPlugins
         datasets.each do |disk|
           puts disk
           puts opts[:dataset]
-          next if opts[:dataset].to_s != disk.to_s || opts[:dataset].to_s == 'all'
+          next if opts[:dataset].to_s != disk.to_s 
 
           uii.info(I18n.t('vagrant_zones.zfs_snapshot_cron') + disk.to_s)
           cronjobs = {}
