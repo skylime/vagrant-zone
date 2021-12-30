@@ -1180,7 +1180,9 @@ module VagrantPlugins
           h[k] = {rtn: rtn[:h], ct: ct[:h], cj: cj}
         end
         h.each do |k, d|
-          puts if k ==  opts[:set_frequency].to_s  
+          puts k.to_s
+          puts opts[:set_frequency].to_s
+          puts k if k.to_s == opts[:set_frequency].to_s
           puts d.to_s if k ==  opts[:set_frequency].to_s  
           uii.info(d[:cj].to_s) if k ==  opts[:set_frequency].to_s  
           # setcron = "#{shrtcr}'#{hourlycron}' ) | #{@pfexec} crontab" if cronjobs[:hourly].nil?
