@@ -32,6 +32,8 @@ module VagrantPlugins
               break unless env[:machine].communicate.ready?
             end
           end
+          state_id = driver.state(@machine)
+          puts state_id
           ui.info(I18n.t('vagrant_zones.graceful_shutdown_complete'))
           env[:metrics] ||= {}
           env[:metrics]['instance_ssh_time'] = Util::Timer.time do
