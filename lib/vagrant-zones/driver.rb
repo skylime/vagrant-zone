@@ -765,6 +765,7 @@ module VagrantPlugins
                 break if rsp[-1].to_s.match(/#{lcheck}/)
 
                 puts rsp[-1]
+                puts counter
                 zlogin_write.printf("\n") if (counter < (config.setup_wait - 15) )
               end
             end
