@@ -1111,7 +1111,7 @@ module VagrantPlugins
       end
 
       ## This will list Cron Jobs for Snapshots to take place
-      def zfssnapcronlist(opts, _uii, cronjobs)
+      def zfssnapcronlist(_datasets, opts, _uii, cronjobs)
         # config = @machine.provider_config
         # name = @machine.name
         if opts[:list] == 'all'
@@ -1162,11 +1162,7 @@ module VagrantPlugins
       def zfssnapcronset(uii, disk, opts, cronjobs)
         # config = @machine.provider_config
         # name = @machine.name
-        puts cronjobs.inspect
         snpshtr = config.snapshot_script.to_s
-        rtn = {hourly: 24, daily: 8, weekly: 5, monthly: 1}
-        puts rtn[:hourly]
-        puts rtn.inspect
         hourlytrn = 24
         dailytrn = 8
         weeklytrn = 5
@@ -1174,8 +1170,7 @@ module VagrantPlugins
         shrtcr = "( #{@pfexec} crontab -l; echo "
         sfr = opts[:set_frequency_rtn]
 
-
-
+        
         hourlycron = "0 1-23 * * * #{snpshtr} -p hourly -r -n #{hourlytrn} #{disk} # #{name}"
         dailycron = "0 0 * * 0-5 #{snpshtr} -p daily -r -n #{dailytrn} #{disk} # #{name}"
         weeklycron = "0 0 * * 6 #{snpshtr} -p weekly -r -n #{weeklytrn} #{disk} # #{name}"
@@ -1241,7 +1236,7 @@ module VagrantPlugins
               cronjobs.merge!(monthly: monthly)
             end
           end
-          zfssnapcronlist(opts, cronjobs, uii)
+          zfssnapcronlist(disk, opts, cronjobs)
           zfssnapcrondelete(disk, opts, cronjobs)
           zfssnapcronset(uii, disk, opts, cronjobs)
         end
