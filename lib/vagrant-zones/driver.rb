@@ -774,9 +774,8 @@ module VagrantPlugins
 
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             int.times do
-              zwaitforboot(uiinfo)
+              zwaitforboot(uiinfo, zlogin_read, zlogin_write)
             end 
-            
             Process.kill('HUP', pid)
           end
         when 'lx'
