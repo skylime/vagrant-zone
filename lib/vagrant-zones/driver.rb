@@ -559,6 +559,7 @@ module VagrantPlugins
         return unless config.brand == 'kvm'
 
         bootconfigs = config.boot
+        config = @machine.provider_config
         datasetpath = "#{bootconfigs['array']}/#{bootconfigs['dataset']}/#{name}"
         datasetroot = "#{datasetpath}/#{bootconfigs['volume_name']}"
         uiinfo.info(datasetroot) if config.debug
@@ -576,6 +577,7 @@ module VagrantPlugins
       ## zonecfg function for CPU Configurations
       ## Future To-Do: Fix LX Zone CPU configs if any
       def zonecfgcpu(uiinfo, _name, config, zcfg)
+        config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.zonecfgcpu')) if config.debug
         if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm')
           execute(false, %(#{zcfg}"add attr; set name=vcpus; set value=#{config.cpus}; set type=string; end;"))
@@ -908,6 +910,7 @@ module VagrantPlugins
       # This checks if the user exists on the VM, usually for LX zones
       def user_exists?(uiinfo, user = 'vagrant')
         name = @machine.name
+        config = @machine.provider_config
         ret = execute(true, "#{@pfexec} zlogin #{name} id -u #{user}")
         uiinfo.info(I18n.t('vagrant_zones.userexists')) if config.debug
         return true if ret.zero?
@@ -918,6 +921,7 @@ module VagrantPlugins
       # This gives the user a terminal console
       def zlogincommand(uiinfo, cmd)
         name = @machine.name
+        config = @machine.provider_config
         uiinfo.info(I18n.t('vagrant_zones.zonelogincmd')) if config.debug
         execute(false, "#{@pfexec} zlogin #{name} #{cmd}")
       end
