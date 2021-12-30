@@ -1169,7 +1169,7 @@ module VagrantPlugins
         sfr = opts[:set_frequency_rtn]
 
         rtn.each do |key, data|
-          puts key
+          puts key.to_s
           puts data
         end
 
