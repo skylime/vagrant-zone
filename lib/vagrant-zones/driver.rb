@@ -98,7 +98,7 @@ module VagrantPlugins
         config = @machine.provider_config
         uii.info(I18n.t('vagrant_zones.ssh_run_command')) if config.debug
         ip = get_ip_address('runsshcommmand')
-        user = user(@machine)
+        user = user(@machine, uii)
         key = userprivatekeypath(@machine).to_s
         password = vagrantuserpass(@machine).to_s
         port = sshport(@machine).to_s
@@ -969,7 +969,6 @@ module VagrantPlugins
         config = machine.provider_config
         user = config.vagrant_user unless config.vagrant_user.nil?
         user = 'vagrant' if config.vagrant_user.nil?
-        uii.info(I18n.t('vagrant_zones.user')) if config.debug
         user
       end
 
