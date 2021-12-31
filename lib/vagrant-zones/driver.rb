@@ -851,24 +851,30 @@ module VagrantPlugins
         alm
       end
 
+      def zloginboot(uii)
+        name = @machine.name
+        int = 5
+        alm = false
+        PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+          int.times do
+            alm = zwaitforboot(uii, zlogin_read, zlogin_write, alm)
+            break if alm
+          end
+          Process.kill('HUP', pid)
+        end
+      end
+
+
       # This helps up wait for the boot of the vm by using zlogin
       def waitforboot(uii)
         name = @machine.name
         config = @machine.provider_config
-        int = 5
-        alm = false
         uii.info(I18n.t('vagrant_zones.wait_for_boot'))
         case config.brand
         when 'bhyve'
-          return if config.cloud_init_enabled || config.setup_method == 'dhcp'
+          return if config.cloud_init_enabled
 
-          PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-            int.times do
-              alm = zwaitforboot(uii, zlogin_read, zlogin_write, alm)
-              break if alm
-            end
-            Process.kill('HUP', pid)
-          end
+          zloginboot(uii) unless config.setup_method == 'dhcp'
         when 'lx'
           unless user_exists?(uii, config.vagrant_user)
             zlogincommand(uii, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
