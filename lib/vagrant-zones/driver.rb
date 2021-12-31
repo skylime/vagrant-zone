@@ -1117,16 +1117,11 @@ module VagrantPlugins
         # config = @machine.provider_config
         # name = @machine.name
         uii.info(I18n.t('vagrant_zones.cron_entries'))
-        if opts[:list] == 'all'
-          puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
-          puts cronjobs[:daily] unless cronjobs[:daily].nil?
-          puts cronjobs[:weekly] unless cronjobs[:weekly].nil?
-          puts cronjobs[:monthly] unless cronjobs[:monthly].nil?
-        else
-          puts cronjobs[:hourly] if opts[:list] == 'hourly'
-          puts cronjobs[:daily] if opts[:list] == 'daily'
-          puts cronjobs[:weekly] if opts[:list] == 'weekly'
-          puts cronjobs[:monthly] if opts[:list] == 'monthly'
+        h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
+        h.each do |k, d|
+          next unless opts[:list] == d || opts[:list] == 'all' 
+
+          puts cronjobs[d.to_sym] unless cronjobs[d.to_sym].nil?
         end
       end
 
@@ -1142,11 +1137,11 @@ module VagrantPlugins
         rmcr = "#{sc} -l | grep -v "
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
         h.each do |k, d|
-          next unless opts[:delete] == d || opts[:delete] == 'all' || !cronjobs[d.to_sym].nil?
+          next unless opts[:delete] == d || opts[:delete] == 'all' 
 
-          rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}" 
-          uii.info("Removing Cron: #{rc}\n") 
-          # execute(false, rc)
+          rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[d.to_sym].nil?
+          uii.info("Removing Cron: #{rc}\n") unless cronjobs[d.to_sym].nil?
+          execute(false, rc) unless cronjobs[d.to_sym].nil?
         end
       end
 
