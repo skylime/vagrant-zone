@@ -1145,7 +1145,7 @@ module VagrantPlugins
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
         h.each do |k, d|
           next if cronjobs[d.to_sym].nil?
-          
+
           rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}"
           uii.info("Removing Cron: #{rc}\n") 
         end
@@ -1178,12 +1178,14 @@ module VagrantPlugins
         h[:weekly] = { rtn: rtn[:w], ct: ct[:w] }
         h[:monthly] = { rtn: rtn[:m], ct: ct[:m] }
         h.each do |k, d|
+          next if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
+
           cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{sf[:rtn]} #{disk} # #{name}" unless sf[:rtn].nil?
           cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{d[:rtn]} #{disk} # #{name}" if sf[:rtn].nil?
           h[k] = { rtn: rtn[:h], ct: ct[:h], cj: cj }
-          setcron = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab" if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
-          uii.info("Setting Cron: #{setcron}\n") if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
-          next execute(false, setcron) if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
+          setcron = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab"
+          uii.info("Setting Cron: #{setcron}\n")
+          nexecute(false, setcron) 
         end
       end
 
