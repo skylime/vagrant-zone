@@ -1142,11 +1142,12 @@ module VagrantPlugins
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
         uii.info(I18n.t('vagrant_zones.cron_delete'))
         h.each do |_k, d|
+
           next unless opts[:delete] == d || opts[:delete] == 'all'
 
-          
-          rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[d.to_sym].nil?
-          uii.info("  - Removing Cron: #{rc}") unless cronjobs[d.to_sym].nil?
+          cj = cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')
+          rc = "#{rmcr}'#{cj}' | #{sc}" unless cronjobs[d.to_sym].nil?
+          uii.info("  - Removing Cron: #{cj}") unless cronjobs[d.to_sym].nil?
           execute(false, rc) unless cronjobs[d.to_sym].nil?
         end
       end
