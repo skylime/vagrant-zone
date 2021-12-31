@@ -38,13 +38,6 @@ class Hosts
             end
           end
 
-          # Nameservers
-          if host.has_key?('dns')
-            dservers = []
-            host['dns'].each do |ns|
-              dservers.append(ns['nameserver'])
-            end
-          end
 
           # Vagrant-Zone machine configuration
           server.vm.provider :zone do |vm|
@@ -98,6 +91,54 @@ class Hosts
                   vm.setup_method                         = host['setup_method']            
           end
 
+          # Register shared folders
+          if host.has_key?('folders')
+            host['folders'].each do |folder|
+              mount_opts = folder['type'] == 'rsync' ? ['actimeo=1'] : []
+              server.vm.synced_folder folder['map'], folder ['to'], type: folder['type'], owner: folder['owner'] ||= host['vagrant_user'], group: folder['group'] ||= host['vagrant_user'], mount_options: mount_opts
+              end
+          end
+ 
+          # Add Branch Files to Vagrant Share on VM Change to Git folders to pull
+          if host.has_key?('branch') && host['shell_provision']
+              server.vm.provision 'shell' do |s|
+                s.path = scriptsPath + '/add-branch.sh'
+                s.args = [host['branch'], host['git_url'] ]
+              end
+          end
+  
+          # Run the Shell Provisioner
+          if host.has_key?('provision_scripts') && host['shell_provision']
+             host['provision_scripts'].each do |file|
+                 server.vm.provision 'shell', path: file
+             end
+          end
+  
+          # Run the Ansible Provisioner
+          if host.has_key?('ansible_provision_scripts') && host['ansible_provision']
+            host['ansible_provision_scripts'].each do |scripts|
+              if scripts.has_key?('local')
+                scripts['local'].each do |localscript|
+                  server.vm.provision :ansible_local do |ansible|
+                    ansible.playbook = localscript['script']
+                    ansible.compatibility_mode = localscript['compatibility_mode'].to_s
+                    ansible.install_mode = "pip" if localscript['install_mode'] == "pip"
+                    ansible.extra_vars = {ip:host['ip'], ansible_python_interpreter:localscript['ansible_python_interpreter']}
+                  end
+                end
+              end
+              if scripts.has_key?('remote')
+                scripts['remote'].each do |remotescript|
+                  server.vm.provision :ansible do |ansible|
+                    ansible.playbook = remotescript['script']
+                    ansible.compatibility_mode = remotescript['compatibility_mode'].to_s
+                    ansible.install_mode = "pip" if remotescript['install_mode'] == "pip"
+                    ansible.extra_vars = {ip:host['ip'], ansible_python_interpreter:remotescript['ansible_python_interpreter']}
+                  end
+                end
+              end
+            end
+          end
         end
       end
     end
