@@ -88,7 +88,7 @@ module VagrantPlugins
           command = 'sudo init 0 || true'
           ssh_run_command(uii, command)
         else
-          puts 'No Command specified'
+          uii.info('No Command specified')
         end
       end
 
@@ -132,12 +132,12 @@ module VagrantPlugins
           ts = File.readlines("#{vmname[name.to_s]}.pid")[2].strip
           vmname = File.readlines("#{vmname[name.to_s]}.pid")[3].strip
           nport = File.readlines("#{vmname[name.to_s]}.pid")[4].strip
-          puts "Zone is running with PID: #{pid} since: #{ts} as console type: #{ctype} served at: #{nport} \n" if vmname[name.to_s]
+          uii.info("Zone is running with PID: #{pid} since: #{ts} as console type: #{ctype} served at: #{nport} \n") if vmname[name.to_s]
           if kill == 'yes'
             File.delete("#{vmname[name.to_s]}.pid") if File.exist?("#{vmname[name.to_s]}.pid")
             Process.kill 'TERM', pid.to_i
             Process.detach pid.to_i
-            puts 'Session Terminated'
+            uii.info('Session Terminated')
           end
         else
           case command
@@ -148,7 +148,7 @@ module VagrantPlugins
             Process.detach(pid) if detach == 'yes'
             time = Time.new.strftime('%Y-%m-%d-%H:%M:%S')
             File.write("#{vmname[name.to_s]}.pid", "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}") if detach == 'yes'
-            puts "Zone is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes'
+            uii.info("Zone is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes')
           when 'zlogin'
             run = "#{@pfexec} zadm console #{name}"
             exec(run)
@@ -845,7 +845,7 @@ module VagrantPlugins
             alm = true if rsp[-1].to_s.match(/#{lcheck}/)
             break if rsp[-1].to_s.match(/#{lcheck}/)
 
-            puts rsp[-1] if config.debug_boot
+            uii.info(rsp[-1]) if config.debug_boot
           end
         end
         alm
@@ -1014,7 +1014,7 @@ module VagrantPlugins
         # name = @machine.name
         uii.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
         datasets.each_with_index do |disk, index|
-          puts "\n Disk Number: #{index}\n Disk Path: #{disk}"
+          uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
           zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk} || true")
           break if zfs_snapshots.nil?
 
@@ -1121,7 +1121,7 @@ module VagrantPlugins
         h.each do |k, d|
           next unless opts[:list] == d || opts[:list] == 'all' 
 
-          puts cronjobs[d.to_sym] unless cronjobs[d.to_sym].nil?
+          uii.info(cronjobs[d.to_sym]) unless cronjobs[d.to_sym].nil?
         end
       end
 
