@@ -1143,10 +1143,11 @@ module VagrantPlugins
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
         h.each do |k, d|
           #next if opts[:delete] != d.to_s || opts[:delete] != 'all'
-          puts opts[:delete]
-          puts d.to_s
+
           next if  cronjobs[d.to_sym].nil?
 
+          puts opts[:delete]
+          puts d.to_s
           rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}"
           uii.info("Removing Cron: #{rc}\n")
           # execute(false, rc)
