@@ -48,7 +48,6 @@ Publiched Package locations:
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/Makr91/vagrant-zones.
 
-
 ## License
 
 This project is licensed under the AGPL v3 License - see the [LICENSE](LICENSE) file for details
