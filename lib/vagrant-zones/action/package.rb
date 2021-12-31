@@ -43,8 +43,8 @@ module VagrantPlugins
           d = '-'
           c = ':'
           datetime = %(#{t.year}#{d}#{t.month}#{d}#{t.day}#{d}#{t.hour}#{c}#{t.min}#{c}#{t.sec})
-          snapshot_create(datasetpath, datetime, env[:ui])
-          snapshot_send(datasetpath, "#{tmp_dir}/box.zss", datetime, env[:ui])
+          snapshot_create(datasetpath, datetime, env[:ui], @machine.provider_config)
+          snapshot_send(datasetpath, "#{tmp_dir}/box.zss", datetime, env[:ui], @machine.provider_config)
           snapshot_delete(datasetpath, datetime)
 
           # Package VM
@@ -83,8 +83,7 @@ module VagrantPlugins
           @app.call(env)
         end
 
-        def snapshot_create(datasetpath, datetime, uii)
-          config = @machine.provider_config
+        def snapshot_create(datasetpath, datetime, uii, config)
           uii.info('Creating a Snapshot of the box.')
           result = execute(true, "#{@pfexec} zfs snapshot -r #{datasetpath}/boot@vagrant_box#{datetime}")
           uii.info("#{@pfexec} zfs snapshot -r #{datasetpath}/boot@vagrant_box#{datetime}") if result.zero? && config.debug
@@ -95,8 +94,7 @@ module VagrantPlugins
           uii.info("#{@pfexec} zfs destroy -r #{datasetpath}/boot@vagrant_box#{datetime}") if result.zero?
         end
 
-        def snapshot_send(datasetpath, destination, datetime, uii)
-          config = @machine.provider_config
+        def snapshot_send(datasetpath, destination, datetime, uii, config)
           uii.info('Sending Snapshot to ZFS Send Sream image.')
           result = execute(true, "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}")
           puts "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}" if result.zero? && config.debug
