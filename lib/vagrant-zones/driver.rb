@@ -1146,7 +1146,7 @@ module VagrantPlugins
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
         h.each do |k, d|
           rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}" 
-          puts rc 
+          puts rc unless cronjobs[d.to_sym].nil?
           #rc = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab" if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
           #rc = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:hourly] && opts[:delete] == 'hourly'
           #uii.info("Setting Cron: #{setcron}\n") if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
