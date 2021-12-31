@@ -1014,12 +1014,15 @@ module VagrantPlugins
         # name = @machine.name
         uii.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
         datasets.each_with_index do |disk, index|
-
           zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk} || true")
           break if zfs_snapshots.nil?
 
           next unless opts[:dataset].to_i == index || opts[:dataset].nil?
-          
+          #unless opts[:dataset].nil?
+          #  selectdataset = opts[:dataset]
+          #  next unless opts[:dataset].to_i == index
+
+          #end
           uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
           zfssnapshots = zfs_snapshots.split(/\n/)
           zfssnapshots = zfssnapshots.reverse
