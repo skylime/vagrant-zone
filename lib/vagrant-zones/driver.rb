@@ -1007,6 +1007,7 @@ module VagrantPlugins
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
 
+
       ## List ZFS Snapshots
       ## Future To-Do: Cleanup Output
       def zfssnaplist(datasets, opts, uii)
@@ -1019,8 +1020,8 @@ module VagrantPlugins
 
           if opts[:dataset] # either a number or a dataset
             #next if opts[:dataset].to_i != index
-            puts "is a int" if opts[:dataset].to_s.is_a? Numeric
-            puts "is a string or nil" unless opts[:dataset].to_s.is_a? Numeric
+            puts "is a int" if opts[:dataset].scan(/\D/).empty?
+            puts "is a string or nil" unless opts[:dataset].scan(/\D/).empty?
           end
 
           uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
