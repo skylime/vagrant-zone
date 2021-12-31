@@ -1216,7 +1216,6 @@ module VagrantPlugins
           crons.each do |tasks|
             next if tasks.empty?
 
-            puts tasks
             case tasks[/#{rtnregex}/, 1]
             when 'hourly'
               hourly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
@@ -1232,6 +1231,7 @@ module VagrantPlugins
               cronjobs.merge!(monthly: monthly)
             end
           end
+          puts cronjobs
           zfssnapcronlist(uii, disk, opts, cronjobs)
           zfssnapcrondelete(uii, disk, opts, cronjobs)
           zfssnapcronset(uii, disk, opts, cronjobs)
