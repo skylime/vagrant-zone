@@ -1206,11 +1206,9 @@ module VagrantPlugins
         opts[:dataset] = 'all' if opts[:dataset].nil?
         datasets.each do |disk|
           cronjobs = {}
-          puts disk
           crons.each do |tasks|
             next if tasks.empty? || tasks[/^#/]
 
-            
             case tasks[/#{rtnregex}/, 1]
             when 'hourly'
               hourly = tasks if tasks[/# #{name}/] && tasks[/#{disk}/]
@@ -1224,9 +1222,7 @@ module VagrantPlugins
             when 'monthly'
               monthly = tasks if tasks[/# #{name}/] && tasks[/#{disk}/]
               cronjobs.merge!(monthly: monthly) if tasks[/# #{name}/] && tasks[/#{disk}/]
-              
             end
-            puts cronjobs
           end
           zfssnapcronlist(uii, disk, opts, cronjobs)
           zfssnapcrondelete(uii, disk, opts, cronjobs)
