@@ -1018,7 +1018,7 @@ module VagrantPlugins
           next if zfs_snapshots.nil?
 
           unless opts[:dataset].nil?
-            next unless opts[:dataset].to_i == index
+            next if opts[:dataset].to_i != index
 
           end
 
