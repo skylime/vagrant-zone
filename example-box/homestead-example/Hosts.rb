@@ -23,7 +23,7 @@ class Hosts
           server.ssh.password = host['vagrant_user_pass']
           server.ssh.insert_key = host['vagrant_insert_key']
           server.vm.provider = 'zone'
-          if s.has_key?('boxes')
+          if server.has_key?('boxes')
             boxes = settings['boxes']
             if boxes.has_key?(server.vm.box)
               server.vm.box_url = settings['boxes'][server.vm.box]
