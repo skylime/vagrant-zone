@@ -1007,10 +1007,6 @@ module VagrantPlugins
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
 
-      def numeric()
-        Float(self) != nil rescue false
-      end
-
       ## List ZFS Snapshots
       ## Future To-Do: Cleanup Output
       def zfssnaplist(datasets, opts, uii)
