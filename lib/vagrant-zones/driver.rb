@@ -1008,6 +1008,31 @@ module VagrantPlugins
       end
 
 
+      def zfssnaplistdisp(zfssnapshots, uii, index, disk)
+        uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
+        zfssnapshots = zfs_snapshots.split(/\n/).reverse
+        zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
+        pml, rml, aml, uml, sml = 0
+        zfssnapshots.reverse.each do |snapshot|
+          ar = snapshot.gsub(/\s+/m, ' ').strip.split
+          sml = ar[0].length.to_i if ar[0].length.to_i > sml.to_i
+          uml = ar[1].length.to_i if ar[1].length.to_i > uml.to_i
+          aml = ar[2].length.to_i if ar[2].length.to_i > aml.to_i
+          rml = ar[3].length.to_i if ar[3].length.to_i > rml.to_i
+          pml = ar[4].length.to_i if ar[4].length.to_i > pml.to_i
+        end
+        zfssnapshots.reverse.each_with_index do |snapshot, si|
+          ar = snapshot.gsub(/\s+/m, ' ').strip.split
+          strg1 = "%<sym>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s"
+          strg2 = "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s"
+          if si.zero?
+            puts format strg1.to_s, sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
+          else
+            puts format strg2.to_s, si: si - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
+          end
+        end
+      end
+
       ## List ZFS Snapshots
       ## Future To-Do: Cleanup Output
       def zfssnaplist(datasets, opts, uii)
@@ -1018,30 +1043,10 @@ module VagrantPlugins
           zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk} || true")
           next if zfs_snapshots.nil?
 
+         
 
-          uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
-          zfssnapshots = zfs_snapshots.split(/\n/).reverse
-          #zfssnapshots = zfssnapshots.reverse
-          zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
-          pml, rml, aml, uml, sml = 0
-          zfssnapshots.reverse.each do |snapshot|
-            ar = snapshot.gsub(/\s+/m, ' ').strip.split
-            sml = ar[0].length.to_i if ar[0].length.to_i > sml.to_i
-            uml = ar[1].length.to_i if ar[1].length.to_i > uml.to_i
-            aml = ar[2].length.to_i if ar[2].length.to_i > aml.to_i
-            rml = ar[3].length.to_i if ar[3].length.to_i > rml.to_i
-            pml = ar[4].length.to_i if ar[4].length.to_i > pml.to_i
-          end
-          zfssnapshots.reverse.each_with_index do |snapshot, si|
-            ar = snapshot.gsub(/\s+/m, ' ').strip.split
-            strg1 = "%<sym>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s"
-            strg2 = "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s"
-            if si.zero?
-              puts format strg1.to_s, sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
-            else
-              puts format strg2.to_s, si: si - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
-            end
-          end
+          zfssnaplistdisp(zfssnapshots, uii, index, disk)
+
         end
       end
 
