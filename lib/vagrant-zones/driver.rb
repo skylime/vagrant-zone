@@ -1208,8 +1208,9 @@ module VagrantPlugins
           cronjobs = {}
           puts disk
           crons.each do |tasks|
-            next if tasks.empty?
+            next if tasks.empty? || tasks[/^#/]
 
+            
             case tasks[/#{rtnregex}/, 1]
             when 'hourly'
               hourly = tasks if tasks[/# #{name}/] && tasks[/#{disk}/]
