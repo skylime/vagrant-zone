@@ -1146,6 +1146,7 @@ module VagrantPlugins
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
         h.each do |k, d|
           puts d
+          puts cronjobs
           puts cronjobs["#{d}"]
           #rc = "#{rmcr}'#{cronjobs[d].gsub(/\*/, '\*')}' | #{sc}" 
           #puts rc 
