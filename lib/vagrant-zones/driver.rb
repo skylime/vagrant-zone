@@ -1074,9 +1074,9 @@ module VagrantPlugins
 
       ## Destroy ZFS Snapshots
       def zfssnapdestroy(datasets, opts, uii)
+        uii.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
         if opts[:dataset].to_s == 'all'
           datasets.each do |disk|
-            uii.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
             output = execute(false, "#{@pfexec} zfs list -t snapshot -o name | grep #{disk}")
             ## Never delete the source when doing all
             output = output.split(/\n/).drop(1)
