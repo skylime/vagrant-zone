@@ -308,7 +308,7 @@ module VagrantPlugins
             zonenatniccreate(uii, opts, etherstub) if state == 'create'
             ## Create the VNIC for the Host on the Etherstub and Assign it a IP for use with DHCP later
             etherstubcreateint(uii, opts, etherstub) if state == 'create'
-            ## 
+            ##  
             natnicconfig(uii, opts) if state == 'config'
             zonenatforward(uii, opts) if state == 'config'
             zonenatentries(uii, opts) if state == 'config'
