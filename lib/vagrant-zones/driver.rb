@@ -1017,7 +1017,7 @@ module VagrantPlugins
           zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk} || true")
           next if zfs_snapshots.nil?
 
-          unless opts[:dataset].nil?
+          if opts[:dataset] # either a number or a dataset
             next if opts[:dataset].to_i != index
 
           end
@@ -1280,6 +1280,11 @@ module VagrantPlugins
         state = 'delete'
         id.info(I18n.t('vagrant_zones.networking_int_remove'))
         network(id, state)
+      end
+    end
+    class String
+      def numeric?
+        Float(self) != nil rescue false
       end
     end
   end
