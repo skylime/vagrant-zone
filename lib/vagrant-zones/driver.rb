@@ -1121,7 +1121,7 @@ module VagrantPlugins
         h.each do |k, d|
           next unless opts[:list] == d || opts[:list] == 'all' 
 
-          uii.info(cronjobs[d.to_sym]) unless cronjobs[d.to_sym].nil?
+          puts cronjobs[d.to_sym] unless cronjobs[d.to_sym].nil?
         end
       end
 
