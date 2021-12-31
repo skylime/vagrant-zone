@@ -127,15 +127,15 @@ module VagrantPlugins
         ipaddr = ip if ip =~ Resolv::IPv4::Regex
         netport = "#{ipaddr}:#{port}"
         pid = 0
-        if File.exist?("#{vmname[name.to_s]}.pid")
-          pid = File.readlines("#{vmname[name.to_s]}.pid")[0].strip
-          ctype = File.readlines("#{vmname[name.to_s]}.pid")[1].strip
-          ts = File.readlines("#{vmname[name.to_s]}.pid")[2].strip
-          vmname = File.readlines("#{vmname[name.to_s]}.pid")[3].strip
-          nport = File.readlines("#{vmname[name.to_s]}.pid")[4].strip
+        if File.exist?("#{name}.pid")
+          pid = File.readlines("#{name}.pid")[0].strip
+          ctype = File.readlines("#{name}.pid")[1].strip
+          ts = File.readlines("#{name}.pid")[2].strip
+          vmname = File.readlines("#{name}.pid")[3].strip
+          nport = File.readlines("#{name}.pid")[4].strip
           uii.info("Session running with PID: #{pid} since: #{ts} as console type: #{ctype} served at: #{nport}\n") if vmname[name.to_s]
           if kill == 'yes'
-            File.delete("#{vmname[name.to_s]}.pid") if File.exist?("#{vmname[name.to_s]}.pid")
+            File.delete("#{name}.pid") if File.exist?("#{name}.pid")
             Process.kill 'TERM', pid.to_i
             Process.detach pid.to_i
             uii.info('Session Terminated')
