@@ -1145,7 +1145,7 @@ module VagrantPlugins
           #next if opts[:delete] != d.to_s || opts[:delete] != 'all'
 
           # next if (cronjobs[d.to_sym].nil? || opts[:delete] != d.to_s) 
-          next unless cronjobs[d.to_sym] && opts[:delete] == d.to_s || opts[:delete] == 'all'
+          next unless cronjobs[d.to_sym] && opts[:delete] == d.to_s || opts[:delete] != 'all'
 
           puts opts[:delete]
           puts d.to_s
@@ -1157,7 +1157,7 @@ module VagrantPlugins
 
       ## This will set Cron Jobs for Snapshots to take place
       def zfssnapcronset(uii, disk, opts, cronjobs)
-        return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s != 'all'
+        return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
 
         config = @machine.provider_config
         name = @machine.name
