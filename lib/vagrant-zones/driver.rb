@@ -1053,29 +1053,26 @@ module VagrantPlugins
 
       ## Create ZFS Snapshots
       def zfssnapcreate(datasets, opts, uii)
-        # config = @machine.provider_config
-        # name = @machine.name
+        uii.info(I18n.t('vagrant_zones.zfs_snapshot_create')
         if opts[:dataset] == 'all'
           datasets.each do |disk|
-            uii.info(I18n.t('vagrant_zones.zfs_snapshot_create') + "  - #{disk}@#{opts[:snapshot_name]}")
+            uii.info("  - #{disk}@#{opts[:snapshot_name]}")
             execute(false, "#{@pfexec} zfs snapshot #{disk}@#{opts[:snapshot_name]}")
           end
         else
           ## Specify the Dataset by path
           execute(false, "#{@pfexec} zfs snapshot #{opts[:dataset]}@#{opts[:snapshot_name]}") if datasets.include?(opts[:dataset])
-          uii.info(I18n.t('vagrant_zones.zfs_snapshot_create') + "#{disk}@#{opts[:snapshot_name]}") if datasets.include?(opts[:dataset])
+          uii.info(I18n.t("  - #{disk}@#{opts[:snapshot_name]}") if datasets.include?(opts[:dataset])
           ## Specify the dataset by number
           datasets.each_with_index do |disk, index|
             execute(false, "#{@pfexec} zfs snapshot #{disk}@#{opts[:snapshot_name]}") if opts[:dataset].to_i == index.to_i
-            uii.info(I18n.t('vagrant_zones.zfs_snapshot_create') + "#{disk}@#{opts[:snapshot_name]}")
+            uii.info(I18n.t("  - #{disk}@#{opts[:snapshot_name]}")
           end
         end
       end
 
       ## Destroy ZFS Snapshots
       def zfssnapdestroy(datasets, opts, uii)
-        # config = @machine.provider_config
-        # name = @machine.name
         if opts[:dataset].to_s == 'all'
           datasets.each do |disk|
             uii.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
