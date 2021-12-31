@@ -148,7 +148,7 @@ module VagrantPlugins
             Process.wait pid if detach == 'no'
             Process.detach(pid) if detach == 'yes'
             time = Time.new.strftime('%Y-%m-%d-%H:%M:%S')
-            File.write("#{vmname[name.to_s]}.pid", "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}") if detach == 'yes'
+            File.write("#{name}.pid", "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}") if detach == 'yes'
             uii.info("Session running with PID: #{pid} as console type: #{command} served at: #{netport}") if detach == 'yes'
           when 'zlogin'
             run = "#{@pfexec} zadm console #{name}"
