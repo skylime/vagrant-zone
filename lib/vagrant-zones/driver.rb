@@ -88,7 +88,7 @@ module VagrantPlugins
           command = 'sudo init 0 || true'
           ssh_run_command(uii, command)
         else
-          puts 'No Command specified'
+          uii.info('No Command specified')
         end
       end
 
@@ -132,12 +132,12 @@ module VagrantPlugins
           ts = File.readlines("#{vmname[name.to_s]}.pid")[2].strip
           vmname = File.readlines("#{vmname[name.to_s]}.pid")[3].strip
           nport = File.readlines("#{vmname[name.to_s]}.pid")[4].strip
-          puts "Zone is running with PID: #{pid} since: #{ts} as console type: #{ctype} served at: #{nport} \n" if vmname[name.to_s]
+          uii.info("Session running as PID: #{pid} since: #{ts} as console type: #{ctype} served at: #{nport}\n" if vmname[name.to_s]
           if kill == 'yes'
             File.delete("#{vmname[name.to_s]}.pid") if File.exist?("#{vmname[name.to_s]}.pid")
             Process.kill 'TERM', pid.to_i
             Process.detach pid.to_i
-            puts 'Session Terminated'
+            uii.info('Session Terminated')
           end
         else
           case command
