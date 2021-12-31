@@ -1007,6 +1007,10 @@ module VagrantPlugins
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
 
+      def numeric?
+        Float(self) != nil rescue false
+      end
+
       ## List ZFS Snapshots
       ## Future To-Do: Cleanup Output
       def zfssnaplist(datasets, opts, uii)
@@ -1280,11 +1284,6 @@ module VagrantPlugins
         state = 'delete'
         id.info(I18n.t('vagrant_zones.networking_int_remove'))
         network(id, state)
-      end
-    end
-    class String
-      def numeric?
-        Float(self) != nil rescue false
       end
     end
   end
