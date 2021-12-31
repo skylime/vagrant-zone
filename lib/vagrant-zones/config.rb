@@ -62,7 +62,7 @@ module VagrantPlugins
         @private_network = nil
         @firmware_type = 'compatability'
         @vm_type = 'production'
-        @setup_method = nil
+        @setup_method = UNSET_VALUE
         @snapshot_script = '/opt/vagrant/bin/Snapshooter.sh'
       end
     end
