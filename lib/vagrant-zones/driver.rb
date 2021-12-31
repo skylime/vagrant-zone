@@ -148,7 +148,7 @@ module VagrantPlugins
             Process.detach(pid) if detach == 'yes'
             time = Time.new.strftime('%Y-%m-%d-%H:%M:%S')
             File.write("#{vmname[name.to_s]}.pid", "#{pid}\n#{command}\n#{time}\n#{name}\n#{netport}") if detach == 'yes'
-            uii.info("Zone is running with PID: #{pid} as console type: #{command} served at: #{netport}" if detach == 'yes')
+            uii.info("Zone is running with PID: #{pid} as console type: #{command} served at: #{netport}") if detach == 'yes'
           when 'zlogin'
             run = "#{@pfexec} zadm console #{name}"
             exec(run)
@@ -845,7 +845,7 @@ module VagrantPlugins
             alm = true if rsp[-1].to_s.match(/#{lcheck}/)
             break if rsp[-1].to_s.match(/#{lcheck}/)
 
-            uii.info(rsp[-1]) if config.debug_boot
+            puts rsp[-1] if config.debug_boot
           end
         end
         alm
@@ -1014,7 +1014,7 @@ module VagrantPlugins
         # name = @machine.name
         uii.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
         datasets.each_with_index do |disk, index|
-          uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
+          puts "\n Disk Number: #{index}\n Disk Path: #{disk}"
           zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk} || true")
           break if zfs_snapshots.nil?
 
