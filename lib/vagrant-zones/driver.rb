@@ -76,18 +76,17 @@ module VagrantPlugins
       end
 
       ## Control the zone from inside the zone OS
-      ## Future To-Do: Make commands specifiable by user.
       def control(uii, control)
         config = @machine.provider_config
         uii.info(I18n.t('vagrant_zones.control')) if config.debug
         case control
         when 'restart'
           command = 'sudo shutdown -r'
-          command = config.safe_restart unless config.safe_restart.nil? 
+          command = config.safe_restart unless config.safe_restart.nil?
           ssh_run_command(uii, command)
         when 'shutdown'
           command = 'sudo init 0 || true'
-          command = config.safe_shutdown unless config.safe_shutdown.nil? 
+          command = config.safe_shutdown unless config.safe_shutdown.nil?
           ssh_run_command(uii, command)
         else
           uii.info(I18n.t('vagrant_zones.control_no_cmd'))
@@ -586,7 +585,6 @@ module VagrantPlugins
       end
 
       ## zonecfg function for CPU Configurations
-      ## Future To-Do: Fix LX Zone CPU configs if any
       def zonecfgcpu(uii, _name, config, zcfg)
         uii.info(I18n.t('vagrant_zones.zonecfgcpu')) if config.debug
         if config.cpu_configuration == 'simple' && (config.brand == 'bhyve' || config.brand == 'kvm')

@@ -93,6 +93,8 @@ class Hosts
                   vm.cloud_init_resolvers                 = dservers.join(',')
                   vm.cloud_init_sshkey                    = host['vagrant_user_private_key_path']
                   vm.cloud_init_conf                      = host['cloud_init_conf']
+                  vm.safe_restart                         = host['safe_restart']
+                  vm.safe_shutdown                        = host['safe_shutdown']                 
           end
 
           # Register shared folders
