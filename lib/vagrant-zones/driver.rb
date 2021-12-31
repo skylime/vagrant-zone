@@ -864,6 +864,10 @@ module VagrantPlugins
         end
       end
 
+      def dhcoboot(uii)
+        name = @machine.name
+        #### RESERVED #####
+      end
 
       # This helps up wait for the boot of the vm by using zlogin
       def waitforboot(uii)
