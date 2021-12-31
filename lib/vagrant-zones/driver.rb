@@ -1118,12 +1118,6 @@ module VagrantPlugins
         return if opts[:list].nil?
         # config = @machine.provider_config
         # name = @machine.name
-        puts disk
-        puts cronjobs[:hourly] 
-        puts cronjobs[:daily] 
-        puts cronjobs[:weekly] 
-        puts cronjobs[:monthly] 
-
         uii.info(I18n.t('vagrant_zones.cron_entries'))
         if opts[:list] == 'all'
           puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
@@ -1228,9 +1222,10 @@ module VagrantPlugins
               cronjobs.merge!(weekly: weekly)
             when 'monthly'
               monthly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
-              cronjobs[ monthly: monthly ]
-              puts cronjobs
+              cronjobs.merge!(monthly: monthly)
+              
             end
+            puts cronjobs
           end
           zfssnapcronlist(uii, disk, opts, cronjobs)
           zfssnapcrondelete(uii, disk, opts, cronjobs)
