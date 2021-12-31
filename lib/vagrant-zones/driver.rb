@@ -1174,7 +1174,7 @@ module VagrantPlugins
           cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{d[:rtn]} #{disk} # #{name}" if sf[:rtn].nil?
           h[k] = { rtn: rtn[:h], ct: ct[:h], cj: cj }
           setcron = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab"
-          uii.info("Setting Cron: #{setcron}\n")
+          uii.info("Setting Cron: #{setcron}")
           execute(false, setcron)
         end
       end
