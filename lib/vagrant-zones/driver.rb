@@ -1138,40 +1138,34 @@ module VagrantPlugins
         # config = @machine.provider_config
         # name = @machine.name
         uii.info(I18n.t('vagrant_zones.cron_delete'))
-        removecron = ''
+
+        rc = ''
         sc = "#{@pfexec} crontab"
         rmcr = "#{sc} -l | grep -v "
-        if opts[:delete] == 'all'
-          removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[:hourly].nil?
-          puts removecron unless cronjobs[:hourly].nil?
-          execute(false, removecron) unless cronjobs[:hourly].nil?
-          removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{sc} crontab" unless cronjobs[:daily].nil?
-          puts removecron unless cronjobs[:daily].nil?
-          execute(false, removecron) unless cronjobs[:daily].nil?
-          removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[:weekly].nil?
-          puts removecron unless cronjobs[:weekly].nil?
-          execute(false, removecron) unless cronjobs[:weekly].nil?
-          removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[:monthly].nil?
-          puts removecron unless cronjobs[:monthly].nil?
-          execute(false, removecron) unless cronjobs[:monthly].nil?
-        else
-          removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:hourly] && opts[:delete] == 'hourly'
-          removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:daily] && opts[:delete] == 'daily'
-          removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:weekly] && opts[:delete] == 'weekly'
-          removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:monthly] && opts[:delete] == 'monthly'
-          puts removecron
-          execute(false, removecron)
+        ###########################################
+        h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
+        h.each do |k, d|
+          rc = "#{rmcr}'#{cronjobs[d].gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[d].nil?
+          puts rc unless cronjobs[d].nil?
+          #rc = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab" if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
+          #rc = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:hourly] && opts[:delete] == 'hourly'
+          #uii.info("Setting Cron: #{setcron}\n") if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
+          #next execute(false, setcron) if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
+          #uii.info(rc)
+          #execute(false, rc)
         end
+
+        ###########################################
       end
 
       ## This will set Cron Jobs for Snapshots to take place
       def zfssnapcronset(uii, disk, opts, cronjobs)
-
         return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
 
         config = @machine.provider_config
         name = @machine.name
         uii.info(I18n.t('vagrant_zones.cron_set'))
+
         snpshtr = config.snapshot_script.to_s
         shrtcr = "( #{@pfexec} crontab -l; echo "
         h = {}
@@ -1186,7 +1180,6 @@ module VagrantPlugins
           cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{sf[:rtn]} #{disk} # #{name}" unless sf[:rtn].nil?
           cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{d[:rtn]} #{disk} # #{name}" if sf[:rtn].nil?
           h[k] = { rtn: rtn[:h], ct: ct[:h], cj: cj }
-          
           setcron = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab" if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
           uii.info("Setting Cron: #{setcron}\n") if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
           next execute(false, setcron) if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
