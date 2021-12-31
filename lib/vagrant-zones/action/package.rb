@@ -91,13 +91,13 @@ module VagrantPlugins
         end
 
         def snapshot_delete(datasetpath, datetime)
-          result = execute(true, "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@vagrant_box#{datetime}") 
-          uii.info("#{@pfexec} zfs destroy -r #{datasetpath}/boot@vagrant_box#{datetime}") if result.zero? 
+          result = execute(true, "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@vagrant_box#{datetime}")
+          uii.info("#{@pfexec} zfs destroy -r #{datasetpath}/boot@vagrant_box#{datetime}") if result.zero?
         end
 
         def snapshot_send(datasetpath, destination, datetime, uii)
           config = @machine.provider_config
-          uii.info('Sending Snapshot to ZFS Send Sream image.') 
+          uii.info('Sending Snapshot to ZFS Send Sream image.')
           result = execute(true, "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}")
           puts "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}" if result.zero? && config.debug
         end
