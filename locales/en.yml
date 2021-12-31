@@ -268,16 +268,11 @@ en:
       Setting the PCI Devices for zone
     zfs_snapshot_list: |-
       ZFS Snapshots detected:
-        
     zfs_snapshot_destroy: |-
       Destroying ZFS Snapshots for zone:
-        
     cron_entries: |-
       Listing Cron Entries for Zone
-        
     cron_set: |-
       Setting Cron Entries for Zone
-
     cron_delete: |-
       Deleting Cron Entries for Zone
-        
