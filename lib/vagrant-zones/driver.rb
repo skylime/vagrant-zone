@@ -1015,7 +1015,7 @@ module VagrantPlugins
         uii.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
         datasets.each_with_index do |disk, index|
           zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk} || true")
-          break if zfs_snapshots.nil?
+          next if zfs_snapshots.nil?
 
           unless opts[:dataset].nil?
             next unless opts[:dataset].to_i == index
