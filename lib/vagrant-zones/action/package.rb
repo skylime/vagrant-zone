@@ -84,20 +84,22 @@ module VagrantPlugins
         end
 
         def snapshot_create(datasetpath, datetime, uii)
+          config = @machine.provider_config
           uii.info('Creating a Snapshot of the box.')
           result = execute(true, "#{@pfexec} zfs snapshot -r #{datasetpath}/boot@vagrant_box#{datetime}")
-          puts "#{@pfexec} zfs snapshot -r #{datasetpath}/boot@vagrant_box#{datetime}" if result.zero?
+          uii.info("#{@pfexec} zfs snapshot -r #{datasetpath}/boot@vagrant_box#{datetime}") if result.zero? && config.debug
         end
 
         def snapshot_delete(datasetpath, datetime)
-          result = execute(true, "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@vagrant_box#{datetime}")
-          puts "#{@pfexec} zfs destroy -r #{datasetpath}/boot@vagrant_box#{datetime}" if result.zero?
+          result = execute(true, "#{@pfexec} zfs destroy -r -F #{datasetpath}/boot@vagrant_box#{datetime}") 
+          uii.info("#{@pfexec} zfs destroy -r #{datasetpath}/boot@vagrant_box#{datetime}") if result.zero? 
         end
 
         def snapshot_send(datasetpath, destination, datetime, uii)
-          uii.info('Sending Snapshot to ZFS Send Sream image.')
+          config = @machine.provider_config
+          uii.info('Sending Snapshot to ZFS Send Sream image.') 
           result = execute(true, "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}")
-          puts "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}" if result.zero?
+          puts "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}" if result.zero? && config.debug
         end
 
         def metadata_content(brand, _kernel, vcc, boxshortname)
