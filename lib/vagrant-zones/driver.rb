@@ -1138,22 +1138,23 @@ module VagrantPlugins
         # config = @machine.provider_config
         # name = @machine.name
         uii.info(I18n.t('vagrant_zones.cron_delete'))
-
         rc = ''
         sc = "#{@pfexec} crontab"
         rmcr = "#{sc} -l | grep -v "
-        ###########################################
+
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
         h.each do |k, d|
-          rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}" 
-          puts rc unless cronjobs[d.to_sym].nil?
-          #rc = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab" if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
-          #rc = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:hourly] && opts[:delete] == 'hourly'
-          #uii.info("Setting Cron: #{setcron}\n") if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
-          #next execute(false, setcron) if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
+          next if cronjobs[d.to_sym].nil?
+          
+          rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}"
+          uii.info("Removing Cron: #{rc}\n") 
+        end
+        ###########################################
+          #next execute(false, rc) if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
           #uii.info(rc)
           #execute(false, rc)
-        end
+          #rc = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab" if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
+          #rc = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:hourly] && opts[:delete] == 'hourly'
 
         ###########################################
       end
