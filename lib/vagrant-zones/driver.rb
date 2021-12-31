@@ -1118,7 +1118,7 @@ module VagrantPlugins
         return if opts[:list].nil?
         # config = @machine.provider_config
         # name = @machine.name
-
+        puts disk
         puts cronjobs[:hourly] 
         puts cronjobs[:daily] 
         puts cronjobs[:weekly] 
