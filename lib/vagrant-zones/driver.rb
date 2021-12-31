@@ -297,7 +297,8 @@ module VagrantPlugins
 
           zoneniccreate(uii, opts) if state == 'create'
           zonecfgnicconfig(uii, opts) if state == 'config'
-          zonenicstpzloginsetup(uii, opts) if state == 'setup'
+          ## if state setup and setup_method dhcp/zlogin
+          zonenicstpzloginsetup(uii, opts) if state == 'setup' 
           zonenicdel(uii, opts) if state == 'delete'
         end
       end
@@ -859,7 +860,7 @@ module VagrantPlugins
         uii.info(I18n.t('vagrant_zones.wait_for_boot'))
         case config.brand
         when 'bhyve'
-          return if config.cloud_init_enabled
+          return if config.cloud_init_enabled || config.setup_method == 'dhcp'
 
           PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
             int.times do
