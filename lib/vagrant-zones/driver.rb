@@ -1147,7 +1147,6 @@ module VagrantPlugins
           # next if (cronjobs[d.to_sym].nil? || opts[:delete] != d.to_s) 
           next if cronjobs[d.to_sym].nil?
           
-          next if opts[:delete] != d.to_s 
 
 
           puts opts[:delete]
