@@ -1047,7 +1047,7 @@ module VagrantPlugins
           if ds
             next if opts[:dataset].to_i != index 
           else
-            next if opts[:dataset] != disk
+            next if opts[:dataset] != disk || nil
           end
 
           zfssnaplistdisp(zfs_snapshots, uii, index, disk)
