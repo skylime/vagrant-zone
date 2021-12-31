@@ -17,8 +17,7 @@ module VagrantPlugins
         def call(env)
           @machine = env[:machine]
           @driver  = @machine.provider.driver
-          state = 'create'
-          @driver.network(env[:ui], state)
+          @driver.network(env[:ui], 'create')
           @app.call(env)
         end
       end
