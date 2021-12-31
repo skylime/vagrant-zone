@@ -1040,9 +1040,9 @@ module VagrantPlugins
             strg1 = "%<sym>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s"
             strg2 = "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s"
             if si.zero?
-              uii.info(format strg1.to_s, sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4])
+              puts format strg1.to_s, sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
             else
-              uii.info(format strg2.to_s, si: si - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4])
+              puts format strg2.to_s, si: si - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
             end
           end
         end
@@ -1118,8 +1118,8 @@ module VagrantPlugins
         # name = @machine.name
         uii.info(I18n.t('vagrant_zones.cron_entries'))
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
-        h.each do |k, d|
-          next unless opts[:list] == d || opts[:list] == 'all' 
+        h.each do |_k, d|
+          next unless opts[:list] == d || opts[:list] == 'all'
 
           uii.info(cronjobs[d.to_sym]) unless cronjobs[d.to_sym].nil?
         end
@@ -1136,8 +1136,8 @@ module VagrantPlugins
         sc = "#{@pfexec} crontab"
         rmcr = "#{sc} -l | grep -v "
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
-        h.each do |k, d|
-          next unless opts[:delete] == d || opts[:delete] == 'all' 
+        h.each do |_k, d|
+          next unless opts[:delete] == d || opts[:delete] == 'all'
 
           rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[d.to_sym].nil?
           uii.info("Removing Cron: #{rc}\n") unless cronjobs[d.to_sym].nil?
