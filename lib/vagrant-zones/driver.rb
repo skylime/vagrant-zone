@@ -1144,7 +1144,7 @@ module VagrantPlugins
         h.each do |k, d|
           #next if opts[:delete] != d.to_s || opts[:delete] != 'all'
 
-          #next if  cronjobs[d.to_sym].nil?
+          next if  cronjobs[d.to_sym].nil?
 
           rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}"
           uii.info("Removing Cron: #{rc}\n")
