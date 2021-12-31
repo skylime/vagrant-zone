@@ -1112,7 +1112,6 @@ module VagrantPlugins
 
       ## This will list Cron Jobs for Snapshots to take place
       def zfssnapcronlist(uii, disk, opts, cronjobs)
-        sf = {freq: opts[:set_frequency], rtn: opts[:set_frequency_rtn]}
         return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
 
         # config = @machine.provider_config
@@ -1146,7 +1145,7 @@ module VagrantPlugins
           next unless opts[:delete] == d.to_s || opts[:delete] == 'all' && cronjobs[d.to_sym]
 
           rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}"
-          uii.info("Removing Cron: #{rc}\n") 
+          uii.info("Removing Cron: #{rc}\n")
           execute(false, rc)
         end
       end
@@ -1158,11 +1157,10 @@ module VagrantPlugins
         config = @machine.provider_config
         name = @machine.name
         uii.info(I18n.t('vagrant_zones.cron_set'))
-
         snpshtr = config.snapshot_script.to_s
         shrtcr = "( #{@pfexec} crontab -l; echo "
         h = {}
-        sf = {freq: opts[:set_frequency], rtn: opts[:set_frequency_rtn]}
+        sf = { freq: opts[:set_frequency], rtn: opts[:set_frequency_rtn] }
         rtn = { h: 24, d: 8, w: 5, m: 1 }
         ct = { h: '0 1-23 * * * ', d: '0 0 * * 0-5 ', w: '0 0 * * 6 ', m: '0 0 1 * * ' }
         h[:hourly] = { rtn: rtn[:h], ct: ct[:h] }
@@ -1177,7 +1175,7 @@ module VagrantPlugins
           h[k] = { rtn: rtn[:h], ct: ct[:h], cj: cj }
           setcron = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab"
           uii.info("Setting Cron: #{setcron}\n")
-          execute(false, setcron) 
+          execute(false, setcron)
         end
       end
 
