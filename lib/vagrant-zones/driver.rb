@@ -1167,6 +1167,8 @@ module VagrantPlugins
       def zfssnapcronset(uii, disk, opts, cronjobs)
         config = @machine.provider_config
         name = @machine.name
+        return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
+        
         snpshtr = config.snapshot_script.to_s
         shrtcr = "( #{@pfexec} crontab -l; echo "
         sf = {freq: opts[:set_frequency], rtn: opts[:set_frequency_rtn]}
