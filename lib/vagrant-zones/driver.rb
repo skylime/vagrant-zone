@@ -1134,9 +1134,6 @@ module VagrantPlugins
       def zfssnapcrondelete(uii, disk, opts, cronjobs)
         return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
 
-        # config = @machine.provider_config
-        # name = @machine.name
-        rc = ''
         sc = "#{@pfexec} crontab"
         rmcr = "#{sc} -l | grep -v "
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
@@ -1145,7 +1142,7 @@ module VagrantPlugins
           next unless opts[:delete] == d || opts[:delete] == 'all'
 
           cj = cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')
-          rc = "#{rmcr}'#{cj}' | #{sc}" unless cronjobs[d.to_sym].nil?
+          rc = "#{rmcr}'#{cj}' | #{sc}"
           uii.info("  - Removing Cron: #{cj}") unless cronjobs[d.to_sym].nil?
           execute(false, rc) unless cronjobs[d.to_sym].nil?
         end
