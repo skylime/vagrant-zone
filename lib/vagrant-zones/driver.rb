@@ -1147,7 +1147,7 @@ module VagrantPlugins
         h.each do |k, d|
           puts d
           puts cronjobs
-          puts cronjobs["#{d}"]
+          puts cronjobs[d.to_sym]
           #rc = "#{rmcr}'#{cronjobs[d].gsub(/\*/, '\*')}' | #{sc}" 
           #puts rc 
           #rc = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab" if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
