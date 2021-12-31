@@ -14,23 +14,15 @@ class Hosts
           server.vm.box = host['box']       
           server.vm.boot_timeout = 900
   
-          # Setup SSH and Prevent TTY errors
-          server.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
-          server.ssh.forward_agent = true
-          server.ssh.forward_x11 = true
-          server.ssh.username = host['vagrant_user']
-          server.ssh.private_key_path = host['vagrant_user_private_key_path']
-          server.ssh.password = host['vagrant_user_pass']
-          server.ssh.insert_key = host['vagrant_insert_key']
-          server.vm.provider = 'zone'
-          if  s.has_key?('boxes')
-            boxes = settings['boxes']
-            if boxes.has_key?(server.vm.box)
-              server.vm.box_url = settings['boxes'][server.vm.box]
+
+
+          ## Note Do not place two IPs in the same subnet on both nics at the same time, They must be different subnets or on a different network segment(ie VLAN, physical seperation for Linux VMs)
+          if host.has_key?('networks')
+            host['networks'].each_with_index do |network, netindex|
+                server.vm.network "public_network", ip: network['address'], dhcp: network['dhcp4'], dhcp6: network['dhcp6'], bridge: network['bridge'], auto_config: false, :netmask => network['netmask'], :mac => network['mac'], gateway: network['gateway'], nictype: network['type'], nic_number: netindex, managed: network['is_control'], vlan: network['vlan'] if network['type'] == 'external'
+                server.vm.network "private_network", ip: network['address'], dhcp: network['dhcp4'], dhcp6: network['dhcp6'], bridge: network['bridge'], auto_config: false, :netmask => network['netmask'], :mac => network['mac'], gateway: network['gateway'], nictype: network['type'], nic_number: netindex, managed: network['is_control'], vlan: network['vlan'] if network['type'] == 'hostonly'
             end
           end
-
-     
 
           # Nameservers
           if host.has_key?('dns')
