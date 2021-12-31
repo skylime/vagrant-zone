@@ -278,6 +278,6 @@ en:
     cron_set: |-
       Setting Cron Entries for Zone
 
-    cron_entries: |-
+    cron_delete: |-
       Deleting Cron Entries for Zone
         
