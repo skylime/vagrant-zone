@@ -1008,7 +1008,7 @@ module VagrantPlugins
       end
 
 
-      def zfssnaplistdisp(zfssnapshots, uii, index, disk)
+      def zfssnaplistdisp(zfs_snapshots, uii, index, disk)
         uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
         zfssnapshots = zfs_snapshots.split(/\n/).reverse
         zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
@@ -1045,7 +1045,7 @@ module VagrantPlugins
 
          
 
-          zfssnaplistdisp(zfssnapshots, uii, index, disk)
+          zfssnaplistdisp(zfs_snapshots, uii, index, disk)
 
         end
       end
