@@ -290,6 +290,7 @@ module VagrantPlugins
       ## Manage Network Interfaces
       def network(uii, state)
         config = @machine.provider_config
+        puts config.setup_method.to_s
         uii.info(I18n.t('vagrant_zones.networking_int_add')) if state == 'setup' && config.setup_method == 'zlogin'
         uii.info(I18n.t('vagrant_zones.netplan_remove')) if state == 'setup' && config.setup_method == 'zlogin'
         zlogin(uii, 'rm -rf /etc/netplan/*.yaml') if state == 'setup' && config.setup_method == 'zlogin'
