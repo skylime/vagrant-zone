@@ -1165,14 +1165,16 @@ module VagrantPlugins
 
       ## This will set Cron Jobs for Snapshots to take place
       def zfssnapcronset(uii, disk, opts, cronjobs)
+        sf = {freq: opts[:set_frequency], rtn: opts[:set_frequency_rtn]}
         return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
+
+        return if sf[:freq].nil?
 
         config = @machine.provider_config
         name = @machine.name
         uii.info(I18n.t('vagrant_zones.cron_set'))
         snpshtr = config.snapshot_script.to_s
         shrtcr = "( #{@pfexec} crontab -l; echo "
-        sf = {freq: opts[:set_frequency], rtn: opts[:set_frequency_rtn]}
         h = {}
         rtn = { h: 24, d: 8, w: 5, m: 1 }
         ct = { h: '0 1-23 * * * ', d: '0 0 * * 0-5 ', w: '0 0 * * 6 ', m: '0 0 1 * * ' }
