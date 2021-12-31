@@ -1063,11 +1063,9 @@ module VagrantPlugins
           ## Specify the Dataset by path
           execute(false, "#{@pfexec} zfs snapshot #{opts[:dataset]}@#{opts[:snapshot_name]}") if datasets.include?(opts[:dataset])
           uii.info("  - #{opts[:dataset]}@#{opts[:snapshot_name]}") if datasets.include?(opts[:dataset])
-          next if datasets.include?(opts[:dataset])
-          
           ## Specify the dataset by number
           datasets.each_with_index do |disk, index|
-            next unless opts[:dataset].to_i == index.to_i
+            next unless opts[:dataset].to_i == index.to_i && datasets.include?(opts[:dataset])
 
             execute(false, "#{@pfexec} zfs snapshot #{disk}@#{opts[:snapshot_name]}")
             uii.info("  - #{disk}@#{opts[:snapshot_name]}")
