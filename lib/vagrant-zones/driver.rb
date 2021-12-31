@@ -1215,13 +1215,13 @@ module VagrantPlugins
               hourly = tasks if tasks[/# #{name}/] && tasks[/#{disk}/]
               cronjobs.merge!(hourly: hourly)
             when 'daily'
-              daily = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
+              daily = tasks if tasks[/# #{name}/] && tasks[/#{disk}/]
               cronjobs.merge!(daily: daily)
             when 'weekly'
-              weekly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
+              weekly = tasks if tasks[/# #{name}/] && tasks[/#{disk}/]
               cronjobs.merge!(weekly: weekly)
             when 'monthly'
-              monthly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
+              monthly = tasks if tasks[/# #{name}/] && tasks[/#{disk}/]
               cronjobs.merge!(monthly: monthly)
               
             end
