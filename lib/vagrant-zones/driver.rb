@@ -1115,6 +1115,7 @@ module VagrantPlugins
         # config = @machine.provider_config
         # name = @machine.name
         return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
+
         uii.info(I18n.t('vagrant_zones.cron_entries'))
         if opts[:list] == 'all'
           puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
@@ -1133,6 +1134,8 @@ module VagrantPlugins
       def zfssnapcrondelete(uii, _disk, opts, cronjobs)
         # config = @machine.provider_config
         # name = @machine.name
+        return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
+        
         uii.info(I18n.t('vagrant_zones.cron_delete'))
         removecron = ''
         sc = "#{@pfexec} crontab"
