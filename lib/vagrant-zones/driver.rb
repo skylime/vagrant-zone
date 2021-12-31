@@ -298,6 +298,7 @@ module VagrantPlugins
             zoneniccreate(uii, opts) if state == 'create'
             zonecfgnicconfig(uii, opts) if state == 'config'
             ## if state setup and setup_method dhcp/zlogin
+            puts config.setup_method
             zonenicstpzloginsetup(uii, opts) if state == 'setup' && config.setup_method == 'zlogin'
             zonenicdel(uii, opts) if state == 'delete'
           end
