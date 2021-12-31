@@ -1055,6 +1055,7 @@ module VagrantPlugins
       def zfssnapcreate(datasets, opts, uii)
         uii.info(I18n.t('vagrant_zones.zfs_snapshot_create')
         if opts[:dataset] == 'all'
+ 
           datasets.each do |disk|
             uii.info("  - #{disk}@#{opts[:snapshot_name]}")
             execute(false, "#{@pfexec} zfs snapshot #{disk}@#{opts[:snapshot_name]}")
@@ -1062,11 +1063,11 @@ module VagrantPlugins
         else
           ## Specify the Dataset by path
           execute(false, "#{@pfexec} zfs snapshot #{opts[:dataset]}@#{opts[:snapshot_name]}") if datasets.include?(opts[:dataset])
-          uii.info(I18n.t("  - #{disk}@#{opts[:snapshot_name]}") if datasets.include?(opts[:dataset])
+          uii.info("  - #{disk}@#{opts[:snapshot_name]}") if datasets.include?(opts[:dataset])
           ## Specify the dataset by number
           datasets.each_with_index do |disk, index|
             execute(false, "#{@pfexec} zfs snapshot #{disk}@#{opts[:snapshot_name]}") if opts[:dataset].to_i == index.to_i
-            uii.info(I18n.t("  - #{disk}@#{opts[:snapshot_name]}")
+            uii.info("  - #{disk}@#{opts[:snapshot_name]}")
           end
         end
       end
