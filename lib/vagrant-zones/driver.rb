@@ -1007,7 +1007,7 @@ module VagrantPlugins
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
 
-
+      ## List ZFS Snapshots, helper function to sort and display
       def zfssnaplistdisp(zfs_snapshots, uii, index, disk)
         uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
         zfssnapshots = zfs_snapshots.split(/\n/).reverse
@@ -1034,7 +1034,6 @@ module VagrantPlugins
       end
 
       ## List ZFS Snapshots
-      ## Future To-Do: Cleanup Output
       def zfssnaplist(datasets, opts, uii)
         # config = @machine.provider_config
         # name = @machine.name
@@ -1049,7 +1048,6 @@ module VagrantPlugins
           else
             next unless opts[:dataset] == disk || opts[:dataset].nil?
           end
-
           zfssnaplistdisp(zfs_snapshots, uii, index, disk)
         end
       end
