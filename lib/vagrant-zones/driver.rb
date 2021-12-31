@@ -1152,7 +1152,7 @@ module VagrantPlugins
           puts opts[:delete]
           puts d.to_s 
           rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}" if opts[:delete] == d.to_s || 'all'
-          uii.info("Removing Cron: #{rc}\n")  if opts[:delete] == d.to_s || 'all'
+          uii.info("Removing Cron: #{rc}\n")  if opts[:delete].to_s == d.to_s || 'all'
           # execute(false, rc)
         end
       end
