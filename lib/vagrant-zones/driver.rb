@@ -1228,7 +1228,7 @@ module VagrantPlugins
               cronjobs.merge!(weekly: weekly)
             when 'monthly'
               monthly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
-              cronjobs.merge!(monthly: monthly)
+              cronjobs{ monthly: monthly }
               puts cronjobs
             end
           end
