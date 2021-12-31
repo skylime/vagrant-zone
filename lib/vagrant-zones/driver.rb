@@ -1225,8 +1225,9 @@ module VagrantPlugins
               cronjobs.merge!(monthly: monthly)
               
             end
-            puts cronjobs
+            
           end
+          puts cronjobs
           zfssnapcronlist(uii, disk, opts, cronjobs)
           zfssnapcrondelete(uii, disk, opts, cronjobs)
           zfssnapcronset(uii, disk, opts, cronjobs)
