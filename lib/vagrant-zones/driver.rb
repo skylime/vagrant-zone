@@ -878,8 +878,8 @@ module VagrantPlugins
         when 'bhyve'
           return if config.cloud_init_enabled
 
-          zloginboot(uii) unless config.setup_method == 'dhcp' || config.setup_method.nil?
-          dhcpboot(uii) unless config.setup_method == 'zlogin' || config.setup_method.nil?
+          zloginboot(uii) unless config.setup_method == 'zlogin' || config.setup_method.nil?
+          dhcpboot(uii) unless config.setup_method == 'dhcp' || config.setup_method.nil?
         when 'lx'
           unless user_exists?(uii, config.vagrant_user)
             zlogincommand(uii, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
