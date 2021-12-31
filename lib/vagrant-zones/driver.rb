@@ -1007,7 +1007,7 @@ module VagrantPlugins
         config.vagrant_user_pass unless config.vagrant_user_pass.to_s.nil?
       end
 
-      def numeric?
+      def numeric()
         Float(self) != nil rescue false
       end
 
@@ -1023,7 +1023,7 @@ module VagrantPlugins
 
           if opts[:dataset] # either a number or a dataset
             #next if opts[:dataset].to_i != index
-            opts[:dataset].numeric?
+            opts[:dataset].numeric()
           end
 
           uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
