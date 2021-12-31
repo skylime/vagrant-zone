@@ -1214,16 +1214,16 @@ module VagrantPlugins
             case tasks[/#{rtnregex}/, 1]
             when 'hourly'
               hourly = tasks if tasks[/# #{name}/] && tasks[/#{disk}/]
-              cronjobs.merge!(hourly: hourly)
+              cronjobs.merge!(hourly: hourly) if tasks[/# #{name}/] && tasks[/#{disk}/]
             when 'daily'
               daily = tasks if tasks[/# #{name}/] && tasks[/#{disk}/]
-              cronjobs.merge!(daily: daily)
+              cronjobs.merge!(daily: daily) if tasks[/# #{name}/] && tasks[/#{disk}/]
             when 'weekly'
               weekly = tasks if tasks[/# #{name}/] && tasks[/#{disk}/]
-              cronjobs.merge!(weekly: weekly)
+              cronjobs.merge!(weekly: weekly) if tasks[/# #{name}/] && tasks[/#{disk}/]
             when 'monthly'
               monthly = tasks if tasks[/# #{name}/] && tasks[/#{disk}/]
-              cronjobs.merge!(monthly: monthly)
+              cronjobs.merge!(monthly: monthly) if tasks[/# #{name}/] && tasks[/#{disk}/]
               
             end
             puts cronjobs
