@@ -1019,7 +1019,7 @@ module VagrantPlugins
           next if zfs_snapshots.nil?
 
           ds = opts[:dataset].scan(/\D/).empty?
-          next if (ds && opts[:dataset].to_i != index) || (!ds && opts[:dataset] == disk)
+          next if (ds && opts[:dataset].to_i != index) && (!ds && opts[:dataset] == disk)
 
 
 
