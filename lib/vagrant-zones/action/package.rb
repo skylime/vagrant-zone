@@ -44,7 +44,7 @@ module VagrantPlugins
           c = ':'
           datetime = %(#{t.year}#{d}#{t.month}#{d}#{t.day}#{d}#{t.hour}#{c}#{t.min}#{c}#{t.sec})
           snapshot_create(datasetpath, datetime, env[:ui])
-          snapshot_send(datasetpath, "#{tmp_dir}/box.zss", datetime, uii)
+          snapshot_send(datasetpath, "#{tmp_dir}/box.zss", datetime, env[:ui])
           snapshot_delete(datasetpath, datetime)
 
           # Package VM
