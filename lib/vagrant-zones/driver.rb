@@ -1212,22 +1212,21 @@ module VagrantPlugins
 
             case tasks[/#{rtnregex}/, 1]
             when 'hourly'
-              hourly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
+              hourly = tasks if tasks[/#{disk}/] && tasks[/#{disk}/]
               cronjobs.merge!(hourly: hourly)
             when 'daily'
-              daily = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
+              daily = tasks if tasks[/#{disk}/] && tasks[/#{disk}/]
               cronjobs.merge!(daily: daily)
             when 'weekly'
-              weekly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
+              weekly = tasks if tasks[/#{disk}/] && tasks[/#{disk}/]
               cronjobs.merge!(weekly: weekly)
             when 'monthly'
-              monthly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
+              monthly = tasks if tasks[/#{disk}/] && tasks[/#{disk}/]
               cronjobs.merge!(monthly: monthly)
               
             end
             
           end
-          puts cronjobs
           zfssnapcronlist(uii, disk, opts, cronjobs)
           zfssnapcrondelete(uii, disk, opts, cronjobs)
           zfssnapcronset(uii, disk, opts, cronjobs)
