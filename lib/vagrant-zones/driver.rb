@@ -1185,7 +1185,7 @@ module VagrantPlugins
           h[k] = { rtn: rtn[:h], ct: ct[:h], cj: cj }
           setcron = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab"
           uii.info("Setting Cron: #{setcron}\n")
-          nexecute(false, setcron) 
+          execute(false, setcron) 
         end
       end
 
