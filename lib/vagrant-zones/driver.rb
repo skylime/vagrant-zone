@@ -141,7 +141,6 @@ module VagrantPlugins
             uii.info('Session Terminated')
           end
         else
-          puts command
           case command
           when /vnc/
             run = "pfexec zadm #{command} #{netport} #{name}"
