@@ -1019,8 +1019,11 @@ module VagrantPlugins
           next if zfs_snapshots.nil?
 
           ds = opts[:dataset].scan(/\D/).empty?
-          next if (ds && opts[:dataset].to_i != index) && (!ds && opts[:dataset] == disk)
-
+          if ds
+            next if opts[:dataset] != index 
+          else
+            next if opts[:dataset] != disk
+          end
 
 
           uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
