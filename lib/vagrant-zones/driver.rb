@@ -1142,13 +1142,12 @@ module VagrantPlugins
         rmcr = "#{sc} -l | grep -v "
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
         h.each do |k, d|
-          next unless (d.to_s == opts[:delete] || opts[:delete] == 'all') && cronjobs[d.to_sym].nil?
           # next if (cronjobs[d.to_sym].nil? || opts[:delete] != d.to_s) 
-          #next if cronjobs[d.to_sym].nil?
+          next if cronjobs[d.to_sym].nil?
           
 
 
-          puts opts[:delete]
+          puts opts[:delete] if opts[:dataset].to_s == 'all'
           puts d.to_s 
           rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}" if opts[:delete] == d.to_s || 'all'
           uii.info("Removing Cron: #{rc}\n")  if opts[:delete].to_s == d.to_s || 'all'
