@@ -273,10 +273,11 @@ en:
       Destroying ZFS Snapshots for zone:
         
     cron_entries: |-
-      Cron Entries for Zone
-        
-    cron_entries: |-
-      Deleting Cron Entries for Zone
+      Listing Cron Entries for Zone
         
     cron_set: |-
       Setting Cron Entries for Zone
+
+    cron_entries: |-
+      Deleting Cron Entries for Zone
+        
