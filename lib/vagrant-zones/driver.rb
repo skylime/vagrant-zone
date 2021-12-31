@@ -327,8 +327,8 @@ module VagrantPlugins
       def etherstubcreate(uii, opts)
         vnic_name = vname(uii, opts)
         uii.info(I18n.t('vagrant_zones.creating_etherstub') + vnic_name)
-        execute(false, "#{@pfexec} dladm create-etherstub #{vnic_name}_stub")
-        "#{vnic_name}_stub"
+        execute(false, "#{@pfexec} dladm create-etherstub stub_#{vnic_name}")
+        "stub_#{vnic_name}"
       end
 
       ## Create ethervnics for Zones
@@ -341,10 +341,10 @@ module VagrantPlugins
       ## Create Host VNIC on etherstubs for IP for Zones DHCP
       def etherstubcreateint(uii, opts, etherstub)
         vnic_name = vname(uii, opts)
-        uii.info(I18n.t('vagrant_zones.creating_etherhostvnic') + "#{vnic_name}_stubh")
-        execute(false, "#{@pfexec} dladm create-vnic -l #{etherstub} #{vnic_name}_stubh")
-        execute(false, "#{@pfexec} ipadm create-ip #{vnic_name}_stubh")
-        execute(false, "#{@pfexec} ipadm create-addr -T static -a local=172.16.0.1/16 #{vnic_name}_stubh/v4")
+        uii.info(I18n.t('vagrant_zones.creating_etherhostvnic') + "stub_h_#{vnic_name}")
+        execute(false, "#{@pfexec} dladm create-vnic -l #{etherstub} stub_h_#{vnic_name}")
+        execute(false, "#{@pfexec} ipadm create-ip stub_h_#{vnic_name}")
+        execute(false, "#{@pfexec} ipadm create-addr -T static -a local=172.16.0.1/16 stub_h_#{vnic_name}/v4")
       end
 
       ################## NAT ##################
