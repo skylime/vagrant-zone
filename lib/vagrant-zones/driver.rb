@@ -1018,8 +1018,9 @@ module VagrantPlugins
           zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk} || true")
           next if zfs_snapshots.nil?
 
-
-          next unless opts[:dataset].to_i == index || opts[:dataset] == disk
+          ds = opts[:dataset].scan(/\D/).empty?
+          next if ds && opts[:dataset] != index 
+          next if !ds && opts[:dataset] != disk
 
 
 
