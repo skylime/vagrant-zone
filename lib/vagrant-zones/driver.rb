@@ -1144,7 +1144,6 @@ module VagrantPlugins
         h.each do |k, d|
           # next if (cronjobs[d.to_sym].nil? || opts[:delete] != d.to_s) 
           next if cronjobs[d.to_sym].nil?
-          
 
           next unless opts[:delete] == d || opts[:delete] == 'all'
 
