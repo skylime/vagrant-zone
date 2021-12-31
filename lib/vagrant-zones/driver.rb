@@ -1018,7 +1018,7 @@ module VagrantPlugins
           break if zfs_snapshots.nil?
 
           unless opts[:dataset].nil? ## if opts[:dataset] is not nil
-            next unless opts[:dataset].match(/#{disk}/) 
+            next unless opts[:dataset].to_i == index || opts[:dataset].match(/#{disk}/) 
 
           end
 
