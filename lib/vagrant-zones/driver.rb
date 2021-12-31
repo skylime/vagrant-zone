@@ -1019,8 +1019,7 @@ module VagrantPlugins
           break if zfs_snapshots.nil?
 
           unless opts[:dataset].nil?
-            selectdataset = opts[:dataset]
-            next unless selectdataset.to_i == index
+            next unless opts[:dataset].to_i == index
 
           end
           zfssnapshots = zfs_snapshots.split(/\n/)
