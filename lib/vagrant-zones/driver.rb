@@ -864,7 +864,6 @@ module VagrantPlugins
         end
       end
 
-
       # This helps up wait for the boot of the vm by using zlogin
       def waitforboot(uii)
         name = @machine.name
@@ -874,7 +873,7 @@ module VagrantPlugins
         when 'bhyve'
           return if config.cloud_init_enabled
 
-          zloginboot(uii) unless config.setup_method == 'dhcp'
+          zloginboot(uii) if config.setup_method == 'zlogin'
           
         when 'lx'
           unless user_exists?(uii, config.vagrant_user)
