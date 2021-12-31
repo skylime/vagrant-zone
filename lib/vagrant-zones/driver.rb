@@ -1112,9 +1112,9 @@ module VagrantPlugins
 
       ## This will list Cron Jobs for Snapshots to take place
       def zfssnapcronlist(uii, disk, opts, cronjobs)
+        return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
         # config = @machine.provider_config
         # name = @machine.name
-        return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
 
         uii.info(I18n.t('vagrant_zones.cron_entries'))
         if opts[:list] == 'all'
@@ -1132,10 +1132,10 @@ module VagrantPlugins
 
       ## This will delete Cron Jobs for Snapshots to take place
       def zfssnapcrondelete(uii, disk, opts, cronjobs)
-        # config = @machine.provider_config
-        # name = @machine.name
         return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
 
+        # config = @machine.provider_config
+        # name = @machine.name
         uii.info(I18n.t('vagrant_zones.cron_delete'))
         removecron = ''
         sc = "#{@pfexec} crontab"
