@@ -1140,10 +1140,11 @@ module VagrantPlugins
         sc = "#{@pfexec} crontab"
         rmcr = "#{sc} -l | grep -v "
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
+        uii.info(I18n.t('vagrant_zones.cron_delete'))
         h.each do |_k, d|
           next unless opts[:delete] == d || opts[:delete] == 'all'
 
-          uii.info(I18n.t('vagrant_zones.cron_delete')) unless cronjobs[d.to_sym].nil?
+          
           rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[d.to_sym].nil?
           uii.info("Removing Cron: #{rc}") unless cronjobs[d.to_sym].nil?
           execute(false, rc) unless cronjobs[d.to_sym].nil?
