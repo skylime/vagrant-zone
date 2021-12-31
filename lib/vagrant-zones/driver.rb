@@ -300,7 +300,7 @@ module VagrantPlugins
             zonenicstpzloginsetup(uii, opts) if state == 'setup' && config.setup_method == 'zlogin'
             zonenicdel(uii, opts) if state == 'delete'
           end
-          if adaptertype.to_s == 'private_network' do
+          if adaptertype.to_s == 'private_network' 
             ## Create Etherstub for VM and Host
             etherstub = etherstubcreate(uii, opts) if state == 'create'
             ## Create the Nic and attach it to the Etherstub for VM
