@@ -1141,22 +1141,14 @@ module VagrantPlugins
         rc = ''
         sc = "#{@pfexec} crontab"
         rmcr = "#{sc} -l | grep -v "
-
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
         h.each do |k, d|
           next unless opts[:delete] == d.to_s || opts[:delete] == 'all' && cronjobs[d.to_sym]
 
           rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}"
           uii.info("Removing Cron: #{rc}\n") 
+          execute(false, rc)
         end
-        ###########################################
-          #next execute(false, rc) if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
-          #uii.info(rc)
-          #execute(false, rc)
-          #rc = "#{shrtcr}'#{cj}' ) | #{@pfexec} crontab" if (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
-          #rc = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:hourly] && opts[:delete] == 'hourly'
-
-        ###########################################
       end
 
       ## This will set Cron Jobs for Snapshots to take place
