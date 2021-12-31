@@ -1018,12 +1018,9 @@ module VagrantPlugins
           zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk} || true")
           next if zfs_snapshots.nil?
 
-          ds = opts[:dataset].scan(/\D/).empty?
-          if ds
-            next if opts[:dataset] != index
-          else
-            next if opts[:dataset] != disk
-          end
+
+          next unless opts[:dataset] == index || opts[:dataset] == disk
+
 
 
           uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
