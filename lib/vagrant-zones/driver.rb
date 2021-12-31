@@ -88,7 +88,7 @@ module VagrantPlugins
           command = 'sudo init 0 || true'
           ssh_run_command(uii, command)
         else
-          puts 'No Command specified'
+          uii.info('No Command specified')
         end
       end
 
