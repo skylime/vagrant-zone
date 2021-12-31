@@ -1153,19 +1153,6 @@ module VagrantPlugins
           removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[:monthly].nil?
           puts removecron unless cronjobs[:monthly].nil?
           execute(false, removecron) unless cronjobs[:monthly].nil?
-        else        if opts[:delete] == 'all'
-          removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[:hourly].nil?
-          puts removecron unless cronjobs[:hourly].nil?
-          execute(false, removecron) unless cronjobs[:hourly].nil?
-          removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{sc} crontab" unless cronjobs[:daily].nil?
-          puts removecron unless cronjobs[:daily].nil?
-          execute(false, removecron) unless cronjobs[:daily].nil?
-          removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[:weekly].nil?
-          puts removecron unless cronjobs[:weekly].nil?
-          execute(false, removecron) unless cronjobs[:weekly].nil?
-          removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{sc}" unless cronjobs[:monthly].nil?
-          puts removecron unless cronjobs[:monthly].nil?
-          execute(false, removecron) unless cronjobs[:monthly].nil?
         else
           removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:hourly] && opts[:delete] == 'hourly'
           removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:daily] && opts[:delete] == 'daily'
@@ -1173,14 +1160,6 @@ module VagrantPlugins
           removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:monthly] && opts[:delete] == 'monthly'
           puts removecron
           execute(false, removecron)
-        end
-          puts "test"
-          removecron = "#{rmcr}'#{cronjobs[:hourly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:hourly] && opts[:delete] == 'hourly'
-          removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:daily] && opts[:delete] == 'daily'
-          removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:weekly] && opts[:delete] == 'weekly'
-          removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:monthly] && opts[:delete] == 'monthly'
-          # puts removecron
-          # execute(false, removecron)
         end
       end
 
