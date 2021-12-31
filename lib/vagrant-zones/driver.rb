@@ -1119,6 +1119,11 @@ module VagrantPlugins
         # config = @machine.provider_config
         # name = @machine.name
 
+        puts cronjobs[:hourly] 
+        puts cronjobs[:daily] 
+        puts cronjobs[:weekly] 
+        puts cronjobs[:monthly] 
+
         uii.info(I18n.t('vagrant_zones.cron_entries'))
         if opts[:list] == 'all'
           puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
