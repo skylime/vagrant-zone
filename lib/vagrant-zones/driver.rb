@@ -1157,7 +1157,7 @@ module VagrantPlugins
 
       ## This will set Cron Jobs for Snapshots to take place
       def zfssnapcronset(uii, disk, opts, cronjobs)
-        return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
+        return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s != 'all'
 
         config = @machine.provider_config
         name = @machine.name
