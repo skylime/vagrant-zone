@@ -25,8 +25,8 @@ module VagrantPlugins
         @alcheck = 'login: '
         @safe_restart = nil
         @safe_shutdown = nil
-        @debug_boot = true
-        @debug = false
+        @debug_boot = nil
+        @debug = nil
         @shared_disk_enabled = true
         @consoleport = nil
         @consolehost = '0.0.0.0'
