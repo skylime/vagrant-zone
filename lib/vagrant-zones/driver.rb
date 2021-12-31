@@ -1084,11 +1084,10 @@ module VagrantPlugins
             output.reverse.each do |snaps|
               cmd = "#{@pfexec} zfs destroy #{snaps}"
               execute(false, cmd)
-              uii.info("Destroying Snapshot: #{snaps}")
+              uii.info("  - #{snaps}")
             end
           end
         else
-          uii.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
           ## Specify the dataset by number
           datasets.each_with_index do |disk, dindex|
             next unless dindex.to_i == opts[:dataset].to_i
@@ -1097,12 +1096,11 @@ module VagrantPlugins
             output = output.split(/\n/).drop(1)
             output.each_with_index do |snaps, spindex|
               if opts[:snapshot_name].to_i == spindex && opts[:snapshot_name].to_s != 'all'
-                uii.info("\t#{spindex}\t#{snaps}\t")
+                uii.info("  - #{snaps}")
                 execute(false, "#{@pfexec} zfs destroy #{snaps}")
-                uii.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
               end
               if opts[:snapshot_name].to_s == 'all'
-                uii.info("\t#{spindex}\t#{snaps}\t")
+                uii.info("  - #{snaps}")
                 execute(false, "#{@pfexec} zfs destroy #{snaps}")
               end
             end
