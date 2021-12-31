@@ -1146,10 +1146,6 @@ module VagrantPlugins
           next if cronjobs[d.to_sym].nil?
           
 
-
-          puts opts[:delete]
-          puts d
-
           next unless opts[:delete] == d || opts[:delete] == 'all'
 
           rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}" if opts[:delete] == d || opts[:delete] == 'all'
