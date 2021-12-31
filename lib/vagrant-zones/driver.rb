@@ -1212,9 +1212,11 @@ module VagrantPlugins
         opts[:dataset] = 'all' if opts[:dataset].nil?
         datasets.each do |disk|
           cronjobs = {}
+          put disk
           crons.each do |tasks|
             next if tasks.empty?
 
+            put tasks
             case tasks[/#{rtnregex}/, 1]
             when 'hourly'
               hourly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
