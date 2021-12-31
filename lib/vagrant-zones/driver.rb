@@ -1016,7 +1016,7 @@ module VagrantPlugins
         datasets.each_with_index do |disk, index|
           zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk} || true")
           break if zfs_snapshots.nil?
-
+          puts opts[:dataset].to_i
           unless opts[:dataset].nil? ## if opts[:dataset] is not nil
             next if opts[:dataset].to_i != index && opts[:dataset] != disk
 
