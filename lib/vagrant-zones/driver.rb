@@ -1057,7 +1057,7 @@ module VagrantPlugins
         # name = @machine.name
         if opts[:dataset] == 'all'
           datasets.each do |disk|
-            uii.info(I18n.t('vagrant_zones.zfs_snapshot_create') + "#{disk}@#{opts[:snapshot_name]}")
+            uii.info(I18n.t('vagrant_zones.zfs_snapshot_create') + "  - #{disk}@#{opts[:snapshot_name]}")
             execute(false, "#{@pfexec} zfs snapshot #{disk}@#{opts[:snapshot_name]}")
           end
         else

@@ -211,8 +211,8 @@ en:
     zfs_snapshot_cron: |-
       Listing Configured Cron Jobs
     zfs_snapshot_create: |-
-      Creating ZFS Snapshot(s)
-        - 
+      Creating ZFS Snapshot(s):
+        
     setting_cloud_dnsdomain: |-
       - Setting cloud-init DNS Domain:
          
