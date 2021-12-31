@@ -1216,7 +1216,7 @@ module VagrantPlugins
           crons.each do |tasks|
             next if tasks.empty?
 
-            put tasks
+            puts tasks
             case tasks[/#{rtnregex}/, 1]
             when 'hourly'
               hourly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
