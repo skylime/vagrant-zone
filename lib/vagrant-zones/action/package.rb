@@ -35,19 +35,22 @@ module VagrantPlugins
           boxshortname = @machine.provider_config.boxshortname
           raise "#{boxname}: Already exists" if File.exist?(boxname)
 
+          ## Create Snapshot
           tmp_dir = "#{Dir.pwd}/_tmp_package"
           Dir.mkdir(tmp_dir) unless File.exist?(tmp_dir)
           datasetpath = "#{@machine.provider_config.boot['array']}/#{@machine.provider_config.boot['dataset']}/#{name}"
           t = Time.new
-          dash = '-'
-          colon = ':'
-          datetime = t.year.to_s + dash + t.month.to_s + dash + t.day.to_s + dash + t.hour.to_s + colon + t.min.to_s + colon + t.sec.to_s
-          env[:ui].info('Creating a Snapshot of the box.')
-          snapshot_create(datasetpath, datetime)
-          env[:ui].info('Sending Snapshot to ZFS Send Sream image.')
-          snapshot_send(datasetpath, "#{tmp_dir}/box.zss", datetime)
+          d = '-'
+          c = ':'
+          datetime = %(#{t.year}#{d}#{t.month}#{d}#{t.day}#{d}#{t.hour}#{c}#{t.min}#{c}#{t.sec})
+          snapshot_create(datasetpath, datetime, env[:ui])
+          snapshot_send(datasetpath, "#{tmp_dir}/box.zss", datetime, uii)
           snapshot_delete(datasetpath, datetime)
+
+          # Package VM
           extra = ''
+
+          ## Include User Extra Files
           @tmp_include = "#{tmp_dir}/_include"
           if env['package.include']
             extra = './_include'
@@ -57,6 +60,8 @@ module VagrantPlugins
               FileUtils.cp(f, @tmp_include)
             end
           end
+
+          ## Include Vagrant file
           if env['package.vagrantfile']
             extra = './_include'
             Dir.mkdir(@tmp_include) unless File.directory?(@tmp_include)
@@ -64,17 +69,23 @@ module VagrantPlugins
             FileUtils.cp(env['package.vagrantfile'], "#{@tmp_include}/Vagrantfile")
           end
 
+          ## Create the Metadata and Vagrantfile
           Dir.chdir(tmp_dir)
           File.write('./metadata.json', metadata_content(brand, kernel, vcc, boxshortname))
           File.write('./Vagrantfile', vagrantfile_content(brand, kernel, datasetpath))
+
+          ## Create the Box file
           assemble_box(boxname, extra)
           FileUtils.mv("#{tmp_dir}/#{boxname}", "../#{boxname}")
           FileUtils.rm_rf(tmp_dir)
+
           env[:ui].info("Box created, You can now add the box: vagrant box add #{boxname} --nameofnewbox")
           @app.call(env)
         end
 
-        def snapshot_create(datasetpath, datetime)
+
+        def snapshot_create(datasetpath, datetime, uii)
+          uii.info('Creating a Snapshot of the box.')
           result = execute(true, "#{@pfexec} zfs snapshot -r #{datasetpath}/boot@vagrant_box#{datetime}")
           puts "#{@pfexec} zfs snapshot -r #{datasetpath}/boot@vagrant_box#{datetime}" if result.zero?
         end
@@ -84,7 +95,8 @@ module VagrantPlugins
           puts "#{@pfexec} zfs destroy -r #{datasetpath}/boot@vagrant_box#{datetime}" if result.zero?
         end
 
-        def snapshot_send(datasetpath, destination, datetime)
+        def snapshot_send(datasetpath, destination, datetime, uii)
+          uii.info('Sending Snapshot to ZFS Send Sream image.')
           result = execute(true, "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}")
           puts "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}" if result.zero?
         end

@@ -1044,7 +1044,7 @@ module VagrantPlugins
 
           ds = opts[:dataset].scan(/\D/).empty? unless opts[:dataset].nil?
           if ds
-            next if opts[:dataset].to_i != index 
+            next if opts[:dataset].to_i != index
           else
             next unless opts[:dataset] == disk || opts[:dataset].nil?
           end
