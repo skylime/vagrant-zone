@@ -1142,10 +1142,9 @@ module VagrantPlugins
         rmcr = "#{sc} -l | grep -v "
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
         h.each do |k, d|
-          #next if opts[:delete] != d.to_s || opts[:delete] != 'all'
-
+          next unless (d.to_s == opts[:delete] || opts[:delete] == 'all') && cronjobs[d.to_sym].nil?
           # next if (cronjobs[d.to_sym].nil? || opts[:delete] != d.to_s) 
-          next if cronjobs[d.to_sym].nil?
+          #next if cronjobs[d.to_sym].nil?
           
 
 
