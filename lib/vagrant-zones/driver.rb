@@ -1142,7 +1142,7 @@ module VagrantPlugins
         rmcr = "#{sc} -l | grep -v "
         h = { h: 'hourly', d: 'daily', w: 'weekly', m: 'monthly' }
         h.each do |k, d|
-          next unless opts[:delete] == d || opts[:delete] == 'all' && cronjobs[d.to_sym]
+          next unless opts[:delete] == d || opts[:delete] == 'all' || !cronjobs[d.to_sym].nil?
 
           rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}" 
           uii.info("Removing Cron: #{rc}\n") 
@@ -1168,7 +1168,7 @@ module VagrantPlugins
         h[:weekly] = { rtn: rtn[:w], ct: ct[:w] }
         h[:monthly] = { rtn: rtn[:m], ct: ct[:m] }
         h.each do |k, d|
-          next unless (k.to_s == sf[:freq] || sf[:freq] == 'all') || !cronjobs[k].nil?
+          next unless (k.to_s == sf[:freq] || sf[:freq] == 'all') && cronjobs[k].nil?
 
           cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{sf[:rtn]} #{disk} # #{name}" unless sf[:rtn].nil?
           cj = "#{d[:ct]}#{snpshtr} -p #{k} -r -n #{d[:rtn]} #{disk} # #{name}" if sf[:rtn].nil?
