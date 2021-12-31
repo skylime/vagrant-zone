@@ -1116,6 +1116,7 @@ module VagrantPlugins
         return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
 
         return if opts[:list].nil?
+        puts "test"
         # config = @machine.provider_config
         # name = @machine.name
         uii.info(I18n.t('vagrant_zones.cron_entries'))
