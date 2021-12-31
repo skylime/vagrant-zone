@@ -1145,15 +1145,10 @@ module VagrantPlugins
           # next if (cronjobs[d.to_sym].nil? || opts[:delete] != d.to_s) 
           next if cronjobs[d.to_sym].nil?
           
-
-
-          puts opts[:delete]
-          puts d
-
           next unless opts[:delete] == d || opts[:delete] == 'all'
 
-          rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}" if opts[:delete] == d.to_s || 'all'
-          uii.info("Removing Cron: #{rc}\n")  if opts[:delete].to_s == d.to_s || 'all'
+          rc = "#{rmcr}'#{cronjobs[d.to_sym].to_s.gsub(/\*/, '\*')}' | #{sc}" unless opts[:delete] == d || opts[:delete] == 'all'
+          uii.info("Removing Cron: #{rc}\n") unless opts[:delete] == d || opts[:delete] == 'all'
           # execute(false, rc)
         end
       end
