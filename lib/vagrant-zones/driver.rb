@@ -640,6 +640,7 @@ module VagrantPlugins
 
       ## zonecfg function for PCI Configurations
       def zonecfgpci(uii, _name, config, _zcfg)
+        return
         uii.info(I18n.t('vagrant_zones.pci')) if config.debug
         ##### RESERVED
       end

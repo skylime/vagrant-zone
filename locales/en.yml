@@ -266,7 +266,7 @@ en:
       Setting Shared Disk Configurations
     zonecfgcpu: |-
       Setting the CPU for zone
-    zonecfgpci: |-
+    pci: |-
       Setting the PCI Devices for zone
     zfs_snapshot_list: |-
       ZFS Snapshots detected:
