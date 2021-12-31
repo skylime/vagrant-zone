@@ -1162,7 +1162,7 @@ module VagrantPlugins
           removecron = "#{rmcr}'#{cronjobs[:daily].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:daily] && opts[:delete] == 'daily'
           removecron = "#{rmcr}'#{cronjobs[:weekly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:weekly] && opts[:delete] == 'weekly'
           removecron = "#{rmcr}'#{cronjobs[:monthly].gsub(/\*/, '\*')}' | #{sc}" if cronjobs[:monthly] && opts[:delete] == 'monthly'
-          # puts removecron
+          puts removecron
           # execute(false, removecron)
         end
       end
