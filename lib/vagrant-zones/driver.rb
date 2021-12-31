@@ -1094,12 +1094,12 @@ module VagrantPlugins
             output = output.split(/\n/).drop(1)
             output.each_with_index do |snaps, spindex|
               if opts[:snapshot_name].to_i == spindex && opts[:snapshot_name].to_s != 'all'
-                puts "\t#{spindex}\t#{snaps}\t"
+                uii.info("\t#{spindex}\t#{snaps}\t")
                 execute(false, "#{@pfexec} zfs destroy #{snaps}")
                 uii.info(I18n.t('vagrant_zones.zfs_snapshot_destroy'))
               end
               if opts[:snapshot_name].to_s == 'all'
-                puts "\t#{spindex}\t#{snaps}\t"
+                uii.info("\t#{spindex}\t#{snaps}\t")
                 execute(false, "#{@pfexec} zfs destroy #{snaps}")
               end
             end
