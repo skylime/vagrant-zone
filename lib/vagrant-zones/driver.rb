@@ -1192,7 +1192,8 @@ module VagrantPlugins
         rtnregex = '-p (weekly|monthly|daily|hourly)'
         opts[:dataset] = 'all' if opts[:dataset].nil?
         datasets.each do |disk|
-          puts datasets
+          puts disk
+          puts
           puts opts[:dataset]
           uii.info(I18n.t('vagrant_zones.zfs_snapshot_cron') + disk.to_s)
           cronjobs = {}
