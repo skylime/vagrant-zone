@@ -79,10 +79,9 @@ module VagrantPlugins
           FileUtils.mv("#{tmp_dir}/#{boxname}", "../#{boxname}")
           FileUtils.rm_rf(tmp_dir)
 
-          env[:ui].info("Box created, You can now add the box: vagrant box add #{boxname} --nameofnewbox")
+          env[:ui].info("Box created, You can now add the box: 'vagrant box add #{boxname} --nameofnewbox'")
           @app.call(env)
         end
-
 
         def snapshot_create(datasetpath, datetime, uii)
           uii.info('Creating a Snapshot of the box.')
