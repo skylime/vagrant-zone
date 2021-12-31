@@ -1066,6 +1066,7 @@ module VagrantPlugins
           ## Specify the dataset by number
           datasets.each_with_index do |disk, index|
             next unless opts[:dataset].to_i == index.to_i
+
             execute(false, "#{@pfexec} zfs snapshot #{disk}@#{opts[:snapshot_name]}")
             uii.info("  - #{disk}@#{opts[:snapshot_name]}")
           end
