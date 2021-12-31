@@ -205,6 +205,8 @@ en:
       Graceful Restart complete
     zone_gracefully_stopped_waiting_for_boot: |-
       Zone gracefully shutdown, now waiting for boot
+    console: |-
+      Starting Console:
     setting_console_access: |-
        - Setting Console access port:
          
