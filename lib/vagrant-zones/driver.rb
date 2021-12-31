@@ -845,7 +845,7 @@ module VagrantPlugins
             alm = true if rsp[-1].to_s.match(/#{lcheck}/)
             break if rsp[-1].to_s.match(/#{lcheck}/)
 
-            puts rsp[-1] if config.debug_boot
+            uii.info(rsp[-1]) if config.debug_boot
           end
         end
         alm
@@ -1014,7 +1014,7 @@ module VagrantPlugins
         # name = @machine.name
         uii.info(I18n.t('vagrant_zones.zfs_snapshot_list'))
         datasets.each_with_index do |disk, index|
-          puts "\n Disk Number: #{index}\n Disk Path: #{disk}"
+          uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
           zfs_snapshots = execute(false, "#{@pfexec} zfs list -t snapshot | grep #{disk} || true")
           break if zfs_snapshots.nil?
 
@@ -1040,9 +1040,9 @@ module VagrantPlugins
             strg1 = "%<sym>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s"
             strg2 = "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s"
             if si.zero?
-              puts format strg1.to_s, sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
+              uii.info(format strg1.to_s, sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4])
             else
-              puts format strg2.to_s, si: si - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
+              uii.info(format strg2.to_s, si: si - 2, s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4])
             end
           end
         end
