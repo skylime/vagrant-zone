@@ -876,10 +876,10 @@ module VagrantPlugins
         uii.info(I18n.t('vagrant_zones.wait_for_boot'))
         case config.brand
         when 'bhyve'
-          return if config.cloud_init_enabled
+          return if config.cloud_init_enabled || config.setup_method.nil?
 
-          zloginboot(uii) unless config.setup_method == 'zlogin' || config.setup_method.nil?
-          dhcpboot(uii) unless config.setup_method == 'dhcp' || config.setup_method.nil?
+          zloginboot(uii) unless config.setup_method == 'zlogin'
+          dhcpboot(uii) unless config.setup_method == 'dhcp'
         when 'lx'
           unless user_exists?(uii, config.vagrant_user)
             zlogincommand(uii, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
