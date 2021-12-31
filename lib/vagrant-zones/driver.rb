@@ -1212,7 +1212,7 @@ module VagrantPlugins
         opts[:dataset] = 'all' if opts[:dataset].nil?
         datasets.each do |disk|
           cronjobs = {}
-          put disk
+          puts disk
           crons.each do |tasks|
             next if tasks.empty?
 
