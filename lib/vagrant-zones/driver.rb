@@ -143,8 +143,7 @@ module VagrantPlugins
         else
           puts command
           case command
-          when 'webvnc' || 'vnc'
-            puts "test"
+          when /vnc/
             run = "pfexec zadm #{command} #{netport} #{name}"
             pid = spawn(run)
             Process.wait pid if detach == 'no'
