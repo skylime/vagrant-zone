@@ -1023,7 +1023,7 @@ module VagrantPlugins
 
           if opts[:dataset] # either a number or a dataset
             #next if opts[:dataset].to_i != index
-            opts[:dataset].numeric()
+            puts Float(opts[:dataset]) != nil rescue false
           end
 
           uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
