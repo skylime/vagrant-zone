@@ -1026,8 +1026,8 @@ module VagrantPlugins
 
 
           uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
-          zfssnapshots = zfs_snapshots.split(/\n/)
-          zfssnapshots = zfssnapshots.reverse
+          zfssnapshots = zfs_snapshots.split(/\n/).reverse
+          #zfssnapshots = zfssnapshots.reverse
           zfssnapshots << "Snapshot\t\t\t\tUsed\tAvailable\tRefer\tPath"
           pml, rml, aml, uml, sml = 0
           zfssnapshots.reverse.each do |snapshot|
