@@ -1134,7 +1134,7 @@ module VagrantPlugins
 
       ## This will delete Cron Jobs for Snapshots to take place
       def zfssnapcrondelete(uii, disk, opts, cronjobs)
-        return if opts[:dataset].to_s != disk.to_s || opts[:dataset].to_s != 'all' || opts[:delete].nil?
+        return if opts[:dataset].to_s == disk.to_s && opts[:dataset].to_s == 'all' && opts[:delete]
 
         # config = @machine.provider_config
         # name = @machine.name
