@@ -864,7 +864,7 @@ module VagrantPlugins
         end
       end
 
-      def dhcoboot(uii)
+      def dhcpboot(uii)
         name = @machine.name
         #### RESERVED #####
       end
@@ -878,8 +878,8 @@ module VagrantPlugins
         when 'bhyve'
           return if config.cloud_init_enabled || config.setup_method.nil?
 
-          zloginboot(uii) unless config.setup_method == 'zlogin'
-          dhcpboot(uii) unless config.setup_method == 'dhcp'
+          zloginboot(uii) if config.setup_method == 'zlogin'
+          dhcpboot(uii) if config.setup_method == 'dhcp'
         when 'lx'
           unless user_exists?(uii, config.vagrant_user)
             zlogincommand(uii, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
