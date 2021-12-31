@@ -1112,7 +1112,10 @@ module VagrantPlugins
 
       ## This will list Cron Jobs for Snapshots to take place
       def zfssnapcronlist(uii, disk, opts, cronjobs)
+        sf = {freq: opts[:set_frequency], rtn: opts[:set_frequency_rtn]}
         return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
+
+        return if sf[:freq].nil?
         # config = @machine.provider_config
         # name = @machine.name
 
@@ -1132,7 +1135,10 @@ module VagrantPlugins
 
       ## This will delete Cron Jobs for Snapshots to take place
       def zfssnapcrondelete(uii, disk, opts, cronjobs)
+        sf = {freq: opts[:set_frequency], rtn: opts[:set_frequency_rtn]}
         return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
+
+        return if sf[:freq].nil?
 
         # config = @machine.provider_config
         # name = @machine.name
