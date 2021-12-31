@@ -293,14 +293,14 @@ module VagrantPlugins
         uii.info(I18n.t('vagrant_zones.netplan_remove')) if state == 'setup' && config.setup_method == 'zlogin'
         zlogin(uii, 'rm -rf /etc/netplan/*.yaml') if state == 'setup' && config.setup_method == 'zlogin'
         @machine.config.vm.networks.each do |adaptertype, opts|
-          while adaptertype.to_s == 'public_network' do
+          if adaptertype.to_s == 'public_network'
             zoneniccreate(uii, opts) if state == 'create'
             zonecfgnicconfig(uii, opts) if state == 'config'
             ## if state setup and setup_method dhcp/zlogin
             zonenicstpzloginsetup(uii, opts) if state == 'setup' && config.setup_method == 'zlogin'
             zonenicdel(uii, opts) if state == 'delete'
           end
-          while adaptertype.to_s == 'private_network' do
+          if adaptertype.to_s == 'private_network' do
             ## Create Etherstub for VM and Host
             etherstub = etherstubcreate(uii, opts) if state == 'create'
             ## Create the Nic and attach it to the Etherstub for VM
