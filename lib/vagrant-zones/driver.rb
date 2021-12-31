@@ -114,7 +114,7 @@ module VagrantPlugins
         kill = exit[:kill]
         name = @machine.name
         config = @machine.provider_config
-        uii.info(I18n.t('vagrant_zones.console')) if config.debug
+        uii.info(I18n.t('vagrant_zones.console'))
         if port.nil?
           port = if config.consoleport.nil?
                    ''
