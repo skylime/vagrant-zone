@@ -1019,7 +1019,7 @@ module VagrantPlugins
 
           if opts[:dataset] # either a number or a dataset
             #next if opts[:dataset].to_i != index
-            puts "is a int" if opts[:dataset].is_a? Integer
+            puts "is a int" if opts[:dataset].to_i.is_a? Integer
             puts "is a string or nil" unless opts[:dataset].is_a? Integer
           end
 
