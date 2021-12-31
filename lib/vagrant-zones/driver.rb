@@ -1233,13 +1233,12 @@ module VagrantPlugins
               monthly = tasks if tasks[/#{name}/] && tasks[/#{disk}/]
               puts monthly
               cronjobs.merge!(monthly: monthly)
+              puts cronjobs
             end
-          
-            puts cronjobs
-            zfssnapcronlist(uii, disk, opts, cronjobs)
-            zfssnapcrondelete(uii, disk, opts, cronjobs)
-            zfssnapcronset(uii, disk, opts, cronjobs)
           end
+          zfssnapcronlist(uii, disk, opts, cronjobs)
+          zfssnapcrondelete(uii, disk, opts, cronjobs)
+          zfssnapcronset(uii, disk, opts, cronjobs)
         end
       end
 
