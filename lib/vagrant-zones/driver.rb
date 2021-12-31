@@ -83,12 +83,14 @@ module VagrantPlugins
         case control
         when 'restart'
           command = 'sudo shutdown -r'
+          command = config.safe_restart unless config.safe_restart.nil? 
           ssh_run_command(uii, command)
         when 'shutdown'
           command = 'sudo init 0 || true'
+          command = config.safe_shutdown unless config.safe_shutdown.nil? 
           ssh_run_command(uii, command)
         else
-          uii.info('No Command specified')
+          uii.info(I18n.t('vagrant_zones.control_no_cmd'))
         end
       end
 
@@ -399,7 +401,7 @@ module VagrantPlugins
       def zonedhcpcheckaddr(uii, opts)
         vnic_name = vname(uii, opts)
         # allowed_address = allowedaddress(uii, opts)
-        uii.info(I18n.t('vagrant_zones.configuring_dhcp') + vnic_name.to_s)
+        uii.info(I18n.t('vagrant_zones.chk_dhcp_addr') + vnic_name.to_s)
         # subnet 1.1.1.0 netmask 255.255.255.224 {
         # range 1.1.1.10 1.1.1.20;
         # }
@@ -408,7 +410,6 @@ module VagrantPlugins
       end
 
       # This helps us create all the datasets for the zone
-      ## Future To-Do: Should probably split this up and clean it up
       def create_dataset(uii)
         config = @machine.provider_config
         name = @machine.name
@@ -1211,7 +1212,7 @@ module VagrantPlugins
         end
       end
 
-      # This helps us create ZFS Snapshots
+      # This helps us manage ZFS Snapshots
       def zfs(uii, job, opts)
         name = @machine.name
         config = @machine.provider_config
