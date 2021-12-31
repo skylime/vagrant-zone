@@ -1053,7 +1053,7 @@ module VagrantPlugins
 
       ## Create ZFS Snapshots
       def zfssnapcreate(datasets, opts, uii)
-        uii.info(I18n.t('vagrant_zones.zfs_snapshot_create')
+        uii.info(I18n.t('vagrant_zones.zfs_snapshot_create'))
         if opts[:dataset] == 'all'
  
           datasets.each do |disk|
