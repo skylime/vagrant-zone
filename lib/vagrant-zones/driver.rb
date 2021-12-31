@@ -1019,9 +1019,10 @@ module VagrantPlugins
 
           if opts[:dataset] # either a number or a dataset
             #next if opts[:dataset].to_i != index
-            puts Float(opts[:dataset]) != nil rescue false
+            
           end
-
+          puts Float(opts[:dataset]) != nil rescue false
+          
           uii.info("\n Disk Number: #{index}\n Disk Path: #{disk}")
           zfssnapshots = zfs_snapshots.split(/\n/)
           zfssnapshots = zfssnapshots.reverse
