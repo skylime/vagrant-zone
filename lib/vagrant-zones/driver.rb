@@ -1114,7 +1114,7 @@ module VagrantPlugins
       def zfssnapcronlist(uii, disk, opts, cronjobs)
         # config = @machine.provider_config
         # name = @machine.name
-        return unless opts[:dataset].to_s == disk.to_s
+        return unless opts[:dataset].to_s == disk.to_s || opts[:dataset].to_s == 'all'
         uii.info(I18n.t('vagrant_zones.cron_entries'))
         if opts[:list] == 'all'
           puts cronjobs[:hourly] unless cronjobs[:hourly].nil?
