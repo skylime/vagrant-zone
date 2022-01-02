@@ -402,6 +402,7 @@ module VagrantPlugins
       def etherstubdelete(uii, opts, etherstub)
         vnic_name = vname(uii, opts)
         mac = macaddress(uii, opts)
+        puts etherstub
         ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep #{etherstub} | awk '{ print $1 }' ")
         puts ether_configured
         puts "#{@pfexec} dladm show-etherstub | grep #{etherstub} | awk '{ print $1 }' "
