@@ -465,7 +465,6 @@ module VagrantPlugins
         allowed_address = allowedaddress(uii, opts)
         defrouter = opts[:gateway].to_s
         vnic_name = vname(uii, opts)
-        config = @machine.provider_config
         uii.info(" #{I18n.t('vagrant_zones.nat_vnic_setup')}#{vnic_name}")
         strt = "#{@pfexec} zonecfg -z #{@machine.name} "
         cie = config.cloud_init_enabled
@@ -481,6 +480,7 @@ module VagrantPlugins
 
       ## Set NatForwarding on global interface
       def zonenatforward(uii, opts)
+        config = @machine.provider_config
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         uii.info(I18n.t('vagrant_zones.forwarding_nat') + hvnic_name.to_s)
         execute(false, "#{@pfexec} routeadm -u -e ipv4-forwarding") 
@@ -490,6 +490,7 @@ module VagrantPlugins
 
       ## Create nat entries for the zone
       def zonenatentries(uii, opts)
+        config = @machine.provider_config
         vnic_name = vname(uii, opts)
         allowed_address = allowedaddress(uii, opts)
         defrouter = opts[:gateway].to_s
