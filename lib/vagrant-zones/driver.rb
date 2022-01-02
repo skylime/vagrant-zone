@@ -304,19 +304,28 @@ module VagrantPlugins
           if adaptertype.to_s == 'private_network' 
             ## Create Etherstub for VM and Host
             etherstub = etherstubcreate(uii, opts) if state == 'create'
-            ## Create the Nic and attach it to the Etherstub for VM
+            
+            ## Create the zones VNIC and attach it to the Etherstub
             zonenatniccreate(uii, opts, etherstub) if state == 'create'
-            ## Create the VNIC for the Host on the Etherstub and Assign it a IP for use with DHCP later
+            
+            ## Create the Hosts VNIC on the Etherstub and Assign it a IP for use with DHCP later
             etherstubcreateint(uii, opts, etherstub) if state == 'create'
-            ##  
+
+            ##  Create the zonecfg NIC configs for the zone
             natnicconfig(uii, opts) if state == 'config'
+            
+            ##  Create the zonecfg NIC configs for the zone
             zonenatforward(uii, opts) if state == 'config'
+            
             zonenatentries(uii, opts) if state == 'config'
+            
             zonedhcpentries(uii, opts) if state == 'config'
+            
             zonedhcpcheckaddr(uii, opts) if state == 'config'
+            
             zonecfgnicconfig(uii, opts) if state == 'config'
-            ## if state setup and setup_method dhcp/zlogin
-            # zonenicstpzloginsetup(uii, opts) if state == 'setup' && config.setup_method == 'zlogin'
+            
+            zonenicstpzloginsetup(uii, opts) if state == 'setup' && config.setup_method == 'zlogin'
             zonenicdel(uii, opts) if state == 'delete'
           end
         end
@@ -326,7 +335,7 @@ module VagrantPlugins
       ## Create etherstubs for Zones
       def etherstubcreate(uii, opts)
         vnic_name = vname(uii, opts)
-        uii.info(I18n.t('vagrant_zones.creating_etherstub') + vnic_name)
+        uii.info(I18n.t('vagrant_zones.creating_etherstub') + "stub_#{vnic_name}")
         execute(false, "#{@pfexec} dladm create-etherstub stub_#{vnic_name}")
         "stub_#{vnic_name}"
       end
@@ -343,7 +352,7 @@ module VagrantPlugins
         vnic_name = vname(uii, opts)
         uii.info(I18n.t('vagrant_zones.creating_etherhostvnic') + "stub_h_#{vnic_name}")
         execute(false, "#{@pfexec} dladm create-vnic -l #{etherstub} stub_h_#{vnic_name}")
-        execute(false, "#{@pfexec} ipadm create-ip stub_h_#{vnic_name}")
+        execute(false, "#{@pfexec} ipadm create-if stub_h_#{vnic_name}")
         execute(false, "#{@pfexec} ipadm create-addr -T static -a local=172.16.0.1/16 stub_h_#{vnic_name}/v4")
       end
 
