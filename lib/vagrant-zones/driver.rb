@@ -369,7 +369,7 @@ module VagrantPlugins
         shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         # execute(false, "#{@pfexec} routeadm -u -e ipv4-forwarding") 
         ## Check if Forwarding is enabled for other nics and skip bridge?
-        execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=off -m ipv4 #{hvnic_name}")
+        #execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=off -m ipv4 #{hvnic_name}")
         uii.info(I18n.t('vagrant_zones.deconfiguring_nat') + hvnic_name.to_s)
         line1 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
         line2 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32)
