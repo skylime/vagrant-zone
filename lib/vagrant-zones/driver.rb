@@ -365,6 +365,7 @@ module VagrantPlugins
       def zonenatclean(uii, opts)
         config = @machine.provider_config
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
+        ip = ipaddress(uii, opts)
         uii.info(I18n.t('vagrant_zones.deforwarding_nat') + hvnic_name.to_s)
         shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         # execute(false, "#{@pfexec} routeadm -u -e ipv4-forwarding") 
