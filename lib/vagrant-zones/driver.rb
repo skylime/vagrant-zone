@@ -354,7 +354,7 @@ module VagrantPlugins
         defrouter = opts[:gateway].to_s
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{hvnic_name} | awk '{ print $1 }' ")
-        uii.info(I18n.t('vagrant_zones.configuring_dhcp'))
+        uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp'))
         ## Function to remove the current iterface only from DHCP
         # execute(false, %(#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = ""))
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
@@ -365,12 +365,12 @@ module VagrantPlugins
       def zonenatclean(uii, opts)
         config = @machine.provider_config
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
-        uii.info(I18n.t('vagrant_zones.forwarding_nat') + hvnic_name.to_s)
+        uii.info(I18n.t('vagrant_zones.deforwarding_nat') + hvnic_name.to_s)
         shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
-        execute(false, "#{@pfexec} routeadm -u -e ipv4-forwarding") 
-        execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{opts[:bridge]}")
-        execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{hvnic_name}")
-        uii.info(I18n.t('vagrant_zones.configuring_nat') + hvnic_name.to_s)
+        # execute(false, "#{@pfexec} routeadm -u -e ipv4-forwarding") 
+        ## Check if Forwarding is enabled for other nics and skip bridge?
+        execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=off -m ipv4 #{hvnic_name}")
+        uii.info(I18n.t('vagrant_zones.deconfiguring_nat') + hvnic_name.to_s)
         line1 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
         line2 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32)
         natconf = '/etc/ipf/ipnat.conf'
