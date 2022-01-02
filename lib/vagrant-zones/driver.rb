@@ -378,13 +378,29 @@ module VagrantPlugins
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
       end
 
-      ## Delete vnics for Zones
       def zonenicdel(uii, opts)
         vnic_name = vname(uii, opts)
         vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
         uii.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name) if vnic_configured == vnic_name.to_s
         execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
         uii.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == vnic_name.to_s
+      end
+
+      ## Delete etherstubs vnic
+      def etherstubdelhvnic(uii, opts)
+        hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
+        vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{hvnic_name} | awk '{ print $1 }' ")
+        uii.info(I18n.t('vagrant_zones.removing_vnic') + hvnic_name) if vnic_configured == hvnic_name.to_s
+        execute(false, "#{@pfexec} dladm delete-vnic #{hvnic_name}") if vnic_configured == hvnic_name.to_s
+        uii.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == hvnic_name.to_s
+      end
+
+      ## Delete etherstubs
+      def etherstubdelete(uii, opts, etherstub)
+        vnic_name = vname(uii, opts)
+        mac = macaddress(uii, opts)
+        uii.info(I18n.t('vagrant_zones.creating_ethervnic') + vnic_name.to_s)
+        execute(false, "#{@pfexec} dladm delete-vnic  #{vnic_name}")
       end
 
       ################## PrivateNetworking ##################
