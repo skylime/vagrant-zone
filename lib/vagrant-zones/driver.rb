@@ -355,7 +355,8 @@ module VagrantPlugins
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{hvnic_name} | awk '{ print $1 }' ")
         uii.info(I18n.t('vagrant_zones.configuring_dhcp'))
-        execute(false, %(#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = ""))
+        ## Function to remove the current iterface only from DHCP
+        # execute(false, %(#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = ""))
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm enable dhcp:ipv4")
         uii.info(I18n.t('vagrant_zones.dhcp_entries_remove')) 
