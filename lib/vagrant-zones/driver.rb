@@ -352,13 +352,13 @@ module VagrantPlugins
         shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         ip = ipaddress(uii, opts)
         defrouter = opts[:gateway].to_s
-        vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{hvnic_name} | awk '{ print $1 }' ")
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
+        vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{hvnic_name} | awk '{ print $1 }' ")
         uii.info(I18n.t('vagrant_zones.configuring_dhcp'))
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm enable dhcp:ipv4")
-        uii.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == vnic_name.to_s
+        uii.info(I18n.t('vagrant_zones.dhcp_entries_remove')) 
       end
 
       def zonenatclean(uii, opts)
