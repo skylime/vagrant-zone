@@ -402,8 +402,9 @@ module VagrantPlugins
       def etherstubdelete(uii, opts, etherstub)
         vnic_name = vname(uii, opts)
         mac = macaddress(uii, opts)
-        uii.info(I18n.t('vagrant_zones.creating_ethervnic') + vnic_name.to_s)
-        execute(false, "#{@pfexec} dladm delete-vnic  #{vnic_name}")
+        ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep stub_#{vnic_name} | awk '{ print $1 }' ")
+        uii.info(I18n.t('vagrant_zones.creating_ethervnic') + vnic_name.to_s) if ether_configured == "stub_#{vnic_name}"
+        execute(false, "#{@pfexec} dladm delete-etherstub stub_#{vnic_name}") if ether_configured == "stub_#{vnic_name}"
       end
 
       ################## PrivateNetworking ##################
