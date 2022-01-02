@@ -505,6 +505,7 @@ module VagrantPlugins
       ################## DHCP ##################
       ## Create dhcp entries for the zone
       def zonedhcpentries(uii, opts)
+        config = @machine.provider_config
         vnic_name = vname(uii, opts)
         allowed_address = allowedaddress(uii, opts)
         mac = macaddress(uii, opts)
