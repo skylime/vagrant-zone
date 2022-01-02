@@ -391,6 +391,7 @@ module VagrantPlugins
         config = @machine.provider_config
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{hvnic_name} | awk '{ print $1 }' ")
+        puts vnic_configured
         uii.info(I18n.t('vagrant_zones.removing_vnic') + hvnic_name) if vnic_configured == hvnic_name.to_s
         execute(false, "#{@pfexec} dladm delete-vnic #{hvnic_name}") if vnic_configured == hvnic_name.to_s
         uii.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == hvnic_name.to_s
