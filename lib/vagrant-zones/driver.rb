@@ -206,7 +206,7 @@ module VagrantPlugins
           servers.append(server)
         end
         servers = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
-        uii.info(I18n.t('vagrant_zones.nsservers')) if config.debug
+        uii.info(I18n.t('vagrant_zones.nsservers') + servers) if config.debug
         servers
       end
 
@@ -216,7 +216,7 @@ module VagrantPlugins
         regex = /^(?:[[:xdigit:]]{2}([-:]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/
         mac = opts[:mac] unless opts[:mac].nil?
         mac = 'auto' unless mac.match(regex)
-        uii.info(I18n.t('vagrant_zones.mac')) if config.debug
+        uii.info(I18n.t('vagrant_zones.mac') + mac) if config.debug
         mac
       end
 
@@ -228,7 +228,7 @@ module VagrantPlugins
              else
                opts[:ip].gsub(/\t/, '')
              end
-        uii.info(I18n.t('vagrant_zones.ipaddress')) if config.debug
+        uii.info(I18n.t('vagrant_zones.ipaddress') + ip) if config.debug
         ip
       end
 
@@ -236,8 +236,9 @@ module VagrantPlugins
       def allowedaddress(uii, opts)
         config = @machine.provider_config
         ip = ipaddress(uii, opts)
-        allowed_address = "#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
-        uii.info(I18n.t('vagrant_zones.allowedaddress')) if config.debug
+        shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
+        allowed_address = "#{ip}/#{shrtsubnet}"
+        uii.info(I18n.t('vagrant_zones.allowedaddress') + allowed_address) if config.debug
         allowed_address
       end
 
@@ -245,7 +246,7 @@ module VagrantPlugins
       def vname(uii, opts)
         config = @machine.provider_config
         vnic_name = "vnic#{nictype(opts)}#{vtype(uii)}_#{config.partition_id}_#{opts[:nic_number]}"
-        uii.info(I18n.t('vagrant_zones.vnic_name')) if config.debug
+        uii.info(I18n.t('vagrant_zones.vnic_name') + vnic_name ) if config.debug
         vnic_name
       end
 
@@ -309,15 +310,14 @@ module VagrantPlugins
             zonenatniccreate(uii, opts, etherstub) if state == 'create'
             ## Create the Hosts VNIC on the Etherstub and Assign it a IP for use with DHCP later
             etherstubcreatehvnic(uii, opts, etherstub) if state == 'create'
-            ##  Create the zonecfg NIC configs for the zone
 
-            ## Configure Interfaces and Services for use
+            # Configure Interfaces and Services for use
+            ## Configure NAT zonecfg nic configs for zone
             natnicconfig(uii, opts) if state == 'config'
             ## Set Nat Forwarding on specified VNIC and Bridge
             zonenatforward(uii, opts) if state == 'config'
             ## Setup the forwarding entries and enable NAT
             zonenatentries(uii, opts) if state == 'config'
-            ## insert check for DHCP server
             ## Create the DHCP configurations and start the server
             zonedhcpentries(uii, opts) if state == 'config'
             
@@ -340,28 +340,47 @@ module VagrantPlugins
         end
       end
 
-      ## Delete vnics for Zones
+      ############################### Delete ###############################
+      ## Delete DHCP entries for Zones
       def zonedhcpentriesrem(uii, opts)
         vnic_name = vname(uii, opts)
         allowed_address = allowedaddress(uii, opts)
         puts allowed_address
         mac = macaddress(uii, opts)
         puts mac
+        shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
+        ip = ipaddress(uii, opts)
         defrouter = opts[:gateway].to_s
-        uii.info(I18n.t('vagrant_zones.configuring_dhcp') + vnic_name.to_s)
-        # subnet 1.1.1.0 netmask 255.255.255.224 {
-        #  option host-name "#{name}";
-        #  hardware ethernet #{mac};
-        #  fixed-address #{allowed_address};
-        # option routers #{defrouter}
-        # }
-        # /etc/inet/dhcpd4.conf
-        execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = h#{vnic_name}")
+        hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
+        uii.info(I18n.t('vagrant_zones.configuring_dhcp'))
+        execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm enable dhcp:ipv4")
         uii.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == vnic_name.to_s
       end
 
+      def zonenatclean(uii, opts)
+        hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
+        uii.info(I18n.t('vagrant_zones.forwarding_nat') + hvnic_name.to_s)
+        shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
+        execute(false, "#{@pfexec} routeadm -u -e ipv4-forwarding") 
+        execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{opts[:bridge]}")
+        execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{hvnic_name}")
+        uii.info(I18n.t('vagrant_zones.configuring_nat') + hvnic_name.to_s)
+        line1 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
+        line2 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32)
+        natconf = '/etc/ipf/ipnat.conf'
+        execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
+      end
+
+      ## Delete vnics for Zones
+      def zonenicdel(uii, opts)
+        vnic_name = vname(uii, opts)
+        vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
+        uii.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name) if vnic_configured == vnic_name.to_s
+        execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
+        uii.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == vnic_name.to_s
+      end
 
       ################## PrivateNetworking ##################
       ## Create etherstubs for Zones
@@ -382,44 +401,36 @@ module VagrantPlugins
 
       ## Create Host VNIC on etherstubs for IP for Zones DHCP
       def etherstubcreatehvnic(uii, opts, etherstub)
-        vnic_name = vname(uii, opts)
         defrouter = opts[:gateway].to_s
-        ## get subnet
-        uii.info(I18n.t('vagrant_zones.creating_etherhostvnic') + "h#{vnic_name}")
-        execute(false, "#{@pfexec} dladm create-vnic -l #{etherstub} h#{vnic_name}")
-        execute(false, "#{@pfexec} ipadm create-if h#{vnic_name}")
-        execute(false, "#{@pfexec} ipadm create-addr -T static -a local=#{defrouter}/16 h#{vnic_name}/v4")
+        shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
+        hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
+        uii.info(I18n.t('vagrant_zones.creating_etherhostvnic') + "#{hvnic_name}")
+        execute(false, "#{@pfexec} dladm create-vnic -l #{etherstub} #{hvnic_name}")
+        execute(false, "#{@pfexec} ipadm create-if #{hvnic_name}")
+        execute(false, "#{@pfexec} ipadm create-addr -T static -a local=#{defrouter}/#{shrtsubnet} #{hvnic_name}/v4")
       end
 
-
       ## Setup vnics for Zones using Zlogin
-      def zonenicstpzloginsetup(uii, opts)
+      def zonenicnatsetup(uii, opts)
         ip = ipaddress(uii, opts)
         defrouter = opts[:gateway].to_s
         mac = macaddress(uii, opts)
         vnic_name = vname(uii, opts)
+        shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         servers = dnsservers(uii)
         uii.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
-        netplan = %(network:
-  version: 2
-  ethernets:
-    #{vnic_name}:
-      match:
-        macaddress: #{mac}
-      dhcp-identifier: mac
-      dhcp4: #{opts[:dhcp]}
-      dhcp6: #{opts[:dhcp6]}
-      set-name: #{vnic_name}
-      addresses: [#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}]
-      gateway4: #{defrouter}
-      nameservers:
-        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
+        netplan1 = %(network:\n  version: 2\n  ethernets:\n    #{vnic_name}:\n      match:\        macaddress: #{mac})
+        netplan2 = %(      dhcp-identifier: mac\n      dhcp4: #{opts[:dhcp]}\n      dhcp6: #{opts[:dhcp6]})
+        netplan3 = %(      set-name: #{vnic_name}\n      addresses: [#{ip}/#{shrtsubnet}]\n      gateway4: #{defrouter})
+        netplan4 = %(      nameservers:\n        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
+        netplan = netplan1 + netplan2 + netplan3 + netplan4
         cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
         infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
         uii.info(infomessage) if zlogin(uii, cmd)
         ## Apply the Configuration
         uii.info(I18n.t('vagrant_zones.netplan_applied')) if zlogin(uii, 'netplan apply')
       end
+
       ################## NAT ##################
       ## zonecfg function for for nat Networking
       def natnicconfig(uii, opts)
@@ -442,11 +453,11 @@ module VagrantPlugins
 
       ## Set NatForwarding on global interface
       def zonenatforward(uii, opts)
-        vnic_name = vname(uii, opts)
-        uii.info(I18n.t('vagrant_zones.forwarding_nat') + vnic_name.to_s)
+        hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
+        uii.info(I18n.t('vagrant_zones.forwarding_nat') + hvnic_name.to_s)
         execute(false, "#{@pfexec} routeadm -u -e ipv4-forwarding") 
         execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{opts[:bridge]}")
-        execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 h#{vnic_name}")
+        execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{hvnic_name}")
       end
 
       ## Create nat entries for the zone
@@ -454,23 +465,12 @@ module VagrantPlugins
         vnic_name = vname(uii, opts)
         allowed_address = allowedaddress(uii, opts)
         defrouter = opts[:gateway].to_s
+        shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         uii.info(I18n.t('vagrant_zones.configuring_nat') + vnic_name.to_s)
-        # line1 = %(map #{opts[:bridge]} #{allowed_address} -> 0/32  portmap tcp/udp auto)
-        # line2 = %(map #{opts[:bridge]} #{allowed_address} -> 0/32)
-        # /etc/ipf/ipnat.conf
+        line1 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
+        line2 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32)
+        natconf = '/etc/ipf/ipnat.conf'
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
-      end
-
-      def zonenatclean(uii, opts)
-        vnic_name = vname(uii, opts)
-        uii.info(I18n.t('vagrant_zones.forwarding_nat') + vnic_name.to_s)
-        execute(false, "#{@pfexec} routeadm -u -e ipv4-forwarding") 
-        execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{opts[:bridge]}")
-        execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 h#{vnic_name}")
-        uii.info(I18n.t('vagrant_zones.configuring_nat') + vnic_name.to_s)
-        # line1 = %(map #{opts[:bridge]} #{allowed_address} -> 0/32  portmap tcp/udp auto)
-        # line2 = %(map #{opts[:bridge]} #{allowed_address} -> 0/32)
-        # /etc/ipf/ipnat.conf
       end
 
       ################## DHCP ##################
@@ -478,21 +478,20 @@ module VagrantPlugins
       def zonedhcpentries(uii, opts)
         vnic_name = vname(uii, opts)
         allowed_address = allowedaddress(uii, opts)
-        puts allowed_address
         mac = macaddress(uii, opts)
-        puts mac
+        ip = ipaddress(uii, opts)
         defrouter = opts[:gateway].to_s
-        uii.info(I18n.t('vagrant_zones.configuring_dhcp') + vnic_name.to_s)
-        # subnet 1.1.1.0 netmask 255.255.255.224 {
-        #  option host-name "#{name}";
-        #  hardware ethernet #{mac};
-        #  fixed-address #{allowed_address};
-        # option routers #{defrouter}
-        # }
-        # /etc/inet/dhcpd4.conf
-        execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = h#{vnic_name}")
+        hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
+        uii.info(I18n.t('vagrant_zones.configuring_dhcp'))
+        subnet = %( subnet #{defrouter} netmask #{opts[:netmask].to_s}) 
+        puts subnet
+        subnetopts= %({ option host-name "#{name}"; hardware ethernet #{mac}; fixed-address #{ip}; option routers #{defrouter} })
+        puts subnetopts
+        dhcpconf = "/etc/inet/dhcpd4.conf"
+        execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm enable dhcp:ipv4")
+        uii.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == vnic_name.to_s
       end
 
       ## Check if Address shows up in lease list
@@ -517,15 +516,6 @@ module VagrantPlugins
           uii.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
           execute(false, "#{@pfexec} dladm create-vnic -l #{opts[:bridge]} -m #{mac} -v #{vlan} #{vnic_name}")
         end
-      end
-
-      ## Delete vnics for Zones
-      def zonenicdel(uii, opts)
-        vnic_name = vname(uii, opts)
-        vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
-        uii.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name) if vnic_configured == vnic_name.to_s
-        execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
-        uii.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == vnic_name.to_s
       end
 
       # This helps us create all the datasets for the zone
@@ -862,6 +852,7 @@ module VagrantPlugins
         mac = macaddress(uii, opts)
         vnic_name = vname(uii, opts)
         servers = dnsservers(uii)
+        shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         uii.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
         netplan = %(network:
   version: 2
@@ -873,7 +864,7 @@ module VagrantPlugins
       dhcp4: #{opts[:dhcp]}
       dhcp6: #{opts[:dhcp6]}
       set-name: #{vnic_name}
-      addresses: [#{ip}/#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}]
+      addresses: [#{ip}/#{shrtsubnet}]
       gateway4: #{defrouter}
       nameservers:
         addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )

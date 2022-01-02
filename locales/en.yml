@@ -48,7 +48,7 @@ en:
       - Configuring the interface on the zone for VNIC
         
     vnic_setup: |-
-           Setting up VNIC: 
+            Setting up VNIC: 
     networking_int_remove: |-
       Removing network devices:
     networking_int_add: |-
@@ -216,18 +216,18 @@ en:
       Creating ZFS Snapshot(s):
     setting_cloud_dnsdomain: |-
       - Setting cloud-init DNS Domain:
-         
+        
     setting_cloud_password: |-        
       - Setting cloud-init password:
-         
+        
     setting_cloud_resolvers: |-
       - Setting cloud-init Resolvers:
-         
+        
     setting_cloud_ssh_key: |-
-      - Setting cloud-init SSH Key:
-         
+     - Setting cloud-init SSH Key:
+        
     setting_cloud_init_access: |-
-      - Enabling cloud-init:
+      - Enabling cloud-init: 
     control_no_cmd: |-
       No Control Command Specified
     ssh_run_command: |-
