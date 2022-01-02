@@ -388,6 +388,7 @@ module VagrantPlugins
 
       ## Delete etherstubs vnic
       def etherstubdelhvnic(uii, opts)
+        config = @machine.provider_config
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{hvnic_name} | awk '{ print $1 }' ")
         uii.info(I18n.t('vagrant_zones.removing_vnic') + hvnic_name) if vnic_configured == hvnic_name.to_s
