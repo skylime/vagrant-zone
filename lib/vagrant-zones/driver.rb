@@ -461,6 +461,7 @@ module VagrantPlugins
       ################## NAT ##################
       ## zonecfg function for for nat Networking
       def natnicconfig(uii, opts)
+        config = @machine.provider_config
         allowed_address = allowedaddress(uii, opts)
         defrouter = opts[:gateway].to_s
         vnic_name = vname(uii, opts)
