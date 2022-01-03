@@ -354,10 +354,9 @@ module VagrantPlugins
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp'))
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
-        
         dhcpentries = execute(false, "#{@pfexec} cat /etc/dhcpd.conf").split("\n")
         subnet = %( subnet #{broadcast} netmask #{opts[:netmask].to_s} {  option routers #{defrouter}; }) 
-        subnetopts= %({ option host-name #{name}; hardware ethernet #{mac}; fixed-address #{ip}; })
+        subnetopts= %(host #{name} { option host-name #{name}; hardware ethernet #{mac}; fixed-address #{ip}; })
         subnetexists = false
         subnetoptsexists = false
         dhcpentries.each do |entry|
@@ -527,11 +526,12 @@ module VagrantPlugins
         defrouter = opts[:gateway].to_s
         shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         uii.info(I18n.t('vagrant_zones.configuring_nat') + vnic_name.to_s)
+        broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         ## Read NAT File, Check for these lines, if exist, warn, but continue
         natentries = execute(false, "#{@pfexec} cat /etc/ipf/ipnat.conf").split("\n")
         
-        line1 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
-        line2 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32)
+        line1 = %(map #{opts[:bridge]} #{broadcast}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
+        line2 = %(map #{opts[:bridge]} #{broadcast}/#{shrtsubnet} -> 0/32)
         line1exists = false
         line2exists = false
         natentries.each do |entry|
@@ -560,7 +560,7 @@ module VagrantPlugins
         
         dhcpentries = execute(false, "#{@pfexec} cat /etc/dhcpd.conf").split("\n")
         subnet = %( subnet #{broadcast} netmask #{opts[:netmask].to_s} {  option routers #{defrouter}; }) 
-        subnetopts= %({ option host-name #{name}; hardware ethernet #{mac}; fixed-address #{ip}; })
+        subnetopts= %(host #{name} { option host-name #{name}; hardware ethernet #{mac}; fixed-address #{ip}; })
         subnetexists = false
         subnetoptsexists = false
         dhcpentries.each do |entry|
