@@ -355,7 +355,7 @@ module VagrantPlugins
         uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp'))
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         dhcpentries = execute(false, "#{@pfexec} cat /etc/dhcpd.conf").split("\n")
-        subnet = %( subnet #{broadcast} netmask #{opts[:netmask].to_s} {  option routers #{defrouter}; }) 
+        subnet = %(subnet #{broadcast} netmask #{opts[:netmask].to_s} { option routers #{defrouter}; }) 
         subnetopts= %(host #{name} { option host-name #{name}; hardware ethernet #{mac}; fixed-address #{ip}; })
         subnetexists = false
         subnetoptsexists = false
@@ -561,7 +561,7 @@ module VagrantPlugins
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         
         dhcpentries = execute(false, "#{@pfexec} cat /etc/dhcpd.conf").split("\n")
-        subnet = %( subnet #{broadcast} netmask #{opts[:netmask].to_s} {  option routers #{defrouter}; }) 
+        subnet = %(subnet #{broadcast} netmask #{opts[:netmask].to_s} { option routers #{defrouter}; }) 
         subnetopts= %(host #{name} { option host-name #{name}; hardware ethernet #{mac}; fixed-address #{ip}; })
         subnetexists = false
         subnetoptsexists = false
@@ -569,10 +569,13 @@ module VagrantPlugins
           subnetexists = true if entry == subnet
           subnetoptsexists = true if entry == subnetopts
         end
+        execute(false, "#{@pfexec} echo #{subnet} >> /etc/dhcpd.conf") unless subnetexists
+        execute(false, "#{@pfexec} echo #{subnetopts} >> /etc/dhcpd.conf") unless subnetoptsexists
         puts subnet unless subnetexists
         puts subnetopts unless subnetoptsexists
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
+        execute(false, "#{@pfexec} svcadm disable dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm enable dhcp:ipv4")
       end
 
