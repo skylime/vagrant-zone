@@ -406,7 +406,7 @@ module VagrantPlugins
         ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep stub_#{vnic_name} | awk '{ print $1 }' ")
         puts ether_configured
         puts "stub_#{vnic_name}"
-        uii.info(I18n.t('vagrant_zones.creating_ethervnic') + "stub_#{vnic_name}") if ether_configured == "stub_#{vnic_name}"
+        uii.info(I18n.t('vagrant_zones.delete_ethervnic') + "stub_#{vnic_name}") if ether_configured == "stub_#{vnic_name}"
         execute(false, "#{@pfexec} dladm delete-etherstub stub_#{vnic_name}") if ether_configured == "stub_#{vnic_name}"
       end
 
