@@ -235,15 +235,15 @@ en:
     vtype: |-
       Filtering Zone Type
     nsservers: |-
-      Sanitizing Name Servers
+      Sanitizing Name Servers: 
     mac: |-
-      Sanitizing MAC Address
+      Sanitizing MAC Address: 
     ipaddress: |-
-      Sanitizing IP Address
+      Sanitizing IP Address: 
     allowedaddress: |-
-      Sanitizing Allowed IP Address
+      Sanitizing Allowed IP Address: 
     vnic_name: |-
-      Sanitizing the VNIC Name
+      Sanitizing the VNIC Name: 
     get_ip_address: |-
       Gathering IP address
     creating_etherstub: |-
@@ -261,7 +261,7 @@ en:
     configuring_dhcp: |-
       Creating DHCP entries
     chk_dhcp_addr: |-
-      Checking if Zone has leased the Address
+      Checking if Zone has leased the Address 
     setting_alt_shared_disk_configurations: |-
       Setting Shared Disk Configurations
     zonecfgcpu: |-
