@@ -378,12 +378,13 @@ module VagrantPlugins
         allowed_address = allowedaddress(uii, opts)
         defrouter = opts[:gateway].to_s
         shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
+        broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         uii.info(I18n.t('vagrant_zones.configuring_nat') + vnic_name.to_s)
         ## Read NAT File, Check for these lines, if exist, warn, but continue
         natentries = execute(false, "#{@pfexec} cat /etc/ipf/ipnat.conf").split("\n")
         
-        line1 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
-        line2 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32)
+        line1 = %(map #{opts[:bridge]} #{broadcast}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
+        line2 = %(map #{opts[:bridge]} #{broadcast}/#{shrtsubnet} -> 0/32)
         line1exists = false
         line2exists = false
         natentries.each do |entry|
