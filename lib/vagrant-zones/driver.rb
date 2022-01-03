@@ -260,7 +260,7 @@ module VagrantPlugins
         @machine.config.vm.networks.each do |adaptertype, opts|
           responses = []
           nic_type = nictype(opts)
-          if opts[:dhcp] && opts[:managed] && adaptertype.to_s == 'public_network'
+          if opts[:dhcp] && opts[:managed]
             vnic_name = "vnic#{nic_type}#{vtype(uii)}_#{config.partition_id}_#{opts[:nic_number]}"
             PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
               command = "ip -4 addr show dev #{vnic_name} | head -n -1 | tail -1 | awk '{ print $2 }' | cut -f1 -d\"/\" \n"
@@ -281,7 +281,7 @@ module VagrantPlugins
               end
               Process.kill('HUP', pid)
             end
-          elsif (opts[:dhcp] == false || opts[:dhcp].nil?) && opts[:managed] && adaptertype.to_s == 'public_network' || 'private_network' 
+          elsif (opts[:dhcp] == false || opts[:dhcp].nil?) && opts[:managed]
             ip = opts[:ip].to_s
             return nil if ip.empty?
 
@@ -300,49 +300,28 @@ module VagrantPlugins
           if adaptertype.to_s == 'public_network'
             zonecfgnicconfig(uii, opts) if state == 'config'
             zoneniccreate(uii, opts) if state == 'create'
-            ## if state setup and setup_method dhcp/zlogin
             zonenicstpzloginsetup(uii, opts) if state == 'setup' && config.setup_method == 'zlogin'
             zonenicdel(uii, opts) if state == 'delete'
           end
           if adaptertype.to_s == 'private_network' 
-            # Create Interfaces
-            ## Create Etherstub for VM and Host
             etherstub = etherstubcreate(uii, opts) if state == 'config'
-            ## Create the zones VNIC and attach it to the Etherstub
             zonenatniccreate(uii, opts, etherstub) if state == 'config'
-            ## Create the Hosts VNIC on the Etherstub and Assign it a IP for use with DHCP later
             etherstubcreatehvnic(uii, opts, etherstub) if state == 'config'
-
-            # Configure Interfaces and Services for use
-            ## Configure NAT zonecfg nic configs for zone
             natnicconfig(uii, opts) if state == 'create'
-            ## Set Nat Forwarding on specified VNIC and Bridge
             zonenatforward(uii, opts) if state == 'create'
-            ## Setup the forwarding entries and enable NAT
             zonenatentries(uii, opts) if state == 'create'
-            ## Create the DHCP configurations and start the server
             zonedhcpentries(uii, opts) if state == 'create'
-            
-            # Setup the Zones OS Nics
             zonedhcpcheckaddr(uii, opts) if state == 'setup'
             zonenicnatsetup(uii, opts) if state == 'setup'
-
-            # Destroy VM
-            ## Delete VM VNIC
             zonenicdel(uii, opts) if state == 'delete'
-            ## stop and disable dhcp, remove configs
             zonedhcpentriesrem(uii, opts) if state == 'delete'
-            ## stop and disable nat forwarding for selected range on interface ## Becareful not to erase other VMs configs
             zonenatclean(uii, opts) if state == 'delete'
-            ## Delete Host VNIC
             etherstubdelhvnic(uii, opts) if state == 'delete'
-            ## Delete Etherstub
             etherstubdelete(uii, opts) if state == 'delete'
           end
         end
       end
 
-      ############################### Delete ###############################
       ## Delete DHCP entries for Zones
       def zonedhcpentriesrem(uii, opts)
         config = @machine.provider_config
@@ -438,7 +417,6 @@ module VagrantPlugins
         execute(false, "#{@pfexec} dladm delete-etherstub #{ether_name}") if ether_configured == ether_name
       end
 
-      ################## PrivateNetworking ##################
       ## Create etherstubs for Zones
       def etherstubcreate(uii, opts)
         config = @machine.provider_config
@@ -487,14 +465,12 @@ module VagrantPlugins
         netplan4 = %(      nameservers:\n        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
         netplan = netplan1 + netplan2 + netplan3 + netplan4
         cmd = "echo '#{netplan}' | sudo tee /etc/netplan/#{vnic_name}.yaml"
-        puts cmd
         infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
         uii.info(infomessage) if ssh_run_command(uii, cmd)
         ## Apply the Configuration
         uii.info(I18n.t('vagrant_zones.netplan_applied')) if ssh_run_command(uii, 'sudo netplan apply')
       end
 
-      ################## NAT ##################
       ## zonecfg function for for nat Networking
       def natnicconfig(uii, opts)
         config = @machine.provider_config
@@ -555,7 +531,6 @@ module VagrantPlugins
         execute(false, "#{@pfexec} svcadm enable network/ipfilter")
       end
 
-      ################## DHCP ##################
       ## Create dhcp entries for the zone
       def zonedhcpentries(uii, opts)
         config = @machine.provider_config
@@ -599,7 +574,6 @@ module VagrantPlugins
         #execute(false, "#{@pfexec} ping #{ip} ")
       end
 
-      ################## Public Networking ##################
       ## Create vnics for Zones
       def zoneniccreate(uii, opts)
         mac = macaddress(uii, opts)
