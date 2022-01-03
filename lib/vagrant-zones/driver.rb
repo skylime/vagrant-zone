@@ -355,7 +355,7 @@ module VagrantPlugins
         uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp'))
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         
-        dhcpentries = execute(false, "#{@pfexec} cat /etc/inet/dhcpd4.conf").split("\n")
+        dhcpentries = execute(false, "#{@pfexec} cat /etc/dhcpd.conf").split("\n")
         subnet = %( subnet #{broadcast} netmask #{opts[:netmask].to_s} {  option routers #{defrouter}; }) 
         subnetopts= %({ option host-name #{name}; hardware ethernet #{mac}; fixed-address #{ip}; })
         subnetexists = false
@@ -557,7 +557,7 @@ module VagrantPlugins
         uii.info(I18n.t('vagrant_zones.configuring_dhcp'))
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         
-        dhcpentries = execute(false, "#{@pfexec} cat /etc/inet/dhcpd4.conf").split("\n")
+        dhcpentries = execute(false, "#{@pfexec} cat /etc/dhcpd.conf").split("\n")
         subnet = %( subnet #{broadcast} netmask #{opts[:netmask].to_s} {  option routers #{defrouter}; }) 
         subnetopts= %({ option host-name #{name}; hardware ethernet #{mac}; fixed-address #{ip}; })
         subnetexists = false
