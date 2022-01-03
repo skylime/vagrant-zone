@@ -392,6 +392,8 @@ module VagrantPlugins
         end
         puts line1 unless line1exists
         puts line2 unless line2exists
+        execute(false, "#{@pfexec} echo #{line1} >> /etc/ipf/ipnat.conf") unless line1exists
+        execute(false, "#{@pfexec} echo #{line2} >> /etc/ipf/ipnat.conf") unless line2exists
         uii.info(I18n.t('vagrant_zones.deconfiguring_nat'))
 
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
