@@ -506,11 +506,19 @@ module VagrantPlugins
         defrouter = opts[:gateway].to_s
         shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         uii.info(I18n.t('vagrant_zones.configuring_nat') + vnic_name.to_s)
+        ## Read NAT File, Check for these lines, if exist, warn, but continue
+        natentries = execute(false, "#{@pfexec} cat /etc/ipf/ipnat.conf").split("\n")
+        
         line1 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
         line2 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32)
-        puts line1
-        puts line2
-        natconf = '/etc/ipf/ipnat.conf'
+        line1exists = false
+        line2exists = false
+        natentries.each do |entry|
+          line1exists = true if entry == line1
+          line2exists = true if entry == line2
+        end
+        puts line1 unless line1exists
+        puts line2 unless line2exists
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
       end
 
@@ -524,13 +532,22 @@ module VagrantPlugins
         ip = ipaddress(uii, opts)
         name = @machine.name
         defrouter = opts[:gateway].to_s
+        shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         uii.info(I18n.t('vagrant_zones.configuring_dhcp'))
-        subnet = %( subnet #{defrouter} netmask #{opts[:netmask].to_s}) 
-        puts subnet
-        subnetopts= %({ option host-name "#{name}"; hardware ethernet #{mac}; fixed-address #{ip}; option routers #{defrouter} })
-        puts subnetopts
-        dhcpconf = "/etc/inet/dhcpd4.conf"
+        broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
+        
+        dhcpentries = execute(false, "#{@pfexec} cat /etc/inet/dhcpd4.conf").split("\n")
+        subnet = %( subnet #{broadcast} netmask #{opts[:netmask].to_s} {  option routers #{defrouter}; }) 
+        subnetopts= %({ option host-name #{name}; hardware ethernet #{mac}; fixed-address #{ip}; })
+        subnetexists = false
+        subnetoptsexists = false
+        dhcpentries.each do |entry|
+          subnetexists = true if entry == subnet
+          subnetoptsexists = true if entry == subnetopts
+        end
+        puts subnet unless subnetexists
+        puts subnetopts unless subnetoptsexists
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm enable dhcp:ipv4")
