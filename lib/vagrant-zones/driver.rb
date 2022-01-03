@@ -1069,7 +1069,6 @@ module VagrantPlugins
       end
 
       def natloginboot(env)
-        @machine = env[:machine]
         uii = env[:ui]
         env[:metrics] ||= {}
         env[:metrics]['instance_dhcp_ssh_time'] = Util::Timer.time do
