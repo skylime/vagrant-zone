@@ -1097,7 +1097,7 @@ module VagrantPlugins
           return if config.cloud_init_enabled 
 
           zloginboot(uii) if config.setup_method == 'zlogin'
-          natloginboot(uii) if config.setup_method == 'dchp'
+          natloginboot(uii) if config.setup_method == 'dhcp'
         when 'lx'
           unless user_exists?(uii, config.vagrant_user)
             zlogincommand(uii, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
