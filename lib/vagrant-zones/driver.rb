@@ -453,7 +453,7 @@ module VagrantPlugins
         shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         servers = dnsservers(uii)
         uii.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
-        netplan1 = %(network:\n  version: 2\n  ethernets:\n    #{vnic_name}:\n      match:\        macaddress: #{mac}\n)
+        netplan1 = %(network:\n  version: 2\n  ethernets:\n    #{vnic_name}:\n      match:\n        macaddress: #{mac}\n)
         netplan2 = %(      dhcp-identifier: mac\n      dhcp4: #{opts[:dhcp]}\n      dhcp6: #{opts[:dhcp6]}\n)
         netplan3 = %(      set-name: #{vnic_name}\n      addresses: [#{ip}/#{shrtsubnet}]\n      gateway4: #{defrouter}\n)
         netplan4 = %(      nameservers:\n        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
