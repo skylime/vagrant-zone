@@ -346,19 +346,29 @@ module VagrantPlugins
         config = @machine.provider_config
         vnic_name = vname(uii, opts)
         allowed_address = allowedaddress(uii, opts)
-        puts allowed_address
         mac = macaddress(uii, opts)
-        puts mac
-        shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         ip = ipaddress(uii, opts)
+        name = @machine.name
         defrouter = opts[:gateway].to_s
+        shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp'))
-        ## Function to remove the current iterface only from DHCP
-        # execute(false, %(#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = ""))
+        broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
+        
+        dhcpentries = execute(false, "#{@pfexec} cat /etc/inet/dhcpd4.conf").split("\n")
+        subnet = %( subnet #{broadcast} netmask #{opts[:netmask].to_s} {  option routers #{defrouter}; }) 
+        subnetopts= %({ option host-name #{name}; hardware ethernet #{mac}; fixed-address #{ip}; })
+        subnetexists = false
+        subnetoptsexists = false
+        dhcpentries.each do |entry|
+          subnetexists = true if entry == subnet
+          subnetoptsexists = true if entry == subnetopts
+        end
+        puts subnet unless subnetexists
+        puts subnetopts unless subnetoptsexists
+        #execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm enable dhcp:ipv4")
-        uii.info(I18n.t('vagrant_zones.dhcp_entries_remove')) 
       end
 
       def zonenatclean(uii, opts)
@@ -411,27 +421,8 @@ module VagrantPlugins
 
       ## Delete etherstubs
       def etherstubdelete(uii, opts)
-        name = @machine.name
         config = @machine.provider_config
-        ip = ipaddress(uii, opts)
-        mac = macaddress(uii, opts)
         ether_name = "stub_#{config.partition_id}_#{opts[:nic_number]}"
-        defrouter = opts[:gateway].to_s
-        broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
-        
-        dhcpentries = execute(false, "#{@pfexec} cat /etc/dhcpd.conf").split("\n")
-        subnet = %( subnet #{broadcast} netmask #{opts[:netmask].to_s} {  option routers #{defrouter}; }) 
-        subnetopts= %({ option host-name #{name}; hardware ethernet #{mac}; fixed-address #{ip}; })
-        subnetexists = false
-        subnetoptsexists = false
-        dhcpentries.each do |entry|
-          subnetexists = true if entry == subnet
-          subnetoptsexists = true if entry == subnetopts
-        end
-        puts subnet unless subnetexists
-        puts subnetopts unless subnetoptsexists
-        
-
         ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep #{ether_name} | awk '{ print $1 }' ")
         puts ether_configured
         puts ether_name
