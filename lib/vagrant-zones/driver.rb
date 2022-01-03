@@ -104,7 +104,7 @@ module VagrantPlugins
         password = vagrantuserpass(@machine).to_s
         port = sshport(@machine).to_s
         port = 22 if sshport(@machine).to_s.nil?
-        uii.info(I18n.t('vagrant_zones.ssh_run_command') + password) if config.debug
+        uii.info(I18n.t('vagrant_zones.ssh_run_command') + command) if config.debug
         execute(true, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' ")
       end
 
@@ -485,12 +485,12 @@ module VagrantPlugins
         netplan3 = %(      set-name: #{vnic_name}\n      addresses: [#{ip}/#{shrtsubnet}]\n      gateway4: #{defrouter}\n)
         netplan4 = %(      nameservers:\n        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
         netplan = netplan1 + netplan2 + netplan3 + netplan4
-        cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
+        cmd = "echo '#{netplan}' | sudo tee /etc/netplan/#{vnic_name}.yaml"
         puts cmd
         infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
         uii.info(infomessage) if ssh_run_command(uii, cmd)
         ## Apply the Configuration
-        uii.info(I18n.t('vagrant_zones.netplan_applied')) if ssh_run_command(uii, 'netplan apply')
+        uii.info(I18n.t('vagrant_zones.netplan_applied')) if ssh_run_command(uii, 'sudo netplan apply')
       end
 
       ################## NAT ##################
