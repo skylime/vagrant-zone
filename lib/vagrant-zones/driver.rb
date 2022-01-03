@@ -380,11 +380,7 @@ module VagrantPlugins
       def zonenicdel(uii, opts)
         vnic_name = vname(uii, opts)
         vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
-        puts vnic_name
         puts "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' "
-        puts vnic_configured
-        puts ""
-        puts vnic_name
         uii.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name) if vnic_configured == vnic_name.to_s
         execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
         uii.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == vnic_name.to_s
@@ -447,7 +443,7 @@ module VagrantPlugins
         execute(false, "#{@pfexec} ipadm create-addr -T static -a local=#{defrouter}/#{shrtsubnet} #{hvnic_name}/v4")
       end
 
-      ## Setup vnics for Zones using Zlogin
+      ## Setup vnics for Zones using nat/dhcp
       def zonenicnatsetup(uii, opts)
         config = @machine.provider_config
         ip = ipaddress(uii, opts)
@@ -457,9 +453,9 @@ module VagrantPlugins
         shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         servers = dnsservers(uii)
         uii.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
-        netplan1 = %(network:\n  version: 2\n  ethernets:\n    #{vnic_name}:\n      match:\        macaddress: #{mac})
-        netplan2 = %(      dhcp-identifier: mac\n      dhcp4: #{opts[:dhcp]}\n      dhcp6: #{opts[:dhcp6]})
-        netplan3 = %(      set-name: #{vnic_name}\n      addresses: [#{ip}/#{shrtsubnet}]\n      gateway4: #{defrouter})
+        netplan1 = %(network:\n  version: 2\n  ethernets:\n    #{vnic_name}:\n      match:\        macaddress: #{mac}\n)
+        netplan2 = %(      dhcp-identifier: mac\n      dhcp4: #{opts[:dhcp]}\n      dhcp6: #{opts[:dhcp6]}\n)
+        netplan3 = %(      set-name: #{vnic_name}\n      addresses: [#{ip}/#{shrtsubnet}]\n      gateway4: #{defrouter}\n)
         netplan4 = %(      nameservers:\n        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
         netplan = netplan1 + netplan2 + netplan3 + netplan4
         cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
@@ -545,9 +541,9 @@ module VagrantPlugins
       # ping address after
       def zonedhcpcheckaddr(uii, opts)
         vnic_name = vname(uii, opts)
-        allowed_address = allowedaddress(uii, opts)
+        ip = ipaddress(uii, opts)
         uii.info(I18n.t('vagrant_zones.chk_dhcp_addr'))
-        #execute(false, "#{@pfexec} ping #{allowed_address} ")
+        #execute(false, "#{@pfexec} ping #{ip} ")
       end
 
       ################## Public Networking ##################
