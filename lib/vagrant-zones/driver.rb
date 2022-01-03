@@ -335,7 +335,7 @@ module VagrantPlugins
             ## Delete Host VNIC
             etherstubdelhvnic(uii, opts) if state == 'delete'
             ## Delete Etherstub
-            etherstubdelete(uii, opts, etherstub) if state == 'delete'
+            etherstubdelete(uii, opts) if state == 'delete'
           end
         end
       end
@@ -404,23 +404,27 @@ module VagrantPlugins
       end
 
       ## Delete etherstubs
-      def etherstubdelete(uii, opts, etherstub)
-        vnic_name = vname(uii, opts)
-        mac = macaddress(uii, opts)
-        ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep stub_#{vnic_name} | awk '{ print $1 }' ")
+      def etherstubdelete(uii, opts)
+        config = @machine.provider_config
+        ether_name = "stub_#{config.partition_id}_#{opts[:nic_number]}"
+        ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep #{ether_name} | awk '{ print $1 }' ")
         puts ether_configured
-        puts "stub_#{vnic_name}"
-        uii.info(I18n.t('vagrant_zones.delete_ethervnic') + "stub_#{vnic_name}") if ether_configured == "stub_#{vnic_name}"
-        execute(false, "#{@pfexec} dladm delete-etherstub stub_#{vnic_name}") if ether_configured == "stub_#{vnic_name}"
+        puts ether_name
+        uii.info(I18n.t('vagrant_zones.delete_ethervnic') + ether_name) if ether_configured == ether_name
+        execute(false, "#{@pfexec} dladm delete-etherstub #{ether_name}") if ether_configured == ether_name
       end
 
       ################## PrivateNetworking ##################
       ## Create etherstubs for Zones
       def etherstubcreate(uii, opts)
-        vnic_name = vname(uii, opts)
-        uii.info(I18n.t('vagrant_zones.creating_etherstub') + "stub_#{vnic_name}")
-        execute(false, "#{@pfexec} dladm create-etherstub stub_#{vnic_name}")
-        "stub_#{vnic_name}"
+        config = @machine.provider_config
+        ether_name = "stub_#{config.partition_id}_#{opts[:nic_number]}"
+        ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep #{ether_name} | awk '{ print $1 }' ")
+        puts ether_configured
+        puts ether_name
+        uii.info(I18n.t('vagrant_zones.creating_etherstub') + ether_name) 
+        execute(false, "#{@pfexec} dladm create-etherstub #{ether_name}") 
+        ether_name
       end
 
       ## Create ethervnics for Zones
