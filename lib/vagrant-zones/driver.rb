@@ -382,7 +382,7 @@ module VagrantPlugins
         end
         puts line1 unless line1exists
         puts line2 unless line2exists
-        uii.info(I18n.t('vagrant_zones.deconfiguring_nat') + hvnic_name.to_s)
+        uii.info(I18n.t('vagrant_zones.deconfiguring_nat'))
 
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
       end
