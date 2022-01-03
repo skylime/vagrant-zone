@@ -464,6 +464,7 @@ module VagrantPlugins
       ## zonecfg function for for nat Networking
       def natnicconfig(uii, opts)
         config = @machine.provider_config
+        ip = ipaddress(uii, opts)
         allowed_address = allowedaddress(uii, opts)
         defrouter = opts[:gateway].to_s
         vnic_name = vname(uii, opts)
@@ -494,6 +495,7 @@ module VagrantPlugins
       def zonenatentries(uii, opts)
         config = @machine.provider_config
         vnic_name = vname(uii, opts)
+        ip = ipaddress(uii, opts)
         allowed_address = allowedaddress(uii, opts)
         defrouter = opts[:gateway].to_s
         shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
