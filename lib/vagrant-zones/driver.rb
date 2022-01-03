@@ -463,6 +463,7 @@ module VagrantPlugins
         netplan4 = %(      nameservers:\n        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
         netplan = netplan1 + netplan2 + netplan3 + netplan4
         cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
+        puts cmd
         infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
         uii.info(infomessage) if zlogin(uii, cmd)
         ## Apply the Configuration
