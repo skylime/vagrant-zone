@@ -470,7 +470,7 @@ module VagrantPlugins
         allowed_address = allowedaddress(uii, opts)
         defrouter = opts[:gateway].to_s
         vnic_name = vname(uii, opts)
-        uii.info(" #{I18n.t('vagrant_zones.nat_vnic_setup')}#{vnic_name}")
+        uii.info("#{I18n.t('vagrant_zones.nat_vnic_setup')}: #{vnic_name}")
         strt = "#{@pfexec} zonecfg -z #{@machine.name} "
         cie = config.cloud_init_enabled
         case config.brand
