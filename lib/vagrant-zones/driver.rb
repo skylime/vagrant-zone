@@ -353,7 +353,6 @@ module VagrantPlugins
         ip = ipaddress(uii, opts)
         defrouter = opts[:gateway].to_s
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
-        vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{hvnic_name} | awk '{ print $1 }' ")
         uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp'))
         ## Function to remove the current iterface only from DHCP
         # execute(false, %(#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = ""))
@@ -382,6 +381,7 @@ module VagrantPlugins
         vnic_name = vname(uii, opts)
         puts vnic_name
         vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
+        puts vnic_configured
         uii.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name) if vnic_configured == vnic_name.to_s
         execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
         uii.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == vnic_name.to_s
