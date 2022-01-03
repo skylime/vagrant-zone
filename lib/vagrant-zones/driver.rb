@@ -541,6 +541,8 @@ module VagrantPlugins
         puts line1 unless line1exists
         puts line2 unless line2exists
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
+        execute(false, "#{@pfexec} svcadm disable network/ipfilter")
+        execute(false, "#{@pfexec} svcadm enable network/ipfilter")
       end
 
       ################## DHCP ##################
