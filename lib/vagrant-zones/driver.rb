@@ -428,6 +428,7 @@ module VagrantPlugins
 
       ## Create Host VNIC on etherstubs for IP for Zones DHCP
       def etherstubcreatehvnic(uii, opts, etherstub)
+        config = @machine.provider_config
         defrouter = opts[:gateway].to_s
         shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
@@ -439,6 +440,7 @@ module VagrantPlugins
 
       ## Setup vnics for Zones using Zlogin
       def zonenicnatsetup(uii, opts)
+        config = @machine.provider_config
         ip = ipaddress(uii, opts)
         defrouter = opts[:gateway].to_s
         mac = macaddress(uii, opts)
