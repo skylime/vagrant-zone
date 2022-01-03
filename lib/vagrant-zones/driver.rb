@@ -504,6 +504,8 @@ module VagrantPlugins
         uii.info(I18n.t('vagrant_zones.configuring_nat') + vnic_name.to_s)
         line1 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
         line2 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32)
+        puts line1
+        puts line2
         natconf = '/etc/ipf/ipnat.conf'
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
       end
