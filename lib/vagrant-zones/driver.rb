@@ -528,7 +528,7 @@ module VagrantPlugins
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm enable dhcp:ipv4")
-        uii.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == vnic_name.to_s
+        uii.info(I18n.t('vagrant_zones.no_removing_vnic')) 
       end
 
       ## Check if Address shows up in lease list
