@@ -39,12 +39,11 @@ module VagrantPlugins
         def call(env)
           @machine = env[:machine]
           @driver  = @machine.provider.driver
-          ui = env[:ui]
           # Initialize metrics if they haven't been
           env[:metrics] ||= {}
           env[:metrics]['instance_boot_time'] = Util::Timer.time do
             break if env[:interrupted]
-            break if @driver.waitforboot(ui)
+            break if @driver.waitforboot(env)
           end
 
           return terminate(env) if env[:interrupted]

@@ -1068,16 +1068,36 @@ module VagrantPlugins
         end
       end
 
+      def natloginboot(env)
+        @machine = env[:machine]
+        uii = env[:ui]
+        env[:metrics] ||= {}
+        env[:metrics]['instance_dhcp_ssh_time'] = Util::Timer.time do
+          retryable(on: Errors::TimeoutError, tries: 60) do
+            # If we're interrupted don't worry about waiting
+            next if env[:interrupted]
+ 
+            loop do
+              break if env[:interrupted]
+              break if env[:machine].communicate.ready?
+            end
+          end
+        end
+        uii.info(I18n.t('vagrant_zones.boot_ready') + " in #{env[:metrics]['instance_dhcp_boot_time']} Seconds")
+      end
+
       # This helps up wait for the boot of the vm by using zlogin
-      def waitforboot(uii)
+      def waitforboot(env)
+        uii = env[:ui]
         name = @machine.name
         config = @machine.provider_config
         uii.info(I18n.t('vagrant_zones.wait_for_boot'))
         case config.brand
         when 'bhyve'
-          return if config.cloud_init_enabled || config.setup_method == 'dhcp'
+          return if config.cloud_init_enabled 
 
           zloginboot(uii) if config.setup_method == 'zlogin'
+          natloginboot(uii) if config.setup_method == 'dchp'
         when 'lx'
           unless user_exists?(uii, config.vagrant_user)
             zlogincommand(uii, %('echo nameserver 1.1.1.1 >> /etc/resolv.conf'))
