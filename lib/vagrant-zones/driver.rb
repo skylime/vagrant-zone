@@ -363,17 +363,27 @@ module VagrantPlugins
 
       def zonenatclean(uii, opts)
         config = @machine.provider_config
-        hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
+        vnic_name = vname(uii, opts)
         ip = ipaddress(uii, opts)
-        uii.info(I18n.t('vagrant_zones.deforwarding_nat') + hvnic_name.to_s)
+        allowed_address = allowedaddress(uii, opts)
+        defrouter = opts[:gateway].to_s
         shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
-        # execute(false, "#{@pfexec} routeadm -u -e ipv4-forwarding") 
-        ## Check if Forwarding is enabled for other nics and skip bridge?
-        #execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=off -m ipv4 #{hvnic_name}")
-        uii.info(I18n.t('vagrant_zones.deconfiguring_nat') + hvnic_name.to_s)
+        uii.info(I18n.t('vagrant_zones.configuring_nat') + vnic_name.to_s)
+        ## Read NAT File, Check for these lines, if exist, warn, but continue
+        natentries = execute(false, "#{@pfexec} cat /etc/ipf/ipnat.conf").split("\n")
+        
         line1 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
         line2 = %(map #{opts[:bridge]} #{ip}/#{shrtsubnet} -> 0/32)
-        natconf = '/etc/ipf/ipnat.conf'
+        line1exists = false
+        line2exists = false
+        natentries.each do |entry|
+          line1exists = true if entry == line1
+          line2exists = true if entry == line2
+        end
+        puts line1 unless line1exists
+        puts line2 unless line2exists
+        uii.info(I18n.t('vagrant_zones.deconfiguring_nat') + hvnic_name.to_s)
+
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
       end
 
@@ -409,7 +419,7 @@ module VagrantPlugins
         defrouter = opts[:gateway].to_s
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         
-        dhcpentries = execute(false, "#{@pfexec} cat /etc/inet/dhcpd4.conf").split("\n")
+        dhcpentries = execute(false, "#{@pfexec} cat /etc/dhcpd.conf").split("\n")
         subnet = %( subnet #{broadcast} netmask #{opts[:netmask].to_s} {  option routers #{defrouter}; }) 
         subnetopts= %({ option host-name #{name}; hardware ethernet #{mac}; fixed-address #{ip}; })
         subnetexists = false
