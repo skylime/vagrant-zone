@@ -354,6 +354,7 @@ module VagrantPlugins
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp'))
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
+        
         dhcpentries = execute(false, "#{@pfexec} cat /etc/dhcpd.conf").split("\n")
         subnet = %(subnet #{broadcast} netmask #{opts[:netmask].to_s} { option routers #{defrouter}; }) 
         subnetopts= %(host #{name} { option host-name #{name}; hardware ethernet #{mac}; fixed-address #{ip}; })
@@ -363,10 +364,13 @@ module VagrantPlugins
           subnetexists = true if entry == subnet
           subnetoptsexists = true if entry == subnetopts
         end
+        # execute(false, "#{@pfexec} echo #{subnet} | #{@pfexec} tee -a /etc/dhcpd.conf") unless subnetexists
+        # execute(false, "#{@pfexec} echo #{subnetopts} | #{@pfexec} tee -a /etc/dhcpd.conf") unless subnetoptsexists
         puts subnet unless subnetexists
         puts subnetopts unless subnetoptsexists
-        #execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
+        execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
+        execute(false, "#{@pfexec} svcadm disable dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm enable dhcp:ipv4")
       end
 
@@ -392,8 +396,8 @@ module VagrantPlugins
         end
         puts line1 unless line1exists
         puts line2 unless line2exists
-        execute(false, "#{@pfexec} echo #{line1} | #{@pfexec} tee -a /etc/ipf/ipnat.conf") unless line1exists
-        execute(false, "#{@pfexec} echo #{line2} | #{@pfexec} tee -a /etc/ipf/ipnat.conf") unless line2exists
+        # execute(false, "#{@pfexec} echo #{line1} | #{@pfexec} tee -a /etc/ipf/ipnat.conf") unless line1exists
+        # execute(false, "#{@pfexec} echo #{line2} | #{@pfexec} tee -a /etc/ipf/ipnat.conf") unless line2exists
         uii.info(I18n.t('vagrant_zones.deconfiguring_nat'))
 
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
