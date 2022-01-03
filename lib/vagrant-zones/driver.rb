@@ -516,6 +516,7 @@ module VagrantPlugins
         allowed_address = allowedaddress(uii, opts)
         mac = macaddress(uii, opts)
         ip = ipaddress(uii, opts)
+        name = @machine.name
         defrouter = opts[:gateway].to_s
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         uii.info(I18n.t('vagrant_zones.configuring_dhcp'))
