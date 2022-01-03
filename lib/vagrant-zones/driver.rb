@@ -380,6 +380,7 @@ module VagrantPlugins
       def zonenicdel(uii, opts)
         vnic_name = vname(uii, opts)
         vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
+        puts vnic_name
         puts "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' "
         puts vnic_configured
         puts ""
