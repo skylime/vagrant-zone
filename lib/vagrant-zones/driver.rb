@@ -540,6 +540,8 @@ module VagrantPlugins
         end
         puts line1 unless line1exists
         puts line2 unless line2exists
+        execute(false, "#{@pfexec} echo #{line1} >> /etc/ipf/ipnat.conf") unless line1exists
+        execute(false, "#{@pfexec} echo #{line2} >> /etc/ipf/ipnat.conf") unless line2exists
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
         execute(false, "#{@pfexec} svcadm disable network/ipfilter")
         execute(false, "#{@pfexec} svcadm enable network/ipfilter")
