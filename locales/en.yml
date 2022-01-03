@@ -278,5 +278,5 @@ en:
       Setting Cron Entries for Zone
     cron_delete: |-
       Deleting Cron Entries for Zone
-    vagrant_zones.control: |-
+    control: |-
       Running Control Command on Zone:

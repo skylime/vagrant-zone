@@ -97,22 +97,20 @@ module VagrantPlugins
       ## Run commands over SSH instead of ZLogin
       def ssh_run_command(uii, command)
         config = @machine.provider_config
-        uii.info(I18n.t('vagrant_zones.ssh_run_command')) if config.debug
         ip = get_ip_address('runsshcommmand')
         user = user(@machine)
         key = userprivatekeypath(@machine).to_s
         password = vagrantuserpass(@machine).to_s
         port = sshport(@machine).to_s
         port = 22 if sshport(@machine).to_s.nil?
-        uii.info(I18n.t('vagrant_zones.ssh_run_command') + command) if config.debug
-
         metrics ||= {}
         metrics['instance_command_ssh_time'] = Util::Timer.time do
           retryable(on: Errors::TimeoutError, tries: 60) do
             # If we're interrupted don't worry about waiting
             execute(false, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' ")
             puts "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' "
-
+            uii.info(I18n.t('vagrant_zones.ssh_run_command')) if config.debug
+            uii.info(I18n.t('vagrant_zones.ssh_run_command') + command) if config.debug
             loop do
               break if @machine.communicate.ready?
             end
