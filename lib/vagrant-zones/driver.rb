@@ -465,9 +465,9 @@ module VagrantPlugins
         cmd = "echo '#{netplan}' > /etc/netplan/#{vnic_name}.yaml"
         puts cmd
         infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
-        uii.info(infomessage) if zlogin(uii, cmd)
+        uii.info(infomessage) if ssh_run_command(uii, cmd)
         ## Apply the Configuration
-        uii.info(I18n.t('vagrant_zones.netplan_applied')) if zlogin(uii, 'netplan apply')
+        uii.info(I18n.t('vagrant_zones.netplan_applied')) if ssh_run_command(uii, 'netplan apply')
       end
 
       ################## NAT ##################
