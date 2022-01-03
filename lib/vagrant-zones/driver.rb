@@ -280,7 +280,7 @@ module VagrantPlugins
               end
               Process.kill('HUP', pid)
             end
-          elsif (opts[:dhcp] == false || opts[:dhcp].nil?) && opts[:managed] && adaptertype.to_s == 'public_network'
+          elsif (opts[:dhcp] == false || opts[:dhcp].nil?) && opts[:managed] && adaptertype.to_s == 'public_network' || 'private_network' 
             ip = opts[:ip].to_s
             return nil if ip.empty?
 
