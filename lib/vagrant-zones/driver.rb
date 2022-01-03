@@ -20,6 +20,7 @@ module VagrantPlugins
   module ProviderZone
     # This class does the heavy lifting of the zone provider
     class Driver
+      include Vagrant::Util::Retryable
       attr_accessor :executor
 
       def initialize(machine)
