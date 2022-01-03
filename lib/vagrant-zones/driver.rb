@@ -394,6 +394,7 @@ module VagrantPlugins
         puts vnic_configured
         puts hvnic_name
         uii.info(I18n.t('vagrant_zones.removing_vnic') + hvnic_name) if vnic_configured == hvnic_name.to_s
+        execute(false, "#{@pfexec} ipadm delete-if #{hvnic_name}")
         execute(false, "#{@pfexec} dladm delete-vnic #{hvnic_name}") if vnic_configured == hvnic_name.to_s
         uii.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == hvnic_name.to_s
       end
