@@ -231,7 +231,7 @@ en:
     control_no_cmd: |-
       No Control Command Specified
     ssh_run_command: |-
-      Running Command over SSH
+      Running Command over SSH: 
     vtype: |-
       Filtering Zone Type
     nsservers: |-
