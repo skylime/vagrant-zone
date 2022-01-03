@@ -118,7 +118,6 @@ module VagrantPlugins
             end
           end
         end
-        uii.info(I18n.t('vagrant_zones.boot_ready') + " in #{metrics['instance_dhcp_boot_time']} Seconds")
       end
 
       ## Function to provide console, vnc, or webvnc access
