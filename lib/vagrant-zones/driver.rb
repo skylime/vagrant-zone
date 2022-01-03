@@ -401,8 +401,27 @@ module VagrantPlugins
 
       ## Delete etherstubs
       def etherstubdelete(uii, opts)
+        name = @machine.name
         config = @machine.provider_config
+        ip = ipaddress(uii, opts)
+        mac = macaddress(uii, opts)
         ether_name = "stub_#{config.partition_id}_#{opts[:nic_number]}"
+        defrouter = opts[:gateway].to_s
+        broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
+        
+        dhcpentries = execute(false, "#{@pfexec} cat /etc/inet/dhcpd4.conf").split("\n")
+        subnet = %( subnet #{broadcast} netmask #{opts[:netmask].to_s} {  option routers #{defrouter}; }) 
+        subnetopts= %({ option host-name #{name}; hardware ethernet #{mac}; fixed-address #{ip}; })
+        subnetexists = false
+        subnetoptsexists = false
+        dhcpentries.each do |entry|
+          subnetexists = true if entry == subnet
+          subnetoptsexists = true if entry == subnetopts
+        end
+        puts subnet unless subnetexists
+        puts subnetopts unless subnetoptsexists
+        
+
         ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep #{ether_name} | awk '{ print $1 }' ")
         puts ether_configured
         puts ether_name
