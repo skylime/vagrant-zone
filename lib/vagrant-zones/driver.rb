@@ -106,6 +106,7 @@ module VagrantPlugins
         port = 22 if sshport(@machine).to_s.nil?
         uii.info(I18n.t('vagrant_zones.ssh_run_command') + command) if config.debug
         execute(true, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' ")
+        puts "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' "
       end
 
       ## Function to provide console, vnc, or webvnc access
