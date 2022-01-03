@@ -105,6 +105,19 @@ module VagrantPlugins
         port = sshport(@machine).to_s
         port = 22 if sshport(@machine).to_s.nil?
         uii.info(I18n.t('vagrant_zones.ssh_run_command') + command) if config.debug
+
+        metrics ||= {}
+        metrics['instance_command_ssh_time'] = Util::Timer.time do
+          retryable(on: Errors::TimeoutError, tries: 60) do
+            # If we're interrupted don't worry about waiting
+ 
+            loop do
+              break if @machine.communicate.ready?
+            end
+          end
+        end
+        uii.info(I18n.t('vagrant_zones.boot_ready') + " in #{metrics['instance_dhcp_boot_time']} Seconds")
+
         execute(true, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' ")
         puts "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' "
       end
