@@ -536,7 +536,7 @@ module VagrantPlugins
       # ping address after
       def zonedhcpcheckaddr(uii, opts)
         vnic_name = vname(uii, opts)
-        # allowed_address = allowedaddress(uii, opts)
+        allowed_address = allowedaddress(uii, opts)
         uii.info(I18n.t('vagrant_zones.chk_dhcp_addr') + vnic_name.to_s)
         execute(false, "#{@pfexec} ping #{allowed_address} ")
       end
