@@ -206,7 +206,7 @@ module VagrantPlugins
           servers.append(server)
         end
         servers = [{ 'nameserver' => '1.1.1.1' }, { 'nameserver' => '8.8.8.8' }] if config.dns.nil?
-        uii.info(I18n.t('vagrant_zones.nsservers') + servers) if config.debug
+        uii.info(I18n.t('vagrant_zones.nsservers') + servers.to_s) if config.debug
         servers
       end
 
