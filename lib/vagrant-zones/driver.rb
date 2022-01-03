@@ -296,8 +296,8 @@ module VagrantPlugins
         zlogin(uii, 'rm -rf /etc/netplan/*.yaml') if state == 'setup' && config.setup_method == 'zlogin'
         @machine.config.vm.networks.each do |adaptertype, opts|
           if adaptertype.to_s == 'public_network'
-            zoneniccreate(uii, opts) if state == 'create'
             zonecfgnicconfig(uii, opts) if state == 'config'
+            zoneniccreate(uii, opts) if state == 'create'
             ## if state setup and setup_method dhcp/zlogin
             zonenicstpzloginsetup(uii, opts) if state == 'setup' && config.setup_method == 'zlogin'
             zonenicdel(uii, opts) if state == 'delete'
@@ -305,21 +305,21 @@ module VagrantPlugins
           if adaptertype.to_s == 'private_network' 
             # Create Interfaces
             ## Create Etherstub for VM and Host
-            etherstub = etherstubcreate(uii, opts) if state == 'create'
+            etherstub = etherstubcreate(uii, opts) if state == 'config'
             ## Create the zones VNIC and attach it to the Etherstub
-            zonenatniccreate(uii, opts, etherstub) if state == 'create'
+            zonenatniccreate(uii, opts, etherstub) if state == 'config'
             ## Create the Hosts VNIC on the Etherstub and Assign it a IP for use with DHCP later
-            etherstubcreatehvnic(uii, opts, etherstub) if state == 'create'
+            etherstubcreatehvnic(uii, opts, etherstub) if state == 'config'
 
             # Configure Interfaces and Services for use
             ## Configure NAT zonecfg nic configs for zone
-            natnicconfig(uii, opts) if state == 'config'
+            natnicconfig(uii, opts) if state == 'create'
             ## Set Nat Forwarding on specified VNIC and Bridge
-            zonenatforward(uii, opts) if state == 'config'
+            zonenatforward(uii, opts) if state == 'create'
             ## Setup the forwarding entries and enable NAT
-            zonenatentries(uii, opts) if state == 'config'
+            zonenatentries(uii, opts) if state == 'create'
             ## Create the DHCP configurations and start the server
-            zonedhcpentries(uii, opts) if state == 'config'
+            zonedhcpentries(uii, opts) if state == 'create'
             
             # Setup the Zones OS Nics
             zonedhcpcheckaddr(uii, opts) if state == 'setup'
