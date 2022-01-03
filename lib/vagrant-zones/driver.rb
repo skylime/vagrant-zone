@@ -364,8 +364,8 @@ module VagrantPlugins
           subnetexists = true if entry == subnet
           subnetoptsexists = true if entry == subnetopts
         end
-        # execute(false, "#{@pfexec} echo #{subnet} | #{@pfexec} tee -a /etc/dhcpd.conf") unless subnetexists
-        # execute(false, "#{@pfexec} echo #{subnetopts} | #{@pfexec} tee -a /etc/dhcpd.conf") unless subnetoptsexists
+        # execute(false, "#{@pfexec} echo '#{subnet}' | #{@pfexec} tee -a /etc/dhcpd.conf") unless subnetexists
+        # execute(false, "#{@pfexec} echo '#{subnetopts}' | #{@pfexec} tee -a /etc/dhcpd.conf") unless subnetoptsexists
         puts subnet unless subnetexists
         puts subnetopts unless subnetoptsexists
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
@@ -396,8 +396,8 @@ module VagrantPlugins
         end
         puts line1 unless line1exists
         puts line2 unless line2exists
-        # execute(false, "#{@pfexec} echo #{line1} | #{@pfexec} tee -a /etc/ipf/ipnat.conf") unless line1exists
-        # execute(false, "#{@pfexec} echo #{line2} | #{@pfexec} tee -a /etc/ipf/ipnat.conf") unless line2exists
+        # execute(false, "#{@pfexec} echo '#{line1}' | #{@pfexec} tee -a /etc/ipf/ipnat.conf") unless line1exists
+        # execute(false, "#{@pfexec} echo '#{line2}' | #{@pfexec} tee -a /etc/ipf/ipnat.conf") unless line2exists
         uii.info(I18n.t('vagrant_zones.deconfiguring_nat'))
 
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
@@ -546,8 +546,8 @@ module VagrantPlugins
         end
         puts line1 unless line1exists
         puts line2 unless line2exists
-        execute(false, "#{@pfexec} echo #{line1} | #{@pfexec} tee -a /etc/ipf/ipnat.conf") unless line1exists
-        execute(false, "#{@pfexec} echo #{line2} | #{@pfexec} tee -a /etc/ipf/ipnat.conf") unless line2exists
+        execute(false, "#{@pfexec} echo '#{line1}' | #{@pfexec} tee -a /etc/ipf/ipnat.conf") unless line1exists
+        execute(false, "#{@pfexec} echo '#{line2}' | #{@pfexec} tee -a /etc/ipf/ipnat.conf") unless line2exists
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
         execute(false, "#{@pfexec} svcadm disable network/ipfilter")
         execute(false, "#{@pfexec} svcadm enable network/ipfilter")
@@ -577,8 +577,8 @@ module VagrantPlugins
           subnetexists = true if entry == subnet
           subnetoptsexists = true if entry == subnetopts
         end
-        execute(false, "#{@pfexec} echo #{subnet} | #{@pfexec} tee -a /etc/dhcpd.conf") unless subnetexists
-        execute(false, "#{@pfexec} echo #{subnetopts} | #{@pfexec} tee -a /etc/dhcpd.conf") unless subnetoptsexists
+        execute(false, "#{@pfexec} echo '#{subnet}' | #{@pfexec} tee -a /etc/dhcpd.conf") unless subnetexists
+        execute(false, "#{@pfexec} echo '#{subnetopts}' | #{@pfexec} tee -a /etc/dhcpd.conf") unless subnetoptsexists
         puts subnet unless subnetexists
         puts subnetopts unless subnetoptsexists
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
