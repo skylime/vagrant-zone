@@ -380,6 +380,7 @@ module VagrantPlugins
 
       def zonenicdel(uii, opts)
         vnic_name = vname(uii, opts)
+        puts vnic_name
         vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
         uii.info(I18n.t('vagrant_zones.removing_vnic') + vnic_name) if vnic_configured == vnic_name.to_s
         execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
