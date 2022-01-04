@@ -357,12 +357,16 @@ module VagrantPlugins
           newdhcpnics << nic unless nic.to_s == hvnic_name.to_s
         end
         puts newdhcpnics
-        newdhcpnics = '\(\"\"\)' if newdhcpnics.empty?
-        dhcpcmdnewstr = '\('
-        newdhcpnics.each do |nic|
-          dhcpcmdnewstr = dhcpcmdnewstr + %(\\"#{nic}\\")
+
+        if newdhcpnics.empty?
+          dhcpcmdnewstr = '\(\"\"\)'
+        else
+          dhcpcmdnewstr = '\('
+          newdhcpnics.each do |nic|
+            dhcpcmdnewstr = dhcpcmdnewstr + %(\\"#{nic}\\")
+          end
+          dhcpcmdnewstr = dhcpcmdnewstr + '\)'
         end
-        dhcpcmdnewstr = dhcpcmdnewstr + '\)'
         puts dhcpcmdnewstr
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{dhcpcmdnewstr}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
