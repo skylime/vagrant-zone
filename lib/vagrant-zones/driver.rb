@@ -340,16 +340,15 @@ module VagrantPlugins
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp') + hvnic_name.to_s)
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
-        dhcpentries = execute(false, "#{@pfexec} cat /etc/dhcpd.conf").split("\n")
         subnet = %(subnet #{broadcast} netmask #{opts[:netmask]} { option routers #{defrouter}; })
         subnetopts = %(host #{name} { option host-name "#{name}"; hardware ethernet #{mac}; fixed-address #{ip}; })
         File.open('/etc/dhcpd.conf-temp', 'w') do |out_file|
           File.foreach('/etc/dhcpd.conf') do |entry|
-             out_file.puts line unless entry == subnet || subnetopts
+            out_file.puts line unless entry == subnet || subnetopts
           end
-        end       
+        end
         FileUtils.mv('/etc/dhcpd.conf-temp', '/etc/dhcpd.conf')
-        awk = %(| awk '{ $1=""; $2=""; sub(/^[ \\t]+/, ""); print}' | tr ' ' '\\n' | tr -d '"') 
+        awk = %(| awk '{ $1=""; $2=""; sub(/^[ \\t]+/, ""); print}' | tr ' ' '\\n' | tr -d '"')
         cmd = %(svccfg -s dhcp:ipv4 listprop config/listen_ifnames )
         nicsused = execute(false, cmd.to_s + awk.to_s).split("\n")
         newdhcpnics = []
@@ -361,9 +360,9 @@ module VagrantPlugins
         else
           dhcpcmdnewstr = '\('
           newdhcpnics.each do |nic|
-            dhcpcmdnewstr = dhcpcmdnewstr + %(\\"#{nic}\\")
+            dhcpcmdnewstr += %(\\"#{nic}\\")
           end
-          dhcpcmdnewstr = dhcpcmdnewstr + '\)'
+          dhcpcmdnewstr += '\)'
         end
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{dhcpcmdnewstr}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
@@ -377,14 +376,13 @@ module VagrantPlugins
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         uii.info(I18n.t('vagrant_zones.deconfiguring_nat') + vnic_name.to_s)
-        natentries = execute(false, "#{@pfexec} cat /etc/ipf/ipnat.conf").split("\n")
         line1 = %(map #{opts[:bridge]} #{broadcast}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
         line2 = %(map #{opts[:bridge]} #{broadcast}/#{shrtsubnet} -> 0/32)
         File.open('/etc/ipf/ipnat.conf-temp', 'w') do |out_file|
           File.foreach('/etc/ipf/ipnat.conf') do |entry|
-             out_file.puts line unless entry == line1 || line2
+            out_file.puts line unless entry == line1 || line2
           end
-        end       
+        end
         FileUtils.mv('/etc/ipf/ipnat.conf-temp', '/etc/ipf/ipnat.conf')
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
       end
@@ -422,8 +420,8 @@ module VagrantPlugins
         config = @machine.provider_config
         ether_name = "stub_#{config.partition_id}_#{opts[:nic_number]}"
         ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep #{ether_name} | awk '{ print $1 }' ")
-        uii.info(I18n.t('vagrant_zones.creating_etherstub') + ether_name)
-        execute(false, "#{@pfexec} dladm create-etherstub #{ether_name}")
+        uii.info(I18n.t('vagrant_zones.creating_etherstub') + ether_name) unless ether_configured == ether_name
+        execute(false, "#{@pfexec} dladm create-etherstub #{ether_name}") unless ether_configured == ether_name
         ether_name
       end
 
