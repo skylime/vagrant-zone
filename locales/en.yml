@@ -257,13 +257,13 @@ en:
     forwarding_nat: |-
       Enabling NAT Forwarding: 
     configuring_nat: |-
-      Creating NAT entries
+      Creating NAT entries: 
     deconfiguring_nat: |-
-      Deleting NAT entries
+      Deleting NAT entries: 
     configuring_dhcp: |-
-      Creating DHCP entries
+      Creating DHCP entries: 
     deconfiguring_dhcp: |-
-      Deleting DHCP entries
+      Deleting DHCP entries: 
     chk_dhcp_addr: |-
       Checking if Zone has leased the Address 
     setting_alt_shared_disk_configurations: |-
