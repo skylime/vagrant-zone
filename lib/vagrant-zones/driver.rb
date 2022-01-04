@@ -102,8 +102,7 @@ module VagrantPlugins
         key = userprivatekeypath(@machine).to_s
         port = sshport(@machine).to_s
         port = 22 if sshport(@machine).to_s.nil?
-        metrics ||= {}
-        metrics['instance_command_ssh_time'] = Util::Timer.time do
+        Util::Timer.time do
           retryable(on: Errors::TimeoutError, tries: 60) do
             # If we're interrupted don't worry about waiting
             execute(false, %(#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} "#{command}"))
@@ -256,7 +255,7 @@ module VagrantPlugins
       def vname(uii, opts)
         config = @machine.provider_config
         vnic_name = "vnic#{nictype(opts)}#{vtype(uii)}_#{config.partition_id}_#{opts[:nic_number]}"
-        uii.info(I18n.t('vagrant_zones.vnic_name') + vnic_name ) if config.debug
+        uii.info(I18n.t('vagrant_zones.vnic_name') + vnic_name) if config.debug
         vnic_name
       end
 
@@ -265,7 +264,7 @@ module VagrantPlugins
         config = @machine.provider_config
         name = @machine.name
         # uii.info(I18n.t('vagrant_zones.get_ip_address')) if config.debug
-        @machine.config.vm.networks.each do |adaptertype, opts|
+        @machine.config.vm.networks.each do |opts|
           responses = []
           nic_type = nictype(opts)
           if opts[:dhcp] && opts[:managed]
@@ -544,7 +543,7 @@ module VagrantPlugins
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         dhcpentries = execute(false, "#{@pfexec} cat /etc/dhcpd.conf").split("\n")
         subnet = %(subnet #{broadcast} netmask #{opts[:netmask]} { option routers #{defrouter}; })
-        subnetopts= %(host #{name} { option host-name "#{name}"; hardware ethernet #{mac}; fixed-address #{ip}; })
+        subnetopts = %(host #{name} { option host-name "#{name}"; hardware ethernet #{mac}; fixed-address #{ip}; })
         subnetexists = false
         subnetoptsexists = false
         dhcpentries.each do |entry|
