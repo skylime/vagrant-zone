@@ -399,8 +399,6 @@ module VagrantPlugins
         config = @machine.provider_config
         ether_name = "stub_#{config.partition_id}_#{opts[:nic_number]}"
         ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep #{ether_name} | awk '{ print $1 }' ")
-        puts ether_configured
-        puts ether_name
         uii.info(I18n.t('vagrant_zones.delete_ethervnic') + ether_name) if ether_configured == ether_name
         execute(false, "#{@pfexec} dladm delete-etherstub #{ether_name}") if ether_configured == ether_name
       end
@@ -507,8 +505,6 @@ module VagrantPlugins
           line1exists = true if entry == line1
           line2exists = true if entry == line2
         end
-        puts line1 unless line1exists
-        puts line2 unless line2exists
         execute(false, %(#{@pfexec} echo "#{line1}" | #{@pfexec} tee -a /etc/ipf/ipnat.conf)) unless line1exists
         execute(false, %(#{@pfexec} echo "#{line2}" | #{@pfexec} tee -a /etc/ipf/ipnat.conf)) unless line2exists
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
@@ -538,8 +534,6 @@ module VagrantPlugins
         end
         execute(false, "#{@pfexec} echo '#{subnet}' | #{@pfexec} tee -a /etc/dhcpd.conf") unless subnetexists
         execute(false, "#{@pfexec} echo '#{subnetopts}' | #{@pfexec} tee -a /etc/dhcpd.conf") unless subnetoptsexists
-        puts subnet unless subnetexists
-        puts subnetopts unless subnetoptsexists
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm disable dhcp:ipv4")
