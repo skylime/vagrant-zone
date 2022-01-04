@@ -356,8 +356,6 @@ module VagrantPlugins
         nicsused.each do |nic|
           newdhcpnics << nic unless nic.to_s == hvnic_name.to_s
         end
-        puts newdhcpnics
-
         if newdhcpnics.empty?
           dhcpcmdnewstr = '\(\"\"\)'
         else
@@ -367,7 +365,6 @@ module VagrantPlugins
           end
           dhcpcmdnewstr = dhcpcmdnewstr + '\)'
         end
-        puts dhcpcmdnewstr
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{dhcpcmdnewstr}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm disable dhcp:ipv4")
