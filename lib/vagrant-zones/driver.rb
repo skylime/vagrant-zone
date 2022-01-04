@@ -308,9 +308,7 @@ module VagrantPlugins
             zonecfgnicconfig(uii, opts) if state == 'config'
             zoneniccreate(uii, opts) if state == 'create'
             zonenicstpzloginsetup(uii, opts) if state == 'setup' && config.setup_method == 'zlogin'
-            zonenicdel(uii, opts) if state == 'delete'
-          end
-          if adaptertype.to_s == 'private_network'
+          elsif adaptertype.to_s == 'private_network'
             etherstub = etherstubcreate(uii, opts) if state == 'config'
             zonenatniccreate(uii, opts, etherstub) if state == 'config'
             etherstubcreatehvnic(uii, opts, etherstub) if state == 'config'
@@ -320,12 +318,12 @@ module VagrantPlugins
             zonedhcpentries(uii, opts) if state == 'create'
             zonedhcpcheckaddr(uii, opts) if state == 'setup'
             zonenicnatsetup(uii, opts) if state == 'setup'
-            zonenicdel(uii, opts) if state == 'delete'
             zonedhcpentriesrem(uii, opts) if state == 'delete'
             zonenatclean(uii, opts) if state == 'delete'
             etherstubdelhvnic(uii, opts) if state == 'delete'
             etherstubdelete(uii, opts) if state == 'delete'
           end
+          zonenicdel(uii, opts) if state == 'delete'
         end
       end
 
