@@ -361,7 +361,7 @@ module VagrantPlugins
         newdhcpnics.each do |nic|
           dhcpcmdnewstr = dhcpcmdnewstr + %(\\"#{nic}\\")
         end
-        dhcpcmdnewstr = dhcpcmdnewstr + "\("
+        dhcpcmdnewstr = dhcpcmdnewstr + '\)'
         puts dhcpcmdnewstr
         # svccfg -s dhcp:ipv4 setprop config/listen_ifnames = \(\"vnic3\"\"vnic2\"\"h_vnic_1011_1\"\)
         # execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{dhcpcmdnewstr}")
