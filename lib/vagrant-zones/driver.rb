@@ -359,6 +359,7 @@ module VagrantPlugins
           puts nic.to_s
           newdhcpnics << nic unless nic.to_s == hvnic_name.to_s
         end
+        puts "end result"
         puts newdhcpnics
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
