@@ -247,15 +247,15 @@ en:
     get_ip_address: |-
       Gathering IP address
     creating_etherstub: |-
-      Creating Etherstub for Private Network
+      Creating Etherstub for Private Network: 
     creating_etherhostvnic: |-
-      Creating Etherstub for host to zone NAT
+      Creating Etherstub for host to zone NAT: 
     creating_ethervnic: |-
-      Creating Etherstub VNIC for Host
+      Creating Etherstub VNIC for Host: 
     nat_vnic_setup: |-
       Setting up NAT Filtering for Host to Zone Communications
     forwarding_nat: |-
-      Enabling NAT Forwarding
+      Enabling NAT Forwarding: 
     configuring_nat: |-
       Creating NAT entries
     configuring_dhcp: |-
