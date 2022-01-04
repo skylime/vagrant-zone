@@ -356,6 +356,7 @@ module VagrantPlugins
         newdhcpnics = []
         nicsused.each do |nic|
           puts hvnic_name.to_s
+          puts nic
           newdhcpnics << nic unless nic.to_s == hvnic_name.to_s
         end
         puts newdhcpnics
