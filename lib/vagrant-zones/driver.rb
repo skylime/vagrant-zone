@@ -264,7 +264,7 @@ module VagrantPlugins
         config = @machine.provider_config
         name = @machine.name
         # uii.info(I18n.t('vagrant_zones.get_ip_address')) if config.debug
-        @machine.config.vm.networks.each do |opts|
+        @machine.config.vm.networks.each do |_adaptertype, opts|
           responses = []
           nic_type = nictype(opts)
           if opts[:dhcp] && opts[:managed]
