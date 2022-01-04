@@ -342,16 +342,13 @@ module VagrantPlugins
         dhcpentries = execute(false, "#{@pfexec} cat /etc/dhcpd.conf").split("\n")
         subnet = %(subnet #{broadcast} netmask #{opts[:netmask]} { option routers #{defrouter}; })
         subnetopts = %(host #{name} { option host-name "#{name}"; hardware ethernet #{mac}; fixed-address #{ip}; })
-        subnetexists = false
-        subnetoptsexists = false
-        dhcpentries.each do |entry|
-          subnetexists = true if entry == subnet
-          subnetoptsexists = true if entry == subnetopts
-        end
-        # execute(false, "#{@pfexec} echo '#{subnet}' | #{@pfexec} tee -a /etc/dhcpd.conf") unless subnetexists
-        # execute(false, "#{@pfexec} echo '#{subnetopts}' | #{@pfexec} tee -a /etc/dhcpd.conf") unless subnetoptsexists
-        puts subnet unless subnetexists
-        puts subnetopts unless subnetoptsexists
+
+        File.open('/etc/dhcpd.conf-temp', 'w') do |out_file|
+          File.foreach('/etc/dhcpd.conf') do |entry|
+             out_file.puts line unless entry == subnet || subnetopts
+          end
+        end       
+        FileUtils.mv('/etc/dhcpd.conf-temp', '/etc/dhcpd.conf')
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm disable dhcp:ipv4")
@@ -368,18 +365,13 @@ module VagrantPlugins
         natentries = execute(false, "#{@pfexec} cat /etc/ipf/ipnat.conf").split("\n")
         line1 = %(map #{opts[:bridge]} #{broadcast}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
         line2 = %(map #{opts[:bridge]} #{broadcast}/#{shrtsubnet} -> 0/32)
-        line1exists = false
-        line2exists = false
-        natentries.each do |entry|
-          line1exists = true if entry == line1
-          line2exists = true if entry == line2
-        end
-        puts line1 unless line1exists
-        puts line2 unless line2exists
-        # execute(false, %(#{@pfexec} echo "#{line1}" | #{@pfexec} tee -a /etc/ipf/ipnat.conf)) unless line1exists
-        # execute(false, %(#{@pfexec} echo "#{line2}" | #{@pfexec} tee -a /etc/ipf/ipnat.conf)) unless line2exists
+        File.open('/etc/ipf/ipnat.conf-temp', 'w') do |out_file|
+          File.foreach('/etc/ipf/ipnat.conf') do |entry|
+             out_file.puts line unless entry == line1 || line2
+          end
+        end       
+        FileUtils.mv('/etc/ipf/ipnat.conf-temp', '/etc/ipf/ipnat.conf')
         uii.info(I18n.t('vagrant_zones.deconfiguring_nat'))
-
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
       end
 
