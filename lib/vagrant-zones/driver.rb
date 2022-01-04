@@ -353,7 +353,11 @@ module VagrantPlugins
         cmd = %(svccfg -s dhcp:ipv4 listprop config/listen_ifnames )
         nicsused = execute(false, cmd.to_s + awk.to_s).split("\n")
         puts nicsused
-        puts nicsused[0]
+        newdhcpnics = []
+        nicsused.each do |nic|
+          newdhcpnics << nic unless nic == hvnic_name
+        end
+        puts newdhcpnics
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm disable dhcp:ipv4")
