@@ -304,11 +304,12 @@ module VagrantPlugins
         uii.info(I18n.t('vagrant_zones.netplan_remove')) if state == 'setup' && config.setup_method == 'zlogin'
         zlogin(uii, 'rm -rf /etc/netplan/*.yaml') if state == 'setup' && config.setup_method == 'zlogin'
         @machine.config.vm.networks.each do |adaptertype, opts|
-          if adaptertype.to_s == 'public_network'
+          case adaptertype.to_s
+          when 'public_network'
             zonecfgnicconfig(uii, opts) if state == 'config'
             zoneniccreate(uii, opts) if state == 'create'
             zonenicstpzloginsetup(uii, opts) if state == 'setup' && config.setup_method == 'zlogin'
-          elsif adaptertype.to_s == 'private_network'
+          when 'private_network'
             etherstub = etherstubcreate(uii, opts) if state == 'config'
             zonenatniccreate(uii, opts, etherstub) if state == 'config'
             etherstubcreatehvnic(uii, opts, etherstub) if state == 'config'
