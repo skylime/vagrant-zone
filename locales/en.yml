@@ -280,3 +280,5 @@ en:
       Deleting Cron Entries for Zone
     control: |-
       Running Control Command on Zone:
+    delete_ethervnic: |-
+      Deleting the Ethernet VNIC for Host: 
