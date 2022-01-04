@@ -359,7 +359,6 @@ module VagrantPlugins
         puts newdhcpnics
         dhcpcmdnewstr = "\("
         newdhcpnics.each do |nic|
-          newdhcpnics << nic 
           dhcpcmdnewstr = dhcpcmdnewstr + %(\\"#{nic}\\")
         end
         dhcpcmdnewstr = dhcpcmdnewstr + "\("
