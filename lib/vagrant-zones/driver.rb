@@ -355,7 +355,7 @@ module VagrantPlugins
         puts nicsused
         newdhcpnics = []
         nicsused.each do |nic|
-          newdhcpnics << nic unless nic == hvnic_name
+          newdhcpnics << nic unless nic.to_s == hvnic_name.to_s
         end
         puts newdhcpnics
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
