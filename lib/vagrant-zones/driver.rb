@@ -352,14 +352,19 @@ module VagrantPlugins
         awk = %(| awk '{ $1=""; $2=""; sub(/^[ \\t]+/, ""); print}' | tr ' ' '\\n' | tr -d '"') 
         cmd = %(svccfg -s dhcp:ipv4 listprop config/listen_ifnames )
         nicsused = execute(false, cmd.to_s + awk.to_s).split("\n")
-        puts nicsused
         newdhcpnics = []
         nicsused.each do |nic|
           newdhcpnics << nic unless nic.to_s == hvnic_name.to_s
         end
-        puts "end result"
-        puts newdhcpnics
-        execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
+        dhcpcmdnewstr = "\("
+        newdhcpnics.each do |nic|
+          newdhcpnics << nic 
+          dhcpcmdnewstr = dhcpcmdnewstr + %(\\"#{nic}\\")
+        end
+        dhcpcmdnewstr = dhcpcmdnewstr + "\("
+        puts dhcpcmdnewstr
+        # svccfg -s dhcp:ipv4 setprop config/listen_ifnames = \(\"vnic3\"\"vnic2\"\"h_vnic_1011_1\"\)
+        # execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{dhcpcmdnewstr}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm disable dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm enable dhcp:ipv4")
