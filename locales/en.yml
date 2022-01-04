@@ -262,6 +262,8 @@ en:
       Deleting NAT entries
     configuring_dhcp: |-
       Creating DHCP entries
+    deconfiguring_dhcp: |-
+      Deleting DHCP entries
     chk_dhcp_addr: |-
       Checking if Zone has leased the Address 
     setting_alt_shared_disk_configurations: |-
