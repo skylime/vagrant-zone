@@ -304,6 +304,7 @@ module VagrantPlugins
         uii.info(I18n.t('vagrant_zones.netplan_remove')) if state == 'setup' && config.setup_method == 'zlogin'
         zlogin(uii, 'rm -rf /etc/netplan/*.yaml') if state == 'setup' && config.setup_method == 'zlogin'
         @machine.config.vm.networks.each do |adaptertype, opts|
+          zonenicdel(uii, opts) if state == 'delete'
           case adaptertype.to_s
           when 'public_network'
             zonecfgnicconfig(uii, opts) if state == 'config'
@@ -324,7 +325,6 @@ module VagrantPlugins
             etherstubdelhvnic(uii, opts) if state == 'delete'
             etherstubdelete(uii, opts) if state == 'delete'
           end
-          zonenicdel(uii, opts) if state == 'delete'
         end
       end
 
@@ -363,7 +363,7 @@ module VagrantPlugins
         defrouter = opts[:gateway].to_s
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
-        uii.info(I18n.t('vagrant_zones.configuring_nat') + vnic_name.to_s)
+        uii.info(I18n.t('vagrant_zones.deconfiguring_nat') + vnic_name.to_s)
         ## Read NAT File, Check for these lines, if exist, warn, but continue
         natentries = execute(false, "#{@pfexec} cat /etc/ipf/ipnat.conf").split("\n")
         line1 = %(map #{opts[:bridge]} #{broadcast}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
