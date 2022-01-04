@@ -54,9 +54,9 @@ en:
     networking_int_add: |-
       - Adding network devices:
     removing_vnic: |-
-      - Deleting VNIC: 
+      - Deleting zone VNIC: 
     no_removing_vnic: |-
-      - No VNIC to Remove
+      - No zone VNIC to Remove
     removing_host_vnic: |-
       - Deleting Host VNIC: 
     no_removing_host_vnic: |-
