@@ -57,6 +57,10 @@ en:
       - Deleting VNIC: 
     no_removing_vnic: |-
       - No VNIC to Remove
+    removing_host_vnic: |-
+      - Deleting Host VNIC: 
+    no_removing_host_vnic: |-
+      - No Host VNIC to Remove
     network_setup: |-
       Preparing zone OS networking interfaces via zlogin:
     delete_disks: |-
