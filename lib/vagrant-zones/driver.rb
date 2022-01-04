@@ -463,7 +463,7 @@ module VagrantPlugins
         netplan4 = %(      nameservers:\n        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
         netplan = netplan1 + netplan2 + netplan3 + netplan4
         cmd = "echo -e '#{netplan}' | sudo tee /etc/netplan/#{vnic_name}.yaml"
-        infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
+        infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml" if config.debug
         uii.info(infomessage) if ssh_run_command(uii, cmd)
         ## Apply the Configuration
         uii.info(I18n.t('vagrant_zones.netplan_applied')) if ssh_run_command(uii, 'sudo netplan apply')
