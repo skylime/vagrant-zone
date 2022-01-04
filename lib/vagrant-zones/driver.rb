@@ -356,6 +356,7 @@ module VagrantPlugins
         nicsused.each do |nic|
           newdhcpnics << nic unless nic.to_s == hvnic_name.to_s
         end
+        puts newdhcpnics
         dhcpcmdnewstr = "\("
         newdhcpnics.each do |nic|
           newdhcpnics << nic 
