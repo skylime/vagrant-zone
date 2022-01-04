@@ -349,6 +349,10 @@ module VagrantPlugins
           end
         end       
         FileUtils.mv('/etc/dhcpd.conf-temp', '/etc/dhcpd.conf')
+        awk = %(| awk '{ $1=""; $2=""; sub(/^[ \t]+/, ""); print}' | tr ' ' '\n' | tr -d '"') 
+        cmd = %(svccfg -s dhcp:ipv4 listprop config/listen_ifnames )
+        nicsused = execute(false, cmd + awk)
+        puts nicsused
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
         execute(false, "#{@pfexec} svcadm refresh dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm disable dhcp:ipv4")
@@ -371,7 +375,6 @@ module VagrantPlugins
           end
         end       
         FileUtils.mv('/etc/ipf/ipnat.conf-temp', '/etc/ipf/ipnat.conf')
-        uii.info(I18n.t('vagrant_zones.deconfiguring_nat'))
         execute(false, "#{@pfexec} svcadm refresh network/ipfilter")
       end
 
