@@ -337,7 +337,7 @@ module VagrantPlugins
         defrouter = opts[:gateway].to_s
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
-        uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp'))
+        uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp') + hvnic_name.to_s)
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         dhcpentries = execute(false, "#{@pfexec} cat /etc/dhcpd.conf").split("\n")
         subnet = %(subnet #{broadcast} netmask #{opts[:netmask]} { option routers #{defrouter}; })
