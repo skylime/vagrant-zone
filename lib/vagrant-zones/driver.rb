@@ -321,7 +321,7 @@ module VagrantPlugins
             zonenatentries(uii, opts) if state == 'create'
             zonedhcpentries(uii, opts) if state == 'create'
             zonedhcpcheckaddr(uii, opts) if state == 'setup'
-            zonenicnatsetup(uii, opts) if state == 'setup'
+            zonenicnatsetup(uii, opts) if state == 'setup' 
             zonenicdel(uii, opts) if state == 'delete'
             zonedhcpentriesrem(uii, opts) if state == 'delete'
             zonenatclean(uii, opts) if state == 'delete'
@@ -461,6 +461,8 @@ module VagrantPlugins
       ## Setup vnics for Zones using nat/dhcp
       def zonenicnatsetup(uii, opts)
         config = @machine.provider_config
+        cie = config.cloud_init_enabled
+        return if cie
         ip = ipaddress(uii, opts)
         defrouter = opts[:gateway].to_s
         mac = macaddress(uii, opts)
@@ -476,7 +478,7 @@ module VagrantPlugins
         netplan = netplan1 + netplan2 + netplan3 + netplan4
         cmd = "echo -e '#{netplan}' | sudo tee /etc/netplan/#{vnic_name}.yaml"
         infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
-        uii.info(infomessage) if ssh_run_command(uii, cmd)
+        uii.info(infomessage) if ssh_run_command(uii, cmd) 
         ## Apply the Configuration
         uii.info(I18n.t('vagrant_zones.netplan_applied')) if ssh_run_command(uii, 'sudo netplan apply')
       end
