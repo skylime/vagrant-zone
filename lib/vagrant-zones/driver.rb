@@ -107,8 +107,8 @@ module VagrantPlugins
         metrics['instance_command_ssh_time'] = Util::Timer.time do
           retryable(on: Errors::TimeoutError, tries: 60) do
             # If we're interrupted don't worry about waiting
-            execute(false, "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' ")
-            puts "#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} '#{command}' "
+            execute(false, %(#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} "#{command}"))
+            puts %(#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} "#{command}" )
             uii.info(I18n.t('vagrant_zones.ssh_run_command')) if config.debug
             uii.info(I18n.t('vagrant_zones.ssh_run_command') + command) if config.debug
             loop do
@@ -473,7 +473,7 @@ module VagrantPlugins
         netplan3 = %(      set-name: #{vnic_name}\n      addresses: [#{ip}/#{shrtsubnet}]\n      gateway4: #{defrouter}\n)
         netplan4 = %(      nameservers:\n        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
         netplan = netplan1 + netplan2 + netplan3 + netplan4
-        cmd = "echo '#{netplan}' | sudo tee /etc/netplan/#{vnic_name}.yaml"
+        cmd = "echo -e '#{netplan}' | sudo tee /etc/netplan/#{vnic_name}.yaml"
         infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
         uii.info(infomessage) if ssh_run_command(uii, cmd)
         ## Apply the Configuration
