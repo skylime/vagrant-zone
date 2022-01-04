@@ -490,14 +490,13 @@ module VagrantPlugins
         vnic_name = vname(uii, opts)
         uii.info("#{I18n.t('vagrant_zones.nat_vnic_setup')}: #{vnic_name}")
         strt = "#{@pfexec} zonecfg -z #{@machine.name} "
-        cie = config.cloud_init_enabled
         case config.brand
         when 'lx'
           shrtstr1 = %(set allowed-address=#{allowed_address}; add property (name=gateway,value="#{defrouter}"); )
           shrtstr2 = %(add property (name=ips,value="#{allowed_address}"); add property (name=primary,value="true"); end;)
           execute(false, %(#{strt}set global-nic=auto; #{shrtstr1} #{shrtstr2}"))
         when 'bhyve'
-          execute(false, %(#{strt}"add net; set physical=#{vnic_name}; end;")) unless cie
+          execute(false, %(#{strt}"add net; set physical=#{vnic_name}; end;")) 
         end
       end
 
