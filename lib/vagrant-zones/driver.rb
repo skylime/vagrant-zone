@@ -106,7 +106,6 @@ module VagrantPlugins
           retryable(on: Errors::TimeoutError, tries: 60) do
             # If we're interrupted don't worry about waiting
             execute(false, %(#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} "#{command}"))
-            puts %(#{@pfexec} pwd && ssh -o 'StrictHostKeyChecking=no' -p #{port} -i #{key} #{user}@#{ip} "#{command}" )
             uii.info(I18n.t('vagrant_zones.ssh_run_command')) if config.debug
             uii.info(I18n.t('vagrant_zones.ssh_run_command') + command) if config.debug
             loop do
