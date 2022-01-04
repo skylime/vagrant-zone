@@ -557,7 +557,7 @@ module VagrantPlugins
       def zonedhcpcheckaddr(uii, opts)
         # vnic_name = vname(uii, opts)
         # ip = ipaddress(uii, opts)
-        uii.info(I18n.t('vagrant_zones.chk_dhcp_addr') + opts.to_s)
+        uii.info(I18n.t('vagrant_zones.chk_dhcp_addr') + opts[:ip].to_s)
         # execute(false, "#{@pfexec} ping #{ip} ")
       end
 
