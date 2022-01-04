@@ -351,7 +351,7 @@ module VagrantPlugins
         FileUtils.mv('/etc/dhcpd.conf-temp', '/etc/dhcpd.conf')
         awk = %(| awk '{ $1=""; $2=""; sub(/^[ \\t]+/, ""); print}' | tr ' ' '\\n' | tr -d '"') 
         cmd = %(svccfg -s dhcp:ipv4 listprop config/listen_ifnames )
-        nicsused = execute(false, cmd.to_s + awk.to_s)
+        nicsused = execute(false, cmd.to_s + awk.to_s).split("\n")
         puts nicsused
         puts nicsused[0]
         execute(false, "#{@pfexec} svccfg -s dhcp:ipv4 setprop config/listen_ifnames = #{hvnic_name}")
