@@ -410,8 +410,6 @@ module VagrantPlugins
         config = @machine.provider_config
         ether_name = "stub_#{config.partition_id}_#{opts[:nic_number]}"
         ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep #{ether_name} | awk '{ print $1 }' ")
-        puts ether_configured
-        puts ether_name
         uii.info(I18n.t('vagrant_zones.creating_etherstub') + ether_name)
         execute(false, "#{@pfexec} dladm create-etherstub #{ether_name}")
         ether_name
