@@ -467,7 +467,7 @@ module VagrantPlugins
         vnic_name = vname(uii, opts)
         shrtsubnet = "#{IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1')}"
         servers = dnsservers(uii)
-        uii.info(I18n.t('vagrant_zones.netplan_applied')) if ssh_run_command(uii, 'rm -rf /etc/netplan/*.yaml')
+        uii.info(I18n.t('vagrant_zones.netplan_applied')) if ssh_run_command(uii, 'sudo rm -rf /etc/netplan/*.yaml')
         uii.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
         netplan1 = %(network:\n  version: 2\n  ethernets:\n    #{vnic_name}:\n      match:\n        macaddress: #{mac}\n)
         netplan2 = %(      dhcp-identifier: mac\n      dhcp4: #{opts[:dhcp]}\n      dhcp6: #{opts[:dhcp6]}\n)
