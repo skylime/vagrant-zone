@@ -986,6 +986,7 @@ module VagrantPlugins
       end
 
       def zwaitforboot(uii, zlogin_read, zlogin_write, alm)
+        config = @machine.provider_config
         Timeout.timeout(config.setup_wait) do
           rsp = []
           loop do          
