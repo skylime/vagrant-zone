@@ -1006,10 +1006,10 @@ module VagrantPlugins
             puts rsp[-1]
             uii.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{alcheck}'") if rsp[-1].to_s.match(/#{alcheck}/)
             puts "Attempting to Auto Login" if rsp[-1].to_s.match(/#{alcheck}/)
-            zlogin_write.printf("#{user(@machine)}\n") if rsp[-1].to_s.match(/#{alcheck}/)
+            zlogin_write.printf("#{user(@machine)}\r\n") if rsp[-1].to_s.match(/#{alcheck}/)
             n = 0 if rsp[-1].to_s.match(/#{alcheck}/)
 
-            zlogin_write.printf("#{vagrantuserpass(@machine)}\n") if rsp[-1].to_s.match(/#{pcheck}/)
+            zlogin_write.printf("#{vagrantuserpass(@machine)}\r\n") if rsp[-1].to_s.match(/#{pcheck}/)
             zlogin_write.printf("\n") if rsp[-1].to_s.match(/#{pcheck}/)
             n = 0 if rsp[-1].to_s.match(/#{pcheck}/)
             
