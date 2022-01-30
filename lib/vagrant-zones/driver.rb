@@ -986,44 +986,14 @@ module VagrantPlugins
       end
 
       def zwaitforboot(uii, zlogin_read, zlogin_write, alm)
-        config = @machine.provider_config
-        lcheck = config.lcheck
-        lcheck = ':~#' if config.lcheck.nil?
-        alcheck = config.alcheck
-        alcheck = ' login:' if config.alcheck.nil?
-        pcheck = 'Password:'
-        rlimitdisable = false
-        zlogin_write.printf("\n")
-        def ratelimit?(n, rlimitdisable)
-          return false if rlimitdisable
-          n % 5 == 0
-        end
         Timeout.timeout(config.setup_wait) do
           rsp = []
-          n = 0
           loop do          
             zlogin_read.expect(/\r\n/) { |line| rsp.push line }
-            
-            zlogin_write.printf("\n") if ratelimit?(n, rlimitdisable)
-            rlimitdisable = true if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
-            
-            uii.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{alcheck}'") if rsp[-1].to_s.match(/#{alcheck}/)
-            zlogin_write.puts("#{user(@machine)}") if rsp[-1].to_s.match(/#{alcheck}/)
-            next if rsp[-1].to_s.match(/#{alcheck}/)
-            
-
-            puts "Passing Password" if rsp[-1].to_s.match(/#{pcheck}/)
-            zlogin_write.puts("#{vagrantuserpass(@machine)}") if rsp[-1].to_s.match(/#{pcheck}/)
-            next if rsp[-1].to_s.match(/#{pcheck}/)
-            
-            
-            uii.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'") if rsp[-1].to_s.match(/#{lcheck}/)
-            alm = true if rsp[-1].to_s.match(/#{lcheck}/)
-            break if rsp[-1].to_s.match(/#{lcheck}/)
-
-
-            n += 1 unless rsp[-1].to_s.match(/#{alcheck}/) || rsp[-1].to_s.match(/#{pcheck}/)
             uii.info(rsp[-1]) if config.debug_boot
+            alm = true if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
+            break if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
+
           end
         end
         alm
@@ -1039,6 +1009,46 @@ module VagrantPlugins
             break if alm
           end
           Process.kill('HUP', pid)
+        end
+      end
+
+      # This gives us a console to the VM to issue commands
+      def zlogin(uii, cmd)
+        name = @machine.name
+        config = @machine.provider_config
+        rsp = []
+        PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+          zlogin_read.expect(/\n/) { zlogin_write.printf("#{cmd} \; echo \"Error Code: $?\"\n") }
+          Timeout.timeout(config.setup_wait) do
+            loop do
+              zlogin_read.expect(/\r\n/) { |line| rsp.push line }
+              break if rsp[-1].to_s.match(/Error Code: 0/)
+
+              em = "#{cmd} \nFailed with ==> #{rsp[-1]}"
+              uii.info(I18n.t('vagrant_zones.console_failed') + em) if rsp[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
+              raise Errors::ConsoleFailed if rsp[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
+            end
+          end
+          Process.kill('HUP', pid)
+        end
+      end
+
+      def zloginauth(uii)
+        name = @machine.name
+        config = @machine.provider_config
+        lcheck = config.lcheck
+        lcheck = ':~#' if config.lcheck.nil?
+        alcheck = config.alcheck
+        alcheck = ' login:' if config.alcheck.nil?
+        pcheck = 'Password:'
+        zlogin_write.printf("\n")
+        zlogin_write.printf("\n")
+        zlogin_write.printf("\n")
+        
+        PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+        zlogin_read.expect(/#{alcheck}/) { zlogin_write.printf("#{user(@machine)}\n") }
+        zlogin_read.expect(/#{pcheck}/) { zlogin_write.printf("#{agrantuserpass(@machine)}\n") }
+        Process.kill('HUP', pid) if rsp[-1].to_s.match(/#{lcheck}/)
         end
       end
 
@@ -1067,6 +1077,7 @@ module VagrantPlugins
           return if config.cloud_init_enabled
 
           zloginboot(uii) if config.setup_method == 'zlogin'
+          zloginauth(uii) if config.setup_method == 'zlogin'
           natloginboot(uii, metrics, interrupted) if config.setup_method == 'dhcp'
         when 'lx'
           unless user_exists?(uii, config.vagrant_user)
@@ -1094,26 +1105,7 @@ module VagrantPlugins
         end
       end
 
-      # This gives us a console to the VM to issue commands
-      def zlogin(uii, cmd)
-        name = @machine.name
-        config = @machine.provider_config
-        rsp = []
-        PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-          zlogin_read.expect(/\n/) { zlogin_write.printf("#{cmd} \; echo \"Error Code: $?\"\n") }
-          Timeout.timeout(config.setup_wait) do
-            loop do
-              zlogin_read.expect(/\r\n/) { |line| rsp.push line }
-              break if rsp[-1].to_s.match(/Error Code: 0/)
 
-              em = "#{cmd} \nFailed with ==> #{rsp[-1]}"
-              uii.info(I18n.t('vagrant_zones.console_failed') + em) if rsp[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
-              raise Errors::ConsoleFailed if rsp[-1].to_s.match(/Error Code: \b(?!0\b)\d{1,4}\b/)
-            end
-          end
-          Process.kill('HUP', pid)
-        end
-      end
 
       # This checks if the user exists on the VM, usually for LX zones
       def user_exists?(uii, user = 'vagrant')
