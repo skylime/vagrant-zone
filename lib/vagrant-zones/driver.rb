@@ -996,14 +996,14 @@ module VagrantPlugins
         zlogin_write.printf("\n")
         def ratelimit?(n, rlimitdisable)
           return if rlimitdisable
-          n % 5 == 0
+          n % 10 == 0
         end
         Timeout.timeout(config.setup_wait) do
           rsp = []
           n = 0
           loop do
             
-            zlogin_write.printf("\n") if ratelimit?(n)
+
             zlogin_read.expect(/\r\n/) { |line| rsp.push line }
             uii.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{alcheck}'") if rsp[-1].to_s.match(/#{alcheck}/)
             puts "Attempting to Auto Login" if rsp[-1].to_s.match(/#{alcheck}/)
@@ -1017,6 +1017,7 @@ module VagrantPlugins
             alm = true if rsp[-1].to_s.match(/#{lcheck}/)
             break if rsp[-1].to_s.match(/#{lcheck}/)
 
+            zlogin_write.printf("\n") if ratelimit?(n)
             n += 1 unless rsp[-1].to_s.match(/#{alcheck}/) || rsp[-1].to_s.match(/#{pcheck}/)
             uii.info(rsp[-1]) if config.debug_boot
           end
