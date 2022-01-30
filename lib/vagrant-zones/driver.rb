@@ -996,7 +996,6 @@ module VagrantPlugins
             break if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
           end
         end
-        alm
       end
 
       def zloginboot(uii)
