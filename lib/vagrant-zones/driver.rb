@@ -1017,7 +1017,7 @@ module VagrantPlugins
             alm = true if rsp[-1].to_s.match(/#{lcheck}/)
             break if rsp[-1].to_s.match(/#{lcheck}/)
 
-            zlogin_write.printf("\n") if ratelimit?(n)
+            zlogin_write.printf("\n") if ratelimit?(n, rlimitdisable)
             n += 1 unless rsp[-1].to_s.match(/#{alcheck}/) || rsp[-1].to_s.match(/#{pcheck}/)
             uii.info(rsp[-1]) if config.debug_boot
           end
