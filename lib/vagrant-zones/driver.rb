@@ -995,7 +995,7 @@ module VagrantPlugins
         rlimitdisable = false
         zlogin_write.printf("\n")
         def ratelimit?(n, rlimitdisable)
-          return if rlimitdisable
+          return false if rlimitdisable
           n % 10 == 0
         end
         Timeout.timeout(config.setup_wait) do
