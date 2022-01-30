@@ -985,13 +985,12 @@ module VagrantPlugins
         network(uii, 'setup') if config.brand == 'bhyve' && !config.cloud_init_enabled
       end
 
-      def zwaitforboot(uii, zlogin_read, zlogin_write, alm)
+      def zwaitforboot(uii, zlogin_read, zlogin_write)
         config = @machine.provider_config
         Timeout.timeout(config.setup_wait) do
           rsp = []
           loop do          
             zlogin_read.expect(/\r\n/) { |line| rsp.push line }
-            alm = true if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
             sleep(15) if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
             uii.info(rsp[-1]) if config.debug_boot
             break if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
@@ -1006,13 +1005,13 @@ module VagrantPlugins
         alm = false
         config = @machine.provider_config
         lcheck = config.lcheck
-        lcheck = ':~$' if config.lcheck.nil?
+        lcheck = ':~' if config.lcheck.nil?
         alcheck = config.alcheck
         alcheck = 'login:' if config.alcheck.nil?
         pcheck = 'Password:'
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-          alm = zwaitforboot(uii, zlogin_read, zlogin_write, alm)
-          break if alm
+          zwaitforboot(uii, zlogin_read, zlogin_write)
+          
           sleep(5)
           zlogin_write.printf("\n")
           puts "Entering User"
