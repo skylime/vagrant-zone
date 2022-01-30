@@ -1041,11 +1041,12 @@ module VagrantPlugins
         alcheck = config.alcheck
         alcheck = ' login:' if config.alcheck.nil?
         pcheck = 'Password:'
-        zlogin_write.printf("\n")
-        zlogin_write.printf("\n")
-        zlogin_write.printf("\n")
+
         
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
+        zlogin_write.printf("\n")
+        zlogin_write.printf("\n")
+        zlogin_write.printf("\n")
         zlogin_read.expect(/#{alcheck}/) { zlogin_write.printf("#{user(@machine)}\n") }
         zlogin_read.expect(/#{pcheck}/) { zlogin_write.printf("#{agrantuserpass(@machine)}\n") }
         Process.kill('HUP', pid) if rsp[-1].to_s.match(/#{lcheck}/)
