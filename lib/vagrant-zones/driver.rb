@@ -1049,7 +1049,7 @@ module VagrantPlugins
         zlogin_write.printf("\n")
         zlogin_read.expect(/#{alcheck}/) { zlogin_write.printf("#{user(@machine)}\n") }
         zlogin_read.expect(/#{pcheck}/) { zlogin_write.printf("#{agrantuserpass(@machine)}\n") }
-        Process.kill('HUP', pid) if rsp[-1].to_s.match(/#{lcheck}/)
+        Process.kill('HUP', pid) if zlogin_read.expect(/#{lcheck}/)
         end
       end
 
