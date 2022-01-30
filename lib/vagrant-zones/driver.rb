@@ -991,6 +991,7 @@ module VagrantPlugins
         lcheck = ':~#' if config.lcheck.nil?
         alcheck = config.alcheck
         alcheck = ' login:' if config.alcheck.nil?
+        pcheck = 'Password:'
         zlogin_write.printf("\n")
         def ratelimit?(n)
           n % 5 == 0
@@ -1000,17 +1001,15 @@ module VagrantPlugins
           n = 0
           loop do
             n += 1
-            puts n
             zlogin_write.printf("\n") if ratelimit?(n)
             zlogin_read.expect(/\r\n/) { |line| rsp.push line }
             uii.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{alcheck}'") if rsp[-1].to_s.match(/#{alcheck}/)
-            puts rsp[-1]
-            alm = true if rsp[-1].to_s.match(/#{alcheck}/)
             puts "Attempting to Auto Login" if rsp[-1].to_s.match(/#{alcheck}/)
             zlogin_write.printf("#{user(@machine)}\n") if rsp[-1].to_s.match(/#{alcheck}/)
-            zlogin_write.printf("#{vagrantuserpass(@machine)}\n") if rsp[-1].to_s.match(/#{alcheck}/)
-            #break if rsp[-1].to_s.match(/#{alcheck}/)
 
+            zlogin_write.printf("#{vagrantuserpass(@machine)}\n") if rsp[-1].to_s.match(/#{pcheck}/)
+            zlogin_write.printf("\n") if rsp[-1].to_s.match(/#{pcheck}/)
+            
             uii.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'") if rsp[-1].to_s.match(/#{lcheck}/)
             alm = true if rsp[-1].to_s.match(/#{lcheck}/)
             break if rsp[-1].to_s.match(/#{lcheck}/)
