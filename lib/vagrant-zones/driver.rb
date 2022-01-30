@@ -1003,7 +1003,6 @@ module VagrantPlugins
             n += 1
             zlogin_write.printf("\n") if ratelimit?(n)
             zlogin_read.expect(/\r\n/) { |line| rsp.push line }
-            puts rsp[-1]
             uii.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{alcheck}'") if rsp[-1].to_s.match(/#{alcheck}/)
             puts "Attempting to Auto Login" if rsp[-1].to_s.match(/#{alcheck}/)
             zlogin_write.puts("#{user(@machine)}") if rsp[-1].to_s.match(/#{alcheck}/)
