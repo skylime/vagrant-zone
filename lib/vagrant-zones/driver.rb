@@ -992,9 +992,15 @@ module VagrantPlugins
         alcheck = config.alcheck
         alcheck = ' login:' if config.alcheck.nil?
         zlogin_write.printf("\n")
+        def ratelimit?(n)
+          n % 10 == 0
+        end
         Timeout.timeout(config.setup_wait) do
           rsp = []
+          n = 0
           loop do
+            n += 1
+            zlogin_write.printf("\n") if ratelimit(n)
             zlogin_read.expect(/\r\n/) { |line| rsp.push line }
             uii.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{alcheck}'") if rsp[-1].to_s.match(/#{alcheck}/)
             puts rsp[-1]
