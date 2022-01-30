@@ -671,7 +671,7 @@ module VagrantPlugins
             cinfo = diskpath.to_s
             addsrtexists = execute(false, "#{@pfexec} zfs list | grep #{diskpath} | awk '{ print $1 }' | head -n 1 || true")
             uii.info(I18n.t('vagrant_zones.addtl_volume_destroy_root') + cinfo) if addsrtexists == diskpath && addsrtexists != zp.to_s
-            execute(false, "#{@pfexec} zfs destroy #{diskpath}") if addsrtexists == diskpath && addsrtexists != zp.to_s
+            execute(false, "#{@pfexec} zfs destroy -r #{diskpath}") if addsrtexists == diskpath && addsrtexists != zp.to_s
           end
         end
 
