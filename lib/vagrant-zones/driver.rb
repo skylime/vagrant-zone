@@ -1001,17 +1001,17 @@ module VagrantPlugins
         Timeout.timeout(config.setup_wait) do
           rsp = []
           n = 0
-          loop do
-            
-
+          loop do          
             zlogin_read.expect(/\r\n/) { |line| rsp.push line }
             uii.info(I18n.t('vagrant_zones.terminal_access_auto_login') + "'#{alcheck}'") if rsp[-1].to_s.match(/#{alcheck}/)
-            puts "Attempting to Auto Login" if rsp[-1].to_s.match(/#{alcheck}/)
+            uii.info(rsp[-1]) if config.debug_boot && rsp[-1].to_s.match(/#{alcheck}/)
             zlogin_write.puts("#{user(@machine)}") if rsp[-1].to_s.match(/#{alcheck}/)
+            uii.info(rsp[-1]) if config.debug_boot && rsp[-1].to_s.match(/#{alcheck}/)
             rlimitdisable = true if rsp[-1].to_s.match(/#{alcheck}/)
+            
 
+            puts "Passing Password" if rsp[-1].to_s.match(/#{pcheck}/)
             zlogin_write.puts("#{vagrantuserpass(@machine)}") if rsp[-1].to_s.match(/#{pcheck}/)
-            zlogin_write.printf("\n") if rsp[-1].to_s.match(/#{pcheck}/)
             
             uii.info(I18n.t('vagrant_zones.booted_check_terminal_access') + "'#{lcheck}'") if rsp[-1].to_s.match(/#{lcheck}/)
             alm = true if rsp[-1].to_s.match(/#{lcheck}/)
