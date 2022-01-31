@@ -987,8 +987,6 @@ module VagrantPlugins
 
       def zloginboot(uii)
         name = @machine.name
-        int = 5
-        alm = false
         config = @machine.provider_config
         lcheck = config.lcheck
         lcheck = ':~' if config.lcheck.nil?
@@ -998,30 +996,30 @@ module VagrantPlugins
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           Timeout.timeout(config.setup_wait) do
             rsp = []
-            loop do          
+            loop do
               zlogin_read.expect(/\r\n/) { |line| rsp.push line }
               uii.info(rsp[-1]) if config.debug_boot
               sleep(15) if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
               zlogin_write.printf("\n") if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
-              break if rsp[-1].to_s.match(/ubuntu-21.04-base-server/) 
+              break if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
 
-            end  
-              
+            end
+
             if zlogin_read.expect(/#{alcheck}/)
-              uii.info("Entering User") 
+              uii.info('Entering User')
               zlogin_write.printf("#{user(@machine)}\n")
               sleep(5)
             end
-  
+
             if zlogin_read.expect(/#{pcheck}/)
-              uii.info("Entering Pass") 
+              uii.info('Entering Pass')
               zlogin_write.printf("#{vagrantuserpass(@machine)}\n")
               sleep(10)
             end
   
             zlogin_write.printf("\n")
             if zlogin_read.expect(/#{lcheck}/)
-              uii.info("Impersonating Root") 
+              uii.info('Impersonating Root')
               zlogin_write.printf("sudo su\n")
               Process.kill('HUP', pid)
             end
