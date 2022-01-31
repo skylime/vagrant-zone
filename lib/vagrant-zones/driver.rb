@@ -991,9 +991,28 @@ module VagrantPlugins
           rsp = []
           loop do          
             zlogin_read.expect(/\r\n/) { |line| rsp.push line }
-            sleep(15) if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
             uii.info(rsp[-1]) if config.debug_boot
-            break if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
+            sleep(15)
+            if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
+              sleep(15)
+              zlogin_write.printf("\n")
+            end
+            
+            if rsp[-1].to_s.include?(/#{alcheck}/)
+              puts "Entering User"
+              zlogin_write.printf("#{user(@machine)}\n")
+              sleep(5)
+            end
+          
+            if rsp[-1].to_s.include?(/#{pcheck}/)
+              puts "Entering Pass"
+              zlogin_write.printf("#{vagrantuserpass(@machine)}\n")
+              puts vagrantuserpass(@machine)
+              sleep(7)
+            end
+
+            zlogin_write.printf("\n")
+            break if zlogin_read.expect(/#{lcheck}/)           
           end
         end
       end
@@ -1010,22 +1029,7 @@ module VagrantPlugins
         pcheck = 'Password:'
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           zwaitforboot(uii, zlogin_read, zlogin_write)
-          sleep(5)
-          zlogin_write.printf("\n")
-          puts "Entering User"
-          if zlogin_read.expect(/#{alcheck}/)
-            zlogin_write.printf("#{user(@machine)}\n")
-            sleep(5)
-          end
-          puts "Entering Pass"
-          if zlogin_read.expect(/#{pcheck}/)
-            zlogin_write.printf("#{vagrantuserpass(@machine)}\n")
-            sleep(7)
-          end
-          zlogin_write.printf("\n")
-          if zlogin_read.expect(/#{lcheck}/)
-            Process.kill('HUP', pid)
-          end         
+          Process.kill('HUP', pid)
         end
       end
 
