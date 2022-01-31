@@ -1010,7 +1010,6 @@ module VagrantPlugins
         pcheck = 'Password:'
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           zwaitforboot(uii, zlogin_read, zlogin_write)
-          
           sleep(5)
           zlogin_write.printf("\n")
           puts "Entering User"
@@ -1021,13 +1020,12 @@ module VagrantPlugins
           puts "Entering Pass"
           if zlogin_read.expect(/#{pcheck}/)
             zlogin_write.printf("#{vagrantuserpass(@machine)}\n")
-            sleep(5)
+            sleep(7)
           end
           zlogin_write.printf("\n")
           if zlogin_read.expect(/#{lcheck}/)
-            puts "Success"
-          end
-          Process.kill('HUP', pid)
+            Process.kill('HUP', pid)
+          end         
         end
       end
 
