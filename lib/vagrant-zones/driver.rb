@@ -1010,16 +1010,13 @@ module VagrantPlugins
             if zlogin_read.expect(/#{alcheck}/)
               puts "Entering User"
               zlogin_write.printf("#{user(@machine)}\n")
-              sleep(5)
-            end
-  
-            if zlogin_read.expect(/#{pcheck}/)
-              puts "Entering Pass"
+              sleep(10)
               zlogin_write.printf("#{vagrantuserpass(@machine)}\n")
               sleep(10)
+              zlogin_write.printf("\n")
             end
   
-            zlogin_write.printf("\n")
+            
             if zlogin_read.expect(/#{lcheck}/)
               puts "Success"
               Process.kill('HUP', pid)
