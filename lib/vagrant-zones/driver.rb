@@ -1021,7 +1021,7 @@ module VagrantPlugins
   
             zlogin_write.printf("\n")
             if zlogin_read.expect(/#{lcheck}/)
-              puts "Success"
+              zlogin_write.printf("sudo su\n")
               Process.kill('HUP', pid)
             end
           end
