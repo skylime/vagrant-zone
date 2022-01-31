@@ -1002,7 +1002,6 @@ module VagrantPlugins
               sleep(15) if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
               zlogin_write.printf("\n") if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
               break if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
-
             end
 
             if zlogin_read.expect(/#{alcheck}/)
@@ -1016,7 +1015,7 @@ module VagrantPlugins
               zlogin_write.printf("#{vagrantuserpass(@machine)}\n")
               sleep(10)
             end
-  
+
             zlogin_write.printf("\n")
             if zlogin_read.expect(/#{lcheck}/)
               uii.info('Impersonating Root')
