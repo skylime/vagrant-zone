@@ -985,38 +985,6 @@ module VagrantPlugins
         network(uii, 'setup') if config.brand == 'bhyve' && !config.cloud_init_enabled
       end
 
-      def zwaitforboot(uii, zlogin_read, zlogin_write)
-        config = @machine.provider_config
-        Timeout.timeout(config.setup_wait) do
-          rsp = []
-          loop do          
-            zlogin_read.expect(/\r\n/) { |line| rsp.push line }
-            uii.info(rsp[-1]) if config.debug_boot
-            sleep(15)
-            if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
-              sleep(15)
-              zlogin_write.printf("\n")
-            end
-            
-            if rsp[-1].to_s.include?(/#{alcheck}/)
-              puts "Entering User"
-              zlogin_write.printf("#{user(@machine)}\n")
-              sleep(5)
-            end
-          
-            if rsp[-1].to_s.include?(/#{pcheck}/)
-              puts "Entering Pass"
-              zlogin_write.printf("#{vagrantuserpass(@machine)}\n")
-              puts vagrantuserpass(@machine)
-              sleep(7)
-            end
-
-            zlogin_write.printf("\n")
-            break if zlogin_read.expect(/#{lcheck}/)           
-          end
-        end
-      end
-
       def zloginboot(uii)
         name = @machine.name
         int = 5
@@ -1028,8 +996,35 @@ module VagrantPlugins
         alcheck = 'login:' if config.alcheck.nil?
         pcheck = 'Password:'
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
-          zwaitforboot(uii, zlogin_read, zlogin_write)
-          Process.kill('HUP', pid)
+          Timeout.timeout(config.setup_wait) do
+            rsp = []
+            loop do          
+              zlogin_read.expect(/\r\n/) { |line| rsp.push line }
+              uii.info(rsp[-1]) if config.debug_boot
+              
+              sleep(15) if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
+              zlogin_write.printf("\n") if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
+              break if rsp[-1].to_s.match(/ubuntu-21.04-base-server/) 
+            end  
+              
+            if zlogin_read.expect(/#{alcheck}/)
+              puts "Entering User"
+              zlogin_write.printf("#{user(@machine)}\n")
+              sleep(5)
+            end
+  
+            if zlogin_read.expect(/#{pcheck}/)
+              puts "Entering Pass"
+              zlogin_write.printf("#{vagrantuserpass(@machine)}\n")
+              sleep(10)
+            end
+  
+            zlogin_write.printf("\n")
+            if zlogin_read.expect(/#{lcheck}/)
+              puts "Success"
+              Process.kill('HUP', pid)
+            end
+          end
         end
       end
 
