@@ -1010,8 +1010,10 @@ module VagrantPlugins
             if zlogin_read.expect(/#{alcheck}/)
               puts "Entering User"
               zlogin_write.printf("#{user(@machine)}\n")
+              puts user(@machine)
               sleep(10)
               zlogin_write.printf("#{vagrantuserpass(@machine)}\n")
+              puts vagrantuserpass(@machine)
               sleep(10)
               zlogin_write.printf("\n")
             end
