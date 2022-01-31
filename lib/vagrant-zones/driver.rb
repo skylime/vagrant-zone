@@ -1001,26 +1001,27 @@ module VagrantPlugins
             loop do          
               zlogin_read.expect(/\r\n/) { |line| rsp.push line }
               uii.info(rsp[-1]) if config.debug_boot
-              
               sleep(15) if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
               zlogin_write.printf("\n") if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
               break if rsp[-1].to_s.match(/ubuntu-21.04-base-server/) 
+
             end  
               
             if zlogin_read.expect(/#{alcheck}/)
-              puts "Entering User"
+              uii.info("Entering User") 
               zlogin_write.printf("#{user(@machine)}\n")
               sleep(5)
             end
   
             if zlogin_read.expect(/#{pcheck}/)
-              puts "Entering Pass"
+              uii.info("Entering Pass") 
               zlogin_write.printf("#{vagrantuserpass(@machine)}\n")
               sleep(10)
             end
   
             zlogin_write.printf("\n")
             if zlogin_read.expect(/#{lcheck}/)
+              uii.info("Impersonating Root") 
               zlogin_write.printf("sudo su\n")
               Process.kill('HUP', pid)
             end
