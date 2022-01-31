@@ -21,7 +21,7 @@ module VagrantPlugins
         @cdroms = nil
         @shared_dir = nil
         @os_type = 'generic'
-        @lcheck = ':~'
+        @lcheck = UNSET_VALUE
         @alcheck = 'login: '
         @safe_restart = nil
         @safe_shutdown = nil
