@@ -1021,7 +1021,7 @@ module VagrantPlugins
             if zlogin_read.expect(/#{lcheck}/)
               uii.info('Impersonating Root')
               zlogin_write.printf("sudo su\n")
-              sleep(3)
+              sleep(10)
               Process.kill('HUP', pid)
             end
           end
