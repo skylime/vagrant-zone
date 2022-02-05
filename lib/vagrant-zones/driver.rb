@@ -993,6 +993,8 @@ module VagrantPlugins
         lcheck = ':~' if config.lcheck.nil?
         alcheck = config.alcheck
         alcheck = 'login:' if config.alcheck.nil?
+        bstring = ' OK ' if config.booted_string.nil?
+        bstring = config.booted_string unless config.booted_string.nil?
         pcheck = 'Password:'
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           Timeout.timeout(config.setup_wait) do
@@ -1000,9 +1002,9 @@ module VagrantPlugins
             loop do
               zlogin_read.expect(/\r\n/) { |line| rsp.push line }
               uii.info(rsp[-1]) if config.debug_boot
-              sleep(15) if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
-              zlogin_write.printf("\n") if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
-              break if rsp[-1].to_s.match(/ubuntu-21.04-base-server/)
+              sleep(15) if rsp[-1].to_s.match(/#{bstring}/)
+              zlogin_write.printf("\n") if rsp[-1].to_s.match(/#{bstring}/)
+              break if rsp[-1].to_s.match(/#{bstring}/)
             end
 
             if zlogin_read.expect(/#{alcheck}/)
