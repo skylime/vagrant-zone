@@ -8,6 +8,7 @@ This project is still in the early stages, any feedback is much appreciated
 - [Status](#status)
   - [Functions](https://github.com/Makr91/vagrant-zones/wiki/Status#functions)
   - [Boxes](https://github.com/Makr91/vagrant-zones/wiki/Status#Box-Support)
+- [Examples](https://github.com/Makr91/vagrant-zones-examples)
 - [Installation](#installation)
 - [Known Issues](https://github.com/Makr91/vagrant-zones/wiki/Known-Issues-and-Workarounds)
 - [Development](https://github.com/Makr91/vagrant-zones/wiki/Plugin-Development-Environment)
