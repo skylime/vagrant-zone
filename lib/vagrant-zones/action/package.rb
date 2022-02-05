@@ -95,7 +95,7 @@ module VagrantPlugins
         end
 
         def snapshot_send(datasetpath, destination, datetime, uii, config)
-          uii.info('Sending Snapshot to ZFS Send Sream image.')
+          uii.info('Sending Snapshot to ZFS Send Stream image.')
           result = execute(true, "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}")
           puts "#{@pfexec} zfs send #{datasetpath}/boot@vagrant_box#{datetime} > #{destination}" if result.zero? && config.debug
         end

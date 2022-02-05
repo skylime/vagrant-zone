@@ -1,6 +1,8 @@
 # vagrant-zones
 Vagrant Plugin which can be used to managed Bhyve, LX and native zones on illumos (OmniOSce)
 
+This project is still in the early stages, any feedback is much appreciated
+
 [![Gem Version](https://badge.fury.io/rb/vagrant-zones.svg)](https://badge.fury.io/rb/vagrant-zones)
 
 - [Status](#status)
@@ -23,7 +25,6 @@ Vagrant Plugin which can be used to managed Bhyve, LX and native zones on illumo
   - [Clone and existing zone](https://github.com/Makr91/vagrant-zones/wiki/Commands#clone)
   - [Safe restart/shutdown](https://github.com/Makr91/vagrant-zones/wiki/Commands#safe-control)
   - [Start/Stop console](https://github.com/Makr91/vagrant-zones/wiki/Commands#console)
-
 
 ## Installation
 
