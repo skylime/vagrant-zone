@@ -81,18 +81,17 @@ module VagrantPlugins
 
           ## If it's a regular name (everything else), try to find it on Vagrant Cloud
           else
-            # Support zss format only for now, use other images and convert later
-            box_format = env[:machine].box.metadata['format'] unless env[:machine].box.metadata['format'].nil?
+            # Support zss maybe zst? Same thing? format only for now, use other images and convert later
+            box_format = env[:machine].box.metadata['format'] unless env[:machine].box.nil?
 
             if box_format == 'ovf'
               ## Insert Future Code to try to convert existing box
               ui.info(I18n.t('vagrant_zones.detected_ovf_format'))
             end
+
+            ## No Local box template exists, Lets use Vagrant HandleBox to download the Box template
             ui.info(I18n.t('vagrant_zones.vagrant_cloud_box_detected') + image)
             ui.clear_line
-            ## Check if local repo exist, if not try to download
-
-            ## If exists, ensure repo is latest, if not try to download
           end
           @app.call(env)
         end

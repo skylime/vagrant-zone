@@ -1,6 +1,8 @@
 # vagrant-zones
 Vagrant Plugin which can be used to managed Bhyve, LX and native zones on illumos (OmniOSce)
 
+[![Gem Version](https://badge.fury.io/rb/vagrant-zones.svg)](https://badge.fury.io/rb/vagrant-zones)
+
 - [Status](#status)
   - [Functions](https://github.com/Makr91/vagrant-zones/wiki/Status#functions)
   - [Boxes](https://github.com/Makr91/vagrant-zones/wiki/Status#Box-Support)

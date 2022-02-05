@@ -830,9 +830,9 @@ module VagrantPlugins
       def zonecfgcloudinit(uii, _name, config, zcfg)
         return unless config.cloud_init_enabled
 
-        cloudconfig = 'on' if config.cloud_init_conf.nil? 
-        cloudconfig = config.cloud_init_conf.to_s unless config.cloud_init_conf.nil? 
-        
+        cloudconfig = 'on' if config.cloud_init_conf.nil?
+        cloudconfig = config.cloud_init_conf.to_s unless config.cloud_init_conf.nil?
+
         uii.info(I18n.t('vagrant_zones.setting_cloud_init_access') + cloudconfig.to_s)
         execute(false, %(#{zcfg}"add attr; set name=cloud-init; set value=#{cloudconfig}; set type=string; end;"))
 
