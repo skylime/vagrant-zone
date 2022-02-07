@@ -341,6 +341,7 @@ module VagrantPlugins
 
         ## if mac is auto, then grab NIC from VNIC
         if mac = 'auto'
+          mac = ''
           cmd = %(#{@pfexec} dladm show-vnic #{hvnic_name} | tail -n +2 |  awk '{ print $4 }')
           vnicmac = execute(false, cmd.to_s)
           vnicmac.split(":").each { |x|  mac += sprintf("%02x", x.to_i(16)) + ":"   }
@@ -464,6 +465,7 @@ module VagrantPlugins
         mac = macaddress(uii, opts)
         ## if mac is auto, then grab NIC from VNIC
         if mac = 'auto'
+          mac = ''
           cmd = %(#{@pfexec} dladm show-vnic #{vnic_name} | tail -n +2 |  awk '{ print $4 }')
           vnicmac = execute(false, cmd.to_s)
           vnicmac.split(":").each { |x|  mac += sprintf("%02x", x.to_i(16)) + ":"   }
@@ -551,6 +553,7 @@ module VagrantPlugins
         ## Set Mac address from VNIC
         mac = macaddress(uii, opts)
         if mac = 'auto'
+          mac = ''
           cmd = %(#{@pfexec} dladm show-vnic #{hvnic_name} | tail -n +2 |  awk '{ print $4 }')
           vnicmac = execute(false, cmd.to_s)
           vnicmac.split(":").each { |x|  mac += sprintf("%02x", x.to_i(16)) + ":"   }
@@ -935,6 +938,7 @@ module VagrantPlugins
         mac = macaddress(uii, opts)
         ## if mac is auto, then grab NIC from VNIC
         if mac = 'auto'
+          mac = ''
           cmd = %(#{@pfexec} dladm show-vnic #{vnic_name} | tail -n +2 |  awk '{ print $4 }')
           vnicmac = execute(false, cmd.to_s)
           vnicmac.split(":").each { |x|  mac += sprintf("%02x", x.to_i(16)) + ":"   }
