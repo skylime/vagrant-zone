@@ -344,8 +344,6 @@ module VagrantPlugins
           mac = ''
           cmd = %(#{@pfexec} dladm show-vnic #{hvnic_name} | tail -n +2 |  awk '{ print $4 }')
           vnicmac = execute(false, cmd.to_s)
-          strg2 = "%<si>5s %<s>-#{sml}s %<u>-#{uml}s %<a>-#{aml}s %<r>-#{rml}s %<p>-#{pml}s"
-          puts format strg1.to_s, sym: '#', s: ar[0], u: ar[1], a: ar[2], r: ar[3], p: ar[4]
           vnicmac.split(':').each { |x| mac += '%02x' % x.to_i(16) + ':' }
           mac = mac[0..-2]
         end
