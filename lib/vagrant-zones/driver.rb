@@ -344,7 +344,7 @@ module VagrantPlugins
           mac = ''
           cmd = %(#{@pfexec} dladm show-vnic #{hvnic_name} | tail -n +2 |  awk '{ print $4 }')
           vnicmac = execute(false, cmd.to_s)
-          vnicmac.split(':').each { |x| mac += format('%02x' , x.to_i(16)) + ':' }
+          vnicmac.split(':').each { |x| mac += "#{format('%02x', x.to_i(16))}:" }
           mac = mac[0..-2]
         end
         uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp') + hvnic_name.to_s)
@@ -468,7 +468,7 @@ module VagrantPlugins
           mac = ''
           cmd = %(#{@pfexec} dladm show-vnic #{vnic_name} | tail -n +2 |  awk '{ print $4 }')
           vnicmac = execute(false, cmd.to_s)
-          vnicmac.split(':').each { |x| mac += format('%02x' , x.to_i(16)) + ':' }
+          vnicmac.split(':').each { |x| mac += "#{format('%02x', x.to_i(16))}:" }
           mac = mac[0..-2]
         end
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
@@ -555,7 +555,7 @@ module VagrantPlugins
           mac = ''
           cmd = %(#{@pfexec} dladm show-vnic #{hvnic_name} | tail -n +2 |  awk '{ print $4 }')
           vnicmac = execute(false, cmd.to_s)
-          vnicmac.split(':').each { |x| mac += format('%02x' , x.to_i(16)) + ':' }
+          vnicmac.split(':').each { |x| mac += "#{format('%02x', x.to_i(16))}:" }
           mac = mac[0..-2]
         end
         uii.info(I18n.t('vagrant_zones.configuring_dhcp'))
@@ -940,7 +940,7 @@ module VagrantPlugins
           mac = ''
           cmd = %(#{@pfexec} dladm show-vnic #{vnic_name} | tail -n +2 |  awk '{ print $4 }')
           vnicmac = execute(false, cmd.to_s)
-          vnicmac.split(':').each { |x| mac += format('%02x' , x.to_i(16)) + ':' }
+          vnicmac.split(':').each { |x| mac += "#{format('%02x', x.to_i(16))}:" }
           mac = mac[0..-2]
         end
         servers = dnsservers(uii)
