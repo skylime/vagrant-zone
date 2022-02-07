@@ -537,12 +537,18 @@ module VagrantPlugins
       ## Create dhcp entries for the zone
       def zonedhcpentries(uii, opts)
         config = @machine.provider_config
-        mac = macaddress(uii, opts)
+        
         ip = ipaddress(uii, opts)
         name = @machine.name
         defrouter = opts[:gateway].to_s
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
+        ## Set Mac address from VNIC
+        mac = macaddress(uii, opts)
+        if mac = 'auto'
+          cmd = %(#{@pfexec} dladm show-vnic #{hvnic_name} | tail -n +2 |  awk '{ print $4 }')
+          mac = execute(false, cmd.to_s)
+        end
         uii.info(I18n.t('vagrant_zones.configuring_dhcp'))
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         dhcpentries = execute(false, "#{@pfexec} cat /etc/dhcpd.conf").split("\n")
