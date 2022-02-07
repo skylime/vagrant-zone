@@ -338,10 +338,13 @@ module VagrantPlugins
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         mac = macaddress(uii, opts)
+
         ## if mac is auto, then grab NIC from VNIC
         if mac = 'auto'
           cmd = %(#{@pfexec} dladm show-vnic #{hvnic_name} | tail -n +2 |  awk '{ print $4 }')
-          mac = execute(false, cmd.to_s)
+          vnicmac = execute(false, cmd.to_s)
+          vnicmac.split(":").each { |x|  mac += sprintf("%02x", x.to_i(16)) + ":"   }
+          mac = mac[0..-2]
         end
         uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp') + hvnic_name.to_s)
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
@@ -462,7 +465,9 @@ module VagrantPlugins
         ## if mac is auto, then grab NIC from VNIC
         if mac = 'auto'
           cmd = %(#{@pfexec} dladm show-vnic #{vnic_name} | tail -n +2 |  awk '{ print $4 }')
-          mac = execute(false, cmd.to_s)
+          vnicmac = execute(false, cmd.to_s)
+          vnicmac.split(":").each { |x|  mac += sprintf("%02x", x.to_i(16)) + ":"   }
+          mac = mac[0..-2]
         end
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         servers = dnsservers(uii)
@@ -547,7 +552,9 @@ module VagrantPlugins
         mac = macaddress(uii, opts)
         if mac = 'auto'
           cmd = %(#{@pfexec} dladm show-vnic #{hvnic_name} | tail -n +2 |  awk '{ print $4 }')
-          mac = execute(false, cmd.to_s)
+          vnicmac = execute(false, cmd.to_s)
+          vnicmac.split(":").each { |x|  mac += sprintf("%02x", x.to_i(16)) + ":"   }
+          mac = mac[0..-2]
         end
         uii.info(I18n.t('vagrant_zones.configuring_dhcp'))
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
@@ -929,7 +936,9 @@ module VagrantPlugins
         ## if mac is auto, then grab NIC from VNIC
         if mac = 'auto'
           cmd = %(#{@pfexec} dladm show-vnic #{vnic_name} | tail -n +2 |  awk '{ print $4 }')
-          mac = execute(false, cmd.to_s)
+          vnicmac = execute(false, cmd.to_s)
+          vnicmac.split(":").each { |x|  mac += sprintf("%02x", x.to_i(16)) + ":"   }
+          mac = mac[0..-2]
         end
         servers = dnsservers(uii)
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
