@@ -331,12 +331,18 @@ module VagrantPlugins
       ## Delete DHCP entries for Zones
       def zonedhcpentriesrem(uii, opts)
         config = @machine.provider_config
-        mac = macaddress(uii, opts)
+
         ip = ipaddress(uii, opts)
         name = @machine.name
         defrouter = opts[:gateway].to_s
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
+        mac = macaddress(uii, opts)
+        ## if mac is auto, then grab NIC from VNIC
+        if mac = 'auto'
+          cmd = %(#{@pfexec} dladm show-vnic #{hvnic_name} | tail -n +2 |  awk '{ print $4 }')
+          mac = execute(false, cmd.to_s)
+        end
         uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp') + hvnic_name.to_s)
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         subnet = %(subnet #{broadcast} netmask #{opts[:netmask]} { option routers #{defrouter}; })
@@ -451,8 +457,13 @@ module VagrantPlugins
 
         ip = ipaddress(uii, opts)
         defrouter = opts[:gateway].to_s
-        mac = macaddress(uii, opts)
         vnic_name = vname(uii, opts)
+        mac = macaddress(uii, opts)
+        ## if mac is auto, then grab NIC from VNIC
+        if mac = 'auto'
+          cmd = %(#{@pfexec} dladm show-vnic #{vnic_name} | tail -n +2 |  awk '{ print $4 }')
+          mac = execute(false, cmd.to_s)
+        end
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         servers = dnsservers(uii)
         uii.info(I18n.t('vagrant_zones.netplan_applied')) if ssh_run_command(uii, 'sudo rm -rf /etc/netplan/*.yaml')
@@ -907,8 +918,13 @@ module VagrantPlugins
       def zonenicstpzloginsetup(uii, opts)
         ip = ipaddress(uii, opts)
         defrouter = opts[:gateway].to_s
-        mac = macaddress(uii, opts)
         vnic_name = vname(uii, opts)
+        mac = macaddress(uii, opts)
+        ## if mac is auto, then grab NIC from VNIC
+        if mac = 'auto'
+          cmd = %(#{@pfexec} dladm show-vnic #{vnic_name} | tail -n +2 |  awk '{ print $4 }')
+          mac = execute(false, cmd.to_s)
+        end
         servers = dnsservers(uii)
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         uii.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
@@ -1008,20 +1024,20 @@ module VagrantPlugins
             end
 
             if zlogin_read.expect(/#{alcheck}/)
-              uii.info('Entering User')
+              uii.info('Automated Login -- Entering User, Waiting 10 Seconds')
               zlogin_write.printf("#{user(@machine)}\n")
               sleep(5)
             end
 
             if zlogin_read.expect(/#{pcheck}/)
-              uii.info('Entering Pass')
+              uii.info('Automated Login -- Entering Pass, Waiting 10 Seconds')
               zlogin_write.printf("#{vagrantuserpass(@machine)}\n")
               sleep(10)
             end
 
             zlogin_write.printf("\n")
             if zlogin_read.expect(/#{lcheck}/)
-              uii.info('Impersonating Root')
+              uii.info('Automated Login -- Impersonating Root, Waiting 10 Seconds')
               zlogin_write.printf("sudo su\n")
               sleep(10)
               Process.kill('HUP', pid)
