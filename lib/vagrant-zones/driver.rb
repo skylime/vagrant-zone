@@ -1097,6 +1097,7 @@ module VagrantPlugins
         bstring = ' OK ' if config.booted_string.nil?
         bstring = config.booted_string unless config.booted_string.nil?
         pcheck = 'Password:'
+        uii.info('Waiting on Boot' + bstring)
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           Timeout.timeout(config.setup_wait) do
             rsp = []
