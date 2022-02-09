@@ -80,6 +80,8 @@ en:
       - New Netplan configurations Applied
     netplan_applied_dhcp: |-
       - Set DHCP Netplan configurations  
+    stale_netplan_removed: |-
+      - Stale Netplan configurations removed 
     netplan_applied_static: |-
       - Set Static Netplan configurations  
     console_failednetplan: |-
