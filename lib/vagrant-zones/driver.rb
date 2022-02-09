@@ -304,6 +304,8 @@ module VagrantPlugins
         uii.info(I18n.t('vagrant_zones.networking_int_add')) if state == 'setup' && config.setup_method == 'zlogin'
         uii.info(I18n.t('vagrant_zones.netplan_remove')) if state == 'setup' && config.setup_method == 'zlogin'
         zlogin(uii, 'rm -rf /etc/netplan/*.yaml') if state == 'setup' && config.setup_method == 'zlogin'
+        ssh_run_command(uii, 'sudo rm -rf /etc/netplan/*.yaml') if state == 'setup' && config.setup_method == 'dhcp'
+        uii.info(I18n.t('vagrant_zones.stale_netplan_removed')) if state == 'setup' && config.setup_method == 'dhcp'
         @machine.config.vm.networks.each do |adaptertype, opts|
           case adaptertype.to_s
           when 'public_network'
@@ -494,7 +496,7 @@ module VagrantPlugins
         ## End code block for alt network manager
 
         ## Begin of code block to move to Netplan function
-        uii.info(I18n.t('vagrant_zones.stale_netplan_removed')) if ssh_run_command(uii, 'sudo rm -rf /etc/netplan/*.yaml')
+
         uii.info(I18n.t('vagrant_zones.configure_interface_using_vnic'))
         uii.info("  #{vnic_name}")
 
