@@ -608,6 +608,7 @@ module VagrantPlugins
         execute(false, "#{@pfexec} svcadm disable dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm enable dhcp:ipv4")
       end
+      
 
       ## Check if Address shows up in lease list
       # /var/db/dhcpd
@@ -626,7 +627,7 @@ module VagrantPlugins
         vnic_name = vname(uii, opts)
         if opts[:vlan].nil?
           uii.info(I18n.t('vagrant_zones.creating_vnic'))
-          uii.info("  #{vnic_name})
+          uii.info("  #{vnic_name}")
           execute(false, "#{@pfexec} dladm create-vnic -l #{opts[:bridge]} -m #{mac} #{vnic_name}")
         else
           vlan = opts[:vlan]
