@@ -415,7 +415,7 @@ module VagrantPlugins
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{hvnic_name} | awk '{ print $1 }' ")
         uii.info(I18n.t('vagrant_zones.removing_host_vnic')) if vnic_configured == hvnic_name.to_s
-        uii.info("    #{hvnic_name}") if vnic_configured == hvnic_name.to_s
+        uii.info("  #{hvnic_name}") if vnic_configured == hvnic_name.to_s
         execute(false, "#{@pfexec} ipadm delete-if #{hvnic_name}") if vnic_configured == hvnic_name.to_s
         execute(false, "#{@pfexec} dladm delete-vnic #{hvnic_name}") if vnic_configured == hvnic_name.to_s
         uii.info(I18n.t('vagrant_zones.no_removing_host_vnic')) unless vnic_configured == hvnic_name.to_s
