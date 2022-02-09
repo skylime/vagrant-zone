@@ -62,7 +62,6 @@ module VagrantPlugins
       def install(uii)
         config = @machine.provider_config
         name = @machine.name
-        uii.info(I18n.t('vagrant_zones.installing_zone') + config.brand)
         case config.brand
         when 'lx'
           box = "#{@machine.data_dir}/#{@machine.config.vm.box}"
@@ -74,6 +73,7 @@ module VagrantPlugins
         when 'kvm' || 'illumos'
           raise Errors::NotYetImplemented
         end
+        uii.info(I18n.t('vagrant_zones.installing_zone') + config.brand)
       end
 
       ## Control the zone from inside the zone OS
@@ -299,6 +299,7 @@ module VagrantPlugins
       ## Manage Network Interfaces
       def network(uii, state)
         config = @machine.provider_config
+        uii.info(I18n.t('vagrant_zones.creating_networking_interfaces')) if state == 'create'
         uii.info(I18n.t('vagrant_zones.networking_int_add')) if state == 'setup' && config.setup_method == 'zlogin'
         uii.info(I18n.t('vagrant_zones.netplan_remove')) if state == 'setup' && config.setup_method == 'zlogin'
         zlogin(uii, 'rm -rf /etc/netplan/*.yaml') if state == 'setup' && config.setup_method == 'zlogin'
@@ -493,7 +494,7 @@ module VagrantPlugins
         allowed_address = allowedaddress(uii, opts)
         defrouter = opts[:gateway].to_s
         vnic_name = vname(uii, opts)
-        uii.info("#{I18n.t('vagrant_zones.nat_vnic_setup')}: #{vnic_name}")
+        uii.info("#{I18n.t('vagrant_zones.nat_vnic_setup')}#{vnic_name}")
         strt = "#{@pfexec} zonecfg -z #{@machine.name} "
         cie = config.cloud_init_enabled
         case config.brand
