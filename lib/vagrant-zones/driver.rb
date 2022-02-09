@@ -546,6 +546,7 @@ module VagrantPlugins
         config = @machine.provider_config
         ip = ipaddress(uii, opts)
         name = @machine.name
+        vnic_name = vname(uii, opts)
         defrouter = opts[:gateway].to_s
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
@@ -553,7 +554,7 @@ module VagrantPlugins
         mac = macaddress(uii, opts)
         if mac == 'auto'
           mac = ''
-          cmd = %(#{@pfexec} dladm show-vnic #{hvnic_name} | tail -n +2 |  awk '{ print $4 }')
+          cmd = %(#{@pfexec} dladm show-vnic #{vnic_name} | tail -n +2 |  awk '{ print $4 }')
           vnicmac = execute(false, cmd.to_s)
           vnicmac.split(':').each { |x| mac += "#{format('%02x', x.to_i(16))}:" }
           mac = mac[0..-2]
