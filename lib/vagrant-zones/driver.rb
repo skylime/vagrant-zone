@@ -73,7 +73,7 @@ module VagrantPlugins
         when 'kvm' || 'illumos'
           raise Errors::NotYetImplemented
         end
-        uii.info(I18n.t('vagrant_zones.installing_zone') + config.brand)
+        uii.info(I18n.t('vagrant_zones.installing_zone'))
         uii.info("  #{config.brand}")
       end
 
@@ -484,9 +484,20 @@ module VagrantPlugins
         end
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         servers = dnsservers(uii)
+
+        ## Code Block to Detect OS
+
+        ## Begin code block to choose network manager
+        ## End code block to choose network manager
+
+        ## Begin code block for  alt network manager
+        ## End code block for alt network manager
+
+        ## Begin of code block to move to Netplan function
         uii.info(I18n.t('vagrant_zones.stale_netplan_removed')) if ssh_run_command(uii, 'sudo rm -rf /etc/netplan/*.yaml')
         uii.info(I18n.t('vagrant_zones.configure_interface_using_vnic'))
         uii.info("  #{vnic_name}")
+
         netplan1 = %(network:\n  version: 2\n  ethernets:\n    #{vnic_name}:\n      match:\n        macaddress: #{mac}\n)
         netplan2 = %(      dhcp-identifier: mac\n      dhcp4: #{opts[:dhcp]}\n      dhcp6: #{opts[:dhcp6]}\n)
         netplan3 = %(      set-name: #{vnic_name}\n      addresses: [#{ip}/#{shrtsubnet}]\n      gateway4: #{defrouter}\n)
@@ -497,6 +508,9 @@ module VagrantPlugins
         uii.info(infomessage) if ssh_run_command(uii, cmd)
         ## Apply the Configuration
         uii.info(I18n.t('vagrant_zones.netplan_applied')) if ssh_run_command(uii, 'sudo netplan apply')
+        ## End of code block to move to Netplan function
+
+        
       end
 
       ## zonecfg function for for nat Networking
@@ -609,10 +623,13 @@ module VagrantPlugins
         mac = macaddress(uii, opts)
         vnic_name = vname(uii, opts)
         if opts[:vlan].nil?
+          uii.info(I18n.t('vagrant_zones.creating_vnic'))
+          uii.info("  #{vnic_name})
           execute(false, "#{@pfexec} dladm create-vnic -l #{opts[:bridge]} -m #{mac} #{vnic_name}")
         else
           vlan = opts[:vlan]
-          uii.info(I18n.t('vagrant_zones.creating_vnic') + vnic_name)
+          uii.info(I18n.t('vagrant_zones.creating_vnic'))
+          uii.info("  #{vnic_name})
           execute(false, "#{@pfexec} dladm create-vnic -l #{opts[:bridge]} -m #{mac} -v #{vlan} #{vnic_name}")
         end
       end
@@ -978,6 +995,16 @@ module VagrantPlugins
         end
         servers = dnsservers(uii)
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
+
+        ## Code Block to Detect OS
+
+        ## Begin code block to choose network manager
+        ## End code block to choose network manager
+
+        ## Begin code block for  alt network manager
+        ## End code block for alt network manager
+
+        ## Begin of code block to move to Netplan function
         uii.info(I18n.t('vagrant_zones.configure_interface_using_vnic'))
         uii.info("  #{vnic_name}")
         netplan1 = %(network:\n  version: 2\n  ethernets:\n    #{vnic_name}:\n      match:\n        macaddress: #{mac}\n)
@@ -990,6 +1017,8 @@ module VagrantPlugins
         uii.info(infomessage) if zlogin(uii, cmd)
         ## Apply the Configuration
         uii.info(I18n.t('vagrant_zones.netplan_applied')) if zlogin(uii, 'netplan apply')
+        ## End of code block to move to Netplan function
+
       end
 
       # This ensures the zone is safe to boot

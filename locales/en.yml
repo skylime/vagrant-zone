@@ -118,7 +118,7 @@ en:
     bhyve_zone_config_uninstall: |-
       Uninstalling the zone
     preflight_checks: |-
-      Running Preflight Checks:
+      Running Preflight checks:
     vbox_run_check: |-
       - Checking if VirtualBox is loaded as it may conflict with bhyve
     lx_check: |-
