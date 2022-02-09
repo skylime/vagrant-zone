@@ -47,8 +47,9 @@ module VagrantPlugins
             break if @driver.waitforboot(ui, env[:metrics], env[:interrupted])
             retryable(on: Errors::TimeoutError, tries: 60) do
               next if env[:interrupted]
-              break if @driver.waitforboot(ui, env[:metrics], env[:interrupted])
+              breakwait = true if @driver.waitforboot(ui, env[:metrics], env[:interrupted])
             end
+            break if breakwait
           end
           return terminate(env) if env[:interrupted]
 
