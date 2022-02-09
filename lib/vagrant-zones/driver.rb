@@ -349,7 +349,7 @@ module VagrantPlugins
           mac = mac[0..-2]
         end
         uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp'))
-        uii.info("    #{hvnic_name.to_s}")
+        uii.info("  #{hvnic_name.to_s}")
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         subnet = %(subnet #{broadcast} netmask #{opts[:netmask]} { option routers #{defrouter}; })
         subnetopts = %(host #{name} { option host-name "#{name}"; hardware ethernet #{mac}; fixed-address #{ip}; })
@@ -387,7 +387,7 @@ module VagrantPlugins
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         uii.info(I18n.t('vagrant_zones.deconfiguring_nat'))
-        uii.info("    #{vnic_name.to_s}")
+        uii.info("  #{vnic_name.to_s}")
         line1 = %(map #{opts[:bridge]} #{broadcast}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
         line2 = %(map #{opts[:bridge]} #{broadcast}/#{shrtsubnet} -> 0/32)
         File.open('/etc/ipf/ipnat.conf-temp', 'w') do |out_file|
@@ -403,7 +403,7 @@ module VagrantPlugins
         vnic_name = vname(uii, opts)
         vnic_configured = execute(false, "#{@pfexec} dladm show-vnic | grep #{vnic_name} | awk '{ print $1 }' ")
         uii.info(I18n.t('vagrant_zones.removing_vnic')) if vnic_configured == vnic_name.to_s
-        uii.info("    #{vnic_name}") if vnic_configured == vnic_name.to_s
+        uii.info("  #{vnic_name}") if vnic_configured == vnic_name.to_s
         execute(false, "#{@pfexec} dladm delete-vnic #{vnic_name}") if vnic_configured == vnic_name.to_s
         uii.info(I18n.t('vagrant_zones.no_removing_vnic')) unless vnic_configured == vnic_name.to_s
       end
@@ -426,7 +426,7 @@ module VagrantPlugins
         ether_name = "stub_#{config.partition_id}_#{opts[:nic_number]}"
         ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep #{ether_name} | awk '{ print $1 }' ")
         uii.info(I18n.t('vagrant_zones.delete_ethervnic') + ether_name) if ether_configured == ether_name
-        uii.info("    #{ether_name}") if ether_configured == ether_name
+        uii.info("  #{ether_name}") if ether_configured == ether_name
         uii.info(I18n.t('vagrant_zones.no_delete_ethervnic')) unless ether_configured == ether_name
         execute(false, "#{@pfexec} dladm delete-etherstub #{ether_name}") if ether_configured == ether_name
       end

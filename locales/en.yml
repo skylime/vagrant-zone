@@ -273,11 +273,10 @@ en:
         
     deconfiguring_nat: |-
       - Deleting NAT entries: 
-        
     configuring_dhcp: |-
       - Configuring DHCP 
     deconfiguring_dhcp: |-
-      - Deleting DHCP entries 
+      - Deleting DHCP entries: 
     chk_dhcp_addr: |-
       - Checking if Zone has leased the Address:
         
