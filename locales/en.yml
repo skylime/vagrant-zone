@@ -124,7 +124,7 @@ en:
     lx_check: |-
       Minimal checks performed for LX Branded zones on the host OS, please use with caution!
     bhyve_check: |-
-      - Checking OmniOS release against version ==> 
+      - Checking OmniOS release against version:
     bhyve_compat_check: |-
       - Checking bhyve installation environment
     wait_for_boot: |-
@@ -142,7 +142,7 @@ en:
     terminal_access_auto_login: |-
       Could not login as root, will attempt to auto-login with supplied credentials:
     detecting_box: |-
-      Detecting Image
+      Detecting image
     importing_vagrant_key: |-
       Importing Vagrant key from Cloud:
     datadir: |-
@@ -196,7 +196,7 @@ en:
     console: |-
       Starting console:
     setting_console_access: |-
-      - Setting Console access port: 
+      - Setting console access port: 
     zfs_snapshot_cron: |-
       Listing configured cron jobs
     zfs_snapshot_create: |-
@@ -232,9 +232,9 @@ en:
     creating_etherstub: |-
       - Creating etherstub for private network: 
     creating_etherhostvnic: |-
-      - Creating etherstub for host to zone NAT: 
+      - Creating NAT VNIC for zone over etherstub: 
     creating_ethervnic: |-
-      - Creating etherstub VNIC for host: 
+      - Creating VNIC for host over etherstub: 
     creating_networking_interfaces: |-
       Creating networking interfaces for zone: 
     nat_vnic_setup: |-

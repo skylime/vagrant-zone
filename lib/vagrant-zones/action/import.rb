@@ -34,7 +34,7 @@ module VagrantPlugins
           @driver = @machine.provider.driver
           ui = env[:ui]
           ui.info(I18n.t('vagrant_zones.meeting'))
-          ui.info(I18n.t('vagrant_zones.datadir') + datadir.to_s)
+          ui.info(I18n.t('vagrant_zones.datadir'))
           ui.info("  #{datadir.to_s}")
           ui.info(I18n.t('vagrant_zones.detecting_box'))
 

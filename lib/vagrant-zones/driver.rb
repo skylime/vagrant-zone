@@ -485,7 +485,8 @@ module VagrantPlugins
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         servers = dnsservers(uii)
         uii.info(I18n.t('vagrant_zones.stale_netplan_removed')) if ssh_run_command(uii, 'sudo rm -rf /etc/netplan/*.yaml')
-        uii.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
+        uii.info(I18n.t('vagrant_zones.configure_interface_using_vnic'))
+        uii.info("  #{vnic_name}")
         netplan1 = %(network:\n  version: 2\n  ethernets:\n    #{vnic_name}:\n      match:\n        macaddress: #{mac}\n)
         netplan2 = %(      dhcp-identifier: mac\n      dhcp4: #{opts[:dhcp]}\n      dhcp6: #{opts[:dhcp6]}\n)
         netplan3 = %(      set-name: #{vnic_name}\n      addresses: [#{ip}/#{shrtsubnet}]\n      gateway4: #{defrouter}\n)
@@ -535,7 +536,8 @@ module VagrantPlugins
         vnic_name = vname(uii, opts)
         defrouter = opts[:gateway].to_s
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
-        uii.info(I18n.t('vagrant_zones.configuring_nat') + vnic_name.to_s)
+        uii.info(I18n.t('vagrant_zones.configuring_nat'))
+        uii.info("  #{vnic_name.to_s}")
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         ## Read NAT File, Check for these lines, if exist, warn, but continue
         natentries = execute(false, "#{@pfexec} cat /etc/ipf/ipnat.conf").split("\n")
@@ -1032,7 +1034,8 @@ module VagrantPlugins
           # Check whether OmniOS version is lower than r30
           cutoff_release = '1510380'
           cutoff_release = cutoff_release[0..-2].to_i
-          uii.info(I18n.t('vagrant_zones.bhyve_check') + cutoff_release.to_s)
+          uii.info(I18n.t('vagrant_zones.bhyve_check'))
+          uii.info("  #{cutoff_release.to_s}")
           release = File.open('/etc/release', &:readline)
           release = release.scan(/\w+/).values_at(-1)
           release = release[0][1..-2].to_i
