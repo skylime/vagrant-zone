@@ -473,7 +473,7 @@ module VagrantPlugins
         end
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         servers = dnsservers(uii)
-        uii.info(I18n.t('vagrant_zones.netplan_applied')) if ssh_run_command(uii, 'sudo rm -rf /etc/netplan/*.yaml')
+        uii.info(I18n.t('vagrant_zones.stale_netplan_removed')) if ssh_run_command(uii, 'sudo rm -rf /etc/netplan/*.yaml')
         uii.info(I18n.t('vagrant_zones.configure_interface_using_vnic') + vnic_name)
         netplan1 = %(network:\n  version: 2\n  ethernets:\n    #{vnic_name}:\n      match:\n        macaddress: #{mac}\n)
         netplan2 = %(      dhcp-identifier: mac\n      dhcp4: #{opts[:dhcp]}\n      dhcp6: #{opts[:dhcp6]}\n)
@@ -481,7 +481,7 @@ module VagrantPlugins
         netplan4 = %(      nameservers:\n        addresses: [#{servers[0]['nameserver']} , #{servers[1]['nameserver']}] )
         netplan = netplan1 + netplan2 + netplan3 + netplan4
         cmd = "echo -e '#{netplan}' | sudo tee /etc/netplan/#{vnic_name}.yaml"
-        infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml" if config.debug
+        infomessage = I18n.t('vagrant_zones.netplan_applied_static') + "/etc/netplan/#{vnic_name}.yaml"
         uii.info(infomessage) if ssh_run_command(uii, cmd)
         ## Apply the Configuration
         uii.info(I18n.t('vagrant_zones.netplan_applied')) if ssh_run_command(uii, 'sudo netplan apply')
