@@ -59,15 +59,15 @@ en:
     no_removing_vnic: |-
       - No zone VNIC to remove
     removing_host_vnic: |-
-      - Deleting Host VNIC: 
+      - Deleting host VNIC: 
     no_removing_host_vnic: |-
-      - No Host VNIC to remove
+      - No host VNIC to remove
     network_setup: |-
       Preparing zone OS networking interfaces:
     delete_disks: |-
       Removing associated disks:
     zonelogincmd: |-
-      Running Command with ZLogin
+      Running command with zLogin
     user: |-
       Filtering the user Vagrant will use
     installing_zone: |-
@@ -84,7 +84,7 @@ en:
     stale_netplan_removed: |-
       - Stale Netplan configurations removed 
     netplan_applied_static: |-
-      - Set Static Netplan configurations:
+      - Set static Netplan configurations:
         
     console_failednetplan: |-
       Netplan configurations failed  
@@ -146,7 +146,7 @@ en:
     sshport: |-
       Filtering the SSH port that Vagrant will use
     vagrantuserpass: |-
-      Filtering the Vagrant User Password
+      Filtering the Vagrant user Password
     firmware: |-
       Filtering the firmware that bhyve will use
     inserting_ssh_key: |-
@@ -158,9 +158,9 @@ en:
     detecting_box: |-
       Detecting Image
     importing_vagrant_key: |-
-      Importing Vagrant Key from Cloud:
+      Importing Vagrant key from Cloud:
     datadir: |-
-      Vagrant Datadir:
+      Vagrant datadir:
         
     zfs_snapshot_stream_detected: |-
       ZFS Snapshot Stream detected ==> 
@@ -184,9 +184,9 @@ en:
     starting_zone: |-
       Starting the zone
     joyent_image_uuid_verified: |-
-      Joyent Image UUID has been verified ==> 
+      Joyent image UUID has been verified ==> 
     lx_zone_dataset: |-
-      LX zone Dataset ==> 
+      LX zone dataset ==> 
     setting_dns_server: |-
       Setting nameserver ==> 
     detected_ovf_format: |-
@@ -199,7 +199,7 @@ en:
       - Template path:
         
     importing_joyent_image: |-
-      - Importing Joyent Image ==> 
+      - Importing Joyent image ==> 
     graceful_restart: |-
       Zone gracefully restarting
     graceful_shutdown_started: |-
@@ -207,20 +207,20 @@ en:
     graceful_shutdown_complete: |-
       Graceful shutdown complete
     zone_gracefully_restarted: |-
-      Graceful Restart complete
+      Graceful restart complete
     zone_gracefully_stopped_waiting_for_boot: |-
       Zone gracefully shutdown, now waiting for boot
     console: |-
-      Starting Console:
+      Starting console:
     setting_console_access: |-
       - Setting Console access port:
         
     zfs_snapshot_cron: |-
-      Listing Configured Cron Jobs
+      Listing configured cron jobs
     zfs_snapshot_create: |-
-      Creating ZFS Snapshot(s):
+      Creating ZFS snapshot(s):
     setting_cloud_dnsdomain: |-
-      - Setting cloud-init DNS Domain:
+      - Setting cloud-init DNS domain:
         
     setting_cloud_password: |-        
       - Setting cloud-init password:
@@ -229,36 +229,36 @@ en:
       - Setting cloud-init Resolvers:
         
     setting_cloud_ssh_key: |-
-      - Setting cloud-init SSH Key:
+      - Setting cloud-init SSH key:
         
     setting_cloud_init_access: |-
       - Enabling cloud-init: 
     control_no_cmd: |-
-      No Control Command Specified
+      No control command specified
     ssh_run_command: |-
       Running Command over SSH: 
     vtype: |-
-      Filtering Zone Type
+      Filtering zone type
     nsservers: |-
       Sanitizing Name Servers: 
     mac: |-
-      Sanitizing MAC Address: 
+      Sanitizing MAC address: 
     ipaddress: |-
-      Sanitizing IP Address: 
+      Sanitizing IP address: 
     allowedaddress: |-
-      Sanitizing Allowed IP Address: 
+      Sanitizing Allowed IP address: 
     vnic_name: |-
-      Sanitizing the VNIC Name: 
+      Sanitizing the VNIC name: 
     get_ip_address: |-
       Gathering IP address
     creating_etherstub: |-
-      - Creating Etherstub for Private Network: 
+      - Creating etherstub for private network: 
         
     creating_etherhostvnic: |-
-      - Creating Etherstub for host to zone NAT: 
+      - Creating etherstub for host to zone NAT: 
         
     creating_ethervnic: |-
-      - Creating Etherstub VNIC for Host: 
+      - Creating etherstub VNIC for host: 
         
     creating_networking_interfaces: |-
       Creating networking interfaces for zone: 
@@ -266,38 +266,38 @@ en:
       - Setting up NAT VNIC: 
         
     forwarding_nat: |-
-      - Enabling NAT Forwarding: 
+      - Enabling NAT forwarding: 
         
     configuring_nat: |-
       - Creating NAT entries: 
         
     deconfiguring_nat: |-
-      - Deleting NAT entries: 
+      - Removing NAT configurations: 
     configuring_dhcp: |-
       - Configuring DHCP 
     deconfiguring_dhcp: |-
-      - Deleting DHCP entries: 
+      - Removing DHCP configurations: 
     chk_dhcp_addr: |-
-      - Checking if Zone has leased the Address:
+      - Checking if zone has leased the address:
         
     setting_alt_shared_disk_configurations: |-
-      Setting Shared Disk Configurations
+      Setting shared disk configurations
     zonecfgcpu: |-
       Setting the CPU for zone
     pci: |-
-      Setting the PCI Devices for zone
+      Setting the PCI devices for zone
     zfs_snapshot_list: |-
-      ZFS Snapshots detected:
+      ZFS snapshots detected:
     zfs_snapshot_destroy: |-
-      Destroying ZFS Snapshots for zone:
+      Destroying ZFS snapshots for zone:
     cron_entries: |-
-      Listing Cron Entries for Zone
+      Listing cron entries for zone
     cron_set: |-
-      Setting Cron Entries for Zone
+      Setting cron entries for zone
     cron_delete: |-
-      Deleting Cron Entries for Zone
+      Deleting cron entries for zone
     control: |-
-      Running Control Command on Zone:
+      Running control command on zone:
     delete_ethervnic: |-
       - Deleting the etherstub: 
     no_delete_ethervnic: |-
