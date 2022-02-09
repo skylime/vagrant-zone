@@ -45,11 +45,9 @@ en:
     creating_vnic: |-
       Creating VNIC  
     configure_interface_using_vnic: |-
-      - Configuring the interface on the zone for VNIC:
-        
+      - Configuring the interface on the zone for VNIC: 
     vnic_setup: |-
-      - Setting up VNIC:
-        
+      - Setting up VNIC: 
     networking_int_remove: |-
       Removing network devices:
     networking_int_add: |-
@@ -71,8 +69,7 @@ en:
     user: |-
       Filtering the user Vagrant will use
     installing_zone: |-
-      Installing zone as brand:
-        
+      Installing zone as brand: 
     netplan_remove: |-
       - Removing stale netplan configurations
     netplan_set: |-
@@ -89,40 +86,29 @@ en:
     console_failednetplan: |-
       Netplan configurations failed  
     lx_zone_dataset: |-
-      - Creating zoned ZFS dataset for LX zone:
-        
+      - Creating zoned ZFS dataset for LX zone: 
     bhyve_zone_dataset_root: |-
-      - ZFS root dataset:
-        
+      - ZFS root dataset: 
     begin_create_datasets: |-
       Creating ZFS datasets and volumes:
     bhyve_zone_dataset_boot: |-
-      - ZFS boot volume:
-        
+      - ZFS boot volume: 
     setting_cd_rom_configurations: |-
-      - Setting CDROM Configurations:
-        
+      - Setting CDROM Configurations: 
     setting_additional_disks_configurations: |-
-      - Setting additional disk Configurations:
-        
+      - Setting additional disk Configurations: 
     bhyve_zone_dataset_additional_volume: |-
-      - Additional ZFS volume:
-        
+      - Additional ZFS volume: 
     bhyve_zone_dataset_additional_volume_destroy: |-
-      - Additional ZFS volume:
-        
+      - Additional ZFS volume: 
     addtl_volume_destroy_root: |-
-      - ZFS root dataset for additional ZFS volume:
-        
+      - ZFS root dataset for additional ZFS volume: 
     bhyve_zone_dataset_additional_volume_root: |-
-      - ZFS root dataset for additional ZFS volume:
-        
+      - ZFS root dataset for additional ZFS volume: 
     destroy_root_dataset: |-
-      - ZFS root dataset:
-        
+      - ZFS root dataset: 
     destroy_dataset: |-
-      - ZFS Boot volume dataset:
-        
+      - ZFS Boot volume dataset: 
     lx_zone_config_gen: |-
       Generating configuration for LX zone
     bhyve_zone_config_gen: |-
@@ -160,15 +146,13 @@ en:
     importing_vagrant_key: |-
       Importing Vagrant key from Cloud:
     datadir: |-
-      Vagrant datadir:
-        
+      Vagrant datadir: 
     zfs_snapshot_stream_detected: |-
       ZFS Snapshot Stream detected ==> 
     joyent_image_uuid_detected: |-
       Joyent UUID detected ==> 
     vagrant_cloud_box_detected: |-
-      - Vagrant Cloud Box detected:
-        
+      - Vagrant Cloud Box detected: 
     ssh_ready: |-
       SSH appears to be ready
     boot_ready: |-
@@ -197,7 +181,6 @@ en:
       - Importing Box template to disk ==> 
     template_import_path: |-
       - Template path:
-        
     importing_joyent_image: |-
       - Importing Joyent image ==> 
     graceful_restart: |-
@@ -213,24 +196,19 @@ en:
     console: |-
       Starting console:
     setting_console_access: |-
-      - Setting Console access port:
-        
+      - Setting Console access port: 
     zfs_snapshot_cron: |-
       Listing configured cron jobs
     zfs_snapshot_create: |-
       Creating ZFS snapshot(s):
     setting_cloud_dnsdomain: |-
-      - Setting cloud-init DNS domain:
-        
+      - Setting cloud-init DNS domain: 
     setting_cloud_password: |-        
-      - Setting cloud-init password:
-        
+      - Setting cloud-init password: 
     setting_cloud_resolvers: |-
-      - Setting cloud-init Resolvers:
-        
+      - Setting cloud-init Resolvers: 
     setting_cloud_ssh_key: |-
-      - Setting cloud-init SSH key:
-        
+      - Setting cloud-init SSH key: 
     setting_cloud_init_access: |-
       - Enabling cloud-init: 
     control_no_cmd: |-
@@ -253,7 +231,6 @@ en:
       Gathering IP address
     creating_etherstub: |-
       - Creating etherstub for private network: 
-        
     creating_etherhostvnic: |-
       - Creating etherstub for host to zone NAT: 
     creating_ethervnic: |-

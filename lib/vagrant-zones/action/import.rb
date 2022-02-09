@@ -35,6 +35,7 @@ module VagrantPlugins
           ui = env[:ui]
           ui.info(I18n.t('vagrant_zones.meeting'))
           ui.info(I18n.t('vagrant_zones.datadir') + datadir.to_s)
+          ui.info("  #{datadir.to_s}")
           ui.info(I18n.t('vagrant_zones.detecting_box'))
 
           # If image ends on '.zss' it's a local ZFS snapshot which should be used
@@ -90,7 +91,8 @@ module VagrantPlugins
             end
 
             ## No Local box template exists, Lets use Vagrant HandleBox to download the Box template
-            ui.info(I18n.t('vagrant_zones.vagrant_cloud_box_detected') + image)
+            ui.info(I18n.t('vagrant_zones.vagrant_cloud_box_detected'))
+            ui.info("  #{image}")
             ui.clear_line
           end
           @app.call(env)
