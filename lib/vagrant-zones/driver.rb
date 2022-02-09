@@ -62,6 +62,7 @@ module VagrantPlugins
       def install(uii)
         config = @machine.provider_config
         name = @machine.name
+        uii.info(I18n.t('vagrant_zones.installing_zone') + config.brand)
         case config.brand
         when 'lx'
           box = "#{@machine.data_dir}/#{@machine.config.vm.box}"
@@ -73,7 +74,6 @@ module VagrantPlugins
         when 'kvm' || 'illumos'
           raise Errors::NotYetImplemented
         end
-        uii.info(I18n.t('vagrant_zones.installing_zone') + config.brand)
       end
 
       ## Control the zone from inside the zone OS
@@ -311,19 +311,19 @@ module VagrantPlugins
             zonenicstpzloginsetup(uii, opts) if state == 'setup' && config.setup_method == 'zlogin'
           when 'private_network'
             zonenicdel(uii, opts) if state == 'delete'
+            zonedhcpentriesrem(uii, opts) if state == 'delete'
+            zonenatclean(uii, opts) if state == 'delete'
+            etherstubdelhvnic(uii, opts) if state == 'delete'
+            etherstubdelete(uii, opts) if state == 'delete'
+            natnicconfig(uii, opts) if state == 'config'
             etherstub = etherstubcreate(uii, opts) if state == 'create'
             zonenatniccreate(uii, opts, etherstub) if state == 'create'
             etherstubcreatehvnic(uii, opts, etherstub) if state == 'create'
-            natnicconfig(uii, opts) if state == 'config'
             zonenatforward(uii, opts) if state == 'create'
             zonenatentries(uii, opts) if state == 'create'
             zonedhcpentries(uii, opts) if state == 'create'
             zonedhcpcheckaddr(uii, opts) if state == 'setup'
             zonenicnatsetup(uii, opts) if state == 'setup'
-            zonedhcpentriesrem(uii, opts) if state == 'delete'
-            zonenatclean(uii, opts) if state == 'delete'
-            etherstubdelhvnic(uii, opts) if state == 'delete'
-            etherstubdelete(uii, opts) if state == 'delete'
           end
         end
       end
@@ -627,7 +627,6 @@ module VagrantPlugins
           execute(false, "#{@pfexec} zfs create #{sparse} -V #{bootconfigs['size']} #{datasetroot}")
 
           ## Import template to boot volume
-          uii.info(I18n.t('vagrant_zones.bhyve_zone_dataset_boot_volume') + datasetroot)
           commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss')} | #{@pfexec} zfs recv -u -v -F #{datasetroot} "
           uii.info(I18n.t('vagrant_zones.template_import_path') + @machine.box.directory.join('box.zss').to_s)
           Util::Subprocess.new commandtransfer do |_stdout, stderr, _thread|
@@ -927,7 +926,6 @@ module VagrantPlugins
         zonecfgcloudinit(uii, name, config, zcfg)
         ## Nic Configurations
         network(uii, 'config')
-        uii.info(I18n.t('vagrant_zones.exporting_bhyve_zone_config_gen'))
       end
 
       ## Setup vnics for Zones using Zlogin

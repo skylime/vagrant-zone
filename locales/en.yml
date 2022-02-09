@@ -48,7 +48,8 @@ en:
       - Configuring the interface on the zone for VNIC:
         
     vnic_setup: |-
-            Setting up VNIC: 
+       - Setting up VNIC:
+         
     networking_int_remove: |-
       Removing network devices:
     networking_int_add: |-
@@ -98,9 +99,6 @@ en:
     bhyve_zone_dataset_boot: |-
       - ZFS boot volume:
         
-    bhyve_zone_dataset_boot_volume: |-
-      - Importing template to:
-        
     setting_cd_rom_configurations: |-
       - Setting CDROM Configurations:
         
@@ -133,8 +131,6 @@ en:
       Removing zonecfg configuration
     bhyve_zone_config_uninstall: |-
       Uninstalling the zone
-    exporting_bhyve_zone_config_gen: |-
-      Importing generated zonecfg configuration
     preflight_checks: |-
       Running Preflight Checks:
     vbox_run_check: |-
@@ -178,7 +174,7 @@ en:
     boot_ready: |-
       The zone has booted
     dhcp_boot_ready: |-
-      The zone is configured with NAT and booted 
+      The zone is configured with NAT and booted
     root_dataset_nil: |-
       - No root dataset to remove 
     boot_dataset_nil: |-
@@ -262,7 +258,8 @@ en:
     creating_ethervnic: |-
       Creating Etherstub VNIC for Host: 
     nat_vnic_setup: |-
-      Setting up NAT Filtering for Host to Zone Communications
+       - Setting up NAT VNIC:
+         
     forwarding_nat: |-
       Enabling NAT Forwarding: 
     configuring_nat: |-
@@ -270,12 +267,12 @@ en:
     deconfiguring_nat: |-
       Deleting NAT entries: 
     configuring_dhcp: |-
-      Creating DHCP entries: 
+      Configuring DHCP 
     deconfiguring_dhcp: |-
       Deleting DHCP entries: 
     chk_dhcp_addr: |-
      - Checking if Zone has leased the Address:
-         
+      
     setting_alt_shared_disk_configurations: |-
       Setting Shared Disk Configurations
     zonecfgcpu: |-
