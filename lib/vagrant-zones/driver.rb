@@ -422,6 +422,7 @@ module VagrantPlugins
         ether_name = "stub_#{config.partition_id}_#{opts[:nic_number]}"
         ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep #{ether_name} | awk '{ print $1 }' ")
         uii.info(I18n.t('vagrant_zones.delete_ethervnic') + ether_name) if ether_configured == ether_name
+        uii.info(I18n.t('vagrant_zones.no_delete_ethervnic')) unless ether_configured == ether_name
         execute(false, "#{@pfexec} dladm delete-etherstub #{ether_name}") if ether_configured == ether_name
       end
 

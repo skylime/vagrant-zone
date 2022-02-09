@@ -57,11 +57,11 @@ en:
     removing_vnic: |-
       - Deleting zone VNIC: 
     no_removing_vnic: |-
-      - No zone VNIC to Remove
+      - No zone VNIC to remove
     removing_host_vnic: |-
       - Deleting Host VNIC: 
     no_removing_host_vnic: |-
-      - No Host VNIC to Remove
+      - No Host VNIC to remove
     network_setup: |-
       Preparing zone OS networking interfaces:
     delete_disks: |-
@@ -301,3 +301,5 @@ en:
       Running Control Command on Zone:
     delete_ethervnic: |-
        - Deleting the etherstub: 
+    no_delete_ethervnic: |-
+      - No zone etherstub to remove
