@@ -895,7 +895,7 @@ module VagrantPlugins
         execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{ccid}; set type=string; end;")) unless ccid.nil?
 
         ccip = config.cloud_init_password
-        uii.info(I18n.t('vagrant_zones.setting_cloud_password')s) unless ccip.nil?
+        uii.info(I18n.t('vagrant_zones.setting_cloud_password')) unless ccip.nil?
         uii.info("  #{ccip.to_s}") unless ccip.nil?
         execute(false, %(#{zcfg}"add attr; set name=password; set value=#{ccip}; set type=string; end;")) unless ccip.nil?
 
