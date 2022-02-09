@@ -300,4 +300,4 @@ en:
     control: |-
       Running Control Command on Zone:
     delete_ethervnic: |-
-       - Deleting the Ethernet VNIC for Host: 
+       - Deleting the etherstub: 
