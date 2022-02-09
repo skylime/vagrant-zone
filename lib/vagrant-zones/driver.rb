@@ -1078,7 +1078,7 @@ module VagrantPlugins
             end
           end
         end
-        uii.info(I18n.t('vagrant_zones.boot_ready') + " in #{metrics['instance_dhcp_boot_time']} Seconds")
+        uii.info(I18n.t('vagrant_zones.dhcp_boot_ready') + " in #{metrics['instance_dhcp_ssh_time']} Seconds")
       end
 
       # This helps up wait for the boot of the vm by using zlogin
