@@ -425,7 +425,7 @@ module VagrantPlugins
         config = @machine.provider_config
         ether_name = "stub_#{config.partition_id}_#{opts[:nic_number]}"
         ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep #{ether_name} | awk '{ print $1 }' ")
-        uii.info(I18n.t('vagrant_zones.delete_ethervnic') + ether_name) if ether_configured == ether_name
+        uii.info(I18n.t('vagrant_zones.delete_ethervnic')) if ether_configured == ether_name
         uii.info("  #{ether_name}") if ether_configured == ether_name
         uii.info(I18n.t('vagrant_zones.no_delete_ethervnic')) unless ether_configured == ether_name
         execute(false, "#{@pfexec} dladm delete-etherstub #{ether_name}") if ether_configured == ether_name
@@ -436,7 +436,8 @@ module VagrantPlugins
         config = @machine.provider_config
         ether_name = "stub_#{config.partition_id}_#{opts[:nic_number]}"
         ether_configured = execute(false, "#{@pfexec} dladm show-etherstub | grep #{ether_name} | awk '{ print $1 }' ")
-        uii.info(I18n.t('vagrant_zones.creating_etherstub') + ether_name) unless ether_configured == ether_name
+        uii.info(I18n.t('vagrant_zones.creating_etherstub')) unless ether_configured == ether_name
+        uii.info("  #{ether_name}") unless ether_configured == ether_name
         execute(false, "#{@pfexec} dladm create-etherstub #{ether_name}") unless ether_configured == ether_name
         ether_name
       end
@@ -445,7 +446,8 @@ module VagrantPlugins
       def zonenatniccreate(uii, opts, etherstub)
         vnic_name = vname(uii, opts)
         mac = macaddress(uii, opts)
-        uii.info(I18n.t('vagrant_zones.creating_ethervnic') + vnic_name.to_s)
+        uii.info(I18n.t('vagrant_zones.creating_ethervnic'))
+        uii.info("  #{vnic_name.to_s}")
         execute(false, "#{@pfexec} dladm create-vnic -l #{etherstub} -m #{mac} #{vnic_name}")
       end
 
@@ -455,7 +457,8 @@ module VagrantPlugins
         defrouter = opts[:gateway].to_s
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
-        uii.info(I18n.t('vagrant_zones.creating_etherhostvnic') + hvnic_name.to_s)
+        uii.info(I18n.t('vagrant_zones.creating_etherhostvnic'))
+        uii.info("  #{hvnic_name.to_s}")
         execute(false, "#{@pfexec} dladm create-vnic -l #{etherstub} #{hvnic_name}")
         execute(false, "#{@pfexec} ipadm create-if #{hvnic_name}")
         execute(false, "#{@pfexec} ipadm create-addr -T static -a local=#{defrouter}/#{shrtsubnet} #{hvnic_name}/v4")
@@ -500,7 +503,8 @@ module VagrantPlugins
         allowed_address = allowedaddress(uii, opts)
         defrouter = opts[:gateway].to_s
         vnic_name = vname(uii, opts)
-        uii.info("#{I18n.t('vagrant_zones.nat_vnic_setup')}#{vnic_name}")
+        uii.info(I18n.t('vagrant_zones.nat_vnic_setup'))
+        uii.info("  #{vnic_name}")
         strt = "#{@pfexec} zonecfg -z #{@machine.name} "
         cie = config.cloud_init_enabled
         case config.brand
@@ -518,7 +522,8 @@ module VagrantPlugins
       def zonenatforward(uii, opts)
         config = @machine.provider_config
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
-        uii.info(I18n.t('vagrant_zones.forwarding_nat') + hvnic_name.to_s)
+        uii.info(I18n.t('vagrant_zones.forwarding_nat'))
+        uii.info("  #{hvnic_name.to_s}")
         execute(false, "#{@pfexec} routeadm -u -e ipv4-forwarding")
         execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{opts[:bridge]}")
         execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{hvnic_name}")
@@ -591,7 +596,8 @@ module VagrantPlugins
       def zonedhcpcheckaddr(uii, opts)
         # vnic_name = vname(uii, opts)
         # ip = ipaddress(uii, opts)
-        uii.info(I18n.t('vagrant_zones.chk_dhcp_addr') + opts[:ip].to_s)
+        uii.info(I18n.t('vagrant_zones.chk_dhcp_addr'))
+        uii.info("  #{opts[:ip].to_s}")
         # execute(false, "#{@pfexec} ping #{ip} ")
       end
 
