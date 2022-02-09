@@ -301,7 +301,7 @@ module VagrantPlugins
       def network(uii, state)
         config = @machine.provider_config
         uii.info(I18n.t('vagrant_zones.creating_networking_interfaces')) if state == 'create'
-        uii.info(I18n.t('vagrant_zones.networking_int_add')) if state == 'setup' && config.setup_method == 'zlogin'
+        # uii.info(I18n.t('vagrant_zones.networking_int_add')) if state == 'setup' && config.setup_method == 'zlogin'
         uii.info(I18n.t('vagrant_zones.netplan_remove')) if state == 'setup' && config.setup_method == 'zlogin'
         zlogin(uii, 'rm -rf /etc/netplan/*.yaml') if state == 'setup' && config.setup_method == 'zlogin'
         ssh_run_command(uii, 'sudo rm -rf /etc/netplan/*.yaml') if state == 'setup' && config.setup_method == 'dhcp'
@@ -1097,6 +1097,7 @@ module VagrantPlugins
         bstring = ' OK ' if config.booted_string.nil?
         bstring = config.booted_string unless config.booted_string.nil?
         pcheck = 'Password:'
+        uii.info(I18n.t('vagrant_zones.automated-zlogin')) 
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           Timeout.timeout(config.setup_wait) do
             rsp = []
@@ -1109,20 +1110,20 @@ module VagrantPlugins
             end
 
             if zlogin_read.expect(/#{alcheck}/)
-              uii.info('Automated Login -- Entering User, Waiting 10 Seconds')
+              uii.info(I18n.t('vagrant_zones.automated-zlogin-user'))
               zlogin_write.printf("#{user(@machine)}\n")
               sleep(5)
             end
 
             if zlogin_read.expect(/#{pcheck}/)
-              uii.info('Automated Login -- Entering Pass, Waiting 10 Seconds')
+              uii.info(I18n.t('vagrant_zones.automated-zlogin-pass'))
               zlogin_write.printf("#{vagrantuserpass(@machine)}\n")
               sleep(10)
             end
 
             zlogin_write.printf("\n")
             if zlogin_read.expect(/#{lcheck}/)
-              uii.info('Automated Login -- Impersonating Root, Waiting 10 Seconds')
+              uii.info(I18n.t('vagrant_zones.automated-zlogin-root')) 
               zlogin_write.printf("sudo su\n")
               sleep(10)
               Process.kill('HUP', pid)

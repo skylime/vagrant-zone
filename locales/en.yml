@@ -43,9 +43,9 @@ en:
     graceful_shutdown: |-
       Asking hypervisor to gracefully stop the zone
     creating_vnic: |-
-      Creating VNIC  
+      - Creating VNIC: 
     configure_interface_using_vnic: |-
-      - Configuring the interface on the zone for VNIC: 
+      - Configuring the interface in the zone for VNIC: 
     vnic_setup: |-
       - Setting up VNIC: 
     networking_int_remove: |-
@@ -273,3 +273,11 @@ en:
       - Deleting the etherstub: 
     no_delete_ethervnic: |-
       - No etherstub to remove
+    automated-zlogin: |-
+      Automatic Login
+    automated-zlogin-user: |-
+      - Entering username, Waiting a few seconds
+    automated-zlogin-pass: |-
+      - Entering password, Waiting a few seconds
+    automated-zlogin-root: |-
+      - Impersonatig root, Waiting a few seconds
