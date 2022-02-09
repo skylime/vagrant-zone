@@ -42,17 +42,13 @@ module VagrantPlugins
           ui = env[:ui]
           # Initialize metrics if they haven't been
           env[:metrics] ||= {}
-          breakwait = false
           env[:metrics]['instance_boot_time'] = Util::Timer.time do
-            retryable(on: Errors::TimeoutError, tries: 60) do
-              next if env[:interrupted]
-              breakwait = true if @driver.waitforboot(ui, env[:metrics], env[:interrupted])
-            end
-            break if breakwait
+            break if env[:interrupted]
+            break if @driver.waitforboot(ui, env[:metrics], env[:interrupted])
           end
           return terminate(env) if env[:interrupted]
-          ui.info(I18n.t('vagrant_zones.boot_ready') + " in #{env[:metrics]['instance_boot_time']} Seconds")
 
+          ui.info(I18n.t('vagrant_zones.boot_ready') + " in #{env[:metrics]['instance_boot_time']} Seconds")
           @app.call(env)
         end
       end
