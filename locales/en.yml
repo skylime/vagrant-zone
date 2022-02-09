@@ -45,7 +45,7 @@ en:
     creating_vnic: |-
       Creating VNIC  
     configure_interface_using_vnic: |-
-      - Configuring the interface on the zone for VNIC
+      - Configuring the interface on the zone for VNIC:
         
     vnic_setup: |-
             Setting up VNIC: 
@@ -62,7 +62,7 @@ en:
     no_removing_host_vnic: |-
       - No Host VNIC to Remove
     network_setup: |-
-      Preparing zone OS networking interfaces via zlogin:
+      Preparing zone OS networking interfaces:
     delete_disks: |-
       Removing associated disks:
     zonelogincmd: |-
@@ -83,7 +83,8 @@ en:
     stale_netplan_removed: |-
       - Stale Netplan configurations removed 
     netplan_applied_static: |-
-      - Set Static Netplan configurations  
+      - Set Static Netplan configurations:
+        
     console_failednetplan: |-
       Netplan configurations failed  
     lx_zone_dataset: |-
@@ -177,7 +178,7 @@ en:
     boot_ready: |-
       The zone has booted
     dhcp_boot_ready: |-
-      The zone is configured with dhcp and booted 
+      The zone is configured with NAT and booted 
     root_dataset_nil: |-
       - No root dataset to remove 
     boot_dataset_nil: |-
@@ -273,7 +274,8 @@ en:
     deconfiguring_dhcp: |-
       Deleting DHCP entries: 
     chk_dhcp_addr: |-
-      Checking if Zone has leased the Address 
+     - Checking if Zone has leased the Address:
+         
     setting_alt_shared_disk_configurations: |-
       Setting Shared Disk Configurations
     zonecfgcpu: |-
