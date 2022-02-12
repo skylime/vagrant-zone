@@ -949,7 +949,8 @@ module VagrantPlugins
           execute(false, %(#{strt}set global-nic=auto; #{shrtstr1} #{shrtstr2}"))
         when 'bhyve'
           execute(false, %(#{strt}"add net; set physical=#{vnic_name}; end;")) unless cie
-          execute(false, %(#{strt}"add net; set physical=#{vnic_name}; set allowed-address=#{allowed_address}; end;")) if cie
+          execute(false, %(#{strt}"add net; set physical=#{vnic_name}; set allowed-address=#{allowed_address}; end;")) if cie && allowed_address
+          execute(false, %(#{strt}"add net; set physical=#{vnic_name}; end;")) if cie and not allowed_address
         end
       end
 

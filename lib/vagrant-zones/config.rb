@@ -7,7 +7,7 @@ module VagrantPlugins
     # This is used define the variables for the project
     class Config < Vagrant.plugin('2', :config)
       # rubocop:disable Layout/LineLength
-      attr_accessor :brand, :autoboot, :setup_method, :safe_restart, :safe_shutdown, :boxshortname, :kernel, :debug, :debug_boot, :private_network, :lcheck, :alcheck, :snapshot_script, :diskif, :netif, :cdroms, :disk1path, :disk1size, :cpus, :cpu_configuration, :boot, :complex_cpu_conf, :memory, :vagrant_user, :vagrant_user_private_key_path, :setup_wait, :clean_shutdown_time, :dhcp, :vagrant_user_pass, :firmware_type, :vm_type, :partition_id, :shared_disk_enabled, :shared_dir, :acpi, :os_type, :console, :consolehost, :consoleport, :console_onboot, :hostbridge, :sshport, :rdpport, :override, :additional_disks, :cloud_init_resolvers, :cloud_init_enabled, :cloud_init_dnsdomain, :cloud_init_password, :cloud_init_sshkey, :cloud_init_conf, :dns, :box, :vagrant_cloud_creator, :booted_string
+      attr_accessor :brand, :autoboot, :setup_method, :safe_restart, :allowed_address, :safe_shutdown, :boxshortname, :kernel, :debug, :debug_boot, :private_network, :lcheck, :alcheck, :snapshot_script, :diskif, :netif, :cdroms, :disk1path, :disk1size, :cpus, :cpu_configuration, :boot, :complex_cpu_conf, :memory, :vagrant_user, :vagrant_user_private_key_path, :setup_wait, :clean_shutdown_time, :dhcp, :vagrant_user_pass, :firmware_type, :vm_type, :partition_id, :shared_disk_enabled, :shared_dir, :acpi, :os_type, :console, :consolehost, :consoleport, :console_onboot, :hostbridge, :sshport, :rdpport, :override, :additional_disks, :cloud_init_resolvers, :cloud_init_enabled, :cloud_init_dnsdomain, :cloud_init_password, :cloud_init_sshkey, :cloud_init_conf, :dns, :box, :vagrant_cloud_creator, :booted_string
 
       # rubocop:enable Layout/LineLength
 
@@ -23,6 +23,7 @@ module VagrantPlugins
         @os_type = 'generic'
         @lcheck = UNSET_VALUE
         @booted_string = UNSET_VALUE
+        @allowed_address = true
         @alcheck = 'login: '
         @safe_restart = nil
         @safe_shutdown = nil
