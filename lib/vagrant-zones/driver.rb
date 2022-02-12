@@ -305,7 +305,6 @@ module VagrantPlugins
         uii.info(I18n.t('vagrant_zones.netplan_remove')) if state == 'setup' && config.setup_method == 'zlogin'
         zlogin(uii, 'rm -rf /etc/netplan/*.yaml') if state == 'setup' && config.setup_method == 'zlogin'
         ssh_run_command(uii, 'sudo rm -rf /etc/netplan/*.yaml') if state == 'setup' && config.setup_method == 'dhcp'
-        uii.info(I18n.t('vagrant_zones.stale_netplan_removed')) if state == 'setup' && config.setup_method == 'dhcp'
         @machine.config.vm.networks.each do |adaptertype, opts|
           case adaptertype.to_s
           when 'public_network'
@@ -352,7 +351,7 @@ module VagrantPlugins
           mac = mac[0..-2]
         end
         uii.info(I18n.t('vagrant_zones.deconfiguring_dhcp'))
-        uii.info("  #{hvnic_name.to_s}")
+        uii.info("  #{hvnic_name}")
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         subnet = %(subnet #{broadcast} netmask #{opts[:netmask]} { option routers #{defrouter}; })
         subnetopts = %(host #{name} { option host-name "#{name}"; hardware ethernet #{mac}; fixed-address #{ip}; })
@@ -390,7 +389,7 @@ module VagrantPlugins
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         uii.info(I18n.t('vagrant_zones.deconfiguring_nat'))
-        uii.info("  #{vnic_name.to_s}")
+        uii.info("  #{vnic_name}")
         line1 = %(map #{opts[:bridge]} #{broadcast}/#{shrtsubnet} -> 0/32  portmap tcp/udp auto)
         line2 = %(map #{opts[:bridge]} #{broadcast}/#{shrtsubnet} -> 0/32)
         File.open('/etc/ipf/ipnat.conf-temp', 'w') do |out_file|
@@ -450,7 +449,7 @@ module VagrantPlugins
         vnic_name = vname(uii, opts)
         mac = macaddress(uii, opts)
         uii.info(I18n.t('vagrant_zones.creating_ethervnic'))
-        uii.info("  #{vnic_name.to_s}")
+        uii.info("  #{vnic_name}")
         execute(false, "#{@pfexec} dladm create-vnic -l #{etherstub} -m #{mac} #{vnic_name}")
       end
 
@@ -461,7 +460,7 @@ module VagrantPlugins
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         uii.info(I18n.t('vagrant_zones.creating_etherhostvnic'))
-        uii.info("  #{hvnic_name.to_s}")
+        uii.info("  #{hvnic_name}")
         execute(false, "#{@pfexec} dladm create-vnic -l #{etherstub} #{hvnic_name}")
         execute(false, "#{@pfexec} ipadm create-if #{hvnic_name}")
         execute(false, "#{@pfexec} ipadm create-addr -T static -a local=#{defrouter}/#{shrtsubnet} #{hvnic_name}/v4")
@@ -511,8 +510,6 @@ module VagrantPlugins
         ## Apply the Configuration
         uii.info(I18n.t('vagrant_zones.netplan_applied')) if ssh_run_command(uii, 'sudo netplan apply')
         ## End of code block to move to Netplan function
-
-        
       end
 
       ## zonecfg function for for nat Networking
@@ -541,7 +538,7 @@ module VagrantPlugins
         config = @machine.provider_config
         hvnic_name = "h_vnic_#{config.partition_id}_#{opts[:nic_number]}"
         uii.info(I18n.t('vagrant_zones.forwarding_nat'))
-        uii.info("  #{hvnic_name.to_s}")
+        uii.info("  #{hvnic_name}")
         execute(false, "#{@pfexec} routeadm -u -e ipv4-forwarding")
         execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{opts[:bridge]}")
         execute(false, "#{@pfexec} ipadm set-ifprop -p forwarding=on -m ipv4 #{hvnic_name}")
@@ -553,7 +550,7 @@ module VagrantPlugins
         defrouter = opts[:gateway].to_s
         shrtsubnet = IPAddr.new(opts[:netmask].to_s).to_i.to_s(2).count('1').to_s
         uii.info(I18n.t('vagrant_zones.configuring_nat'))
-        uii.info("  #{vnic_name.to_s}")
+        uii.info("  #{vnic_name}")
         broadcast = IPAddr.new(defrouter).mask(shrtsubnet).to_s
         ## Read NAT File, Check for these lines, if exist, warn, but continue
         natentries = execute(false, "#{@pfexec} cat /etc/ipf/ipnat.conf").split("\n")
@@ -608,16 +605,13 @@ module VagrantPlugins
         execute(false, "#{@pfexec} svcadm disable dhcp:ipv4")
         execute(false, "#{@pfexec} svcadm enable dhcp:ipv4")
       end
-      
 
-      ## Check if Address shows up in lease list
-      # /var/db/dhcpd
-      # ping address after
+      ## Check if Address shows up in lease list /var/db/dhcpd ping address after
       def zonedhcpcheckaddr(uii, opts)
         # vnic_name = vname(uii, opts)
         # ip = ipaddress(uii, opts)
         uii.info(I18n.t('vagrant_zones.chk_dhcp_addr'))
-        uii.info("  #{opts[:ip].to_s}")
+        uii.info("  #{opts[:ip]}")
         # execute(false, "#{@pfexec} ping #{ip} ")
       end
 
@@ -668,7 +662,7 @@ module VagrantPlugins
           ## Import template to boot volume
           commandtransfer = "#{@pfexec} pv -n #{@machine.box.directory.join('box.zss')} | #{@pfexec} zfs recv -u -v -F #{datasetroot} "
           uii.info(I18n.t('vagrant_zones.template_import_path'))
-          uii.info("  #{@machine.box.directory.join('box.zss').to_s}")
+          uii.info("  #{@machine.box.directory.join('box.zss')}")
           Util::Subprocess.new commandtransfer do |_stdout, stderr, _thread|
             uii.rewriting do |uiprogress|
               uiprogress.clear_line
@@ -721,7 +715,7 @@ module VagrantPlugins
 
         ## Destroy Boot dataset
         uii.info(I18n.t('vagrant_zones.destroy_dataset')) if dataset_boot_exists == datasetroot.to_s
-        uii.info("  #{datasetroot.to_s}") if dataset_boot_exists == datasetroot.to_s
+        uii.info("  #{datasetroot}") if dataset_boot_exists == datasetroot.to_s
         execute(false, "#{@pfexec} zfs destroy -r #{datasetroot}") if dataset_boot_exists == datasetroot.to_s
         ## Insert Error Checking Here in case disk is busy
         uii.info(I18n.t('vagrant_zones.boot_dataset_nil')) unless dataset_boot_exists == datasetroot.to_s
@@ -913,22 +907,22 @@ module VagrantPlugins
 
         ccid = config.cloud_init_dnsdomain
         uii.info(I18n.t('vagrant_zones.setting_cloud_dnsdomain')) unless ccid.nil?
-        uii.info("  #{ccid.to_s}") unless ccid.nil?
+        uii.info("  #{ccid}") unless ccid.nil?
         execute(false, %(#{zcfg}"add attr; set name=dns-domain; set value=#{ccid}; set type=string; end;")) unless ccid.nil?
 
         ccip = config.cloud_init_password
         uii.info(I18n.t('vagrant_zones.setting_cloud_password')) unless ccip.nil?
-        uii.info("  #{ccip.to_s}") unless ccip.nil?
+        uii.info("  #{ccip}") unless ccip.nil?
         execute(false, %(#{zcfg}"add attr; set name=password; set value=#{ccip}; set type=string; end;")) unless ccip.nil?
 
         cclir = config.cloud_init_resolvers
         uii.info(I18n.t('vagrant_zones.setting_cloud_resolvers')) unless cclir.nil?
-        uii.info("  #{cclir.to_s}") unless cclir.nil?
+        uii.info("  #{cclir}") unless cclir.nil?
         execute(false, %(#{zcfg}"add attr; set name=resolvers; set value=#{cclir}; set type=string; end;")) unless cclir.nil?
 
         ccisk = config.cloud_init_sshkey
         uii.info(I18n.t('vagrant_zones.setting_cloud_ssh_key')) unless ccisk.nil?
-        uii.info("  #{ccisk.to_s}") unless ccisk.nil?
+        uii.info("  #{ccisk}") unless ccisk.nil?
         execute(false, %(#{zcfg}"add attr; set name=sshkey; set value=#{ccisk}; set type=string; end;")) unless ccisk.nil?
       end
 
@@ -942,6 +936,7 @@ module VagrantPlugins
         uii.info("  #{vnic_name}")
         strt = "#{@pfexec} zonecfg -z #{@machine.name} "
         cie = config.cloud_init_enabled
+        aa = config.allowed_address
         case config.brand
         when 'lx'
           shrtstr1 = %(set allowed-address=#{allowed_address}; add property (name=gateway,value="#{defrouter}"); )
@@ -949,8 +944,8 @@ module VagrantPlugins
           execute(false, %(#{strt}set global-nic=auto; #{shrtstr1} #{shrtstr2}"))
         when 'bhyve'
           execute(false, %(#{strt}"add net; set physical=#{vnic_name}; end;")) unless cie
-          execute(false, %(#{strt}"add net; set physical=#{vnic_name}; set allowed-address=#{allowed_address}; end;")) if cie && allowed_address
-          execute(false, %(#{strt}"add net; set physical=#{vnic_name}; end;")) if cie and not allowed_address
+          execute(false, %(#{strt}"add net; set physical=#{vnic_name}; set allowed-address=#{allowed_address}; end;")) if cie && aa
+          execute(false, %(#{strt}"add net; set physical=#{vnic_name}; end;")) if cie and ! aa
         end
       end
 
@@ -1022,7 +1017,6 @@ module VagrantPlugins
         ## Apply the Configuration
         uii.info(I18n.t('vagrant_zones.netplan_applied')) if zlogin(uii, 'netplan apply')
         ## End of code block to move to Netplan function
-
       end
 
       # This ensures the zone is safe to boot
@@ -1068,7 +1062,7 @@ module VagrantPlugins
           cutoff_release = '1510380'
           cutoff_release = cutoff_release[0..-2].to_i
           uii.info(I18n.t('vagrant_zones.bhyve_check'))
-          uii.info("  #{cutoff_release.to_s}")
+          uii.info("  #{cutoff_release}")
           release = File.open('/etc/release', &:readline)
           release = release.scan(/\w+/).values_at(-1)
           release = release[0][1..-2].to_i
@@ -1098,7 +1092,7 @@ module VagrantPlugins
         bstring = ' OK ' if config.booted_string.nil?
         bstring = config.booted_string unless config.booted_string.nil?
         pcheck = 'Password:'
-        uii.info(I18n.t('vagrant_zones.automated-zlogin')) 
+        uii.info(I18n.t('vagrant_zones.automated-zlogin'))
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           Timeout.timeout(config.setup_wait) do
             rsp = []
@@ -1124,7 +1118,7 @@ module VagrantPlugins
 
             zlogin_write.printf("\n")
             if zlogin_read.expect(/#{lcheck}/)
-              uii.info(I18n.t('vagrant_zones.automated-zlogin-root')) 
+              uii.info(I18n.t('vagrant_zones.automated-zlogin-root'))
               zlogin_write.printf("sudo su\n")
               sleep(10)
               Process.kill('HUP', pid)
