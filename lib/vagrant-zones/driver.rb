@@ -1091,7 +1091,7 @@ module VagrantPlugins
         alcheck = 'login:' if config.alcheck.nil?
         bstring = ' OK ' if config.booted_string.nil?
         bstring = config.booted_string unless config.booted_string.nil?
-        zunlockboot = "key:"
+        zunlockboot = "keystore-rpool"
         zunlockbootkey = config.zunlockbootkey unless config.zunlockbootkey.nil?
         pcheck = 'Password:'
         uii.info(I18n.t('vagrant_zones.automated-zlogin'))
