@@ -1109,7 +1109,6 @@ module VagrantPlugins
               sleep(15) if rsp[-1].to_s.match(/#{bstring}/)
               zlogin_write.printf("\n") if rsp[-1].to_s.match(/#{bstring}/)
               break if rsp[-1].to_s.match(/#{bstring}/)
-              break unless config.zunlockbootkey.nil?
             end
 
             if zlogin_read.expect(/#{alcheck}/)
