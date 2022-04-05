@@ -1105,6 +1105,7 @@ module VagrantPlugins
               uii.info(rsp[-1]) if config.debug_boot
               sleep(5) if rsp[-1].to_s.match(/#{zunlockboot}/)
               zlogin_write.printf(zunlockbootkey) if rsp[-1].to_s.match(/#{zunlockboot}/)
+              puts zunlockbootkey
               zlogin_write.printf("\r\n") if rsp[-1].to_s.match(/#{zunlockboot}/)
               sleep(15) if rsp[-1].to_s.match(/#{bstring}/)
               zlogin_write.printf("\n") if rsp[-1].to_s.match(/#{bstring}/)
