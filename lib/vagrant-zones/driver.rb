@@ -1091,7 +1091,7 @@ module VagrantPlugins
         alcheck = 'login:' if config.alcheck.nil?
         bstring = ' OK ' if config.booted_string.nil?
         bstring = config.booted_string unless config.booted_string.nil?
-        zunlockboot = "Please unlock disk keystore-rpool:"
+        zunlockboot = "Importing ZFS root pool"
         zunlockbootkey = config.zunlockbootkey unless config.zunlockbootkey.nil?
         pcheck = 'Password:'
         uii.info(I18n.t('vagrant_zones.automated-zlogin'))
@@ -1099,14 +1099,17 @@ module VagrantPlugins
           Timeout.timeout(config.setup_wait) do
             rsp = []
 
-
-            
             loop do
               zlogin_read.expect(/\r\n/) { |line| rsp.push line }
               uii.info(rsp[-1]) if config.debug_boot
+              puts zunlockbootkey
+              sleep(2) if rsp[-1].to_s.match(/#{zunlockboot}/)
+              zlogin_write.printf("#{zunlockbootkey}\n") if rsp[-1].to_s.match(/#{zunlockboot}/)
+              zlogin_write.printf("\n") if rsp[-1].to_s.match(/#{zunlockboot}/)
               sleep(15) if rsp[-1].to_s.match(/#{bstring}/)
               zlogin_write.printf("\n") if rsp[-1].to_s.match(/#{bstring}/)
               break if rsp[-1].to_s.match(/#{bstring}/)
+              break unless config.zunlockbootkey.nil?
             end
 
             if zlogin_read.expect(/#{alcheck}/)
