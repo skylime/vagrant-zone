@@ -279,5 +279,8 @@ en:
       - Entering username, Waiting a few seconds
     automated-zlogin-pass: |-
       - Entering password, Waiting a few seconds
+    automated-zbootunlock: |-
+      - Unlocking LUKS Keystore for the boot disk
     automated-zlogin-root: |-
       - Impersonatig root, Waiting a few seconds
+      

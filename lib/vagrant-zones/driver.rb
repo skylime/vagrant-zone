@@ -1105,6 +1105,7 @@ module VagrantPlugins
               sleep(2) if rsp[-1].to_s.match(/#{zunlockboot}/)
               zlogin_write.printf("#{zunlockbootkey}\n") if rsp[-1].to_s.match(/#{zunlockboot}/)
               zlogin_write.printf("\n") if rsp[-1].to_s.match(/#{zunlockboot}/)
+              uii.info(I18n.t('vagrant_zones.automated-zbootunlock')) if rsp[-1].to_s.match(/#{zunlockboot}/)
               sleep(15) if rsp[-1].to_s.match(/#{bstring}/)
               zlogin_write.printf("\n") if rsp[-1].to_s.match(/#{bstring}/)
               break if rsp[-1].to_s.match(/#{bstring}/)
