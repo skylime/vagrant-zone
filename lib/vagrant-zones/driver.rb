@@ -1102,7 +1102,6 @@ module VagrantPlugins
             loop do
               zlogin_read.expect(/\r\n/) { |line| rsp.push line }
               uii.info(rsp[-1]) if config.debug_boot
-              puts zunlockbootkey
               sleep(2) if rsp[-1].to_s.match(/#{zunlockboot}/)
               zlogin_write.printf("#{zunlockbootkey}\n") if rsp[-1].to_s.match(/#{zunlockboot}/)
               zlogin_write.printf("\n") if rsp[-1].to_s.match(/#{zunlockboot}/)
