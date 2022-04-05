@@ -1098,16 +1098,21 @@ module VagrantPlugins
         PTY.spawn("pfexec zlogin -C #{name}") do |zlogin_read, zlogin_write, pid|
           Timeout.timeout(config.setup_wait) do
             rsp = []
+
+
             loop do
               zlogin_read.expect(/\r\n/) { |line| rsp.push line }
               uii.info(rsp[-1]) if config.debug_boot
               sleep(5) if rsp[-1].to_s.match(/#{zunlockboot}/)
+              puts zunlockbootkey
               zlogin_write.printf(zunlockbootkey) if rsp[-1].to_s.match(/#{zunlockboot}/)
               zlogin_write.printf("\r\n") if rsp[-1].to_s.match(/#{zunlockboot}/)
+              
               sleep(15) if rsp[-1].to_s.match(/#{bstring}/)
               zlogin_write.printf("\n") if rsp[-1].to_s.match(/#{bstring}/)
               break if rsp[-1].to_s.match(/#{bstring}/)
             end
+            
 
             if zlogin_read.expect(/#{alcheck}/)
               uii.info(I18n.t('vagrant_zones.automated-zlogin-user'))
